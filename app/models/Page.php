@@ -2,9 +2,9 @@
 
 class Page implements JsonSerializable
 {
-    private $id;
-    private $title;
-    private $href;
+    protected $id;
+    protected $title;
+    protected $href;
 
     public function __construct($id, $title, $href)
     {
