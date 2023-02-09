@@ -6,14 +6,14 @@ class NavigationBarItem implements JsonSerializable
 {
     private $id;
     private Page $page;
-    private ?NavigationBarItem $parent;
+    private array $children;
     private int $order;
 
-    public function __construct($id, Page $page, ?NavigationBarItem $parent, $order)
+    public function __construct($id, Page $page, array $children, $order)
     {
         $this->id = $id;
         $this->page = $page;
-        $this->parent = $parent;
+        $this->children = $children;
         $this->order = $order;
     }
 
@@ -32,14 +32,14 @@ class NavigationBarItem implements JsonSerializable
         $this->page = $value;
     }
 
-    public function getParent(): ?NavigationBarItem
+    public function getChildren(): array
     {
-        return $this->parent;
+        return $this->children;
     }
 
-    public function setParent(NavigationBarItem $value)
+    public function setChildren(array $value)
     {
-        $this->parent = $value;
+        $this->children = $value;
     }
 
     public function getOrder(): int
@@ -57,7 +57,7 @@ class NavigationBarItem implements JsonSerializable
         return [
             "id" => $this->getId(),
             "page" => $this->getPage(),
-            "parent" => $this->getParent(),
+            "children" => $this->getChildren(),
             "order" => $this->getOrder()
         ];
     }
