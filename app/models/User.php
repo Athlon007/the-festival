@@ -120,9 +120,6 @@ class User implements JsonSerializable
     {
         $this->resetTokenExpiration = $resetTokenExpiration;
     }
-
-
-
 }
 
 ?>
