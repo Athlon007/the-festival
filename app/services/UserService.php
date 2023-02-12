@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../repositories/UserRepository.php';
 require_once __DIR__ . '/../models/User.php';
+require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
 
 class UserService{
     
@@ -18,7 +19,7 @@ class UserService{
             $user = $this->repository->getByEmail($email);
 
             if($user == null){
-                throw new Exception("This email is not registered. Make an account by clicking 'Register now'.");
+                throw new UserNotFoundException("This email is not registered. Make an account by clicking 'Register now'.");
             }
 
             if(password_verify($password, $user->getHash())){
