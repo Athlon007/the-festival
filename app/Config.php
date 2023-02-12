@@ -1,5 +1,4 @@
 <?php
-
 $db_host = "haarlemfestival.mysql.database.azure.com";
 $db_name = "development";
 $db_username = "haarlemfestivaluser";
