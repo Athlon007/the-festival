@@ -61,7 +61,6 @@ function createDropdown(collapseLi, element) {
     collapseA.setAttribute('href', link);
     collapseA.setAttribute('id', 'navbarDropdown-' + element.id);
     collapseA.setAttribute('role', 'button');
-    collapseA.setAttribute('data-toggle', 'dropdown');
     collapseA.setAttribute('aria-haspopup', 'true');
     collapseA.setAttribute('aria-expanded', 'false');
     collapseA.textContent = element.page.title;
@@ -102,8 +101,8 @@ function loadNavbar() {
     let colapseButton = document.createElement('button');
     colapseButton.classList.add('navbar-toggler');
     colapseButton.setAttribute('type', 'button');
-    colapseButton.setAttribute('data-toggle', 'collapse');
-    colapseButton.setAttribute('data-target', '#navbarNav');
+    colapseButton.setAttribute('data-bs-toggle', 'collapse');
+    colapseButton.setAttribute('data-bs-target', '#navbarNav');
     colapseButton.setAttribute('aria-controls', 'navbarNav');
     colapseButton.setAttribute('aria-expanded', 'false');
     colapseButton.setAttribute('aria-label', 'Toggle navigation');
