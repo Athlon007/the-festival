@@ -40,8 +40,7 @@ class NavigationBarItemRepository extends Repository
             . "FROM NavigationBarItems nbi WHERE parentNavId IS NULL ORDER BY nbi.order";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
-        $output = $this->navBarItemBuilder($stmt->fetchAll());
-        return $output;
+        return $this->navBarItemBuilder($stmt->fetchAll());
     }
 
     /**
