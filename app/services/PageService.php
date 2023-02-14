@@ -45,8 +45,8 @@ class PageService
         }
 
         // Check if file exists
-        $location = $page->getLocation();
-        if (!file_exists($page->getLocation())) {
+        $location = "../" .  $page->getLocation();
+        if (!file_exists($location)) {
             throw new FileDoesNotExistException("File at '$location' was not found.");
         }
 
