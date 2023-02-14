@@ -1,0 +1,18 @@
+.active {
+    text-decoration: underline;
+}
+
+.nav-item {
+    /* Add padding to the left and right of nav-item */
+    padding: 0 10px;
+    max-height: 3rem;
+}
+
+.nav-item:not(:last-child) {
+    /* Add separator to the right of nav-item */
+    border-right: 1px solid #525252;
+}
+
+.nav-item:not(:first-child) {
+    border-left: 1px solid #525252;
+}

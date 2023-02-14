@@ -118,12 +118,14 @@ function loadNavbar() {
             // Check if element is in half of array
             console.log(Math.floor(data.length / 2));
             if (Math.floor(data.length / 2) == data.indexOf(element) - 1) {
+                /*
                 // add logo
                 let logo = document.createElement('img');
-                logo.setAttribute('src', '/img/logo.png');
+                logo.setAttribute('src', '/img/svg/logo.svg');
                 logo.setAttribute('alt', 'Logo');
                 logo.classList.add('logo');
                 collapseUl.appendChild(logo);
+                */
             }
 
             if (element.children.length > 0) {
