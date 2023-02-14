@@ -8,7 +8,6 @@ class User implements JsonSerializable
     private string $lastName;
     private string $hashPassword;
     private int $userType;
-
     private ?string $resetToken;
     private ?DateTime $resetTokenExpiration;
     
