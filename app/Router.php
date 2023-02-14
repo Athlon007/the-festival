@@ -1,6 +1,7 @@
 <?php
 
 require_once("models/Exceptions/PageNotFoundException.php");
+require_once("models/Exceptions/FileDoesNotExistException.php");
 
 class Router
 {
@@ -21,6 +22,10 @@ class Router
             require(__DIR__ . $page->getLocation());
         } catch (PageNotFoundException $ex) {
             // Page was not found?
+            // Use static routing instead.
+            $this->staticRouting($request);
+        } catch (FileDoesNotExistException $ex) {
+            // File does not exist?
             // Use static routing instead.
             $this->staticRouting($request);
         } catch (Throwable $ex) {
