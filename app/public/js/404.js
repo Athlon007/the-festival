@@ -1,0 +1,1 @@
+window.history.replaceState(null, "Visit Haarlem - Not found", "/404");

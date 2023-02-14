@@ -67,7 +67,7 @@ class Router
      */
     private function route404($message)
     {
-        echo $message;
         require(__DIR__ . Router::PAGE_NOT_FOUND_PATH);
+        echo $message;
     }
 }

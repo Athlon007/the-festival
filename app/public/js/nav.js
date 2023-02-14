@@ -6,16 +6,29 @@ function getNavbarItems() {
         .catch(error => console.error(error));
 }
 
+function isCurrentLink(href) {
+    console.log('a ' + window.location.pathname);
+    if (href.length == 0) {
+        href += "/";
+    }
+    href = href.split('?')[0];
+    return window.location.pathname == href;
+}
+
 // Creates a nav link for the navbar.
 function createNavLink(collapseLi, element) {
     // Create the a
     let collapseA = document.createElement('a');
     collapseA.classList.add('nav-link');
-    collapseA.setAttribute('href', element.page.href);
+    let link = element.page.href;
+    if (link.length == 0) {
+        link = "/";
+    }
+    collapseA.setAttribute('href', link);
     collapseA.textContent = element.page.title;
 
     // If the current URL contains the href of the page, add the active class to the li.
-    if (window.location.href.includes(element.page.href)) {
+    if (isCurrentLink(element.page.href)) {
         collapseA.classList.add('active');
     }
 
@@ -40,7 +53,12 @@ function createDropdown(collapseLi, element) {
     let collapseA = document.createElement('a');
     collapseA.classList.add('nav-link');
     collapseA.classList.add('dropdown-toggle');
-    collapseA.setAttribute('href', element.page.href);
+    let link = element.page.href;
+    if (link.length == 0) {
+        link = "/";
+        console.log(link);
+    }
+    collapseA.setAttribute('href', link);
     collapseA.setAttribute('id', 'navbarDropdown-' + element.id);
     collapseA.setAttribute('role', 'button');
     collapseA.setAttribute('data-toggle', 'dropdown');
@@ -50,7 +68,7 @@ function createDropdown(collapseLi, element) {
     collapseLi.appendChild(collapseA);
 
     // If the current URL contains the href of the page, add the active class to the li.
-    if (window.location.href.includes(element.page.href)) {
+    if (isCurrentLink(element.page.href)) {
         collapseA.classList.add('active');
     }
 
@@ -74,7 +92,6 @@ function createDropdown(collapseLi, element) {
 
 // Loads the navbar.
 function loadNavbar() {
-    console.log('Document loaded');
     let nav = document.getElementsByClassName('navbar')[0];
     if (nav == null) {
         console.error('Navbar not found');
@@ -116,7 +133,6 @@ function loadNavbar() {
             collapseLi.classList.add('nav-item');
 
             // Check if element is in half of array
-            console.log(Math.floor(data.length / 2));
             if (Math.floor(data.length / 2) == data.indexOf(element) - 1) {
                 /*
                 // add logo
