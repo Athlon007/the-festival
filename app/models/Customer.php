@@ -24,5 +24,25 @@ class Customer extends User{
             'address' => $this->address
         ];
     }
+
+    public function getDateOfBirth() : DateTime
+    {
+        return $this->dateOfBirth;
+    }
+
+    public function setDateOfBirth(DateTime $dateOfBirth) : void
+    {
+        $this->dateOfBirth = $dateOfBirth;
+    }
+
+    public function getAddress() : Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(Address $address) : void
+    {
+        $this->address = $address;
+    }
 }
 

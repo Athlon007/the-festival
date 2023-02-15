@@ -21,7 +21,7 @@ class UserService{
                 throw new UserNotFoundException("This email is not registered. Make an account by clicking 'Register now'.");
             }
 
-            if(password_verify($password, $user->getHash())){
+            if(password_verify($password, $user->getHashPassword())){
                 return $user;
             }
 
@@ -58,7 +58,7 @@ class UserService{
 
             //Hash password
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $user->setHash($hashedPassword);
+            $user->setHashPassword($hashedPassword);
 
             //Pass to repository
             $this->repository->insertUser($user);

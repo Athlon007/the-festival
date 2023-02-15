@@ -59,7 +59,6 @@ class CustomerRepository extends Repository{
             
             $stmt->bindValue(":userId", $customer->getUserId());
             $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirth());
-            $stmt->bindValue(":addressId", $customer->getAddressId());
             
             $stmt->execute();
         }
