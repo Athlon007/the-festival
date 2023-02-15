@@ -1,19 +1,4 @@
-// Returns the navbar items from the API.
-function getNavbarItems() {
-    return fetch('/api/nav')
-        .then(response => response.json())
-        .then(data => data)
-        .catch(error => console.error(error));
-}
-
-function isCurrentLink(href) {
-    console.log('a ' + window.location.pathname);
-    if (href.length == 0) {
-        href += "/";
-    }
-    href = href.split('?')[0];
-    return window.location.pathname == href;
-}
+import { isCurrentLink, getNavbarItems } from './utils.js';
 
 // Creates a nav link for the navbar.
 function createNavLink(collapseLi, element) {
