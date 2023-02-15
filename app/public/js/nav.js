@@ -42,6 +42,7 @@ function createDropdown(collapseLi, element) {
     collapseLi.classList.add('dropdown');
     // open on hover
     collapseLi.onmouseover = function () {
+        // if window width is less than 960 px
         collapseLi.classList.add('show');
         collapseLi.children[1].classList.add('show');
     };
@@ -52,7 +53,6 @@ function createDropdown(collapseLi, element) {
     // Create the a
     let collapseA = document.createElement('a');
     collapseA.classList.add('nav-link');
-    collapseA.classList.add('dropdown-toggle');
     let link = element.page.href;
     if (link.length == 0) {
         link = "/";
@@ -82,11 +82,80 @@ function createDropdown(collapseLi, element) {
         collapseDropdownMenuA.setAttribute('href', child.page.href);
         collapseDropdownMenuA.textContent = child.page.title;
         collapseDropdownMenu.appendChild(collapseDropdownMenuA);
+
+        if (isCurrentLink(child.page.href)) {
+            collapseDropdownMenuA.classList.add('active');
+        }
     }
     );
     // Add the dropdown menu to the li
     collapseLi.appendChild(collapseDropdownMenu);
     return collapseLi;
+}
+
+const langs = ["NL", "LUX", "POL"];
+
+function getLanguages() {
+    return langs;
+}
+
+function createLanguagePicker() {
+    let collapseLi = document.createElement('li');
+    collapseLi.classList.add('nav-item');
+    collapseLi.classList.add('dropdown');
+    collapseLi.classList.add('lang-picker');
+    // open on hover
+    collapseLi.onmouseover = function () {
+        collapseLi.classList.add('show');
+        collapseLi.children[1].classList.add('show');
+    };
+    collapseLi.onmouseleave = function () {
+        collapseLi.classList.remove('show');
+        collapseLi.children[1].classList.remove('show');
+    };
+    // Create the a
+    let collapseA = document.createElement('a');
+    collapseA.classList.add('nav-link');
+    collapseA.classList.add('dropdown-bs-toggle');
+    collapseA.setAttribute('href', "#");
+    collapseA.setAttribute('id', 'navbarDropdown-lang');
+    collapseA.setAttribute('role', 'button');
+    collapseA.setAttribute('aria-haspopup', 'true');
+    collapseA.setAttribute('aria-expanded', 'false');
+    collapseA.textContent = "EN";
+    collapseLi.appendChild(collapseA);
+
+    // Create the dropdown menu
+    let collapseDropdownMenu = document.createElement('div');
+    collapseDropdownMenu.classList.add('dropdown-menu');
+    collapseDropdownMenu.classList.add('lang-drop');
+    collapseDropdownMenu.setAttribute('aria-labelledby', 'navbarDropdown-lang');
+    // Create the dropdown menu a
+    getLanguages().forEach(lang => {
+        let collapseDropdownMenuA = document.createElement('a');
+        collapseDropdownMenuA.classList.add('dropdown-item');
+        collapseDropdownMenuA.setAttribute('href', "#");
+        collapseDropdownMenuA.textContent = lang;
+        collapseDropdownMenu.appendChild(collapseDropdownMenuA);
+    });
+
+    // Add the dropdown menu to the li
+    collapseLi.appendChild(collapseDropdownMenu);
+    return collapseLi;
+}
+
+function createIcon(href, alt, iconClass) {
+    let collapseA = document.createElement('a');
+    collapseA.setAttribute('href', href);
+
+    collapseA.classList.add('nav-item');
+    collapseA.classList.add('d-none');
+    collapseA.classList.add('d-lg-block');
+    collapseA.classList.add('d-xl-block');
+    collapseA.classList.add(iconClass);
+    collapseA.setAttribute('alt', alt);
+
+    return collapseA
 }
 
 // Loads the navbar.
@@ -106,6 +175,7 @@ function loadNavbar() {
     colapseButton.setAttribute('aria-controls', 'navbarNav');
     colapseButton.setAttribute('aria-expanded', 'false');
     colapseButton.setAttribute('aria-label', 'Toggle navigation');
+    colapseButton.classList.add('m-1');
     // Create the span
     let colapseButtonSpan = document.createElement('span');
     colapseButtonSpan.classList.add('navbar-toggler-icon');
@@ -133,14 +203,18 @@ function loadNavbar() {
 
             // Check if element is in half of array
             if (Math.floor(data.length / 2) == data.indexOf(element) - 1) {
-                /*
-                // add logo
-                let logo = document.createElement('img');
-                logo.setAttribute('src', '/img/svg/logo.svg');
-                logo.setAttribute('alt', 'Logo');
-                logo.classList.add('logo');
-                collapseUl.appendChild(logo);
-                */
+                // add a
+                let collapseA = document.createElement('a');
+                collapseA.setAttribute('href', '/');
+
+                collapseA.classList.add('navbar-brand');
+                collapseA.classList.add('d-none');
+                collapseA.classList.add('d-lg-block');
+                collapseA.classList.add('d-xl-block');
+                collapseA.classList.add('haarlem-logo');
+                collapseA.setAttribute('alt', 'Logo');
+
+                collapseUl.appendChild(collapseA);
             }
 
             if (element.children.length > 0) {
@@ -151,10 +225,17 @@ function loadNavbar() {
                 collapseUl.appendChild(createNavLink(collapseLi, element));
             }
         });
-    });
+    })
+        .then(() => {
+            // add language picker
+            collapseUl.appendChild(createIcon('#', 'Search', 'search-icon'));
+            collapseUl.appendChild(createLanguagePicker());
+            collapseUl.appendChild(createIcon('/shopping-cart', 'Shopping cart', 'shopping-cart-icon'));
+        });
 
     // Add the ul to the collapse div
     collapseDiv.appendChild(collapseUl);
+
     // Add the collapse div to the navbar
     nav.appendChild(collapseDiv);
 }

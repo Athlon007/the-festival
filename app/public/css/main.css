@@ -1,11 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+French+Canon&display=swap');
+
 .active {
     text-decoration: underline;
 }
 
 .nav-item {
     /* Add padding to the left and right of nav-item */
-    padding: 0 10px;
+    padding: 0 30px;
     max-height: 3rem;
+    font-family: 'IM Fell French Canon', serif;
+    font-size: 28px;
+    color: #fff;
+}
+
+.nav-item>a {
+    /* Remove underline from nav-item */
+    color: #fff;
 }
 
 .nav-item:not(:last-child) {
@@ -15,4 +25,52 @@
 
 .nav-item:not(:first-child) {
     border-left: 1px solid #525252;
+}
+
+.navbar-brand {
+    max-height: 3rem;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.dropdown-menu {
+    border-radius: 0;
+    border: 1px solid #525252;
+    text-align: center;
+    transform: translateX(-25%);
+}
+
+.dropdown-menu>a {
+    font-size: 28px;
+}
+
+.dropdown-menu>a:not(:last-child) {
+    border-bottom: 3px solid #525252;
+}
+
+.navbar.navbar-dark>div>ul>.dropdown>.dropdown-menu {
+    color: #fff;
+    background-color: #333333;
+}
+
+.navbar.navbar-dark>div>ul>.dropdown>.dropdown-menu>a {
+    color: #fff;
+    border-color: #fff;
+}
+
+.navbar.navbar-dark>div>ul>.dropdown>.dropdown-menu>a:hover {
+    background-color: #525252;
+}
+
+@media (min-width: 960px) {
+    .lang-picker {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+}
+
+@media (max-width: 960px) {
+    .dropdown-menu {
+        transform: translateX(0%);
+    }
 }
