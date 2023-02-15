@@ -76,63 +76,41 @@
                 </div>
             </div>
         </div>
-    </div>
-    <footer class="foot row">
-        <div class="col-lg-5 col-md-5 col-sm-4 col-xs-12">
-            <ul class="social">
-                <span class="d-block">Contact us</span>
-                <div class="row d-inline">
-                    <li class="d-inline">
-                        <p class="d-inline">Twitter</p>
-                    </li>
 
-                    <li class="d-inline">
-                        <p class="d-inline">Instagram</p>
-                    </li>
-
-                    <li class="d-inline">
-                        <p class="d-inline">Facebook</p>
-                    </li>
+        <div class="card mb-3" style="max-width:95%;">
+            <div class="row g-0">
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">History</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
                 </div>
-            </ul>
+                <div class="col-md-4">
+                    <img src="..." class="img-fluid rounded-start" alt="...">
+                </div>
+            </div>
         </div>
-
-        <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
-            <ul class="foot-nav">
-                <li>
-                    <a href="#">Home</a>
-                </li>
-
-                <li>
-                    <a href="#">About</a>
-                </li>
-
-                <li>
-                    <a href="#">Blog</a>
-                </li>
-
-                <li>
-                    <a href="#">Gallery </a>
-                </li>
-
-                <li>
-                    <a href="#">Contact</a>
-                </li>
-            </ul>
+        <div class="card mb-3" style="max-width:95%;">
+            <div class="row g-0">
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">History</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <img src="..." class="img-fluid rounded-start" alt="...">
+                </div>
+            </div>
         </div>
-
-        <div class="col-lg-5 col-md-3 col-sm-4 col-xs-12">
-            <ul class="social">
-                <span>Created by</span>
-                <li>
-                    <p href="#">5Guys Productions</p>
-                </li>
-            </ul>
-        </div>
-    </footer>
+    </div>
+    <footer class="foot row bottom"></footer>
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    <script type="application/javascript" src="/js/nav.js"></script>
+    <script type="module" src="/js/nav.js"></script>
+    <script type="module" src="/js/foot.js"></script>
 
 </body>
 
