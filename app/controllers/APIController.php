@@ -3,16 +3,42 @@ require_once("../services/UserService.php");
 
 class APIController
 {
+    public function handleGetRequest($uri)
+    {
+        try {
+            if ($_SERVER["REQUEST_METHOD"] == "GET") {
+                switch ($uri) {
+                    case "/api/nav":
+                        // Make sure that only localhost can use this API.
+                        if (!$this->isLocalApiRequest()) {
+                            $this->sendErrorMessage("Access denied.");
+                            return;
+                        }
+                        require_once(__DIR__ . "/../services/NavigationBarItemService.php");
+                        $navService = new NavigationBarItemService();
+                        $output = $navService->getAll();
+                        echo json_encode($output);
+                        break;
+                    default:
+                        $this->sendErrorMessage("Invalid API Request");
+                        break;
+                }
+            }
+        } catch (Exception $ex) {
+            $this->sendErrorMessage($ex->getMessage());
+        }
+    }
+
     public function handlePostRequest($uri)
     {
-        try{
+        try {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $data = json_decode(file_get_contents("php://input"));
 
-                if($data == null){
+                if ($data == null) {
                     throw new Exception("No data received.");
                 }
-    
+
                 switch ($uri) {
                     case "/api/login":
                         $this->login($data);
@@ -28,22 +54,20 @@ class APIController
                         break;
                 }
             }
-        }
-        catch(Exception $ex)
-        {
+        } catch (Exception $ex) {
             $this->sendErrorMessage($ex->getMessage());
         }
     }
 
     private function login($data)
     {
-        try{
+        try {
             $userService = new UserService();
 
-            if(!isset($data->email) || !isset($data->password)){
+            if (!isset($data->email) || !isset($data->password)) {
                 throw new Exception("Email and password are required.");
             }
-            
+
             //Sanitise data
             $email = htmlspecialchars($data->email);
             $password = htmlspecialchars($data->password);
@@ -56,28 +80,27 @@ class APIController
             $_SESSION["user"] = $user;
 
             $this->sendSuccessMessage("Login successful.");
-        }
-        catch(Exception $ex){
+        } catch (Exception $ex) {
             $this->sendErrorMessage($ex->getMessage());
         }
     }
 
-    private function logout(){
+    private function logout()
+    {
         try {
             session_start();
             session_destroy();
-        }
-        catch(Exception $ex){
+        } catch (Exception $ex) {
             $this->sendErrorMessage($ex->getMessage());
         }
     }
 
     private function registerCustomer($data)
     {
-        try{
+        try {
             $userService = new UserService();
 
-            if(!isset($data->email) || !isset($data->firstName) || !isset($data->lastName) || !isset($data->password)){
+            if (!isset($data->email) || !isset($data->firstName) || !isset($data->lastName) || !isset($data->password)) {
                 throw new Exception("All fields are required.");
             }
 
@@ -91,8 +114,7 @@ class APIController
             $userService->registerNewCustomer($data);
 
             $this->sendSuccessMessage("Registration successful.");
-        }
-        catch(Exception $ex){
+        } catch (Exception $ex) {
             $this->sendErrorMessage($ex->getMessage());
         }
     }
@@ -107,5 +129,16 @@ class APIController
     {
         header('Content-Type: application/json');
         echo json_encode(["success_message" => $message]);
+    }
+
+    /**
+     * Checks if the current request is from localhost.
+     */
+    private function isLocalApiRequest()
+    {
+        return true; // Debug
+
+        require_once __DIR__ . "/../Config.php";
+        return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
     }
 }

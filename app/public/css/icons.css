@@ -1,0 +1,21 @@
+.haarlem-logo {
+    background-image: url(../img/svg/logo.svg);
+    width: 4em;
+    background-size: 100% 100%;
+}
+
+.search-icon {
+    background-image: url(../img/svg/search.svg);
+    width: 32px;
+    height: 32px;
+    background-size: 100% 100%;
+    margin-top: 12px;
+}
+
+.shopping-cart-icon {
+    background-image: url(../img/svg/shopping-cart.svg);
+    width: 32px;
+    height: 32px;
+    background-size: 100% 100%;
+    margin-top: 12px;
+}
