@@ -162,6 +162,7 @@ function createSearch() {
     let collapseLi = document.createElement('li');
     collapseLi.classList.add('nav-item');
     collapseLi.classList.add('dropdown');
+    collapseLi.classList.add('lang-picker');
     // open on hover
     collapseLi.onmouseover = function () {
         collapseLi.classList.add('show');
