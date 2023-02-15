@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IM+Fell+French+Canon&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+French+Canon&family=Open+Sans:wght@400;700&family=Rasa:wght@400;700&display=swap');
 
 .buttonleft {
     align-items: left;
@@ -10,6 +10,11 @@ div {
 
 .container {
     min-height: 80vh;
+}
+
+.container,
+p {
+    font-family: 'Open Sans', sans-serif;
 }
 
 .home {
@@ -24,9 +29,20 @@ div {
     /* Add padding to the left and right of nav-item */
     padding: 0 30px;
     max-height: 3rem;
-    font-family: 'IM Fell French Canon', serif;
     font-size: 28px;
     color: #fff;
+}
+
+.nav-item,
+.nav-item>a {
+    font-family: 'IM Fell French Canon', serif;
+}
+
+h2,
+h3,
+h4,
+h5 {
+    font-family: 'Rasa', serif;
 }
 
 .nav-item>a {
