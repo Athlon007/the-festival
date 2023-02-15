@@ -158,6 +158,51 @@ function createIcon(href, alt, iconClass) {
     return collapseA
 }
 
+function createSearch() {
+    let collapseLi = document.createElement('li');
+    collapseLi.classList.add('nav-item');
+    collapseLi.classList.add('dropdown');
+    // open on hover
+    collapseLi.onmouseover = function () {
+        collapseLi.classList.add('show');
+        collapseLi.children[1].classList.add('show');
+    };
+    collapseLi.onmouseleave = function () {
+        collapseLi.classList.remove('show');
+        collapseLi.children[1].classList.remove('show');
+    };
+    // Create the a
+    let collapseA = document.createElement('a');
+    collapseA.classList.add('nav-link');
+    collapseA.classList.add('dropdown-bs-toggle');
+    collapseA.setAttribute('href', "#");
+    collapseA.setAttribute('id', 'navbarDropdown-lang');
+    collapseA.setAttribute('role', 'button');
+    collapseA.setAttribute('aria-haspopup', 'true');
+    collapseA.setAttribute('aria-expanded', 'false');
+    collapseA.classList.add('search-icon');
+    collapseLi.appendChild(collapseA);
+
+    // Create the dropdown menu
+    let collapseDropdownMenu = document.createElement('div');
+    collapseDropdownMenu.classList.add('dropdown-menu');
+    collapseDropdownMenu.classList.add('lang-drop');
+    collapseDropdownMenu.setAttribute('aria-labelledby', 'navbarDropdown-lang');
+
+    // Create input field for search and add it to dropdown
+    let collapseDropdownMenuInput = document.createElement('input');
+    collapseDropdownMenuInput.classList.add('form-control');
+    collapseDropdownMenuInput.classList.add('dropdown-item');
+    collapseDropdownMenuInput.setAttribute('type', 'text');
+    collapseDropdownMenuInput.setAttribute('placeholder', 'Search');
+    collapseDropdownMenuInput.setAttribute('aria-label', 'Search');
+    collapseDropdownMenu.appendChild(collapseDropdownMenuInput);
+
+    // Add the dropdown menu to the li
+    collapseLi.appendChild(collapseDropdownMenu);
+    return collapseLi;
+}
+
 // Loads the navbar.
 function loadNavbar() {
     let nav = document.getElementsByClassName('navbar')[0];
@@ -228,7 +273,7 @@ function loadNavbar() {
     })
         .then(() => {
             // add language picker
-            collapseUl.appendChild(createIcon('#', 'Search', 'search-icon'));
+            collapseUl.appendChild(createSearch());
             collapseUl.appendChild(createLanguagePicker());
             collapseUl.appendChild(createIcon('/shopping-cart', 'Shopping cart', 'shopping-cart-icon'));
         });
