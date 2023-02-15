@@ -1,6 +1,7 @@
 <?php
 require_once("../repositories/PageRepository.php");
 require_once("../models/Exceptions/PageNotFoundException.php");
+require_once("../models/Exceptions/FileDoesNotExistException.php");
 
 class PageService
 {
@@ -25,6 +26,7 @@ class PageService
      * @param mixed $href Href to the page.
      * @return Page A page with matching href.
      * @throws PageNotFoundException If matching page is not found, throws an exception.
+     * @throws FileDoesNotExistException If the file does not exist, throws an exception.
      */
     public function getPageByHref($href): Page
     {
@@ -42,6 +44,12 @@ class PageService
             throw new PageNotFoundException("Page with href '$href' was not found.");
         }
 
+        // Check if file exists
+        $location = "../" .  $page->getLocation();
+        if (!file_exists($location)) {
+            throw new FileDoesNotExistException("File at '$location' was not found.");
+        }
+
         return $page;
     }
 
@@ -50,6 +58,7 @@ class PageService
      * @param int $id ID of requested page.
      * @return Page A page with matching ID.
      * @throws PageNotFoundException If matching page was not found, throws the PageNotFoundException.
+     * @throws FileDoesNotExistException If the file does not exist, throws an exception.
      */
     public function getPageById(int $id): Page
     {
@@ -58,6 +67,12 @@ class PageService
 
         if ($page == null) {
             throw new PageNotFoundException("Page with ID '$id' was not found.");
+        }
+
+        // Check if file exists
+        $location = $page->getLocation();
+        if (!file_exists($page->getLocation())) {
+            throw new FileDoesNotExistException("File at '$location' was not found.");
         }
 
         return $page;
