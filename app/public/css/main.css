@@ -10,6 +10,10 @@ div {
 
 .container {
     min-height: 80vh;
+}
+
+.container,
+p {
     font-family: 'Open Sans', sans-serif;
 }
 
@@ -25,9 +29,13 @@ div {
     /* Add padding to the left and right of nav-item */
     padding: 0 30px;
     max-height: 3rem;
-    font-family: 'IM Fell French Canon', serif;
     font-size: 28px;
     color: #fff;
+}
+
+.nav-item,
+.nav-item>a {
+    font-family: 'IM Fell French Canon', serif;
 }
 
 h2,
