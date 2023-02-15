@@ -2,12 +2,12 @@
 
 class User implements JsonSerializable
 {
-    private int $userId;
-    private string $email;
-    private string $firstName;
-    private string $lastName;
-    private string $hashPassword;
-    private int $userType;
+    protected int $userId;
+    protected string $email;
+    protected string $firstName;
+    protected string $lastName;
+    protected string $hashPassword;
+    protected int $userType;
 
     public function jsonSerialize() : mixed
     {
