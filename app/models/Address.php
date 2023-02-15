@@ -1,12 +1,32 @@
 <?php
 
-    class Address{
+    class Address implements JsonSerializable{
+
+        private int $addressId;
+        private string $streetName;
+        private string $houseNumber;
+        private string $postalCode;
+        private string $city;
+        private string $country;
         
-        private $streetName;
-        private $houseNumber;
-        private $postalCode;
-        private $city;
-        private $country;
+        public function jsonSerialize() : mixed{
+            return [
+                'addressId' => $this->addressId,
+                'streetName' => $this->streetName,
+                'houseNumber' => $this->houseNumber,
+                'postalCode' => $this->postalCode,
+                'city' => $this->city,
+                'country' => $this->country
+            ];
+        }
+
+        public function setAddressId($addressId){
+            $this->addressId = $addressId;
+        }
+
+        public function getAddressId(){
+            return $this->addressId;
+        }
 
         public function setStreetName($streetName){
             $this->streetName = $streetName;
