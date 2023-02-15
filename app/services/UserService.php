@@ -5,7 +5,6 @@ require_once __DIR__ . '/../models/User.php';
 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
 
 class UserService{
-    
     private UserRepository $repository;
 
     public function __construct()
@@ -38,6 +37,7 @@ class UserService{
         try
         {
             $this->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, 3);
+            
         }
         catch(Exception $ex)
         {

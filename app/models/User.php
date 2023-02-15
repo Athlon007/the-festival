@@ -61,12 +61,12 @@ class User implements JsonSerializable
     }
 
 
-    public function getHash() : string
+    public function getHashPassword() : string
     {
         return $this->hashPassword;
     }
 
-    public function setHash(string $hash) : void
+    public function setHashPassword(string $hash) : void
     {
         $this->hashPassword = $hash;
     }
