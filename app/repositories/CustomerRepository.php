@@ -39,26 +39,13 @@ class CustomerRepository extends Repository{
     public function insertCustomer(Customer $customer) : void
     {
         try{
-            $query = "INSERT INTO users (email, hashPassword, firstName, lastName, userType) " .
-                                "VALUES (:email, :hashPassword, :firstName, :lastName, :userType)";
-            $stmt = $this->connection->prepare($query);
-            
-            $stmt->bindValue(":email", $customer->getEmail());
-            $stmt->bindValue(":hashPassword", $customer->getHashPassword());
-            $stmt->bindValue(":firstName", $customer->getFirstName());
-            $stmt->bindValue(":lastName", $customer->getLastName());
-            $stmt->bindValue(":userType", $customer->getUserType());
-            
-            $stmt->execute();
-            
-            $customer->setUserId($this->connection->lastInsertId());
-            
             $query = "INSERT INTO customers ( dateOfBirth, addressId, userId) " .
                         "VALUES (:dateOfBirth, :addressId, :userId)";
             $stmt = $this->connection->prepare($query);
             
-            $stmt->bindValue(":userId", $customer->getUserId());
             $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirth());
+            $stmt->bindValue(":addressId", $customer->getAddress()->getAddressId());
+            $stmt->bindValue(":userId", $customer->getUserId());
             
             $stmt->execute();
         }
