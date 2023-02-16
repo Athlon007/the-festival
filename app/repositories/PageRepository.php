@@ -1,7 +1,7 @@
 <?php
 
-require("Repository.php");
-require("../models/Page.php");
+require_once("Repository.php");
+require_once("../models/Page.php");
 
 class PageRepository extends Repository
 {
