@@ -2,16 +2,12 @@
 
 class User implements JsonSerializable
 {
-    private int $userId;
-    private string $email;
-    private string $firstName;
-    private string $lastName;
-    private string $hashPassword;
-    private int $userType;
-
-    private ?string $resetToken;
-    private ?DateTime $resetTokenExpiration;
-    
+    protected int $userId;
+    protected string $email;
+    protected string $firstName;
+    protected string $lastName;
+    protected string $hashPassword;
+    protected int $userType;
 
     public function jsonSerialize() : mixed
     {
@@ -21,9 +17,7 @@ class User implements JsonSerializable
             'firstName' => $this->firstName,
             'lastName' => $this->lastName,
             'hashPassword' => $this->hashPassword,
-            'userType' => $this->userType,
-            'resetToken' => $this->resetToken,
-            'resetTokenExpiration' => $this->resetTokenExpiration
+            'userType' => $this->userType
         ];
     }
     public function getUserId() : int
@@ -67,12 +61,12 @@ class User implements JsonSerializable
     }
 
 
-    public function getHash() : string
+    public function getHashPassword() : string
     {
         return $this->hashPassword;
     }
 
-    public function setHash(string $hash) : void
+    public function setHashPassword(string $hash) : void
     {
         $this->hashPassword = $hash;
     }
@@ -99,26 +93,6 @@ class User implements JsonSerializable
     public function setUserType(int $userType) : void
     {
         $this->userType = $userType;
-    }
-
-    public function getResetToken() : ?string
-    {
-        return $this->resetToken;
-    }
-
-    public function setResetToken(string $resetToken) : void
-    {
-        $this->resetToken = $resetToken;
-    }
-
-    public function getResetTokenExpiration() : ?DateTime
-    {
-        return $this->resetTokenExpiration;
-    }
-
-    public function setResetTokenExpiration(DateTime $resetTokenExpiration) : void
-    {
-        $this->resetTokenExpiration = $resetTokenExpiration;
     }
 }
 

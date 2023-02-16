@@ -1,5 +1,6 @@
 <?php
 require_once("../services/UserService.php");
+require_once("../services/CustomerService.php");
 
 class APIController
 {
@@ -97,11 +98,11 @@ class APIController
 
     private function registerCustomer($data)
     {
-        try {
-            $userService = new UserService();
+        try{
+            $customerService = new CustomerService();
 
-            if (!isset($data->email) || !isset($data->firstName) || !isset($data->lastName) || !isset($data->password)) {
-                throw new Exception("All fields are required.");
+            if(!isset($data->email) || !isset($data->firstName) || !isset($data->lastName) || !isset($data->password) || !isset($data->dateOfBirth) || !isset($data->address)){
+                throw new Exception("Registration data incomplete.");
             }
 
             //Sanitise data
@@ -110,8 +111,8 @@ class APIController
             $data->lastName = htmlspecialchars($data->lastName);
             $data->password = htmlspecialchars($data->password);
 
-            //Create new user
-            $userService->registerNewCustomer($data);
+            //Register new customer
+            $customerService->registerCustomer($data);
 
             $this->sendSuccessMessage("Registration successful.");
         } catch (Exception $ex) {

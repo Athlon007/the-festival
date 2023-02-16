@@ -5,7 +5,6 @@ require_once __DIR__ . '/../models/User.php';
 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
 
 class UserService{
-    
     private UserRepository $repository;
 
     public function __construct()
@@ -22,25 +21,13 @@ class UserService{
                 throw new UserNotFoundException("This email is not registered. Make an account by clicking 'Register now'.");
             }
 
-            if(password_verify($password, $user->getHash())){
+            if(password_verify($password, $user->getHashPassword())){
                 return $user;
             }
 
             return null;
         }
         catch(Exception $ex){
-            throw ($ex);
-        }
-    }
-    
-    public function registerNewCustomer($data)
-    {
-        try
-        {
-            $this->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, 3);
-        }
-        catch(Exception $ex)
-        {
             throw ($ex);
         }
     }
@@ -58,7 +45,7 @@ class UserService{
 
             //Hash password
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $user->setHash($hashedPassword);
+            $user->setHashPassword($hashedPassword);
 
             //Pass to repository
             $this->repository->insertUser($user);
