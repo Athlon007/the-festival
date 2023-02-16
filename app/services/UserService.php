@@ -31,19 +31,6 @@ class UserService{
             throw ($ex);
         }
     }
-    
-    public function registerNewCustomer($data)
-    {
-        try
-        {
-            $this->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, 3);
-            
-        }
-        catch(Exception $ex)
-        {
-            throw ($ex);
-        }
-    }
 
     public function createNewUser(string $email, string $firstName, string $lastName, string $password, int $usertype) : void
     {
