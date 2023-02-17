@@ -6,6 +6,7 @@ class APIController
 {
     public function handleGetRequest($uri)
     {
+        header('Content-Type: application/json');
         try {
             if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 switch ($uri) {
@@ -98,10 +99,10 @@ class APIController
 
     private function registerCustomer($data)
     {
-        try{
+        try {
             $customerService = new CustomerService();
 
-            if(!isset($data->email) || !isset($data->firstName) || !isset($data->lastName) || !isset($data->password) || !isset($data->dateOfBirth) || !isset($data->address)){
+            if (!isset($data->email) || !isset($data->firstName) || !isset($data->lastName) || !isset($data->password) || !isset($data->dateOfBirth) || !isset($data->address)) {
                 throw new Exception("Registration data incomplete.");
             }
 
