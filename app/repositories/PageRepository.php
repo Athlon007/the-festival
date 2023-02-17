@@ -67,4 +67,22 @@ class PageRepository extends Repository
         $pageArray = $this->pageBuilder($stmt->fetchAll());
         return empty($pageArray) ? null : $pageArray[0];
     }
+
+    private function isInTextPageTable($id): bool
+    {
+        $sql = "SELECT id FROM TextPages WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
+    }
+
+    private function isInEventPageTable($id): bool
+    {
+        $sql = "SELECT id FROM EventPages WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
+    }
 }
