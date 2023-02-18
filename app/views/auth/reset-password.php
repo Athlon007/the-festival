@@ -1,28 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name=”robots” content="index, follow">
-    <title>Example</title>
+    <title>Reset Password</title>
 </head>
-
 <body>
+    <?php if (isset($successMessage)): ?>
+        <div style="color: green;"><?php echo $successMessage; ?></div>
+    <?php endif; ?>
 
-<!-- Before that I need to verify the reset token -->
+    <?php if (isset($errorMessage)): ?>
+        <div style="color: red;"><?php echo $errorMessage; ?></div>
+    <?php endif; ?>
 
-<?php
-// if the reset token is valid, show the password reset form
-?>
-<form action="reset-password.php" method="post">
+    <h2>Reset Password</h2>
+    <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+        <input type="hidden" name="email" value="<?php echo $email; ?>">
         <input type="hidden" name="reset_token" value="<?php echo $reset_token; ?>">
         <label for="password">New Password:</label>
-        <input type="password" id="password" name="password">
-        <input type="submit" value="Reset Password">
+        <input type="password" name="password" id="password" required>
+        <br>
+        <label for="passwordConfirm">Confirm New Password:</label>
+        <input type="password" name="passwordConfirm" id="passwordConfirm" required>
+        <br>
+        <input type="submit" name="submitPassword" value="Reset Password">
     </form>
 </body>
-<?php // else show the message somethign went wrong (reset token is not valid) ?>
-
 </html>

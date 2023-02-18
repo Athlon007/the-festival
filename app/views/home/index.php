@@ -11,12 +11,6 @@
 
 <body>
     <p>Hello, world!</p>
-
-    <form method="POST" action="/resetPassword">
-    <label for="email">Email Address</label>
-    <input type="text" class="form-control" id="email" name="email" placeholder="Enter email address.." autocomplete="off">
-    <button type="submit" name="submitEmail" class="btn btn-primary">Reset Password</button>
-    </form>
 </body>
 
 </html>

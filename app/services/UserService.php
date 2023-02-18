@@ -68,4 +68,90 @@ class UserService{
             throw ($ex);
         }
     }
+
+    public function storeResetToken($email, $reset_token, $sendTime){
+        try{
+            $this->repository->storeResetToken($email, $reset_token, $sendTime);
+        }
+        catch(Exception $ex){
+            throw ($ex);
+        }
+    }
+
+    public function sendResetTokenToUser($email, $reset_token)
+    {
+        try {
+            $to = $email;
+            $subject = "Password Reset Request";
+            $message = "To reset your password, please visit this link:\n\n"
+                . "https://example.com/reset-password.php?token=$reset_token\n\n"
+                . "This link will only be valid for 24 hours.";
+
+            $headers = "From: {turkvedat0911@gmail.com}\r\n";
+            mail($to, $subject, $message, $headers);
+            echo "A password reset link has been sent to your email address.";
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
+
+    public function checkResetToken($email, $reset_token){
+        try{
+            $this->repository->checkResetToken($email, $reset_token);
+        }
+        catch(Exception $ex){
+            throw ($ex);
+        }
+    }
+
+    public function updateUserPassword(User $user){
+        try{
+            $this->repository->updatePassword($user);
+        }
+        catch(Exception $ex){
+            throw ($ex);
+        }
+    }
+
+    public function getAllUsers() : array
+    {
+        try
+        {
+            return $this->repository->getAllUsers();
+        }
+        catch(Exception $ex)
+        {
+            throw ($ex);
+        }
+    }
+
+    public function deleteUser($id) : void
+    {
+        try
+        {
+            $this->repository->deleteUser($id);
+        }
+        catch(Exception $ex)
+        {
+            throw ($ex);
+        }
+    }
+
+    public function updateUser($data) : void
+    {
+        try
+        {
+            $user = new User();
+            $user->setEmail($data->email);
+            $user->setFirstName($data->firstName);
+            $user->setLastName($data->lastName);
+            $user->setUserType($data->userType);
+
+            $this->repository->updateUser($user);
+        }
+        catch(Exception $ex)
+        {
+            throw ($ex);
+        }
+    }
 }

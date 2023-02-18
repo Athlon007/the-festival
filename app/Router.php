@@ -47,11 +47,6 @@ class Router
                 $homeController = new HomeController();
                 $homeController->index();
                 break;
-            case "/resetPassword":
-                require_once("controllers/AuthController.php");
-                $authController = new AuthController();
-                $authController->resetPassword();
-                break;
             default:
                 $this->route404();
                 break;
