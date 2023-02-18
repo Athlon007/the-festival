@@ -61,6 +61,11 @@ class Router
                 $homeController = new HomeController();
                 $homeController->login();
                 break;
+            case "/home/register":
+                require_once("controllers/HomeController.php");
+                $homeController = new HomeController();
+                $homeController->register();
+                break;
             default:
                 $this->route404($message);
                 break;

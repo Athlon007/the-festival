@@ -143,6 +143,11 @@ h5 {
     text-decoration: underline;
 }
 
+#login-error-box {
+    background-color: #da9d9d;
+    border: 1px solid red;
+}
+
 @media (min-width: 960px) {
     .lang-picker {
         padding-left: 0.5rem;

@@ -55,7 +55,8 @@ class APIController
                         break;
                 }
             }
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             $this->sendErrorMessage($ex->getMessage());
         }
     }
@@ -81,7 +82,8 @@ class APIController
             $_SESSION["user"] = $user;
 
             $this->sendSuccessMessage("Login successful.");
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             $this->sendErrorMessage($ex->getMessage());
         }
     }
@@ -139,7 +141,7 @@ class APIController
     {
         return true; // Debug
 
-        require_once __DIR__ . "/../Config.php";
+        require_once(__DIR__ . "/../Config.php");
         return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
     }
 }
