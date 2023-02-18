@@ -27,9 +27,7 @@
                     <div class="col-2">
                         <div class="card " style="background-color: lightblue" >
 
-                        </div>
-                        
-
+                        </div> 
                     </div>    
                     <div class="col-10">
                         <div class="card card-registration card-registration-2" style="border-radius: 15px;">
