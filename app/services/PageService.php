@@ -38,16 +38,23 @@ class PageService
             $href = rtrim($href, "/");
         }
 
-        $page = $this->repo->getPageByHref($href);
+        $page = null;
+        if ($this->repo->countTextPages($href) > 0) {
+            $page = $this->repo->getTextPageByHref($href);
+        } else {
+            $page = $this->repo->getPageByHref($href);
+        }
 
         if ($page == null) {
             throw new PageNotFoundException("Page with href '$href' was not found.");
         }
 
-        // Check if file exists
-        $location = "../" .  $page->getLocation();
-        if (!file_exists($location)) {
-            throw new FileDoesNotExistException("File at '$location' was not found.");
+        if (!($page instanceof TextPage)) {
+            // Check if file exists
+            $location = "../" .  $page->getLocation();
+            if (!file_exists($location)) {
+                throw new FileDoesNotExistException("File at '$location' was not found.");
+            }
         }
 
         return $page;

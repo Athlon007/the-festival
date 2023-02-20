@@ -26,7 +26,15 @@ class Router
         try {
             // First we try to load the page from database.
             $page = $pageService->getPageByHref($request);
-            require(__DIR__ . $page->getLocation());
+            // If page is type of TextPage
+            if ($page instanceof TextPage) {
+                // Load the controller for the TextPage
+                require_once("controllers/TextPageController.php");
+                $textPageController = new TextPageController();
+                $textPageController->loadPage($page);
+            } else {
+                require(__DIR__ . $page->getLocation());
+            }
         } catch (PageNotFoundException $ex) {
             // Page was not found?
             // Use static routing instead.

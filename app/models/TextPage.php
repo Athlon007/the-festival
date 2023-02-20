@@ -1,7 +1,7 @@
 <?php
 require_once("Page.php");
 
-class TextPage extends Page implements JsonSerializable
+class TextPage extends Page
 {
     public $content;
 
@@ -23,12 +23,10 @@ class TextPage extends Page implements JsonSerializable
         $this->content = $value;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
-        return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'href' => $this->href,
+        // return base
+        return parent::jsonSerialize() + [
             'content' => $this->content
         ];
     }
