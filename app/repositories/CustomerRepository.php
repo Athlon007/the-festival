@@ -2,6 +2,8 @@
 require_once(__DIR__ . '/Repository.php');
 require_once(__DIR__ . '/../models/Customer.php');
 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
+require_once(__DIR__ . '/../repositories/AddressRepository.php');
+require_once(__DIR__ . '/../repositories/UserRepository.php');
 
 class CustomerRepository extends Repository{
     

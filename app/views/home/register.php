@@ -37,13 +37,13 @@
                                                 <div class="col-md-6 mb-4 pb-2">
                                                     <div class="form-outline">
                                                         <input type="text" id="firstName" class="form-control form-control-lg"/>
-                                                        <label class="form-label" for="firstName">First name</label>
+                                                        <label class="form-label" for="firstName">First Name</label>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 mb-4 pb-2">
                                                     <div class="form-outline">
                                                         <input type="text" id="lastName" class="form-control form-control-lg"/>
-                                                        <label class="form-label" for="lastName">Last name</label>
+                                                        <label class="form-label" for="lastName">Last Name</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -54,12 +54,20 @@
                                                         <input type="date" id="dateOfBirth" class="form-control form-control-lg"/>
                                                         <label class="form-label" for="dateOfBirth">Date of Birth</label>
                                                     </div>
+                                                    <div class="form-outline">
+                                                        <input type="text" id="phoneNumber" class="form-control form-control-lg" />
+                                                        <label class="form-label" for="phoneNumber">Phone Number</label>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <div class="row">
+                                            <h3 class="fw-normal mb-5">Account Information</h3>
+                                            </div>
+
+                                            <div class="row">
                                                 <div class="form-outline">
-                                                    <input type="email" id="email" class="form-control form-control-lg" />
+                                                    <input type="text" id="email" class="form-control form-control-lg" />
                                                     <label class="form-label" for="email">E-mail</label>
                                                 </div>
                                             </div>
@@ -71,54 +79,51 @@
                                             <h3 class="fw-normal mb-5">Address Details</h3>
 
                                             <div class="row">
-                                                <div class="col-md-8 mb-4 pb-2">
+                                                <div class="col-md-6 mb-4 pb-2">
                                                     <div class="form-outline form-white">
-                                                        <input type="text" id="form3Examplea4" class="form-control form-control-lg" />
-                                                        <label class="form-label" for="form3Examplea4">Postal Code</label>
+                                                        <input type="text" id="postalCode" class="form-control form-control-lg" />
+                                                        <label class="form-label" for="postalCode">Postal Code</label>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2 mb-4 pb-2">
+                                                <div class="col-md-3 mb-4 pb-2">
                                                     <div class="form-outline form-white">
                                                         <input type="text" id="housenumber" class="form-control form-control-lg" />
                                                         <label class="form-label" for="housenumber">House Nr</label>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2 mb-4 pb-2">
+                                                <div class="col-md-3 mb-4 pb-2">
                                                     <div class="form-outline form-white">
-                                                        <input type="text" id="housenumber" class="form-control form-control-lg" />
-                                                        <label class="form-label" for="housenumber">Extension</label>
+                                                        <input type="text" id="extension" class="form-control form-control-lg" />
+                                                        <label class="form-label" for="extension">Extension</label>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div class="mb-4 pb-2">
-                                                <div class="form-outline form-white">
-                                                    <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
-                                                    <label class="form-label" for="form3Examplea2">Street + Nr</label>
-                                                </div>
-                                            </div>
-
-                                            <div class="mb-4 pb-2">
-                                                <div class="form-outline form-white">
-                                                    <input type="text" id="form3Examplea3" class="form-control form-control-lg" />
-                                                    <label class="form-label" for="form3Examplea3">Additional Information</label>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-7 mb-4 pb-2">
+                                            <div class="row">
+                                                <div class="col-mb-4 pb-2">
                                                     <div class="form-outline form-white">
-                                                        <input type="text" id="form3Examplea5" class="form-control form-control-lg" />
-                                                        <label class="form-label" for="form3Examplea5">Place / City</label>
+                                                        <input type="text" id="streetName" class="form-control form-control-lg" />
+                                                        <label class="form-label" for="streetName">Street Name</label>
                                                     </div>
+                                                    <div class="form-outline form-white">
+                                                        <input type="text" id="form3Examplea3" class="form-control form-control-lg" />
+                                                        <label class="form-label" for="form3Examplea3">Place / City</label>
+                                                    </div>
+                                                    <div class="form-outline form-white">
+                                                        <input type="text" id="form3Examplea6" class="form-control form-control-lg" />
+                                                        <label class="form-label" for="form3Examplea6">Country</label>
+                                                    </div>
+
                                                 </div>
 
-                                            <div class="mb-4 pb-2">
-                                                <div class="form-outline form-white">
-                                                <input type="text" id="form3Examplea6" class="form-control form-control-lg" />
-                                                <label class="form-label" for="form3Examplea6">Country</label>
+                                                <div class="col-mb-12 pb-2">
+                                                    
+                                                </div>
+
+                                                <div class="col-mb-12 pb-2">
+                                                    
                                                 </div>
                                             </div>
-
                                             <div class="form-check d-flex justify-content-start mb-4 pb-3">
                                                 <input class="form-check-input me-3" type="checkbox" value="" id="form2Example3c" />
                                                 <label class="form-check-label" for="form2Example3">I do accept the <a href="#!"><u>Terms and Conditions</u></a> of your site.</label>

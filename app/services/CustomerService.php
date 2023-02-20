@@ -5,7 +5,6 @@ require_once(__DIR__ . '/../repositories/CustomerRepository.php');
 require_once(__DIR__ . '/../repositories/AddressRepository.php');
 require_once(__DIR__ . '/../models/Customer.php');
 require_once(__DIR__ . '/../models/User.php');
-require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
 
 class CustomerService{
 

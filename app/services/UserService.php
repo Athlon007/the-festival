@@ -1,33 +1,36 @@
 <?php
 
 require_once __DIR__ . '/../repositories/UserRepository.php';
+require_once(__DIR__ . '/../services/CustomerService.php');
 require_once __DIR__ . '/../models/User.php';
 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
 
 class UserService{
     private UserRepository $repository;
+    private CustomerService $customerService;
 
     public function __construct()
     {
         $this->repository = new UserRepository();
+        $this->customerService = new CustomerService();
     }
     
     public function verifyUser($email, $password) : ?User
     {
-        try {
+        try 
+        {
             $user = $this->repository->getByEmail($email);
-
-            if($user == null){
-                throw new UserNotFoundException("This email is not registered. Make an account by clicking 'Register now'.");
-            }
 
             if(password_verify($password, $user->getHashPassword())){
                 return $user;
             }
+            else{
+                throw new IncorrectPasswordException("Incorrect password");
+            }
 
-            return null;
         }
-        catch(Exception $ex){
+        catch(Exception $ex)
+        {
             throw ($ex);
         }
     }
