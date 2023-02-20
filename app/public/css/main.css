@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IM+Fell+French+Canon&family=Open+Sans:wght@400;700&family=Rasa:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=IM+Fell+French+Canon&family=Open+Sans:wght@400;700&family=Rasa:wght@400;700&display=swap');
 
 .buttonleft {
     align-items: left;
@@ -38,11 +38,20 @@ p {
     font-family: 'IM Fell French Canon', serif;
 }
 
+h1 {
+    font-family: 'Abril Fatface', cursive;
+    font-size: 6em;
+}
+
 h2,
 h3,
 h4,
 h5 {
     font-family: 'Rasa', serif;
+}
+
+h2 {
+    font-size: 3em;
 }
 
 .nav-item>a {
@@ -141,6 +150,22 @@ h5 {
     background-color: rgba(0, 0, 0, 0);
     color: #fff;
     text-decoration: underline;
+}
+
+.carousel {
+    max-height: 525px;
+    overflow: hidden;
+}
+
+.carousel-inner,
+.carousel-item,
+.carousel-item>img {
+    max-height: 525px;
+}
+
+.carousel-caption {
+    top: 55%;
+    transform: translateY(-50%);
 }
 
 @media (min-width: 960px) {

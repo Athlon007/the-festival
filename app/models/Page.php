@@ -6,13 +6,15 @@ class Page implements JsonSerializable
     protected $title;
     protected $href;
     protected $location;
+    protected $images;
 
-    public function __construct($id, $title, $href, $location)
+    public function __construct($id, $title, $href, $location, $images = null)
     {
         $this->id = $id;
         $this->title = $title;
         $this->href = $href;
         $this->location = $location;
+        $this->images = $images;
     }
 
     /**
@@ -103,12 +105,23 @@ class Page implements JsonSerializable
         $this->location = $value;
     }
 
+    public function getImages()
+    {
+        return $this->images;
+    }
+
+    public function setImages($images)
+    {
+        $this->images = $images;
+    }
+
     public function jsonSerialize(): mixed
     {
         return [
             "id" => $this->getId(),
             "title" => $this->getTitle(),
-            "href" => $this->getHref()
+            "href" => $this->getHref(),
+            "images" => $this->getImages()
         ];
     }
 }

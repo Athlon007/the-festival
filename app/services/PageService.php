@@ -38,16 +38,23 @@ class PageService
             $href = rtrim($href, "/");
         }
 
-        $page = $this->repo->getPageByHref($href);
+        $page = null;
+        if ($this->repo->countTextPages($href) > 0) {
+            $page = $this->repo->getTextPageByHref($href);
+        } else {
+            $page = $this->repo->getPageByHref($href);
+        }
 
         if ($page == null) {
             throw new PageNotFoundException("Page with href '$href' was not found.");
         }
 
-        // Check if file exists
-        $location = "../" .  $page->getLocation();
-        if (!file_exists($location)) {
-            throw new FileDoesNotExistException("File at '$location' was not found.");
+        if (!($page instanceof TextPage)) {
+            // Check if file exists
+            $location = "../" .  $page->getLocation();
+            if (!file_exists($location)) {
+                throw new FileDoesNotExistException("File at '$location' was not found.");
+            }
         }
 
         return $page;
@@ -76,5 +83,28 @@ class PageService
         }
 
         return $page;
+    }
+
+    public function getAllTextPages(): array
+    {
+        return $this->repo->getAllTextPages();
+    }
+
+    public function updateTextPage($id, $title, $content, $images)
+    {
+        $id = htmlspecialchars($id);
+        $content = htmlspecialchars($content);
+        $title = htmlspecialchars($title);
+
+        // Check if it even exists in table.
+        if ($this->repo->countTextPagesById($id) == 0) {
+            throw new PageNotFoundException("Page with ID '$id' was not found.");
+        }
+
+        require_once("ImageService.php");
+        $imageService = new ImageService();
+        $imageService->setImagesForPage($id, $images);
+
+        $this->repo->updateTextPage($id, $title, $content);
     }
 }

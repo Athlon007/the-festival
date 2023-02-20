@@ -26,7 +26,15 @@ class Router
         try {
             // First we try to load the page from database.
             $page = $pageService->getPageByHref($request);
-            require(__DIR__ . $page->getLocation());
+            // If page is type of TextPage
+            if ($page instanceof TextPage) {
+                // Load the controller for the TextPage
+                require_once("controllers/TextPageController.php");
+                $textPageController = new TextPageController();
+                $textPageController->loadPage($page);
+            } else {
+                require(__DIR__ . $page->getLocation());
+            }
         } catch (PageNotFoundException $ex) {
             // Page was not found?
             // Use static routing instead.
@@ -46,15 +54,23 @@ class Router
      */
     private function staticRouting($request, $message = null)
     {
+        // remove last / if it exists
+        if (strlen($request) > 0 && substr($request, -1) == '/') {
+            $request = rtrim($request, "/");
+        }
         switch ($request) {
             case "":
             case "/home":
-            case "/home/":
             case "/home/index":
-            case "/home/index/":
-                require_once("controllers/HomeController.php");
-                $homeController = new HomeController();
-                $homeController->index();
+                require_once("services/PageService.php");
+                $pageService = new PageService();
+                $page = $pageService->getPageByHref("/");
+                require_once("controllers/TextPageController.php");
+                $textPageController = new TextPageController();
+                $textPageController->loadPage($page);
+                break;
+            case "/admin/editor":
+                require("views/admin/editor.php");
                 break;
             default:
                 $this->route404($message);
