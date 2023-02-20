@@ -104,4 +104,28 @@ class PageRepository extends Repository
         $stmt->execute();
         return $stmt->rowCount();
     }
+
+    public function getAllTextPages(): array
+    {
+        $sql = "SELECT tp.textPageId, tp.content, p.title, p.href, p.location "
+            . "FROM TextPages tp JOIN Pages p ON p.id = tp.textPageId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        return $this->textPageBuilder($stmt->fetchAll());
+    }
+
+    public function updateTextPage($id, $title, $content)
+    {
+        $sql = "UPDATE TextPages SET content = :content WHERE textPageId = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":content", $content, PDO::PARAM_STR);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $sql = "UPDATE Pages SET title = :title WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":title", $title, PDO::PARAM_STR);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
 }

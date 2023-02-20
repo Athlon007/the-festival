@@ -54,15 +54,23 @@ class Router
      */
     private function staticRouting($request, $message = null)
     {
+        // remove last / if it exists
+        if (strlen($request) > 0 && substr($request, -1) == '/') {
+            $request = rtrim($request, "/");
+        }
         switch ($request) {
             case "":
             case "/home":
-            case "/home/":
             case "/home/index":
-            case "/home/index/":
-                require_once("controllers/HomeController.php");
-                $homeController = new HomeController();
-                $homeController->index();
+                require_once("services/PageService.php");
+                $pageService = new PageService();
+                $page = $pageService->getPageByHref("/");
+                require_once("controllers/TextPageController.php");
+                $textPageController = new TextPageController();
+                $textPageController->loadPage($page);
+                break;
+            case "/admin/editor":
+                require("views/admin/editor.php");
                 break;
             default:
                 $this->route404($message);

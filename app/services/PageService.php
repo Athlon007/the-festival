@@ -84,4 +84,23 @@ class PageService
 
         return $page;
     }
+
+    public function getAllTextPages(): array
+    {
+        return $this->repo->getAllTextPages();
+    }
+
+    public function updateTextPage($id, $title, $content)
+    {
+        $id = htmlspecialchars($id);
+        $content = htmlspecialchars($content);
+        $title = htmlspecialchars($title);
+
+        // Check if it even exists in table.
+        if ($this->repo->countTextPages($id) == 0) {
+            throw new PageNotFoundException("Page with ID '$id' was not found.");
+        }
+
+        $this->repo->updateTextPage($id, $title, $content);
+    }
 }

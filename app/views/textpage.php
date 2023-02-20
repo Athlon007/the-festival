@@ -15,7 +15,6 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
-
     <div class="container">
         <?= $content; ?>
     </div>

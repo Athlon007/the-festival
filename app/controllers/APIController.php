@@ -41,6 +41,11 @@ class APIController
                     throw new Exception("No data received.");
                 }
 
+                if (str_starts_with($uri, "/api/admin")) {
+                    $this->handleAdminPostRequest($uri, $data);
+                    return;
+                }
+
                 switch ($uri) {
                     case "/api/login":
                         $this->login($data);
@@ -142,5 +147,37 @@ class APIController
 
         require_once __DIR__ . "/../Config.php";
         return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
+    }
+
+    private function handleAdminPostRequest($uri, $data)
+    {
+        // TODO: Make sure that only logged-in user can use this API.
+        // if (!$this->isLoggedIn()) {
+        //     $this->sendErrorMessage("Access denied.");
+        //     return;
+        // }
+
+        switch ($uri) {
+            case "/api/admin/text-pages":
+                require_once(__DIR__ . "/../services/PageService.php");
+                $pageService = new PageService();
+                $pages = $pageService->getAllTextPages();
+                echo json_encode($pages);
+                break;
+            case "/api/admin/text-pages/update":
+                require_once(__DIR__ . "/../services/PageService.php");
+                $pageService = new PageService();
+
+                if (!isset($data->id) || !isset($data->title) || !isset($data->content)) {
+                    throw new Exception("Invalid data received.");
+                }
+
+
+                $pageService->updateTextPage($data->id, $data->title, $data->content);
+                break;
+            default:
+                $this->sendErrorMessage("Invalid API Request");
+                break;
+        }
     }
 }
