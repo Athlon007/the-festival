@@ -21,15 +21,15 @@ class CustomerService{
     
     public function registerCustomer($data){
         try{
-            //Create user object
+            //Create customer object
             $customer = new Customer();
             
             //Set customer properties
             $customer->setEmail($data->email);
             $customer->setFirstName($data->firstName);
             $customer->setLastName($data->lastName);
-            $customer->setUserType(3);
             $customer->setDateOfBirth($data->dateOfBirth);
+            $customer->setPhoneNumber($data->phoneNumber);
             $customer->setAddress($data->address);
 
             //Hash password
@@ -44,7 +44,7 @@ class CustomerService{
             $this->userRepository->insertUser($customer);
             $customer->setUserId($this->userRepository->connection->lastInsertId());
             
-            //Insert customer into customer table (inheritance child) with the retrieved foreign keys
+            //Insert customer into customer table (inheritance child) with the retrieved foreign keys of address and user
             $this->customerRepository->insertCustomer($customer);
         }
         catch(Exception $ex){

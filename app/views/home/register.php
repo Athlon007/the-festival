@@ -68,7 +68,7 @@
                                     <div class="col-lg-6">
                                         <div class="p-5">
                                     
-                                            <h3 class="fw-normal mb-5">Contact Details</h3>
+                                            <h3 class="fw-normal mb-5">Address Details</h3>
 
                                             <div class="row">
                                                 <div class="col-md-8 mb-4 pb-2">
@@ -89,7 +89,6 @@
                                                         <label class="form-label" for="housenumber">Extension</label>
                                                     </div>
                                                 </div>
-                                                
                                             </div>
 
                                             <div class="mb-4 pb-2">

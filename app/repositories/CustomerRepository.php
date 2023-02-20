@@ -9,7 +9,7 @@ class CustomerRepository extends Repository{
     {
         try{
             $query = "SELECT users.userId, users.email, users.hashPassword, users.firstName, users.lastName, " .
-                        "users.userType, customers.dateOfBirth, customers.addressId " . 
+                        "users.userType, customers.dateOfBirth, customers.phoneNumber, customers.addressId " . 
                         "FROM users " .
                         "INNER JOIN customers " .
                         "ON users.userId = customers.userId";
@@ -39,11 +39,12 @@ class CustomerRepository extends Repository{
     public function insertCustomer(Customer $customer) : void
     {
         try{
-            $query = "INSERT INTO customers ( dateOfBirth, addressId, userId) " .
-                        "VALUES (:dateOfBirth, :addressId, :userId)";
+            $query = "INSERT INTO customers ( dateOfBirth, phoneNumber, addressId, userId) " .
+                        "VALUES (:dateOfBirth, :phoneNumber, :addressId, :userId)";
             $stmt = $this->connection->prepare($query);
             
             $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirth());
+            $stmt->bindValue(":phoneNumber", $customer->getPhoneNumber());
             $stmt->bindValue(":addressId", $customer->getAddress()->getAddressId());
             $stmt->bindValue(":userId", $customer->getUserId());
             
