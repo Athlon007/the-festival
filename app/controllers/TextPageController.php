@@ -10,6 +10,7 @@ class TextPageController
     {
         $title = $page->getTitle();
         $content = $page->getContent();
+        $images = $page->getImages();
         require(__DIR__ . self::TEXT_PAGE_PATH);
     }
 }

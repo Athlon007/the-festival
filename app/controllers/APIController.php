@@ -172,8 +172,13 @@ class APIController
                     throw new Exception("Invalid data received.");
                 }
 
-
                 $pageService->updateTextPage($data->id, $data->title, $data->content);
+                break;
+            case "/api/admin/images":
+                require_once(__DIR__ . "/../services/ImageService.php");
+                $imageService = new ImageService();
+                $images = $imageService->getAll();
+                echo json_encode($images);
                 break;
             default:
                 $this->sendErrorMessage("Invalid API Request");

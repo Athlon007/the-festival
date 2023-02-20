@@ -3,6 +3,7 @@
 require_once("Repository.php");
 require_once("../models/Page.php");
 require_once("../models/TextPage.php");
+require_once("ImageRepository.php");
 
 class PageRepository extends Repository
 {
@@ -15,12 +16,14 @@ class PageRepository extends Repository
     private function pageBuilder($arr): array
     {
         $output = array();
+        $imageRepo = new ImageRepository();
         foreach ($arr as $row) {
             $id = $row["id"];
             $title = $row["title"];
             $href = $row["href"];
             $location = $row["location"];
-            $page = new Page($id, $title, $href, $location);
+            $images = $imageRepo->getImagesForPageId($id);
+            $page = new Page($id, $title, $href, $location, $images);
 
             array_push($output, $page);
         }
@@ -30,12 +33,14 @@ class PageRepository extends Repository
     private function textPageBuilder($arr): array
     {
         $output = array();
+        $imageRepo = new ImageRepository();
         foreach ($arr as $row) {
             $id = $row["textPageId"];
             $title = $row["title"];
             $href = $row["href"];
             $text = $row["content"];
-            $page = new TextPage($id, $title, $href, $text);
+            $images = $imageRepo->getImagesForPageId($id);
+            $page = new TextPage($id, $title, $href, $text, $images);
 
             array_push($output, $page);
         }

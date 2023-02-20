@@ -5,12 +5,13 @@ class TextPage extends Page
 {
     public $content;
 
-    public function __construct($id, $title, $href, $content)
+    public function __construct($id, $title, $href, $content, $images = null)
     {
         $this->id = $id;
         $this->title = $title;
         $this->href = $href;
         $this->content = $content;
+        $this->images = $images;
     }
 
     public function getContent()
