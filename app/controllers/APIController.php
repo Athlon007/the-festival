@@ -168,11 +168,13 @@ class APIController
                 require_once(__DIR__ . "/../services/PageService.php");
                 $pageService = new PageService();
 
-                if (!isset($data->id) || !isset($data->title) || !isset($data->content)) {
+                if (!isset($data->id) || !isset($data->title) || !isset($data->content) || !isset($data->images)) {
                     throw new Exception("Invalid data received.");
                 }
 
-                $pageService->updateTextPage($data->id, $data->title, $data->content);
+                $pageService->updateTextPage($data->id, $data->title, $data->content, $data->images);
+
+                $this->sendSuccessMessage("Page updated successfully.");
                 break;
             case "/api/admin/images":
                 require_once(__DIR__ . "/../services/ImageService.php");

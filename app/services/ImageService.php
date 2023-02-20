@@ -2,6 +2,7 @@
 require_once("../repositories/ImageRepository.php");
 require_once("../models/Exceptions/ImageNotFoundException.php");
 require_once("../models/Image.php");
+require_once("../models/Page.php");
 
 class ImageService
 {
@@ -24,5 +25,23 @@ class ImageService
     public function getAll(): array
     {
         return $this->imageRepository->getAll();
+    }
+
+    public function setImagesForPage($pageId, $imageIds): void
+    {
+        $cleanedImagesArray = array();
+        foreach ($imageIds as $image) {
+            array_push($cleanedImagesArray, htmlspecialchars($image));
+        }
+
+        // First we must delete old associations.
+        $this->removeImagesForPage($pageId);
+
+        $this->imageRepository->setImagesForPage($pageId, $cleanedImagesArray);
+    }
+
+    public function removeImagesForPage($pageId): void
+    {
+        $this->imageRepository->removeImagesForPage($pageId);
     }
 }

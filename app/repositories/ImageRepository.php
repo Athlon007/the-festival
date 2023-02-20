@@ -46,4 +46,23 @@ class ImageRepository extends Repository
         $stmt->execute();
         return $this->imageBuilder($stmt->fetchAll());
     }
+
+    public function removeImagesForPage($pageId): void
+    {
+        $sql = "DELETE FROM BannerImages WHERE pageId = :pageId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":pageId", $pageId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function setImagesForPage($pageId, $imageIds): void
+    {
+        $sql = "INSERT INTO BannerImages (pageId, imageId) VALUES (:pageId, :imageId)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":pageId", $pageId, PDO::PARAM_INT);
+        foreach ($imageIds as $imageId) {
+            $stmt->bindParam(":imageId", $imageId, PDO::PARAM_INT);
+            $stmt->execute();
+        }
+    }
 }

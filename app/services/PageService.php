@@ -90,16 +90,20 @@ class PageService
         return $this->repo->getAllTextPages();
     }
 
-    public function updateTextPage($id, $title, $content)
+    public function updateTextPage($id, $title, $content, $images)
     {
         $id = htmlspecialchars($id);
         $content = htmlspecialchars($content);
         $title = htmlspecialchars($title);
 
         // Check if it even exists in table.
-        if ($this->repo->countTextPages($id) == 0) {
+        if ($this->repo->countTextPagesById($id) == 0) {
             throw new PageNotFoundException("Page with ID '$id' was not found.");
         }
+
+        require_once("ImageService.php");
+        $imageService = new ImageService();
+        $imageService->setImagesForPage($id, $images);
 
         $this->repo->updateTextPage($id, $title, $content);
     }

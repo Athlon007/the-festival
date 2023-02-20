@@ -50,6 +50,10 @@ h5 {
     font-family: 'Rasa', serif;
 }
 
+h2 {
+    font-size: 3em;
+}
+
 .nav-item>a {
     /* Remove underline from nav-item */
     color: #fff;

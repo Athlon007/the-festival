@@ -19,7 +19,7 @@ class PageRepository extends Repository
         $imageRepo = new ImageRepository();
         foreach ($arr as $row) {
             $id = $row["id"];
-            $title = $row["title"];
+            $title = htmlspecialchars_decode($row["title"]);
             $href = $row["href"];
             $location = $row["location"];
             $images = $imageRepo->getImagesForPageId($id);
@@ -36,9 +36,9 @@ class PageRepository extends Repository
         $imageRepo = new ImageRepository();
         foreach ($arr as $row) {
             $id = $row["textPageId"];
-            $title = $row["title"];
+            $title = htmlspecialchars_decode($row["title"]);
             $href = $row["href"];
-            $text = $row["content"];
+            $text = htmlspecialchars_decode($row["content"]);
             $images = $imageRepo->getImagesForPageId($id);
             $page = new TextPage($id, $title, $href, $text, $images);
 
@@ -101,11 +101,20 @@ class PageRepository extends Repository
         return empty($pageArray) ? null : $pageArray[0];
     }
 
-    public function countTextPages($href): bool
+    public function countTextPages(string $href): int
     {
         $sql = "SELECT p.id, p.href FROM Pages p JOIN TextPages tp ON p.id = tp.textPageId WHERE p.href = :href";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":href", $href, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
+
+    public function countTextPagesById(int $id): int
+    {
+        $sql = "SELECT p.id, p.href FROM Pages p JOIN TextPages tp ON p.id = tp.textPageId WHERE p.id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->rowCount();
     }
