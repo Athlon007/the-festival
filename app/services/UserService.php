@@ -15,17 +15,17 @@ class UserService{
         $this->customerService = new CustomerService();
     }
     
-    public function verifyUser($email, $password) : ?User
+    public function verifyUser($data) : ?User
     {
         try 
         {
-            $user = $this->repository->getByEmail($email);
+            $user = $this->repository->getByEmail($data->email);
 
-            if(password_verify($password, $user->getHashPassword())){
+            if(password_verify($data->password, $user->getHashPassword())){
                 return $user;
             }
             else{
-                throw new IncorrectPasswordException("Incorrect password");
+                throw new IncorrectPasswordException("Incorrect combination of email and password");
             }
 
         }

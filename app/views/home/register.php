@@ -36,14 +36,14 @@
                                             <div class="row">
                                                 <div class="col-md-6 mb-4 pb-2">
                                                     <div class="form-outline">
-                                                        <input type="text" id="firstName" class="form-control form-control-lg"/>
-                                                        <label class="form-label" for="firstName">First Name</label>
+                                                        <label class="form-label" for="firstName">First Name*</label>    
+                                                        <input type="text" id="firstName" class="form-control form-control-lg"/> 
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 mb-4 pb-2">
                                                     <div class="form-outline">
+                                                        <label class="form-label" for="lastName">Last Name*</label>
                                                         <input type="text" id="lastName" class="form-control form-control-lg"/>
-                                                        <label class="form-label" for="lastName">Last Name</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -51,12 +51,12 @@
                                             <div class="row">
                                                 <div class="mb-4 pb-2">
                                                     <div class="form-outline">
-                                                        <input type="date" id="dateOfBirth" class="form-control form-control-lg"/>
-                                                        <label class="form-label" for="dateOfBirth">Date of Birth</label>
+                                                        <label class="form-label" for="dateOfBirth">Date of Birth*</label>    
+                                                        <input type="date" id="dateOfBirth" class="form-control form-control-lg"/> 
                                                     </div>
                                                     <div class="form-outline">
+                                                        <label class="form-label" for="phoneNumber">Phone Number*</label>
                                                         <input type="text" id="phoneNumber" class="form-control form-control-lg" />
-                                                        <label class="form-label" for="phoneNumber">Phone Number</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -67,8 +67,16 @@
 
                                             <div class="row">
                                                 <div class="form-outline">
+                                                    <label class="form-label" for="email">E-mail*</label>    
                                                     <input type="text" id="email" class="form-control form-control-lg" />
-                                                    <label class="form-label" for="email">E-mail</label>
+                                                </div>
+                                                <div class="form-outline">
+                                                    <label class="form-label" for="password">Password*</label>
+                                                    <input type="password" id="password" class="form-control form-control-lg" />
+                                                </div>
+                                                <div class="form-outline">
+                                                    <label class="form-label" for="passwordConfirm">Confirm Password*</label>
+                                                    <input type="password" id="passwordConfirm" class="form-control form-control-lg" />
                                                 </div>
                                             </div>
                                         </div>
@@ -81,20 +89,20 @@
                                             <div class="row">
                                                 <div class="col-md-6 mb-4 pb-2">
                                                     <div class="form-outline form-white">
-                                                        <input type="text" id="postalCode" class="form-control form-control-lg" />
-                                                        <label class="form-label" for="postalCode">Postal Code</label>
+                                                        <label class="form-label" for="postalCode">Postal Code*</label>
+                                                        <input type="text" id="postalCode" class="form-control form-control-lg" onchange=fetchAddress() />
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 mb-4 pb-2">
                                                     <div class="form-outline form-white">
-                                                        <input type="text" id="housenumber" class="form-control form-control-lg" />
-                                                        <label class="form-label" for="housenumber">House Nr</label>
+                                                        <label class="form-label" for="houseNumber">House Nr*</label>
+                                                        <input type="text" id="houseNumber" class="form-control form-control-lg" onchange=fetchAddress() />
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 mb-4 pb-2">
                                                     <div class="form-outline form-white">
-                                                        <input type="text" id="extension" class="form-control form-control-lg" />
                                                         <label class="form-label" for="extension">Extension</label>
+                                                        <input type="text" id="extension" class="form-control form-control-lg" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -102,35 +110,25 @@
                                             <div class="row">
                                                 <div class="col-mb-4 pb-2">
                                                     <div class="form-outline form-white">
+                                                        <label class="form-label" for="streetName">Street Name*</label>
                                                         <input type="text" id="streetName" class="form-control form-control-lg" />
-                                                        <label class="form-label" for="streetName">Street Name</label>
                                                     </div>
                                                     <div class="form-outline form-white">
-                                                        <input type="text" id="form3Examplea3" class="form-control form-control-lg" />
-                                                        <label class="form-label" for="form3Examplea3">Place / City</label>
+                                                        <label class="form-label" for="city">Place / City*</label>
+                                                        <input type="text" id="city" class="form-control form-control-lg" />
                                                     </div>
                                                     <div class="form-outline form-white">
-                                                        <input type="text" id="form3Examplea6" class="form-control form-control-lg" />
-                                                        <label class="form-label" for="form3Examplea6">Country</label>
+                                                        <label class="form-label" for="country">Country*</label>
+                                                        <input type="text" id="country" class="form-control form-control-lg" />
                                                     </div>
-
-                                                </div>
-
-                                                <div class="col-mb-12 pb-2">
-                                                    
-                                                </div>
-
-                                                <div class="col-mb-12 pb-2">
-                                                    
                                                 </div>
                                             </div>
                                             <div class="form-check d-flex justify-content-start mb-4 pb-3">
                                                 <input class="form-check-input me-3" type="checkbox" value="" id="form2Example3c" />
-                                                <label class="form-check-label" for="form2Example3">I do accept the <a href="#!"><u>Terms and Conditions</u></a> of your site.</label>
+                                                <label class="form-check-label" for="form2Example3">I accept the <a href="#!"><u>Terms and Conditions</u></a>.*</label>
                                             </div>
 
-                                            <button type="button" class="btn btn-primary btn-lg">Register</button>
-
+                                            <button type="button" class="btn btn-primary btn-lg" onclick=attemptRegister()>Register</button>
                                         </div>
                                     </div>
                                 </div>
@@ -144,7 +142,7 @@
         <footer class="foot row bottom"></footer>
         <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-        <script type="module" src = "js/register.js"></script>
+        <script src = "/js/register.js"></script>
         <script type="module" src="/js/foot.js"></script>
     </body>
 

@@ -1,7 +1,7 @@
 const emailField = document.getElementById("email");
 const passwordField = document.getElementById("password");
 
-function AttemptLogin(){
+function attemptLogin(){
 
     const data = {
         email: emailField.value,
@@ -11,12 +11,7 @@ function AttemptLogin(){
     fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-            {
-            email: emailField.value,
-            password: passwordField.value
-            }
-            )
+        body: JSON.stringify(data)
         })
     .then(data => {
         if(data.success){

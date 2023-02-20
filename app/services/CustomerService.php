@@ -18,7 +18,8 @@ class CustomerService{
         $this->addressRepository = new AddressRepository();
     }
     
-    public function registerCustomer($data){
+    public function registerCustomer($data)
+    {
         try{
             //Create customer object
             $customer = new Customer();
@@ -35,20 +36,16 @@ class CustomerService{
             $hashedPassword = password_hash($data->password, PASSWORD_DEFAULT);
             $customer->setHashPassword($hashedPassword);
 
-            //Insert customer address into address table and retrieve the new addressId
-            $this->addressRepository->insertAddress($customer->getAddress());
-            $customer->getAddress()->setAddressId($this->addressRepository->connection->lastInsertId());
-
-            //Insert customer into user table (inheritance parent) and retrieve the new userId
-            $this->userRepository->insertUser($customer);
-            $customer->setUserId($this->userRepository->connection->lastInsertId());
-            
-            //Insert customer into customer table (inheritance child) with the retrieved foreign keys of address and user
+            //Insert customer
             $this->customerRepository->insertCustomer($customer);
         }
         catch(Exception $ex){
             throw ($ex);
         }
+    }
+
+    public function sanitiseData($data){
+        
     }
 }
 ?>

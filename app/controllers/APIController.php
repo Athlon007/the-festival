@@ -70,12 +70,8 @@ class APIController
                 throw new Exception("Email and password are required.");
             }
 
-            //Sanitise data
-            $email = htmlspecialchars($data->email);
-            $password = htmlspecialchars($data->password);
-
             //Fetch user (method throws error if user not found)
-            $user = $userService->verifyUser($email, $password);
+            $user = $userService->verifyUser($data);
 
             //Store user in session
             session_start();
@@ -103,15 +99,10 @@ class APIController
         try{
             $customerService = new CustomerService();
 
-            if(!isset($data->email) || !isset($data->firstName) || !isset($data->lastName) || !isset($data->password) || !isset($data->dateOfBirth) || !isset($data->address)){
+            //Check if all data is present
+            if(!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password) || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address)){
                 throw new Exception("Registration data incomplete.");
             }
-
-            //Sanitise data
-            $data->email = htmlspecialchars($data->email);
-            $data->firstName = htmlspecialchars($data->firstName);
-            $data->lastName = htmlspecialchars($data->lastName);
-            $data->password = htmlspecialchars($data->password);
 
             //Register new customer
             $customerService->registerCustomer($data);

@@ -33,7 +33,7 @@
                                     <label for="password" class="form-label">Password</label>
                                     <input type="password" class="form-control" id="password" name="password">
                                 </div>
-                                <button id="loginButton" class="btn btn-primary" onclick=AttemptLogin()>Login</button>
+                                <button id="loginButton" class="btn btn-primary" onclick=attemptLogin()>Login</button>
                             </form>
                         </div>
                         <div class="card-footer" style="width: 100%">
