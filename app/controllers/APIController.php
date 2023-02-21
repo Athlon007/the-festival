@@ -152,7 +152,7 @@ class APIController
     {
         return true; // Debug
 
-        require_once(__DIR__ . "/../Config.php");
-        return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
+        //require_once(__DIR__ . "/../Config.php");
+        //return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
     }
 }
