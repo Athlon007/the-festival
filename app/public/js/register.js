@@ -23,7 +23,7 @@ const captcha = document.getElementByClass("g-recaptcha");
 
 
 function attemptRegister(){
-    if(allFieldsFilled()){
+    if(!allFieldsFilled()){
         alert("Please fill in all fields");
         return;
     }
