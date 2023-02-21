@@ -113,11 +113,10 @@ class APIController
             $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$response);
             $responseData = json_decode($verifyResponse, true);
             
-            if(!$responseData["success"])
-            {
+            if(!$responseData["success"]){
                 throw new Exception("Captcha verification failed.");
             }
-
+            
             //Register new customer
             $customerService->registerCustomer($data);
 
@@ -130,7 +129,7 @@ class APIController
 
     private function fetchAddress($data)
     {
-
+        //WIP, currently done through JS
     }
 
     private function sendErrorMessage($message)

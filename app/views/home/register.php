@@ -17,14 +17,13 @@
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
         <script type="module" src="/js/nav.js"></script>
-        <script src="https://www.google.com/recaptcha/api.js?render=reCAPTCHA_site_key"></script>
-
        
         <!-- Registration container -->
         <section class="h-100 h-custom gradient-custom-2">
             <div class="container py-5 h-100">   
                 <div class="row d-flex justify-content-center align-items-center h-100">
                     <div class="col-10">
+
                         <!-- Registration form -->
                         <div class="card card-registration card-registration-2" style="border-radius: 15px;">
                             <div class="card-body p-0">
@@ -128,8 +127,8 @@
                                                 <input class="form-check-input me-3" type="checkbox" value="" id="termsAcceptance" />
                                                 <label class="form-check-label" for="termsAcceptance">I accept the <a href="#!"><u>Terms and Conditions</u></a>.*</label>
                                             </div>
-                                            <div class="g-recaptcha mb-4 pb-3" data-sitekey="6LfMgZwkAAAAAFiJ1SIK75Nq5a15YfD5rCJzzCmw"></div>
-                                            <button type="button" class="btn btn-primary btn-lg mb-4 pb-3" onclick=attemptRegister()>Register</button>
+                                            <div id="captcha" class="g-recaptcha mb-4 pb-3" data-sitekey="6LfMgZwkAAAAAFiJ1SIK75Nq5a15YfD5rCJzzCmw"></div>
+                                            <button type="button" class="btn btn-primary btn-lg mb-4 pb-3" onclick=attemptRegister(grecaptcha.getResponse()) >Register</button>
 
                                             <div id="errorBox">
                                                 <ul id="errorList">
@@ -151,11 +150,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
         <script src = "/js/register.js"></script>
         <script type="module" src="/js/foot.js"></script>
-
-        <script>
-            grecaptcha.ready(function () {
-                grecaptcha.execute('6LfMgZwkAAAAAFs2hfXUpKQ1wNwHaic9rnZozCbH', {action: 'submit'})});
-        </script>
 
     </body>
 

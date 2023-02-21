@@ -27,6 +27,33 @@ class AddressRepository extends Repository{
             throw ($ex);
         }
     }
+
+    public function getAddressById($addressId) : ?Address
+    {
+        try{
+            $query = "SELECT * FROM addresses WHERE addressId = :addressId";
+            $stmt = $this->connection->prepare($query);
+            
+            $stmt->bindValue(":addressId", $addressId);
+            $stmt->execute();
+            $stmt->setFetchMode(PDO::FETCH_CLASS, 'Address');
+
+            $result = $stmt->fetch();
+
+            if (is_bool($result))
+                throw new AddressNotFoundException("Address ID does not exist");
+            else
+                return $result;
+        }
+        catch(PDOException $ex)
+        {
+            throw new Exception("PDO Exception: " . $ex->getMessage());
+        }
+        catch(Exception $ex)
+        {
+            throw ($ex);
+        }        
+    }
 }
 
 ?>

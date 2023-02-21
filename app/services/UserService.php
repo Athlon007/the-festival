@@ -22,6 +22,12 @@ class UserService{
             $user = $this->repository->getByEmail($data->email);
 
             if(password_verify($data->password, $user->getHashPassword())){
+                
+                if ($user->getUserType() == 3)
+                {
+                    $customer = $this->customerService->getCustomerByUserId($user);
+                    return $customer;
+                }
                 return $user;
             }
             else{

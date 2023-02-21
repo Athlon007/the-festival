@@ -3,6 +3,11 @@ const passwordField = document.getElementById("password");
 
 function attemptLogin(){
 
+    if(!emailField.value || !passwordField.value){
+        alert("Please fill in all fields.");
+        return;
+    }
+
     const data = {
         email: emailField.value,
         password: passwordField.value
@@ -13,12 +18,14 @@ function attemptLogin(){
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
         })
+    .then(response => response.json())
     .then(data => {
-        if(data.success){
-            window.location.href = "/dashboard";
-        } 
-        else {
-            alert(data.message);
+        if(data.error_message != null){
+            alert(data.error_message);
+        }
+        else{
+            alert(data.success_message);
+            window.location.assign("/");
         }
     })
 }

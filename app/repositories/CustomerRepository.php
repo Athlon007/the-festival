@@ -17,26 +17,34 @@ class CustomerRepository extends Repository{
         $this->userRepository = new UserRepository();
     }
     
-    public function getCustomerById($userId) : Customer
+    public function getCustomerByUserId(User $user) : Customer
     {
         try{
-            $query = "SELECT users.userId, users.email, users.hashPassword, users.firstName, users.lastName, " .
-                        "users.userType, customers.dateOfBirth, customers.phoneNumber, customers.addressId " . 
-                        "FROM users " .
-                        "INNER JOIN customers " .
-                        "ON users.userId = customers.userId";
+            $query = "SELECT dateOfBirth, phoneNumber, addressId FROM customers WHERE userId = :userId";
             $stmt = $this->connection->prepare($query);
             
-            $stmt->bindValue(":userId", $userId);
+            $stmt->bindValue(":userId", $user->getUserId());
             $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_CLASS, 'Customer');
-
-            $result = $stmt->fetch();
+            $result = $stmt->fetchAll();
 
             if (is_bool($result))
-                throw new UserNotFoundException("Customer ID not found");
-            else
-                return $result;
+                throw new UserNotFoundException("User ID not found");
+
+            $result = $result[0];
+
+            $customer = new Customer();
+            $customer->setUserId($user->getUserId());
+            $customer->setFirstName($user->getFirstName());
+            $customer->setLastName($user->getLastName());
+            $customer->setEmail($user->getEmail());
+            $customer->setHashPassword($user->getHashPassword());
+            $customer->setUserType(3);
+            $customer->setDateOfBirth($result['dateOfBirth']);
+            $customer->setPhoneNumber($result['phoneNumber']);
+            $customer->setAddress($this->addressRepository->getAddressById($result['addressId']));
+
+            return $customer;
+
         }
         catch(PDOException $ex)
         {
@@ -63,7 +71,7 @@ class CustomerRepository extends Repository{
                         "VALUES (:dateOfBirth, :phoneNumber, :addressId, :userId)";
             $stmt = $this->connection->prepare($query);
             
-            $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirth());
+            $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirthAsString());
             $stmt->bindValue(":phoneNumber", $customer->getPhoneNumber());
             $stmt->bindValue(":addressId", $customer->getAddress()->getAddressId());
             $stmt->bindValue(":userId", $customer->getUserId());

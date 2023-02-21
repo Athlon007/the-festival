@@ -24,7 +24,6 @@
                     <h2 class=text-center>Log in to Visit Haarlem</h2>
                     <div class="card">
                         <div class="card-body">
-                            <form>
                                 <div class="mb-3">
                                     <label for="email" class="form-label">E-mail</label>
                                     <input type="text" class="form-control" id="email" name="email">
@@ -34,7 +33,6 @@
                                     <input type="password" class="form-control" id="password" name="password">
                                 </div>
                                 <button id="loginButton" class="btn btn-primary" onclick=attemptLogin()>Login</button>
-                            </form>
                         </div>
                         <div class="card-footer" style="width: 100%">
                             <a href="/forgotpassword">Forgot password?</a> <br>
@@ -45,7 +43,7 @@
             </div>
         </div>
 
-        <script type="module" src = "js/login.js"></script>
+        <script src = "/js/login.js"></script>
 
         <footer class="foot row bottom"></footer>
         <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>

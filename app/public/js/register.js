@@ -17,12 +17,9 @@ const emailField = document.getElementById("email");
 const passwordField = document.getElementById("password");
 const passwordConfirmField = document.getElementById("passwordConfirm");
 
-//Captcha
-const captcha = document.getElementByClass("g-recaptcha");
 
-
-
-function attemptRegister(){
+function attemptRegister(captcha)
+{
     if(!allFieldsFilled()){
         alert("Please fill in all fields");
         return;
@@ -44,18 +41,18 @@ function attemptRegister(){
         email: emailField.value,
         password: passwordField.value,
         address: createAddressObject(),
-        captchaResponse: captcha.getResponse()
+        captchaResponse: captcha
     }
     
     fetch("/api/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
-        })
+    })
     .then(response => response.json())
     .then(data => {
         if(data.success_message){
-            window.location.href = "/dashboard";
+            alert(data.success_message);
+            window.location.assign("/login");
         } 
         else {
             alert(data.error_message);
@@ -76,13 +73,14 @@ function checkPassword(){
 function createAddressObject(){
     var housenumber = houseNumberField.value + " " + extensionField.value;
     
-    const address = {
+    var address = {
         streetName: streetNameField.value,
         houseNumber: housenumber,
         postalCode: postalCodeField.value,
         city: cityField.value,
         country: countryField.value
     }
+
     return address;
 }
 
@@ -91,8 +89,7 @@ function fetchAddress(){
     var houseNumber = houseNumberField.value;
 
     fetch("https://postcode.tech/api/v1/postcode?postcode=" + postalCode + "&number=" + houseNumber, {
-        headers: { "Authorization": "Bearer 1b9faa1d-1521-43ca-af73-4caeb208222b" }
-                  
+        headers: { "Authorization": "Bearer 1b9faa1d-1521-43ca-af73-4caeb208222b" }              
     })
     .then(response => response.json())
     .then(data => {
