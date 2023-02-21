@@ -96,21 +96,41 @@ class APIController
 
     private function registerCustomer($data)
     {
-        try{
+        try
+        {
             $customerService = new CustomerService();
 
             //Check if all data is present
-            if(!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password) || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address)){
+            if(!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password) 
+                || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse))
+                {
                 throw new Exception("Registration data incomplete.");
+            }
+            
+            //Verify captcha
+            $secret = "6LfMgZwkAAAAAFs2hfXUpKQ1wNwHaic9rnZozCbH";
+            $response = $data->captchaResponse;
+            $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$response);
+            $responseData = json_decode($verifyResponse, true);
+            
+            if(!$responseData["success"])
+            {
+                throw new Exception("Captcha verification failed.");
             }
 
             //Register new customer
             $customerService->registerCustomer($data);
 
             $this->sendSuccessMessage("Registration successful.");
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             $this->sendErrorMessage($ex->getMessage());
         }
+    }
+
+    private function fetchAddress($data)
+    {
+
     }
 
     private function sendErrorMessage($message)

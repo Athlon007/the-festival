@@ -7,10 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
         <meta name="theme-color" content="#fffbfa">
         <meta name="robots" content="noindex, nofollow">
-        <title>Visit Haarlem - Login</title>
+        <title>Visit Haarlem - Register</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
         <link rel="stylesheet" href="/css/main.css">
         <link rel="stylesheet" href="/css/icons.css">
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     </head>
 
     <body>
@@ -124,11 +125,17 @@
                                                 </div>
                                             </div>
                                             <div class="form-check d-flex justify-content-start mb-4 pb-3">
-                                                <input class="form-check-input me-3" type="checkbox" value="" id="form2Example3c" />
-                                                <label class="form-check-label" for="form2Example3">I accept the <a href="#!"><u>Terms and Conditions</u></a>.*</label>
+                                                <input class="form-check-input me-3" type="checkbox" value="" id="termsAcceptance" />
+                                                <label class="form-check-label" for="termsAcceptance">I accept the <a href="#!"><u>Terms and Conditions</u></a>.*</label>
                                             </div>
+                                            <div class="g-recaptcha mb-4 pb-3" data-sitekey="6LfMgZwkAAAAAFiJ1SIK75Nq5a15YfD5rCJzzCmw"></div>
+                                            <button type="button" class="btn btn-primary btn-lg mb-4 pb-3" onclick=attemptRegister()>Register</button>
 
-                                            <button type="button" class="btn btn-primary btn-lg" onclick=attemptRegister()>Register</button>
+                                            <div id="errorBox">
+                                                <ul id="errorList">
+
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -144,6 +151,12 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
         <script src = "/js/register.js"></script>
         <script type="module" src="/js/foot.js"></script>
+
+        <script>
+            grecaptcha.ready(function () {
+                grecaptcha.execute('6LfMgZwkAAAAAFs2hfXUpKQ1wNwHaic9rnZozCbH', {action: 'submit'})});
+        </script>
+
     </body>
 
 </html>

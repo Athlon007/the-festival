@@ -17,8 +17,60 @@ const emailField = document.getElementById("email");
 const passwordField = document.getElementById("password");
 const passwordConfirmField = document.getElementById("passwordConfirm");
 
-function attemptRegister(){
+//Captcha
+const captcha = document.getElementByClass("g-recaptcha");
 
+
+
+function attemptRegister(){
+    if(allFieldsFilled()){
+        alert("Please fill in all fields");
+        return;
+    }
+    else if(!checkPassword()){
+        alert("Confirmed password does not match.");
+        return;
+    }
+    else if(!document.getElementById("termsAcceptance").checked){
+        alert("You must agree to our terms and conditions.");
+        return;
+    }
+
+    const data = {
+        firstName: firstNameField.value,
+        lastName: lastNameField.value,
+        dateOfBirth: doBField.value,
+        phoneNumber: phoneNumberField.value,
+        email: emailField.value,
+        password: passwordField.value,
+        address: createAddressObject(),
+        captchaResponse: captcha.getResponse()
+    }
+    
+    fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+        })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success_message){
+            window.location.href = "/dashboard";
+        } 
+        else {
+            alert(data.error_message);
+        }
+    });
+}
+
+function allFieldsFilled(){
+    return !(!firstNameField.value || !lastNameField.value || !doBField.value || !phoneNumberField.value || !streetNameField.value
+            || !houseNumberField.value || !postalCodeField.value || !cityField.value || !countryField.value || !emailField.value 
+            || !passwordField.value || !passwordConfirmField.value);
+}
+
+function checkPassword(){
+    return (passwordField.value == passwordConfirmField.value);
 }
 
 function createAddressObject(){
@@ -35,7 +87,7 @@ function createAddressObject(){
 }
 
 function fetchAddress(){    
-    var postalCode = postalCodeField.value;
+    var postalCode = postalCodeField.value.replace(" ", "");
     var houseNumber = houseNumberField.value;
 
     fetch("https://postcode.tech/api/v1/postcode?postcode=" + postalCode + "&number=" + houseNumber, {
@@ -45,11 +97,21 @@ function fetchAddress(){
     .then(response => response.json())
     .then(data => {
         if(data.message != null){
-            return;
+            streetNameField.value = "";
+            cityField.value = "";
+            countryField.value = "";
         }
-        
-        streetNameField.value = data.street;
-        cityField.value = data.city;
-        countryField.value = "Netherlands";
-    })
+        else{
+            streetNameField.value = data.street;
+            cityField.value = data.city;
+            countryField.value = "Netherlands";
+        }
+    });
+}
+
+function addError(message){
+    const error = document.createElement("li");
+    error.innerHTML = message;
+    appendChild(error);
+    return error;
 }
