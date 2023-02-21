@@ -1,7 +1,6 @@
 <?php
 require_once(__DIR__ . '/Repository.php');
 require_once(__DIR__ . '/../models/Customer.php');
-require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
 require_once(__DIR__ . '/../repositories/AddressRepository.php');
 require_once(__DIR__ . '/../repositories/UserRepository.php');
 
@@ -27,8 +26,11 @@ class CustomerRepository extends Repository{
             $stmt->execute();
             $result = $stmt->fetchAll();
 
-            if (is_bool($result))
+            if (is_bool($result)){
+                require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
                 throw new UserNotFoundException("User ID not found");
+            }
+                
 
             $result = $result[0];
 

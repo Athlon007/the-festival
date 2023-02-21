@@ -4,6 +4,7 @@ require_once __DIR__ . '/../repositories/UserRepository.php';
 require_once(__DIR__ . '/../services/CustomerService.php');
 require_once __DIR__ . '/../models/User.php';
 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
+require_once(__DIR__ . '/../models/Exceptions/IncorrectPasswordException.php');
 
 class UserService{
     private UserRepository $repository;
@@ -19,6 +20,10 @@ class UserService{
     {
         try 
         {
+            //Sanitise data
+            $data->email = htmlspecialchars($data->email);
+            $data->password = htmlspecialchars($data->password);
+
             $user = $this->repository->getByEmail($data->email);
 
             if(password_verify($data->password, $user->getHashPassword())){
@@ -35,7 +40,7 @@ class UserService{
             }
 
         }
-        catch(Exception $ex)
+        catch(Throwable $ex)
         {
             throw ($ex);
         }
