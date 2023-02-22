@@ -1,30 +1,52 @@
 <?php
 require_once(__DIR__ . '/Repository.php');
 require_once(__DIR__ . '/../models/Customer.php');
-require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
+require_once(__DIR__ . '/../repositories/AddressRepository.php');
+require_once(__DIR__ . '/../repositories/UserRepository.php');
 
 class CustomerRepository extends Repository{
+
+    private $addressRepository;
+    private $userRepository;
     
-    public function getCustomerById($userId) : Customer
+    public function __construct()
+    {
+        parent::__construct();
+        $this->addressRepository = new AddressRepository();
+        $this->userRepository = new UserRepository();
+    }
+    
+    public function getCustomerByUserId(User $user) : Customer
     {
         try{
-            $query = "SELECT users.userId, users.email, users.hashPassword, users.firstName, users.lastName, " .
-                        "users.userType, customers.dateOfBirth, customers.addressId " . 
-                        "FROM users " .
-                        "INNER JOIN customers " .
-                        "ON users.userId = customers.userId";
+            $query = "SELECT dateOfBirth, phoneNumber, addressId FROM customers WHERE userId = :userId";
             $stmt = $this->connection->prepare($query);
             
-            $stmt->bindValue(":userId", $userId);
+            $stmt->bindValue(":userId", $user->getUserId());
             $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_CLASS, 'Customer');
+            $result = $stmt->fetchAll();
 
-            $result = $stmt->fetch();
+            if (is_bool($result)){
+                require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
+                throw new UserNotFoundException("User ID not found");
+            }
+                
 
-            if (is_bool($result))
-                throw new UserNotFoundException("Customer ID not found");
-            else
-                return $result;
+            $result = $result[0];
+
+            $customer = new Customer();
+            $customer->setUserId($user->getUserId());
+            $customer->setFirstName($user->getFirstName());
+            $customer->setLastName($user->getLastName());
+            $customer->setEmail($user->getEmail());
+            $customer->setHashPassword($user->getHashPassword());
+            $customer->setUserType(3);
+            $customer->setDateOfBirth(new DateTime($result['dateOfBirth']));
+            $customer->setPhoneNumber($result['phoneNumber']);
+            $customer->setAddress($this->addressRepository->getAddressById($result['addressId']));
+
+            return $customer;
+
         }
         catch(PDOException $ex)
         {
@@ -39,11 +61,20 @@ class CustomerRepository extends Repository{
     public function insertCustomer(Customer $customer) : void
     {
         try{
-            $query = "INSERT INTO customers ( dateOfBirth, addressId, userId) " .
-                        "VALUES (:dateOfBirth, :addressId, :userId)";
+            //Insert customer address into address table and retrieve the new addressId
+            $this->addressRepository->insertAddress($customer->getAddress());
+            $customer->getAddress()->setAddressId($this->addressRepository->connection->lastInsertId());
+
+            //Insert customer into user table (inheritance parent) and retrieve the new userId
+            $this->userRepository->insertUser($customer);
+            $customer->setUserId($this->userRepository->connection->lastInsertId());
+            
+            $query = "INSERT INTO customers (dateOfBirth, phoneNumber, addressId, userId) " .
+                        "VALUES (:dateOfBirth, :phoneNumber, :addressId, :userId)";
             $stmt = $this->connection->prepare($query);
             
-            $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirth());
+            $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirthAsString());
+            $stmt->bindValue(":phoneNumber", $customer->getPhoneNumber());
             $stmt->bindValue(":addressId", $customer->getAddress()->getAddressId());
             $stmt->bindValue(":userId", $customer->getUserId());
             

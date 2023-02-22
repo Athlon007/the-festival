@@ -5,6 +5,7 @@ require_once(__DIR__ . '/../models/Address.php');
 
 class Customer extends User{
     private DateTime $dateOfBirth;
+    private string $phoneNumber;
     private Address $address;
 
     public function __construct(){
@@ -21,6 +22,7 @@ class Customer extends User{
             'hashPassword' => $this->hashPassword,
             'userType' => $this->userType,
             'dateOfBirth' => $this->dateOfBirth,
+            'phoneNumber' => $this->phoneNumber,
             'address' => $this->address
         ];
     }
@@ -30,9 +32,24 @@ class Customer extends User{
         return $this->dateOfBirth;
     }
 
+    public function getDateOfBirthAsString() : string
+    {
+        return $this->dateOfBirth->format('Y-m-d');
+    }
+
     public function setDateOfBirth(DateTime $dateOfBirth) : void
     {
         $this->dateOfBirth = $dateOfBirth;
+    }
+
+    public function getPhoneNumber() : string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(string $phoneNumber) : void
+    {
+        $this->phoneNumber = $phoneNumber;
     }
 
     public function getAddress() : Address

@@ -1,33 +1,47 @@
 <?php
 
 require_once __DIR__ . '/../repositories/UserRepository.php';
+require_once(__DIR__ . '/../services/CustomerService.php');
 require_once __DIR__ . '/../models/User.php';
 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
+require_once(__DIR__ . '/../models/Exceptions/IncorrectPasswordException.php');
 
 class UserService{
     private UserRepository $repository;
+    private CustomerService $customerService;
 
     public function __construct()
     {
         $this->repository = new UserRepository();
+        $this->customerService = new CustomerService();
     }
     
-    public function verifyUser($email, $password) : ?User
+    public function verifyUser($data) : ?User
     {
-        try {
-            $user = $this->repository->getByEmail($email);
+        try 
+        {
+            //Sanitise data
+            $data->email = htmlspecialchars($data->email);
+            $data->password = htmlspecialchars($data->password);
 
-            if($user == null){
-                throw new UserNotFoundException("This email is not registered. Make an account by clicking 'Register now'.");
-            }
+            $user = $this->repository->getByEmail($data->email);
 
-            if(password_verify($password, $user->getHashPassword())){
+            if(password_verify($data->password, $user->getHashPassword())){
+                
+                if ($user->getUserType() == 3)
+                {
+                    $customer = $this->customerService->getCustomerByUserId($user);
+                    return $customer;
+                }
                 return $user;
             }
+            else{
+                throw new IncorrectPasswordException("Incorrect combination of email and password");
+            }
 
-            return null;
         }
-        catch(Exception $ex){
+        catch(Throwable $ex)
+        {
             throw ($ex);
         }
     }

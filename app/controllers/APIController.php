@@ -61,7 +61,8 @@ class APIController
                         break;
                 }
             }
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             $this->sendErrorMessage($ex->getMessage());
         }
     }
@@ -75,19 +76,16 @@ class APIController
                 throw new Exception("Email and password are required.");
             }
 
-            //Sanitise data
-            $email = htmlspecialchars($data->email);
-            $password = htmlspecialchars($data->password);
-
             //Fetch user (method throws error if user not found)
-            $user = $userService->verifyUser($email, $password);
+            $user = $userService->verifyUser($data);
 
             //Store user in session
             session_start();
             $_SESSION["user"] = $user;
 
             $this->sendSuccessMessage("Login successful.");
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             $this->sendErrorMessage($ex->getMessage());
         }
     }
@@ -104,26 +102,40 @@ class APIController
 
     private function registerCustomer($data)
     {
-        try {
+        try
+        {
             $customerService = new CustomerService();
 
-            if (!isset($data->email) || !isset($data->firstName) || !isset($data->lastName) || !isset($data->password) || !isset($data->dateOfBirth) || !isset($data->address)) {
+            //Check if all data is present
+            if(!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password) 
+                || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse))
+                {
                 throw new Exception("Registration data incomplete.");
             }
-
-            //Sanitise data
-            $data->email = htmlspecialchars($data->email);
-            $data->firstName = htmlspecialchars($data->firstName);
-            $data->lastName = htmlspecialchars($data->lastName);
-            $data->password = htmlspecialchars($data->password);
-
+            
+            //Verify captcha
+            $secret = "6LfMgZwkAAAAAFs2hfXUpKQ1wNwHaic9rnZozCbH";
+            $response = $data->captchaResponse;
+            $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$response);
+            $responseData = json_decode($verifyResponse, true);
+            
+            if(!$responseData["success"]){
+                throw new Exception("Captcha verification failed.");
+            }
+            
             //Register new customer
             $customerService->registerCustomer($data);
 
             $this->sendSuccessMessage("Registration successful.");
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             $this->sendErrorMessage($ex->getMessage());
         }
+    }
+
+    private function fetchAddress($data)
+    {
+        //WIP, currently done through JS
     }
 
     private function sendErrorMessage($message)
@@ -145,8 +157,8 @@ class APIController
     {
         return true; // Debug
 
-        require_once __DIR__ . "/../Config.php";
-        return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
+        //require_once(__DIR__ . "/../Config.php");
+        //return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
     }
 
     private function handleAdminPostRequest($uri, $data)
