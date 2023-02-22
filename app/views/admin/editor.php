@@ -23,7 +23,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-9 card p-0">
+            <div class="col-10 card p-0">
                 <div class="card-body">
                     <label for="title" class="form-label">Title</label>
                     <input type="text" id="title" class="form-control mb-2" placeholder="Title">

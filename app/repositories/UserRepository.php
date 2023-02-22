@@ -5,12 +5,12 @@ require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
 
 class UserRepository extends Repository
 {
-    public function getbyId($userId) : ?User
+    public function getbyId($userId): ?User
     {
-        try{
+        try {
             $query = "SELECT * FROM users WHERE userId = :userId";
             $stmt = $this->connection->prepare($query);
-            
+
             $stmt->bindValue(":userId", $userId);
             $stmt->execute();
             $stmt->setFetchMode(PDO::FETCH_CLASS, 'User');
@@ -21,17 +21,13 @@ class UserRepository extends Repository
                 throw new UserNotFoundException("User ID not found");
             else
                 return $result;
-        }
-        catch(PDOException $ex)
-        {
+        } catch (PDOException $ex) {
             throw new Exception("PDO Exception: " . $ex->getMessage());
-        }
-        catch(Exception $ex)
-        {
+        } catch (Exception $ex) {
             throw ($ex);
-        }        
+        }
     }
-    
+
     public function getByEmail($email): ?User
     {
         try {
@@ -96,7 +92,7 @@ class UserRepository extends Repository
             $stmt = $this->connection->prepare("UPDATE users SET hashPassword = :hashPassword WHERE email = :email");
             $data = [
                 ':email' => $user->getEmail(),
-                ':hashPassword' => $user->getHash()
+                ':hashPassword' => $user->getHashPassword()
             ];
             $stmt->execute($data);
         } catch (PDOException $ex) {
@@ -130,7 +126,8 @@ class UserRepository extends Repository
     }
 
     // get all users from database
-    public function getAllUsers(){
+    public function getAllUsers()
+    {
         try {
             $query = "SELECT * FROM users WHERE userType = 3";
             $stmt = $this->connection->prepare($query);
@@ -150,7 +147,8 @@ class UserRepository extends Repository
         }
     }
 
-    public function deleteUser($id){
+    public function deleteUser($id)
+    {
         try {
             $stmt = $this->connection->prepare("DELETE FROM users WHERE userId = :id");
             $stmt->bindValue(':id', $id);
@@ -162,11 +160,12 @@ class UserRepository extends Repository
         }
     }
 
-    public function getUserByID($id){
+    public function getUserByID($id)
+    {
         try {
             $query = "SELECT * FROM users WHERE userId = :id";
             $stmt = $this->connection->prepare($query);
-            $stmt->bindValue(':id',$id);
+            $stmt->bindValue(':id', $id);
             $stmt->execute();
             $stmt->setFetchMode(PDO::FETCH_CLASS, 'User');
 
@@ -183,7 +182,8 @@ class UserRepository extends Repository
         }
     }
 
-    public function updateUser(User $user){
+    public function updateUser(User $user)
+    {
         try {
             $stmt = $this->connection->prepare("UPDATE users SET firstName = :firstName, lastName = :lastName, email = :email WHERE userId = :id");
             $data = [
