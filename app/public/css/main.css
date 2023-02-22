@@ -206,4 +206,8 @@ h2 {
         max-height: 162px;
         overflow: hidden;
     }
+
+    colgroup>col {
+        width: 100% !important;
+    }
 }

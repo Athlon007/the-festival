@@ -41,7 +41,6 @@ function createDropdown(collapseLi, element) {
     let link = element.page.href;
     if (link.length == 0) {
         link = "/";
-        console.log(link);
     }
     collapseA.setAttribute('href', link);
     collapseA.setAttribute('id', 'navbarDropdown-' + element.id);
