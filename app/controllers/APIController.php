@@ -245,6 +245,17 @@ class APIController
         //     return;
         // }
 
+        require_once(__DIR__ . "/../services/ImageService.php");
+        $imageService = new ImageService();
+
+        if (str_starts_with($uri, "/api/admin/images/") && preg_match('/\d+$/', $uri)) {
+            // get the id from the uri
+            $id = substr($uri, strrpos($uri, '/') + 1);
+            $image = $imageService->getImageById($id);
+            echo json_encode($image);
+            return;
+        }
+
         switch ($uri) {
             case "/api/admin/text-pages":
                 require_once(__DIR__ . "/../services/PageService.php");
@@ -265,10 +276,26 @@ class APIController
                 $this->sendSuccessMessage("Page updated successfully.");
                 break;
             case "/api/admin/images":
-                require_once(__DIR__ . "/../services/ImageService.php");
-                $imageService = new ImageService();
-                $images = $imageService->getAll();
-                echo json_encode($images);
+                if (isset($data->action)) {
+                    if ($data->action == "delete") {
+                        if (!isset($data->id)) {
+                            throw new Exception("Invalid data received.");
+                        }
+                        $imageService->removeImage($data->id);
+                        $this->sendSuccessMessage("Image deleted successfully.");
+                    } elseif ($data->action == "update") {
+                        if (!isset($data->id) || !isset($data->alt)) {
+                            throw new Exception("Invalid data received.");
+                        }
+                        $imageService->updateImage($data->id, $data->alt);
+                        $this->sendSuccessMessage("Image updated successfully.");
+                    } else {
+                        $this->sendErrorMessage("Invalid API Request");
+                    }
+                } else {
+                    $images = $imageService->getAll();
+                    echo json_encode($images);
+                }
                 break;
             default:
                 $this->sendErrorMessage("Invalid API Request");

@@ -72,6 +72,17 @@ class Router
             return;
         }
 
+        // Uploader redirect.
+        if (str_starts_with($request, "/uploader")) {
+            require_once("controllers/UploaderController.php");
+            $uploaderController = new UploaderController();
+            $uploaderController->start($request);
+            return;
+        }
+
+        // split off the ?
+        $request = explode("?", $request)[0];
+
         switch ($request) {
             case "":
             case "/home":
@@ -85,6 +96,9 @@ class Router
                 break;
             case "/admin/editor":
                 require("views/admin/editor.php");
+                break;
+            case "/admin/images":
+                require("views/admin/images.php");
                 break;
             case "/home/login":
                 require_once("controllers/HomeController.php");

@@ -20,7 +20,7 @@ class ImageRepository extends Repository
 
     public function getImageById($id): ?Image
     {
-        $sql = "SELECT id, src, alt FROM Images WHERE id = :id";
+        $sql = "SELECT imageId, src, alt FROM Images WHERE imageId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -64,5 +64,31 @@ class ImageRepository extends Repository
             $stmt->bindParam(":imageId", $imageId, PDO::PARAM_INT);
             $stmt->execute();
         }
+    }
+
+    public function addImage($src, $alt): void
+    {
+        $sql = "INSERT INTO Images (src, alt) VALUES (:src, :alt)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":src", $src, PDO::PARAM_STR);
+        $stmt->bindParam(":alt", $alt, PDO::PARAM_STR);
+        $stmt->execute();
+    }
+
+    public function removeImage($id): void
+    {
+        $sql = "DELETE FROM Images WHERE imageId = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function updateImage($id, $alt): void
+    {
+        $sql = "UPDATE Images SET alt = :alt WHERE imageId = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->bindParam(":alt", $alt, PDO::PARAM_STR);
+        $stmt->execute();
     }
 }

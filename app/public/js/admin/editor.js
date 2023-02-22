@@ -1,3 +1,5 @@
+import { loadImagePicker, unselectAllImages } from "./image_picker.js";
+
 let editedPageId = -1;
 const title = document.getElementById('title');
 const images = document.getElementById('images');
@@ -143,46 +145,4 @@ function loadTextPagesList() {
 
 loadTextPagesList();
 
-function loadImagePicker(container) {
-    fetch('/api/admin/images', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({}), // TODO: Send API key.
-    })
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(element => {
-                let label = document.createElement('label');
-                label.classList.add('brick', 'tile-picker');
-
-                let input = document.createElement('input');
-                input.type = 'checkbox';
-                input.name = 'image';
-                input.value = element.id;
-
-                let img = document.createElement('img');
-                img.src = element.src;
-                img.alt = element.name;
-
-                let i = document.createElement('i');
-                i.classList.add('tile-checked');
-
-                label.appendChild(input);
-                label.appendChild(img);
-                label.appendChild(i);
-
-                container.appendChild(label);
-            })
-        });
-}
 loadImagePicker(images);
-
-function unselectAllImages() {
-    let checkboxes = document.getElementsByName('image');
-    checkboxes.forEach(element => {
-        element.checked = false;
-
-    });
-}
