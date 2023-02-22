@@ -38,20 +38,26 @@
         <div class="row">
             <div class="col-3 card p-1">
                 <h2>Details</h2>
-                <div>
+                <div class="w-100">
                     <label for="id">ID</label>
                     <input type="text" class="form-control" id="id" name="id" disabled>
                     <label for="loaded-alt">Banner Text/Alt</label>
                     <input type="text" class="form-control" id="loaded-alt">
                     <label for="loaded-image">Image</label>
                     <img id="loaded-image" class="img-fluid mb-2" src="" alt="">
+                    <label for="file-size">File Size (MB)</label>
+                    <input type="text" class="form-control" id="file-size" disabled>
+                    <label for="resolution">Resolution</label>
+                    <input type="text" class="form-control" id="resolution" disabled>
+                    <label for="mime-type">Mime Type</label>
+                    <input type="text" class="form-control" id="mime-type" disabled>
                 </div>
-                <div>
+                <div class="m-1">
                     <button class="btn btn-primary" id="btn-save">Save</button>
                     <button class="btn btn-danger" id="btn-remove">Remove</button>
                 </div>
             </div>
-            <div class="col-9 card p-0">
+            <div class="col-9 card">
                 <div class="card-body">
                     <label for="banner-images" class="form-label">Images</label>
                     <div class="card">

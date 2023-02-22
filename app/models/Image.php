@@ -51,6 +51,7 @@ class Image implements JsonSerializable
             'alt' => $this->alt,
             'size' => filesize("../public" . $this->src),
             'resolution' => getimagesize("../public" . $this->src)[0] . "x" . getimagesize("../public" . $this->src)[1],
+            'type' => getimagesize("../public" . $this->src)["mime"]
         ];
     }
 }

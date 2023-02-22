@@ -91,7 +91,7 @@ class ImageService
 
         $this->imageRepository->removeImage($id);
         // remove file
-        unlink("../public/img/" . $image->getSrc());
+        unlink("../public" . $image->getSrc());
     }
 
     public function updateImage($id, $alt): void
