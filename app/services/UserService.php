@@ -5,7 +5,6 @@ require_once __DIR__ . '/../models/User.php';
 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
 require_once(__DIR__ . '/../models/Exceptions/IncorrectPasswordException.php');
 
-// require_once(__DIR__ . "./phpmailer/PHPMailer.php");
 require_once('../phpmailer/PHPMailer.php');
 require_once('../phpmailer/SMTP.php');
 require_once('../phpmailer/Exception.php');

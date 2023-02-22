@@ -35,7 +35,7 @@
                                 <button id="loginButton" class="btn btn-primary" onclick=attemptLogin()>Login</button>
                         </div>
                         <div class="card-footer" style="width: 100%">
-                            <a href="/forgotpassword">Forgot password?</a> <br>
+                            <a href="/provideEmail">Forgot password?</a> <br>
                             <p class="mb-1">Don't have an account yet? <a href="/home/register">Register here.</a></p>
                         </div>
                     </div>

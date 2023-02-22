@@ -40,7 +40,7 @@ class AuthController
                     $password_confirm = htmlspecialchars($_POST['confirmPassword']);
                     if ($password === $password_confirm) {
                         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                        $user->setHash($hashedPassword);
+                        $user->setHashPassword($hashedPassword);
                         $userService->updateUserPassword($user);
 
                         header("Location: /");
