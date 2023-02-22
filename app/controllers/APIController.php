@@ -6,6 +6,7 @@ class APIController
 {
     public function handleGetRequest($uri)
     {
+        header('Content-Type: application/json');
         try {
             if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 switch ($uri) {
@@ -38,6 +39,11 @@ class APIController
 
                 if ($data == null) {
                     throw new Exception("No data received.");
+                }
+
+                if (str_starts_with($uri, "/api/admin")) {
+                    $this->handleAdminPostRequest($uri, $data);
+                    return;
                 }
 
                 switch ($uri) {
@@ -153,5 +159,44 @@ class APIController
 
         //require_once(__DIR__ . "/../Config.php");
         //return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
+    }
+
+    private function handleAdminPostRequest($uri, $data)
+    {
+        // TODO: Make sure that only logged-in user can use this API.
+        // if (!$this->isLoggedIn()) {
+        //     $this->sendErrorMessage("Access denied.");
+        //     return;
+        // }
+
+        switch ($uri) {
+            case "/api/admin/text-pages":
+                require_once(__DIR__ . "/../services/PageService.php");
+                $pageService = new PageService();
+                $pages = $pageService->getAllTextPages();
+                echo json_encode($pages);
+                break;
+            case "/api/admin/text-pages/update":
+                require_once(__DIR__ . "/../services/PageService.php");
+                $pageService = new PageService();
+
+                if (!isset($data->id) || !isset($data->title) || !isset($data->content) || !isset($data->images)) {
+                    throw new Exception("Invalid data received.");
+                }
+
+                $pageService->updateTextPage($data->id, $data->title, $data->content, $data->images);
+
+                $this->sendSuccessMessage("Page updated successfully.");
+                break;
+            case "/api/admin/images":
+                require_once(__DIR__ . "/../services/ImageService.php");
+                $imageService = new ImageService();
+                $images = $imageService->getAll();
+                echo json_encode($images);
+                break;
+            default:
+                $this->sendErrorMessage("Invalid API Request");
+                break;
+        }
     }
 }
