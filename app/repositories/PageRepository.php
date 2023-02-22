@@ -1,7 +1,9 @@
 <?php
 
-require("Repository.php");
-require("../models/Page.php");
+require_once("Repository.php");
+require_once("../models/Page.php");
+require_once("../models/TextPage.php");
+require_once("ImageRepository.php");
 
 class PageRepository extends Repository
 {
@@ -14,12 +16,31 @@ class PageRepository extends Repository
     private function pageBuilder($arr): array
     {
         $output = array();
+        $imageRepo = new ImageRepository();
         foreach ($arr as $row) {
             $id = $row["id"];
-            $title = $row["title"];
+            $title = htmlspecialchars_decode($row["title"]);
             $href = $row["href"];
             $location = $row["location"];
-            $page = new Page($id, $title, $href, $location);
+            $images = $imageRepo->getImagesForPageId($id);
+            $page = new Page($id, $title, $href, $location, $images);
+
+            array_push($output, $page);
+        }
+        return $output;
+    }
+
+    private function textPageBuilder($arr): array
+    {
+        $output = array();
+        $imageRepo = new ImageRepository();
+        foreach ($arr as $row) {
+            $id = $row["textPageId"];
+            $title = htmlspecialchars_decode($row["title"]);
+            $href = $row["href"];
+            $text = htmlspecialchars_decode($row["content"]);
+            $images = $imageRepo->getImagesForPageId($id);
+            $page = new TextPage($id, $title, $href, $text, $images);
 
             array_push($output, $page);
         }
@@ -66,5 +87,59 @@ class PageRepository extends Repository
         $stmt->execute();
         $pageArray = $this->pageBuilder($stmt->fetchAll());
         return empty($pageArray) ? null : $pageArray[0];
+    }
+
+    public function getTextPageByHref($href): ?TextPage
+    {
+        $sql = "SELECT tp.textPageId, tp.content, p.title, p.href, p.location "
+            . "FROM TextPages tp JOIN Pages p ON p.id = tp.textPageId "
+            . "WHERE p.href = :href";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":href", $href, PDO::PARAM_STR);
+        $stmt->execute();
+        $pageArray = $this->textPageBuilder($stmt->fetchAll());
+        return empty($pageArray) ? null : $pageArray[0];
+    }
+
+    public function countTextPages(string $href): int
+    {
+        $sql = "SELECT p.id, p.href FROM Pages p JOIN TextPages tp ON p.id = tp.textPageId WHERE p.href = :href";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":href", $href, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
+
+    public function countTextPagesById(int $id): int
+    {
+        $sql = "SELECT p.id, p.href FROM Pages p JOIN TextPages tp ON p.id = tp.textPageId WHERE p.id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
+
+    public function getAllTextPages(): array
+    {
+        $sql = "SELECT tp.textPageId, tp.content, p.title, p.href, p.location "
+            . "FROM TextPages tp JOIN Pages p ON p.id = tp.textPageId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        return $this->textPageBuilder($stmt->fetchAll());
+    }
+
+    public function updateTextPage($id, $title, $content)
+    {
+        $sql = "UPDATE TextPages SET content = :content WHERE textPageId = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":content", $content, PDO::PARAM_STR);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $sql = "UPDATE Pages SET title = :title WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":title", $title, PDO::PARAM_STR);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
     }
 }
