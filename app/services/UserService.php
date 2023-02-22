@@ -1,54 +1,62 @@
 <?php
-
 require_once __DIR__ . '/../repositories/UserRepository.php';
 require_once __DIR__ . '/../models/User.php';
 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
 
-class UserService{
-    
+// require_once(__DIR__ . "./phpmailer/PHPMailer.php");
+require_once('../phpmailer/PHPMailer.php');
+require_once('../phpmailer/SMTP.php');
+require_once('../phpmailer/Exception.php');
+
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+class UserService
+{
+
     private UserRepository $repository;
 
     public function __construct()
     {
         $this->repository = new UserRepository();
     }
-    
-    public function verifyUser($email, $password) : ?User
+
+    public function verifyUser($email, $password): ?User
     {
         try {
             $user = $this->repository->getByEmail($email);
 
-            if($user == null){
+            if ($user == null) {
                 throw new UserNotFoundException("This email is not registered. Make an account by clicking 'Register now'.");
             }
 
-            if(password_verify($password, $user->getHash())){
+            if (password_verify($password, $user->getHash())) {
                 return $user;
             }
 
             return null;
-        }
-        catch(Exception $ex){
+        } catch (Exception $ex) {
             throw ($ex);
         }
-    }
-    
-    public function registerNewCustomer($data)
-    {
-        try
-        {
-            $this->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, 3);
-        }
-        catch(Exception $ex)
-        {
+        catch (UserNotFoundException $ex) {
             throw ($ex);
         }
     }
 
-    public function createNewUser(string $email, string $firstName, string $lastName, string $password, int $usertype) : void
+    public function registerNewCustomer($data)
     {
-        try
-        {
+        try {
+            $this->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, 3);
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
+
+    public function createNewUser(string $email, string $firstName, string $lastName, string $password, int $usertype): void
+    {
+        try {
             //Create user object
             $user = new User();
             $user->setEmail($email);
@@ -62,18 +70,21 @@ class UserService{
 
             //Pass to repository
             $this->repository->insertUser($user);
-        }
-        catch(Exception $ex)
-        {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
-    public function storeResetToken($email, $reset_token, $sendTime){
-        try{
-            $this->repository->storeResetToken($email, $reset_token, $sendTime);
-        }
-        catch(Exception $ex){
+    public function storeResetToken($email, $reset_token)
+    {
+        try {
+            if ($this->repository->getByEmail($email) != null){
+                $this->repository->storeResetToken($email, $reset_token);
+            }
+            else{
+                throw new UserNotFoundException("This email is not registered.");
+            }
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -81,76 +92,93 @@ class UserService{
     public function sendResetTokenToUser($email, $reset_token)
     {
         try {
-            $to = $email;
-            $subject = "Password Reset Request";
-            $message = "To reset your password, please visit this link:\n\n"
-                . "https://example.com/reset-password.php?token=$reset_token\n\n"
-                . "This link will only be valid for 24 hours.";
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host = "smtp.gmail.com";
+            $mail->SMTPAuth = "true";
+            $mail->SMTPSecure = "tls";
+            $mail->Port = 587;
 
-            $headers = "From: {turkvedat0911@gmail.com}\r\n";
-            mail($to, $subject, $message, $headers);
-            echo "A password reset link has been sent to your email address.";
+            $mail->Username = "infohaarlemfestival5@gmail.com";
+            $mail->Password = 'zznalnrljktsitri';
+            $mail->Subject = "Password Reset Request";
+            $mail->Body = "Click this link to reset your password: http://localhost/updatePassword?token=$reset_token&email=$email";
+
+            $mail->setFrom("infohaarlemfestival5@gmail.com");
+            $mail->addAddress($email);
+
+            if (!$mail->Send()) {
+                $error = 'Mail error: ' . $mail->ErrorInfo;
+                echo $error;
+                return false;
+            } else {
+                echo "Message sent!";
+                return true;
+            }
         } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
-    public function checkResetToken($email, $reset_token){
-        try{
+    public function checkResetToken($email, $reset_token)
+    {
+        try {
             $this->repository->checkResetToken($email, $reset_token);
-        }
-        catch(Exception $ex){
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
-    public function updateUserPassword(User $user){
-        try{
+    public function updateUserPassword(User $user)
+    {
+        try {
             $this->repository->updatePassword($user);
-        }
-        catch(Exception $ex){
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
-    public function getAllUsers() : array
+    public function getAllUsers(): array
     {
-        try
-        {
+        try {
             return $this->repository->getAllUsers();
-        }
-        catch(Exception $ex)
-        {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
-    public function deleteUser($id) : void
+    public function deleteUser($id): void
     {
-        try
-        {
+        try {
             $this->repository->deleteUser($id);
-        }
-        catch(Exception $ex)
-        {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
-    public function updateUser($data) : void
+    public function getUserById($id): User
     {
-        try
-        {
-            $user = new User();
-            $user->setEmail($data->email);
-            $user->setFirstName($data->firstName);
-            $user->setLastName($data->lastName);
-            $user->setUserType($data->userType);
-
-            $this->repository->updateUser($user);
+        try {
+            return $this->repository->getUserById($id);
+        } catch (Exception $ex) {
+            throw ($ex);
         }
-        catch(Exception $ex)
-        {
+    }
+
+    public function updateUser(User $user): void
+    {
+        try {
+            $this->repository->updateUser($user);
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
+
+    public function getUserByEmail($email): User
+    {
+        try {
+            return $this->repository->getByEmail($email);
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }

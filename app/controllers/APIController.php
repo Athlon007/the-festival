@@ -99,31 +99,33 @@ class APIController
         }
     }
 
+    // Vedat: I have added this function to send the reset token to the user (JS)
     private function resetPassword($data)
     {
         try {
             $userService = new UserService();
-            if (isset($_POST['submitEmail'])) {
-                $data->reset_token = bin2hex(random_bytes(16));
-                $data->email = htmlspecialchars($_POST['email']);
-                $data->sendTime = time();
 
-                // here insert the email, reset token, and timestamp into the database (timestamp will be 24 hours from now)
-                $userService->storeResetToken($data->email, $data->reset_token, $data->sendTime);
-
-                // here send the email to the user with the reset token
-                $userService->sendResetTokenToUser($data->email, $data->reset_token);
-            } else {
-                echo "Please enter your email address.";
-                // require(path to the reset password form);
+            if ($data == null || !isset($data->email)) {
+                throw new Exception("No data received.");
             }
-            $this->sendSuccessMessage("Password reset successful.");
-            // require a path..
+
+            $data->email = htmlspecialchars($data->email);
+            $reset_token = bin2hex(random_bytes(16));
+
+            // here insert the email, reset token, and timestamp into the database (timestamp will be 24 hours from now)
+            $userService->storeResetToken($data->email, $reset_token);
+            $userService->sendResetTokenToUser($data->email, $reset_token);
+            $this->sendSuccessMessage("Email sent, please check your inbox.");
+
+            // Log the response being sent back to the client
+            error_log(json_encode(['success' => true]));
+
         } catch (Exception $ex) {
             $this->sendErrorMessage($ex->getMessage());
         }
     }
 
+    // Vedat: I have added this function to update the user's password (JS)
     private function updateUserPassword($data)
     {
         try {
@@ -147,18 +149,18 @@ class APIController
                 // here update the password in the database
                 $userService->updateUserPassword($user);
 
-                } else {
-                    echo "Please enter your new password.";
-                    // TODO: require(path to the reset password form);
-                }
-                $this->sendSuccessMessage("Password reset successful.");
-                // TODO: require a path..
+            } else {
+                echo "Please enter your new password.";
+            }
+            $this->sendSuccessMessage("Password reset successful.");
         } catch (Exception $ex) {
             $this->sendErrorMessage($ex->getMessage());
         }
     }
 
-    private function getAllUsers() {
+    // Vedat: I have added this function to get all users (JS)
+    private function getAllUsers()
+    {
         try {
             $userService = new UserService();
             $users = $userService->getAllUsers();
@@ -168,7 +170,6 @@ class APIController
         }
     }
 
-    //TODO: Delete user and Update user methods
     private function sendErrorMessage($message)
     {
         header('Content-Type: application/json');
