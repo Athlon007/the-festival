@@ -58,6 +58,20 @@ class Router
         if (strlen($request) > 0 && substr($request, -1) == '/') {
             $request = rtrim($request, "/");
         }
+
+        if (str_starts_with($request, "/updatePassword")) {
+            require_once("controllers/AuthController.php");
+            $authController = new AuthController();
+            $authController->updatePassword();
+            return;
+        }
+        if (str_starts_with($request, "/updateUser")) {
+            require_once("controllers/UserController.php");
+            $userController = new UserController();
+            $userController->updateUser();
+            return;
+        }
+
         switch ($request) {
             case "":
             case "/home":
@@ -81,6 +95,31 @@ class Router
                 require_once("controllers/HomeController.php");
                 $homeController = new HomeController();
                 $homeController->register();
+                break;
+            case "/provideEmail":
+                require_once("controllers/AuthController.php");
+                $authController = new AuthController();
+                $authController->provideEmail();
+                break;
+            case "/sendEmail":
+                require_once("controllers/AuthController.php");
+                $authController = new AuthController();
+                $authController->sendEmail();
+                break;
+            case "/updatePassword":
+                require_once("controllers/AuthController.php");
+                $authController = new AuthController();
+                $authController->updatePassword();
+                break;
+            case "/manageUsers":
+                require_once("controllers/UserController.php");
+                $userController = new UserController();
+                $userController->manageUsers();
+                break;
+            case "/deleteUser":
+                require_once("controllers/UserController.php");
+                $userController = new UserController();
+                $userController->deleteUser();
                 break;
             default:
                 $this->route404($message);
