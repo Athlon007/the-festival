@@ -12,19 +12,8 @@ class Router
      */
     public function route($request): void
     {
-        if (str_starts_with($request, "/api/user")) {
-            require_once("controllers/APIControllers/UserAPIController.php");
-            $userApiController = new UserAPIController();
-            $userApiController->handleGetRequest($request);
-            $userApiController->handlePostRequest($request);
-            return;
-        }
-        
-        if (str_starts_with($request, "/api/nav")) {
-            require_once("controllers/APIControllers/NavBarAPIController.php");
-            $apiController = new NavBarAPIController();
-            $apiController->handleGetRequest($request);
-            $apiController->handlePostRequest($request);
+        if (str_starts_with($request, "/api")) {
+            $this->routeAPI($request);
             return;
         }
 
@@ -156,5 +145,33 @@ class Router
     {
         require(__DIR__ . Router::PAGE_NOT_FOUND_PATH);
         echo $message;
+    }
+
+    private function routeApi($request)
+    {
+        $controller = null;
+
+        // Get correct controller
+        if (str_starts_with($request, "/api/nav")) {
+            require_once("controllers/APIControllers/NavBarAPIController.php");
+            $controller = new NavBarAPIController();
+        } elseif (str_starts_with($request, "/api/user")) {
+            require_once("controllers/APIControllers/UserAPIController.php");
+            $controller = new UserAPIController();
+        } elseif (str_starts_with($request, "/api/textpages")) {
+            require_once("controllers/APIControllers/TextPageAPIController.php");
+            $controller = new TextPageAPIController();
+        } elseif (str_starts_with($request, "/api/images")) {
+            require_once("controllers/APIControllers/ImageAPIController.php");
+            $controller = new ImageAPIController();
+        } else {
+            http_response_code(500);
+            // send json
+            header('Content-Type: application/json');
+            echo json_encode(array("message" => "Unrecognized API request."));
+            return;
+        }
+
+        $controller->initialize($request);
     }
 }
