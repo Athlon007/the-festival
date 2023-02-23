@@ -155,4 +155,24 @@ class PageRepository extends Repository
         $stmt->bindParam(":href", $href, PDO::PARAM_STR);
         $stmt->execute();
     }
+
+    public function createTextPage($title, $content, $href): int
+    {
+        $sql = "INSERT INTO Pages (title, href, location) VALUES (:title, :href, :location)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":title", $title, PDO::PARAM_STR);
+        $stmt->bindParam(":href", $href, PDO::PARAM_STR);
+        $stmt->bindValue(":location", "", PDO::PARAM_STR);
+        $stmt->execute();
+
+        $lastId = $this->connection->lastInsertId();
+
+        $sql = "INSERT INTO TextPages (textPageId, content) VALUES (:id, :content)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":content", $content, PDO::PARAM_STR);
+        $stmt->bindParam(":id", $lastId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $lastId;
+    }
 }

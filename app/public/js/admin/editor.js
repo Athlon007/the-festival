@@ -11,6 +11,8 @@ const masterEditor = document.getElementById('master-editor');
 const btnSubmit = document.getElementById('submit');
 let isInNewPageMode = false;
 
+const btnOpen = document.getElementById('open');
+
 const msgBox = new MsgBox();
 
 tinymce.init({
@@ -71,6 +73,10 @@ function createNewPage(data) {
             if (!data.error_message) {
                 loadTextPagesList();
                 msgBox.createToast('Success!', 'Page has been created');
+
+                // exit the new page mode
+                isInNewPageMode = false;
+                btnSubmit.innerHTML = 'Save';
             } else {
                 msgBox.createToast('Somethin went wrong', data.error_message);
             }
@@ -203,6 +209,14 @@ function loadTextPagesList() {
                                         }
                                     });
                                 });
+
+                                btnOpen.onclick = function () {
+                                    let link = data.href;
+                                    if (link == '') {
+                                        link = "http://" + window.location.hostname;
+                                    }
+                                    window.open(link, '_blank');
+                                };
                             } else {
                                 msgBox.createToast('Somethin went wrong', data.error_message);
                             }
