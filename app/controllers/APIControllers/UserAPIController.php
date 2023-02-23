@@ -1,6 +1,7 @@
 <?php
-require_once("../../services/UserService.php");
-require_once("../../services/CustomerService.php");
+require_once(__DIR__ . "/APIController.php");
+require_once("../services/UserService.php");
+require_once("../services/CustomerService.php");
 
 class UserAPIController extends APIController{
     
@@ -17,19 +18,19 @@ class UserAPIController extends APIController{
                 }
 
                 switch ($uri) {
-                    case "/api/login":
+                    case "/api/user/login":
                         $this->login($data);
                         break;
-                    case "/api/logout":
+                    case "/api/user/logout":
                         $this->logout();
                         break;
-                    case "/api/register":
+                    case "/api/user/register":
                         $this->registerCustomer($data);
                         break;
-                    case "/api/resetPassword":
+                    case "/api/user/resetPassword":
                         $this->resetPassword($data);
                         break;
-                    case "/api/updatePassword":
+                    case "/api/user/updatePassword":
                         $this->updateUserPassword($data);
                         break;
                     default:

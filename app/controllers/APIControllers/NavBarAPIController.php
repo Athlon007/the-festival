@@ -2,6 +2,7 @@
 require_once(__DIR__ . "/APIController.php");
 
 class NavBarAPIController extends APIController{
+
     public function handleGetRequest($uri)
     {
         try {
@@ -9,13 +10,15 @@ class NavBarAPIController extends APIController{
                 switch ($uri) {
                     case "/api/nav":
                         // Make sure that only localhost can use this API.
-                        if (!$this->isLocalApiRequest()) {
-                            $this->sendErrorMessage("Access denied.");
+                        if (!parent::isLocalApiRequest()) {
+                            parent::sendErrorMessage("Access denied.");
                             return;
                         }
-                        require_once(__DIR__ . "/../services/NavigationBarItemService.php");
+
+                        require_once("../services/NavigationBarItemService.php");
                         $navService = new NavigationBarItemService();
                         $output = $navService->getAll();
+
                         header('Content-Type: application/json');
                         echo json_encode($output);
                         break;
