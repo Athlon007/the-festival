@@ -20,7 +20,7 @@
             <div class="col-2 card m-0">
                 <div class="card-body p-0 m-0 mt-1 mh-100">
                     <button id="new-page" class="btn btn-success mb-1 w-100">New Page</button>
-                    <select id="text-pages-list" class="form-select" size="20" aria-label="size 3 select example" data-live-search="true" style="overflow-y: scroll;">
+                    <select id="text-pages-list" class="form-select" size="29" aria-label="size 3 select example" data-live-search="true" style="overflow-y: scroll;">
                         <option data-tokens=""></option>
                     </select>
                 </div>
@@ -45,7 +45,7 @@
                     <label for="editor" class="form-label">Content</label>
                     <textarea id="editor">Welcome to TinyMCE!</textarea>
                     <div class="mt-1">
-                        <button id="submit" class="btn btn-success" onclick="onSubmit()">Save</button>
+                        <button id="submit" class="btn btn-success">Save</button>
                         <button id="cancel" class="btn btn-light">Cancel</button>
                         <button id="delete" class="btn btn-danger float-end">Delete</button>
                     </div>

@@ -8,6 +8,9 @@ const pageHref = document.getElementById('page-href');
 const textPagesList = document.getElementById('text-pages-list');
 const masterEditor = document.getElementById('master-editor');
 
+const btnSubmit = document.getElementById('submit');
+let isInNewPageMode = false;
+
 const msgBox = new MsgBox();
 
 tinymce.init({
@@ -33,7 +36,51 @@ tinymce.init({
     },
 });
 
-document.getElementById('submit').onclick = function () {
+function updateExistingPage(id, data) {
+    fetch('/api/textpages/' + id, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.error_message) {
+                loadTextPagesList();
+                msgBox.createToast('Success!', 'Page has been updated');
+            } else {
+                msgBox.createToast('Somethin went wrong', data.error_message);
+            }
+        })
+        .catch(error => {
+            msgBox.createToast('Somethin went wrong', error);
+        });
+}
+
+function createNewPage(data) {
+    fetch('/api/textpages', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.error_message) {
+                loadTextPagesList();
+                msgBox.createToast('Success!', 'Page has been created');
+            } else {
+                msgBox.createToast('Somethin went wrong', data.error_message);
+            }
+        })
+        .catch(error => {
+            msgBox.createToast('Somethin went wrong', error);
+        });
+}
+
+btnSubmit.onclick = function () {
     let titleValue = title.value;
     let pickedImageIds = [];
     let checkboxes = document.getElementsByName('image');
@@ -52,27 +99,11 @@ document.getElementById('submit').onclick = function () {
         href: pageHref.value
     };
 
-    // fetch with post
-    fetch('/api/textpages/' + editedPageId, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.error_message) {
-                loadTextPagesList();
-                msgBox.createToast('Success!', 'Page has been updated');
-            } else {
-                console.error('Error:', data.error_message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            // TODO: Show error message.
-        });
+    if (isInNewPageMode) {
+        createNewPage(data);
+    } else {
+        updateExistingPage(editedPageId, data);
+    }
 }
 
 document.getElementById('delete').onclick = function () {
@@ -95,7 +126,7 @@ document.getElementById('delete').onclick = function () {
                     loadTextPagesList();
                     msgBox.createToast('Success!', 'Page has been deleted');
                 } else {
-                    console.error('Error:', data.error_message);
+                    msgBox.createToast('Somethin went wrong', data.error_message);
                 }
             })
     }, function () { });
@@ -144,6 +175,8 @@ function loadTextPagesList() {
                 // on click
                 option.onclick = function () {
                     toggleEditor(masterEditor, true);
+                    btnSubmit.innerHTML = 'Save';
+                    isInNewPageMode = false;
                     // Do the api call to get the page content.
                     fetch('/api/textpages/' + element.id, {
                         method: 'GET',
@@ -171,11 +204,11 @@ function loadTextPagesList() {
                                     });
                                 });
                             } else {
-                                console.error('Error:', data.error_message);
+                                msgBox.createToast('Somethin went wrong', data.error_message);
                             }
                         })
                         .catch(error => {
-                            console.error('Error:', error);
+                            msgBox.createToast('Somethin went wrong', error);
                         });
                 }
 
@@ -206,4 +239,16 @@ function toggleEditor(element, isEnabled) {
     } else {
         element.classList.add('disabled-module');
     }
+}
+
+document.getElementById('new-page').onclick = function () {
+    isInNewPageMode = true;
+    toggleEditor(masterEditor, true);
+    tinymce.activeEditor.setContent('');
+    editedPageId = -1;
+    unselectAllImages();
+    textPagesList.selectedIndex = 0;
+    title.value = '';
+    pageHref.value = '';
+    btnSubmit.innerHTML = 'Create';
 }
