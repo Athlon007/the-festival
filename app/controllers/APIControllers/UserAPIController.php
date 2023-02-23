@@ -1,45 +1,16 @@
 <?php
+require_once(__DIR__ . "/APIController.php");
 require_once("../services/UserService.php");
 require_once("../services/CustomerService.php");
 
-class APIController
-{
-    public function handleGetRequest($uri)
-    {
-        header('Content-Type: application/json');
-        try {
-            if ($_SERVER["REQUEST_METHOD"] == "GET") {
-                switch ($uri) {
-                    case "/api/nav":
-                        // Make sure that only localhost can use this API.
-                        if (!$this->isLocalApiRequest()) {
-                            $this->sendErrorMessage("Access denied.");
-                            return;
-                        }
-                        require_once(__DIR__ . "/../services/NavigationBarItemService.php");
-                        $navService = new NavigationBarItemService();
-                        $output = $navService->getAll();
-                        echo json_encode($output);
-                        break;
-                    default:
-                        $this->sendErrorMessage("Invalid API Request");
-                        break;
-                }
-            }
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
-        }
-    }
-
-    public function handlePostRequest($uri)
-    {
+class UserAPIController extends APIController{
+    
+    public function handlePostRequest($uri){
         try {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $data = json_decode(file_get_contents("php://input"));
 
-                if ($data == null) {
-                    throw new Exception("No data received.");
-                }
+                parent::handlePostRequest($uri);
+                $data = json_decode(file_get_contents("php://input"));
 
                 if (str_starts_with($uri, "/api/admin")) {
                     $this->handleAdminPostRequest($uri, $data);
@@ -47,19 +18,19 @@ class APIController
                 }
 
                 switch ($uri) {
-                    case "/api/login":
+                    case "/api/user/login":
                         $this->login($data);
                         break;
-                    case "/api/logout":
+                    case "/api/user/logout":
                         $this->logout();
                         break;
-                    case "/api/register":
+                    case "/api/user/register":
                         $this->registerCustomer($data);
                         break;
-                    case "/api/resetPassword":
+                    case "/api/user/resetPassword":
                         $this->resetPassword($data);
                         break;
-                    case "/api/updatePassword":
+                    case "/api/user/updatePassword":
                         $this->updateUserPassword($data);
                         break;
                     default:
@@ -67,9 +38,22 @@ class APIController
                         break;
                 }
             }
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+        } 
+        catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
         }
+    }
+
+    public function handleGetRequest($uri){
+
+    }
+
+    public function handlePutRequest($uri){
+
+    }
+
+    public function handleDeleteRequest($uri){
+
     }
 
     private function login($data)
@@ -92,9 +76,10 @@ class APIController
             session_start();
             $_SESSION["user"] = $user;
 
-            $this->sendSuccessMessage("Login successful.");
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendSuccessMessage("Login successful.");
+        } 
+        catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -103,8 +88,9 @@ class APIController
         try {
             session_start();
             session_destroy();
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+        } 
+        catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -134,9 +120,10 @@ class APIController
             //Register new customer
             $customerService->registerCustomer($data);
 
-            $this->sendSuccessMessage("Registration successful.");
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendSuccessMessage("Registration successful.");
+        } 
+        catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -156,16 +143,17 @@ class APIController
             // here insert the email, reset token, and timestamp into the database (timestamp will be 24 hours from now)
             $userService->storeResetToken($data->email, $reset_token);
             $userService->sendResetTokenToUser($data->email, $reset_token);
-            $this->sendSuccessMessage("Email sent, please check your inbox.");
+            parent::sendSuccessMessage("Email sent, please check your inbox.");
 
             // Log the response being sent back to the client
             error_log(json_encode(['success' => true]));
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+        } 
+        catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
-    // Vedat: I have added this function to update the user's password (JS)
+    // Vedat: I have added this function to update the user's password (JS) TODO: most of this should be moved to service
     private function updateUserPassword($data)
     {
         try {
@@ -185,15 +173,16 @@ class APIController
                 $user->setEmail($data->email);
                 // hash the password
                 $hash_password = password_hash($data->password, PASSWORD_DEFAULT);
-                $user->getHashPassword($hash_password);
+                $user->setHashPassword($hash_password);
                 // here update the password in the database
                 $userService->updateUserPassword($user);
             } else {
                 echo "Please enter your new password.";
             }
-            $this->sendSuccessMessage("Password reset successful.");
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendSuccessMessage("Password reset successful.");
+        } 
+        catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -204,41 +193,17 @@ class APIController
             $userService = new UserService();
             $users = $userService->getAllUsers();
             return $users;
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+        } 
+        catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
-    private function fetchAddress($data)
-    {
+    private function fetchAddress($data){
         //WIP, currently done through JS
     }
 
-    private function sendErrorMessage($message)
-    {
-        header('Content-Type: application/json');
-        echo json_encode(["error_message" => $message]);
-    }
-
-    private function sendSuccessMessage($message)
-    {
-        header('Content-Type: application/json');
-        echo json_encode(["success_message" => $message]);
-    }
-
-    /**
-     * Checks if the current request is from localhost.
-     */
-    private function isLocalApiRequest()
-    {
-        return true; // Debug
-
-        //require_once(__DIR__ . "/../Config.php");
-        //return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
-    }
-
-    private function handleAdminPostRequest($uri, $data)
-    {
+    private function handleAdminPostRequest($uri, $data){
         // TODO: Make sure that only logged-in user can use this API.
         // if (!$this->isLoggedIn()) {
         //     $this->sendErrorMessage("Access denied.");
@@ -273,7 +238,7 @@ class APIController
 
                 $pageService->updateTextPage($data->id, $data->title, $data->content, $data->images);
 
-                $this->sendSuccessMessage("Page updated successfully.");
+                parent::sendSuccessMessage("Page updated successfully.");
                 break;
             case "/api/admin/images":
                 if (isset($data->action)) {
@@ -282,15 +247,15 @@ class APIController
                             throw new Exception("Invalid data received.");
                         }
                         $imageService->removeImage($data->id);
-                        $this->sendSuccessMessage("Image deleted successfully.");
+                        parent::sendSuccessMessage("Image deleted successfully.");
                     } elseif ($data->action == "update") {
                         if (!isset($data->id) || !isset($data->alt)) {
                             throw new Exception("Invalid data received.");
                         }
                         $imageService->updateImage($data->id, $data->alt);
-                        $this->sendSuccessMessage("Image updated successfully.");
+                        parent::sendSuccessMessage("Image updated successfully.");
                     } else {
-                        $this->sendErrorMessage("Invalid API Request");
+                        parent::sendErrorMessage("Invalid API Request");
                     }
                 } else {
                     $images = $imageService->getAll();
@@ -298,7 +263,7 @@ class APIController
                 }
                 break;
             default:
-                $this->sendErrorMessage("Invalid API Request");
+            parent::sendErrorMessage("Invalid API Request");
                 break;
         }
     }

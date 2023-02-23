@@ -12,9 +12,17 @@ class Router
      */
     public function route($request): void
     {
-        if (str_starts_with($request, "/api")) {
-            require_once("controllers/APIController.php");
-            $apiController = new APIController();
+        if (str_starts_with($request, "/api/user")) {
+            require_once("controllers/APIControllers/UserAPIController.php");
+            $userApiController = new UserAPIController();
+            $userApiController->handleGetRequest($request);
+            $userApiController->handlePostRequest($request);
+            return;
+        }
+        
+        if (str_starts_with($request, "/api/nav")) {
+            require_once("controllers/APIControllers/NavBarAPIController.php");
+            $apiController = new NavBarAPIController();
             $apiController->handleGetRequest($request);
             $apiController->handlePostRequest($request);
             return;

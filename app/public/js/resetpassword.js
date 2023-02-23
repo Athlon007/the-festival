@@ -21,12 +21,13 @@ const emailField = document.getElementById("emailField");
 //             }
 //         })
 // };
+
 function resetPassword() {
     const data = {
         email: emailField.value
     }
 
-    fetch("/api/resetPassword", {
+    fetch("/api/user/resetPassword", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
