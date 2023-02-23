@@ -1,4 +1,7 @@
 import { loadImagePicker, unselectAllImages } from "./image_picker.js";
+import { MsgBox } from "./modals.js";
+
+const msgBox = new MsgBox();
 
 let images = document.getElementById("images");
 loadImagePicker(images);
@@ -16,8 +19,7 @@ document.addEventListener('image-selected', (event) => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({}), // TODO: Send API key.
+        }
     })
         .then(response => response.json())
         .then(data => {
@@ -57,13 +59,14 @@ document.getElementById('btn-remove').onclick = () => {
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                if (data.success_message) {
+                if (!data.error_message) {
                     // reload image picker
                     images.innerHTML = '';
                     loadImagePicker(images);
                     clearDetails();
+                    msgBox.createToast('Success!', 'Image has been deleted');
                 } else {
-                    // TODO: show error :)
+                    msgBox.createToast('Somethin went wrong', data.error_message);
                 }
             });
     }
@@ -73,8 +76,8 @@ document.getElementById('btn-save').onclick = () => {
     let id = document.getElementById('id').value;
     let alt = document.getElementById('loaded-alt').value;
     if (id) {
-        fetch(`/api/admin/images/` + id, {
-            method: 'UPDATE',
+        fetch(`/api/images/` + id, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -85,12 +88,13 @@ document.getElementById('btn-save').onclick = () => {
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                if (data.success_message) {
+                if (!data.error_message) {
                     // reload image picker
                     images.innerHTML = '';
                     loadImagePicker(document.getElementById("images"));
+                    msgBox.createToast('Success!', 'Image details have been updated');
                 } else {
-                    // TODO: Show error.
+                    msgBox.createToast('Somethin went wrong', data.error_message);
                 }
             });
     }
