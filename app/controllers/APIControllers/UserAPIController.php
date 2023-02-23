@@ -3,9 +3,11 @@ require_once(__DIR__ . "/APIController.php");
 require_once("../services/UserService.php");
 require_once("../services/CustomerService.php");
 
-class UserAPIController extends APIController{
-    
-    public function handlePostRequest($uri){
+class UserAPIController extends APIController
+{
+
+    public function handlePostRequest($uri)
+    {
         try {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -38,22 +40,21 @@ class UserAPIController extends APIController{
                         break;
                 }
             }
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
     }
 
-    public function handleGetRequest($uri){
-
+    public function handleGetRequest($uri)
+    {
     }
 
-    public function handlePutRequest($uri){
-
+    public function handlePutRequest($uri)
+    {
     }
 
-    public function handleDeleteRequest($uri){
-
+    public function handleDeleteRequest($uri)
+    {
     }
 
     private function login($data)
@@ -77,8 +78,7 @@ class UserAPIController extends APIController{
             $_SESSION["user"] = $user;
 
             parent::sendSuccessMessage("Login successful.");
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
     }
@@ -88,8 +88,7 @@ class UserAPIController extends APIController{
         try {
             session_start();
             session_destroy();
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
     }
@@ -121,8 +120,7 @@ class UserAPIController extends APIController{
             $customerService->registerCustomer($data);
 
             parent::sendSuccessMessage("Registration successful.");
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
     }
@@ -147,8 +145,7 @@ class UserAPIController extends APIController{
 
             // Log the response being sent back to the client
             error_log(json_encode(['success' => true]));
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
     }
@@ -180,8 +177,7 @@ class UserAPIController extends APIController{
                 echo "Please enter your new password.";
             }
             parent::sendSuccessMessage("Password reset successful.");
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
     }
@@ -193,17 +189,18 @@ class UserAPIController extends APIController{
             $userService = new UserService();
             $users = $userService->getAllUsers();
             return $users;
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
     }
 
-    private function fetchAddress($data){
+    private function fetchAddress($data)
+    {
         //WIP, currently done through JS
     }
 
-    private function handleAdminPostRequest($uri, $data){
+    private function handleAdminPostRequest($uri, $data)
+    {
         // TODO: Make sure that only logged-in user can use this API.
         // if (!$this->isLoggedIn()) {
         //     $this->sendErrorMessage("Access denied.");
@@ -263,7 +260,7 @@ class UserAPIController extends APIController{
                 }
                 break;
             default:
-            parent::sendErrorMessage("Invalid API Request");
+                parent::sendErrorMessage("Invalid API Request");
                 break;
         }
     }
