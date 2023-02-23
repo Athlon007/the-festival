@@ -1,50 +1,17 @@
 <?php
-require_once("../services/UserService.php");
-require_once("../services/CustomerService.php");
 
 class APIController
 {
-    protected function handleGetRequest($uri)
-    {
-        try {
-            if ($_SERVER["REQUEST_METHOD"] == "GET") {
-                switch ($uri) {
-                    case "/api/nav":
-                        // Make sure that only localhost can use this API.
-                        if (!$this->isLocalApiRequest()) {
-                            $this->sendErrorMessage("Access denied.");
-                            return;
-                        }
-                        require_once(__DIR__ . "/../services/NavigationBarItemService.php");
-                        $navService = new NavigationBarItemService();
-                        $output = $navService->getAll();
-                        header('Content-Type: application/json');
-                        echo json_encode($output);
-                        break;
-                    default:
-                        $this->sendErrorMessage("Invalid API Request");
-                        break;
-                }
-            }
-        } 
-        catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
-        }
+    protected function handleGetRequest($uri){
+       
     }
 
-    protected function handlePostRequest($uri)
-    {
-        try {
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $data = json_decode(file_get_contents("php://input"));
+    protected function handlePostRequest($uri){
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $data = json_decode(file_get_contents("php://input"));
 
-                if ($data == null) {
-                    throw new Exception("No data received.");
-                }
-            }
-        } 
-        catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            if ($data == null)
+                $this->sendErrorMessage("No data received.");
         }
     }
 

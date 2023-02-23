@@ -1,21 +1,15 @@
 <?php
-require_once("../services/UserService.php");
-require_once("../services/CustomerService.php");
+require_once("../../services/UserService.php");
+require_once("../../services/CustomerService.php");
 
 class UserAPIController extends APIController{
     
-    function handleGetRequest($uri){
-
-    }
-
-    function handlePostRequest($uri){
+    public function handlePostRequest($uri){
         try {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $data = json_decode(file_get_contents("php://input"));
 
-                if ($data == null) {
-                    throw new Exception("No data received.");
-                }
+                parent::handlePostRequest($uri);
+                $data = json_decode(file_get_contents("php://input"));
 
                 if (str_starts_with($uri, "/api/admin")) {
                     $this->handleAdminPostRequest($uri, $data);
@@ -45,15 +39,19 @@ class UserAPIController extends APIController{
             }
         } 
         catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
-    function handlePutRequest($uri){
+    public function handleGetRequest($uri){
 
     }
 
-    function handleDeleteRequest($uri){
+    public function handlePutRequest($uri){
+
+    }
+
+    public function handleDeleteRequest($uri){
 
     }
 
@@ -77,9 +75,10 @@ class UserAPIController extends APIController{
             session_start();
             $_SESSION["user"] = $user;
 
-            $this->sendSuccessMessage("Login successful.");
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendSuccessMessage("Login successful.");
+        } 
+        catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -88,8 +87,9 @@ class UserAPIController extends APIController{
         try {
             session_start();
             session_destroy();
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+        } 
+        catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -119,9 +119,10 @@ class UserAPIController extends APIController{
             //Register new customer
             $customerService->registerCustomer($data);
 
-            $this->sendSuccessMessage("Registration successful.");
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendSuccessMessage("Registration successful.");
+        } 
+        catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -141,12 +142,13 @@ class UserAPIController extends APIController{
             // here insert the email, reset token, and timestamp into the database (timestamp will be 24 hours from now)
             $userService->storeResetToken($data->email, $reset_token);
             $userService->sendResetTokenToUser($data->email, $reset_token);
-            $this->sendSuccessMessage("Email sent, please check your inbox.");
+            parent::sendSuccessMessage("Email sent, please check your inbox.");
 
             // Log the response being sent back to the client
             error_log(json_encode(['success' => true]));
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+        } 
+        catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -176,9 +178,10 @@ class UserAPIController extends APIController{
             } else {
                 echo "Please enter your new password.";
             }
-            $this->sendSuccessMessage("Password reset successful.");
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendSuccessMessage("Password reset successful.");
+        } 
+        catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -189,8 +192,9 @@ class UserAPIController extends APIController{
             $userService = new UserService();
             $users = $userService->getAllUsers();
             return $users;
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+        } 
+        catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -233,7 +237,7 @@ class UserAPIController extends APIController{
 
                 $pageService->updateTextPage($data->id, $data->title, $data->content, $data->images);
 
-                $this->sendSuccessMessage("Page updated successfully.");
+                parent::sendSuccessMessage("Page updated successfully.");
                 break;
             case "/api/admin/images":
                 if (isset($data->action)) {
@@ -242,15 +246,15 @@ class UserAPIController extends APIController{
                             throw new Exception("Invalid data received.");
                         }
                         $imageService->removeImage($data->id);
-                        $this->sendSuccessMessage("Image deleted successfully.");
+                        parent::sendSuccessMessage("Image deleted successfully.");
                     } elseif ($data->action == "update") {
                         if (!isset($data->id) || !isset($data->alt)) {
                             throw new Exception("Invalid data received.");
                         }
                         $imageService->updateImage($data->id, $data->alt);
-                        $this->sendSuccessMessage("Image updated successfully.");
+                        parent::sendSuccessMessage("Image updated successfully.");
                     } else {
-                        $this->sendErrorMessage("Invalid API Request");
+                        parent::sendErrorMessage("Invalid API Request");
                     }
                 } else {
                     $images = $imageService->getAll();
@@ -258,7 +262,7 @@ class UserAPIController extends APIController{
                 }
                 break;
             default:
-                $this->sendErrorMessage("Invalid API Request");
+            parent::sendErrorMessage("Invalid API Request");
                 break;
         }
     }
