@@ -13,7 +13,7 @@ class Router
     public function route($request): void
     {
         if (str_starts_with($request, "/api")) {
-            require_once("controllers/APIController.php");
+            require_once("controllers/APIControllers/APIController.php");
             $apiController = new APIController();
             $apiController->handleGetRequest($request);
             $apiController->handlePostRequest($request);
