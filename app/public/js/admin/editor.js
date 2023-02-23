@@ -3,6 +3,8 @@ import { loadImagePicker, unselectAllImages } from "./image_picker.js";
 let editedPageId = -1;
 const title = document.getElementById('title');
 const images = document.getElementById('images');
+const pageHref = document.getElementById('page-href');
+const textPagesList = document.getElementById('text-pages-list');
 
 tinymce.init({
     selector: 'textarea',
@@ -27,27 +29,112 @@ tinymce.init({
     },
 });
 
-function createPopup(msg) {
-    // Create bootstrap popup
-    let popup = document.createElement('div');
-    popup.classList.add('popup');
-    popup.classList.add('alert');
-    popup.classList.add('alert-success');
-    popup.classList.add('alert-dismissible');
-    popup.classList.add('fade');
-    popup.classList.add('show');
-    popup.setAttribute('role', 'alert');
-    popup.innerHTML = msg;
-    // show it
-    document.body.appendChild(popup);
-    // hide it after 3 seconds
-    setTimeout(function () {
-        popup.remove();
-    }
-        , 3000);
+function createToast(header, msg) {
+    // Create bootstrap toast
+    let toast = document.createElement('div');
+    toast.classList.add('toast');
+    toast.style.position = 'absolute';
+    toast.style.zIndex = 9999;
+    toast.style.left = '30px';
+    toast.style.top = '30px';
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    toast.setAttribute('data-bs-delay', '3000');
+    toast.setAttribute('data-bs-autohide', 'true');
+
+    // Create header
+    let toastHeader = document.createElement('div');
+    toastHeader.classList.add('toast-header');
+    toastHeader.innerHTML = header;
+
+    // Create body
+    let toastBody = document.createElement('div');
+    toastBody.classList.add('toast-body');
+    toastBody.innerHTML = msg;
+
+    // Append header and body to toast
+    toast.appendChild(toastHeader);
+    toast.appendChild(toastBody);
+
+    // Append toast to the beginning of the body
+    document.body.insertBefore(toast, document.body.firstChild);
+
+    // Show toast
+    let toastElement = new bootstrap.Toast(toast);
+    toastElement.show();
 }
 
+function createYesNoDialog(header, msg, yesCallback, noCallback) {
+    // Create bootstrap modal
+    let modal = document.createElement('div');
+    modal.classList.add('modal');
+    modal.setAttribute('tabindex', '-1');
 
+    // Create modal dialog
+    let modalDialog = document.createElement('div');
+    modalDialog.classList.add('modal-dialog');
+    modal.appendChild(modalDialog);
+
+    // Create modal content
+    let modalContent = document.createElement('div');
+    modalContent.classList.add('modal-content');
+    modalDialog.appendChild(modalContent);
+
+    // Create modal header
+    let modalHeader = document.createElement('div');
+    modalHeader.classList.add('modal-header');
+    modalContent.appendChild(modalHeader);
+
+    // Create modal title
+    let modalTitle = document.createElement('h5');
+    modalTitle.classList.add('modal-title');
+    modalTitle.innerHTML = header;
+    modalHeader.appendChild(modalTitle);
+
+    // Create modal body
+    let modalBody = document.createElement('div');
+    modalBody.classList.add('modal-body');
+    modalContent.appendChild(modalBody);
+    let modalBodyP = document.createElement('p');
+    modalBodyP.innerHTML = msg;
+    modalBody.appendChild(modalBodyP);
+
+    // Create modal footer
+    let modalFooter = document.createElement('div');
+    modalFooter.classList.add('modal-footer');
+    modalContent.appendChild(modalFooter);
+
+    // Show modal
+    let modalElement = new bootstrap.Modal(modal);
+    modalElement.show();
+
+    // Create yes button
+    let yesButton = document.createElement('button');
+    yesButton.classList.add('btn', 'btn-primary');
+    yesButton.innerHTML = 'Yes';
+    yesButton.onclick = function () {
+        yesCallback();
+        modalElement.hide();
+    }
+    modalFooter.appendChild(yesButton);
+
+    // Create no button
+    let noButton = document.createElement('button');
+    noButton.classList.add('btn', 'btn-secondary');
+    noButton.innerHTML = 'No';
+    noButton.onclick = function () {
+        noCallback();
+        modalElement.hide();
+    }
+    modalFooter.appendChild(noButton);
+
+    // Append modal to the beginning of the body
+    document.body.insertBefore(modal, document.body.firstChild);
+
+    // Focus on no button
+    noButton.focus();
+}
 
 document.getElementById('submit').onclick = function () {
     let titleValue = title.value;
@@ -79,10 +166,8 @@ document.getElementById('submit').onclick = function () {
         .then(response => response.json())
         .then(data => {
             if (data.success_message) {
-                // reload list
-                document.getElementById('text-pages-list').innerHTML = '';
                 loadTextPagesList();
-                createPopup('Page updated!');
+                createToast('Success!', 'Page has been updated');
             } else {
                 console.error('Error:', data.error_message);
             }
@@ -91,17 +176,59 @@ document.getElementById('submit').onclick = function () {
             console.error('Error:', error);
             // TODO: Show error message.
         });
-
 }
+
+document.getElementById('delete').onclick = function () {
+    if (editedPageId === -1) {
+        createToast('Error!', 'No page selected');
+        return;
+    }
+
+    createYesNoDialog('Delete page', 'Are you sure you want to delete this page? This is irreversible!', function () {
+        // fetch with post
+        fetch('/api/text-pages', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: editedPageId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success_message) {
+                    loadTextPagesList();
+                    createToast('Success!', 'Page has been deleted');
+                } else {
+                    console.error('Error:', data.error_message);
+                }
+            })
+    }, function () { });
+}
+
 
 document.getElementById('cancel').onclick = function () {
     tinymce.activeEditor.setContent('');
     editedPageId = -1;
     unselectAllImages();
+    textPagesList.selectedIndex = 0;
+    title.value = '';
+    pageHref.value = '';
 }
 
 // Load text pages from '/api/admin/text-pages'
 function loadTextPagesList() {
+    let lastSelectedId = textPagesList.value;
+
+    textPagesList.innerHTML = '';
+    let toSelect = -1;
+
+    // Add empty unselected option
+    let option = document.createElement('option');
+    option.innerHTML = 'Select page';
+    option.value = -1;
+    option.disabled = true;
+    textPagesList.appendChild(option);
+
     // fetch with post
     fetch('/api/admin/text-pages', {
         method: 'POST',
@@ -114,16 +241,17 @@ function loadTextPagesList() {
         .then(data => {
             data.forEach(element => {
                 // create option
-                let a = document.createElement('a');
-                a.classList.add('d-block');
-                a.href = "#";
-                a.innerHTML = element.title;
+                let option = document.createElement('option');
+                option.innerHTML = element.title;
+                option.value = element.id;
 
                 // on click
-                a.onclick = function () {
+                option.onclick = function () {
                     tinymce.activeEditor.setContent(element.content);
                     editedPageId = element.id;
                     title.value = element.title;
+
+                    pageHref.value = element.href;
 
                     unselectAllImages();
                     // select images that are used by the page.
@@ -138,8 +266,19 @@ function loadTextPagesList() {
                 }
 
                 // append option
-                document.getElementById('text-pages-list').appendChild(a);
-            })
+                textPagesList.appendChild(option);
+
+                // if last selected
+                // add a delay to make sure that the option is added to the list.
+                if (lastSelectedId == element.id) {
+                    toSelect = textPagesList.options.length - 1;
+                }
+            });
+
+            // select last selected
+            if (toSelect != -1) {
+                textPagesList.selectedIndex = toSelect;
+            }
         });
 }
 

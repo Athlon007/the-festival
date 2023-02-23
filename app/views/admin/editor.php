@@ -11,22 +11,32 @@
 </head>
 
 <body>
-    <div class="container">
+    <!-- success modal -->
+    <div class=" container">
         <div class="row">
             <h1>Editor</h1>
         </div>
         <div class="row">
-            <div class="col-2 card p-0">
-                <div class="card-body">
-                    <h5 class="card-title">Text Pages</h5>
-                    <div id="text-pages-list">
-                    </div>
+            <div class="col-2 card m-0">
+                <div class="card-body p-0 m-0 mt-1">
+                    <button class="btn btn-success mb-1 w-100">New Page</button>
+                    <select id="text-pages-list" class="form-select mh" size="15" aria-label="size 3 select example" data-live-search="true">
+                        <option data-tokens=""></option>
+                    </select>
                 </div>
             </div>
             <div class="col-10 card p-0">
-                <div class="card-body">
-                    <label for="title" class="form-label">Title</label>
-                    <input type="text" id="title" class="form-control mb-2" placeholder="Title">
+                <div class="card-body m-0">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" id="title" class="form-control mb-2" placeholder="Title">
+                        </div>
+                        <div class="col-6">
+                            <label for="href" class="form-label">Link</label>
+                            <input type="text" id="page-href" class="form-control mb-2" placeholder="Href">
+                        </div>
+                    </div>
                     <label for="banner-images" class="form-label">Banner Images</label>
                     <div class="card">
                         <div id="images" class="card-body">
@@ -34,8 +44,11 @@
                     </div>
                     <label for="editor" class="form-label">Content</label>
                     <textarea id="editor">Welcome to TinyMCE!</textarea>
-                    <button id="submit" class="btn btn-success mt-2" onclick="onSubmit()">Save</button>
-                    <button id="cancel" class="btn">Cancel</button>
+                    <div class="mt-1">
+                        <button id="submit" class="btn btn-success" onclick="onSubmit()">Save</button>
+                        <button id="cancel" class="btn btn-light">Cancel</button>
+                        <button id="delete" class="btn btn-danger float-end">Delete</button>
+                    </div>
                 </div>
             </div>
         </div>
