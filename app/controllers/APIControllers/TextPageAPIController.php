@@ -17,6 +17,10 @@ class TextPageAPIController extends APIController
         if (str_starts_with($uri, "/api/textpages")) {
             if (is_numeric(basename($uri))) {
                 $page = $this->service->getTextPageById(basename($uri));
+                if ($page == null) {
+                    $this->sendErrorMessage("Page not found.", 404);
+                    return;
+                }
                 echo json_encode($page);
                 return;
             }
