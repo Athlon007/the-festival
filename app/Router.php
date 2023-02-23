@@ -158,11 +158,17 @@ class Router
         } elseif (str_starts_with($request, "/api/user")) {
             require_once("controllers/APIControllers/UserAPIController.php");
             $controller = new UserAPIController();
+        } elseif (str_starts_with($request, "/api/textpages")) {
+            require_once("controllers/APIControllers/TextPageAPIController.php");
+            $controller = new TextPageAPIController();
+        } elseif (str_starts_with($request, "/api/images")) {
+            require_once("controllers/APIControllers/ImageAPIController.php");
+            $controller = new ImageAPIController();
         } else {
-            http_response_code(404);
+            http_response_code(500);
             // send json
             header('Content-Type: application/json');
-            echo json_encode(array("message" => "Invalid API request."));
+            echo json_encode(array("message" => "Unrecognized API request."));
             return;
         }
 

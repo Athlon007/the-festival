@@ -9,15 +9,19 @@ class APIController
             return;
         }
 
-        // if get
-        if ($_SERVER["REQUEST_METHOD"] == "GET") {
-            $this->handleGetRequest($request);
-        } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $this->handlePostRequest($request);
-        } elseif ($_SERVER["REQUEST_METHOD"] == "PUT") {
-            $this->handlePutRequest($request);
-        } elseif ($_SERVER["REQUEST_METHOD"] == "DELETE") {
-            $this->handleDeleteRequest($request);
+        try {
+            // if get
+            if ($_SERVER["REQUEST_METHOD"] == "GET") {
+                $this->handleGetRequest($request);
+            } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $this->handlePostRequest($request);
+            } elseif ($_SERVER["REQUEST_METHOD"] == "PUT") {
+                $this->handlePutRequest($request);
+            } elseif ($_SERVER["REQUEST_METHOD"] == "DELETE") {
+                $this->handleDeleteRequest($request);
+            }
+        } catch (Exception $e) {
+            $this->sendErrorMessage($e->getMessage());
         }
     }
 
