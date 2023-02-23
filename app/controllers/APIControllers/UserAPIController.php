@@ -170,7 +170,7 @@ class UserAPIController extends APIController{
                 $user->setEmail($data->email);
                 // hash the password
                 $hash_password = password_hash($data->password, PASSWORD_DEFAULT);
-                $user->getHashPassword($hash_password);
+                $user->setHashPassword($hash_password);
                 // here update the password in the database
                 $userService->updateUserPassword($user);
             } else {
