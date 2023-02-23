@@ -26,11 +26,13 @@ class APIController
     
 
     final protected function sendErrorMessage($message){
+        htmlspecialchars($message);
         header('Content-Type: application/json');
         echo json_encode(["error_message" => $message]);
     }
 
     final protected function sendSuccessMessage($message){
+        htmlspecialchars($message);
         header('Content-Type: application/json');
         echo json_encode(["success_message" => $message]);
     }

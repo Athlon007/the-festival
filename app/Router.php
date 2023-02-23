@@ -20,9 +20,9 @@ class Router
             return;
         }
         
-        if (str_starts_with($request, "/api")) {
-            require_once("controllers/APIControllers/APIController.php");
-            $apiController = new APIController();
+        if (str_starts_with($request, "/api/nav")) {
+            require_once("controllers/APIControllers/NavBarAPIController.php");
+            $apiController = new NavBarAPIController();
             $apiController->handleGetRequest($request);
             $apiController->handlePostRequest($request);
             return;
