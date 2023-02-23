@@ -150,7 +150,7 @@ class UserAPIController extends APIController{
         }
     }
 
-    // Vedat: I have added this function to update the user's password (JS)
+    // Vedat: I have added this function to update the user's password (JS) TODO: most of this should be moved to service
     private function updateUserPassword($data)
     {
         try {
