@@ -12,8 +12,8 @@ document.addEventListener('image-selected', (event) => {
     checkbox.checked = true;
 
     // Load image details.
-    fetch(`/api/admin/images/${event.detail.id}`, {
-        method: 'POST',
+    fetch(`/api/images/${event.detail.id}`, {
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -48,15 +48,11 @@ document.addEventListener('image-unselected', (event) => {
 document.getElementById('btn-remove').onclick = () => {
     let id = document.getElementById('id').value;
     if (id) {
-        fetch(`/api/admin/images`, {
-            method: 'POST',
+        fetch(`/api/images/` + id, {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                "action": "delete",
-                "id": id
-            }), // TODO: Send API key.
+            }
         })
             .then(response => response.json())
             .then(data => {
@@ -77,14 +73,12 @@ document.getElementById('btn-save').onclick = () => {
     let id = document.getElementById('id').value;
     let alt = document.getElementById('loaded-alt').value;
     if (id) {
-        fetch(`/api/admin/images`, {
-            method: 'POST',
+        fetch(`/api/admin/images/` + id, {
+            method: 'UPDATE',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "action": "update",
-                "id": id,
                 "alt": alt
             }),
         })

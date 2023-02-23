@@ -1,10 +1,14 @@
 import { loadImagePicker, unselectAllImages } from "./image_picker.js";
+import { MsgBox } from "./modals.js";
 
 let editedPageId = -1;
 const title = document.getElementById('title');
 const images = document.getElementById('images');
 const pageHref = document.getElementById('page-href');
 const textPagesList = document.getElementById('text-pages-list');
+const masterEditor = document.getElementById('master-editor');
+
+const msgBox = new MsgBox();
 
 tinymce.init({
     selector: 'textarea',
@@ -29,113 +33,6 @@ tinymce.init({
     },
 });
 
-function createToast(header, msg) {
-    // Create bootstrap toast
-    let toast = document.createElement('div');
-    toast.classList.add('toast');
-    toast.style.position = 'absolute';
-    toast.style.zIndex = 9999;
-    toast.style.left = '30px';
-    toast.style.top = '30px';
-    toast.setAttribute('role', 'alert');
-    toast.setAttribute('aria-live', 'assertive');
-    toast.setAttribute('aria-atomic', 'true');
-    toast.setAttribute('data-bs-delay', '3000');
-    toast.setAttribute('data-bs-autohide', 'true');
-
-    // Create header
-    let toastHeader = document.createElement('div');
-    toastHeader.classList.add('toast-header');
-    toastHeader.innerHTML = header;
-
-    // Create body
-    let toastBody = document.createElement('div');
-    toastBody.classList.add('toast-body');
-    toastBody.innerHTML = msg;
-
-    // Append header and body to toast
-    toast.appendChild(toastHeader);
-    toast.appendChild(toastBody);
-
-    // Append toast to the beginning of the body
-    document.body.insertBefore(toast, document.body.firstChild);
-
-    // Show toast
-    let toastElement = new bootstrap.Toast(toast);
-    toastElement.show();
-}
-
-function createYesNoDialog(header, msg, yesCallback, noCallback) {
-    // Create bootstrap modal
-    let modal = document.createElement('div');
-    modal.classList.add('modal');
-    modal.setAttribute('tabindex', '-1');
-
-    // Create modal dialog
-    let modalDialog = document.createElement('div');
-    modalDialog.classList.add('modal-dialog');
-    modal.appendChild(modalDialog);
-
-    // Create modal content
-    let modalContent = document.createElement('div');
-    modalContent.classList.add('modal-content');
-    modalDialog.appendChild(modalContent);
-
-    // Create modal header
-    let modalHeader = document.createElement('div');
-    modalHeader.classList.add('modal-header');
-    modalContent.appendChild(modalHeader);
-
-    // Create modal title
-    let modalTitle = document.createElement('h5');
-    modalTitle.classList.add('modal-title');
-    modalTitle.innerHTML = header;
-    modalHeader.appendChild(modalTitle);
-
-    // Create modal body
-    let modalBody = document.createElement('div');
-    modalBody.classList.add('modal-body');
-    modalContent.appendChild(modalBody);
-    let modalBodyP = document.createElement('p');
-    modalBodyP.innerHTML = msg;
-    modalBody.appendChild(modalBodyP);
-
-    // Create modal footer
-    let modalFooter = document.createElement('div');
-    modalFooter.classList.add('modal-footer');
-    modalContent.appendChild(modalFooter);
-
-    // Show modal
-    let modalElement = new bootstrap.Modal(modal);
-    modalElement.show();
-
-    // Create yes button
-    let yesButton = document.createElement('button');
-    yesButton.classList.add('btn', 'btn-primary');
-    yesButton.innerHTML = 'Yes';
-    yesButton.onclick = function () {
-        yesCallback();
-        modalElement.hide();
-    }
-    modalFooter.appendChild(yesButton);
-
-    // Create no button
-    let noButton = document.createElement('button');
-    noButton.classList.add('btn', 'btn-secondary');
-    noButton.innerHTML = 'No';
-    noButton.onclick = function () {
-        noCallback();
-        modalElement.hide();
-    }
-    modalFooter.appendChild(noButton);
-
-    // Append modal to the beginning of the body
-    document.body.insertBefore(modal, document.body.firstChild);
-
-    // Focus on no button
-    noButton.focus();
-}
-
 document.getElementById('submit').onclick = function () {
     let titleValue = title.value;
     let pickedImageIds = [];
@@ -149,15 +46,15 @@ document.getElementById('submit').onclick = function () {
 
     // to json
     let data = {
-        id: editedPageId,
         title: titleValue,
         images: pickedImageIds,
-        content: content
+        content: content,
+        href: pageHref.value
     };
 
     // fetch with post
-    fetch('/api/admin/text-pages/update', {
-        method: 'POST',
+    fetch('/api/textpages/' + editedPageId, {
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -165,9 +62,9 @@ document.getElementById('submit').onclick = function () {
     })
         .then(response => response.json())
         .then(data => {
-            if (data.success_message) {
+            if (!data.error_message) {
                 loadTextPagesList();
-                createToast('Success!', 'Page has been updated');
+                msgBox.createToast('Success!', 'Page has been updated');
             } else {
                 console.error('Error:', data.error_message);
             }
@@ -180,24 +77,23 @@ document.getElementById('submit').onclick = function () {
 
 document.getElementById('delete').onclick = function () {
     if (editedPageId === -1) {
-        createToast('Error!', 'No page selected');
+        msgBox.createToast('Error!', 'No page selected');
         return;
     }
 
-    createYesNoDialog('Delete page', 'Are you sure you want to delete this page? This is irreversible!', function () {
+    msgBox.createYesNoDialog('Delete page', 'Are you sure you want to delete this page? This is irreversible!', function () {
         // fetch with post
-        fetch('/api/text-pages', {
+        fetch('/api/textpages/' + editedPageId, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id: editedPageId })
+            }
         })
             .then(response => response.json())
             .then(data => {
                 if (data.success_message) {
                     loadTextPagesList();
-                    createToast('Success!', 'Page has been deleted');
+                    msgBox.createToast('Success!', 'Page has been deleted');
                 } else {
                     console.error('Error:', data.error_message);
                 }
@@ -213,6 +109,7 @@ document.getElementById('cancel').onclick = function () {
     textPagesList.selectedIndex = 0;
     title.value = '';
     pageHref.value = '';
+    toggleEditor(masterEditor, false);
 }
 
 // Load text pages from '/api/admin/text-pages'
@@ -230,12 +127,11 @@ function loadTextPagesList() {
     textPagesList.appendChild(option);
 
     // fetch with post
-    fetch('/api/admin/text-pages', {
-        method: 'POST',
+    fetch('/api/textpages', {
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({}), // TODO: Send API key.
+        }
     })
         .then(response => response.json())
         .then(data => {
@@ -247,22 +143,40 @@ function loadTextPagesList() {
 
                 // on click
                 option.onclick = function () {
-                    tinymce.activeEditor.setContent(element.content);
-                    editedPageId = element.id;
-                    title.value = element.title;
+                    toggleEditor(masterEditor, true);
+                    // Do the api call to get the page content.
+                    fetch('/api/textpages/' + element.id, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.error_message) {
+                                tinymce.activeEditor.setContent(data.content);
+                                editedPageId = data.id;
+                                title.value = data.title;
 
-                    pageHref.value = element.href;
+                                pageHref.value = data.href;
 
-                    unselectAllImages();
-                    // select images that are used by the page.
-                    element.images.forEach(image => {
-                        let checkboxes = document.getElementsByName('image');
-                        checkboxes.forEach(element => {
-                            if (element.value == image.id) {
-                                element.checked = true;
+                                unselectAllImages();
+                                // select images that are used by the page.
+                                data.images.forEach(image => {
+                                    let checkboxes = document.getElementsByName('image');
+                                    checkboxes.forEach(img => {
+                                        if (img.value == image.id) {
+                                            img.checked = true;
+                                        }
+                                    });
+                                });
+                            } else {
+                                console.error('Error:', data.error_message);
                             }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
                         });
-                    });
                 }
 
                 // append option
@@ -285,3 +199,11 @@ function loadTextPagesList() {
 loadTextPagesList();
 
 loadImagePicker(images);
+
+function toggleEditor(element, isEnabled) {
+    if (isEnabled) {
+        element.classList.remove('disabled-module');
+    } else {
+        element.classList.add('disabled-module');
+    }
+}

@@ -18,14 +18,14 @@
         </div>
         <div class="row">
             <div class="col-2 card m-0">
-                <div class="card-body p-0 m-0 mt-1">
-                    <button class="btn btn-success mb-1 w-100">New Page</button>
-                    <select id="text-pages-list" class="form-select mh" size="15" aria-label="size 3 select example" data-live-search="true">
+                <div class="card-body p-0 m-0 mt-1 mh-100">
+                    <button id="new-page" class="btn btn-success mb-1 w-100">New Page</button>
+                    <select id="text-pages-list" class="form-select" size="20" aria-label="size 3 select example" data-live-search="true" style="overflow-y: scroll;">
                         <option data-tokens=""></option>
                     </select>
                 </div>
             </div>
-            <div class="col-10 card p-0">
+            <div id="master-editor" class="col-10 card p-0 disabled-module">
                 <div class="card-body m-0">
                     <div class="row">
                         <div class="col-6">
