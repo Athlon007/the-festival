@@ -78,4 +78,15 @@ class TextPageAPIController extends APIController
 
         $this->sendErrorMessage("Invalid request.", 400);
     }
+
+    public function handleDeleteRequest($uri)
+    {
+        if (str_starts_with($uri, "/api/textpages") && is_numeric(basename($uri))) {
+            $this->service->delete(basename($uri));
+            $this->sendSuccessMessage("Page deleted successfully.", 200);
+            return;
+        }
+
+        $this->sendErrorMessage("Invalid request.");
+    }
 }

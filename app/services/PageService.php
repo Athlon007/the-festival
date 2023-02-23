@@ -140,4 +140,10 @@ class PageService
 
         return $this->getTextPageById($pageId);
     }
+
+    public function delete($id)
+    {
+        $id = htmlspecialchars($id);
+        $this->repo->delete($id);
+    }
 }

@@ -175,4 +175,12 @@ class PageRepository extends Repository
 
         return $lastId;
     }
+
+    public function delete($id)
+    {
+        $sql = "DELETE FROM Pages WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
 }
