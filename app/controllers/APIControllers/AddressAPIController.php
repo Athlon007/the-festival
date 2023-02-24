@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . "/APIController.php");
 
-class UserAPIController extends APIController
+class AddressAPIController extends APIController
 {
     protected function handlePostRequest($uri)
     {

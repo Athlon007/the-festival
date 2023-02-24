@@ -21,9 +21,11 @@ class UserRepository extends Repository
                 throw new UserNotFoundException("User ID not found");
             else
                 return $result;
-        } catch (PDOException $ex) {
+        } 
+        catch (PDOException $ex) {
             throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -44,9 +46,11 @@ class UserRepository extends Repository
                 return null;
             else
                 return $result;
-        } catch (PDOException $ex) {
+        } 
+        catch (PDOException $ex) {
             throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -64,9 +68,11 @@ class UserRepository extends Repository
             $stmt->bindValue(":userType", $user->getUserType());
 
             $stmt->execute();
-        } catch (PDOException $ex) {
+        } 
+        catch (PDOException $ex) {
             throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -79,9 +85,11 @@ class UserRepository extends Repository
             $stmt->bindValue(":email", $email);
             $stmt->bindValue(":reset_token", $reset_token);
             $stmt->execute();
-        } catch (PDOException $ex) {
+        } 
+        catch (PDOException $ex) {
             throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -95,9 +103,11 @@ class UserRepository extends Repository
                 ':hashPassword' => $user->getHashPassword()
             ];
             $stmt->execute($data);
-        } catch (PDOException $ex) {
+        } 
+        catch (PDOException $ex) {
             throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -118,9 +128,11 @@ class UserRepository extends Repository
             } else {
                 return $result;
             }
-        } catch (PDOException $ex) {
+        } 
+        catch (PDOException $ex) {
             throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -140,9 +152,11 @@ class UserRepository extends Repository
                 return null;
             else
                 return $result;
-        } catch (PDOException $ex) {
+        } 
+        catch (PDOException $ex) {
             throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -153,9 +167,11 @@ class UserRepository extends Repository
             $stmt = $this->connection->prepare("DELETE FROM users WHERE userId = :id");
             $stmt->bindValue(':id', $id);
             $stmt->execute();
-        } catch (PDOException $ex) {
+        }
+        catch (PDOException $ex) {
             throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        }
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -175,9 +191,11 @@ class UserRepository extends Repository
                 return null;
             else
                 return $result;
-        } catch (PDOException $ex) {
+        } 
+        catch (PDOException $ex) {
             throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -193,9 +211,11 @@ class UserRepository extends Repository
                 ':email' => $user->getEmail()
             ];
             $stmt->execute($data);
-        } catch (PDOException $ex) {
+        } 
+        catch (PDOException $ex) {
             throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
