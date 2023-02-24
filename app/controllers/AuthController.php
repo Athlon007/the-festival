@@ -5,19 +5,19 @@ class AuthController
     {
         require("../views/auth/provideEmail.php");
     }
-    public function sendEmail(): void
-    {
-        require_once("../services/UserService.php");
-        if (isset($_POST["submitEmail"])) {
-            $email = htmlspecialchars($_POST["emailField"]);
-            $reset_token = bin2hex(random_bytes(16));
+    // public function sendEmail(): void
+    // {
+    //     require_once("../services/UserService.php");
+    //     if (isset($_POST["submitEmail"])) {
+    //         $email = htmlspecialchars($_POST["emailField"]);
+    //         $reset_token = bin2hex(random_bytes(16));
 
-            $userService = new UserService();
-            $userService->storeResetToken($email, $reset_token);
+    //         $userService = new UserService();
+    //         $userService->storeResetToken($email, $reset_token);
 
-            $userService->sendResetTokenToUser($email, $reset_token);
-        }
-    }
+    //         $userService->sendResetTokenToUser($email, $reset_token);
+    //     }
+    // }
 
     //TODO: This method seems duplicated in UserAPIController.php
     public function updatePassword(): void
@@ -42,9 +42,10 @@ class AuthController
                         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
                         $user->setHashPassword($hashedPassword);
                         $userService->updateUserPassword($user);
+                        echo "Password updated successfully";
 
-                        header("Location: /");
-                        exit();
+                        // header("Location: /");
+                        // exit();
                     } else {
                         $e = new Exception("Passwords do not match");
                     }
