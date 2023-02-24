@@ -32,7 +32,22 @@ tinymce.init({
         editor.ui.registry.addButton('customAddButtonButton', {
             text: 'Add Button',
             onAction: function () {
-                editor.insertContent('<button class="btn btn-primary" href="#">Button</button>');
+                //editor.insertContent('<button class="btn btn-primary" href="#">Button</button>');
+                let addButtonGui = msgBox.createDialogWithInputs('Add Button', [
+                    {
+                        label: 'Button Text',
+                        id: 'btn-text'
+                    },
+                    {
+                        label: 'Button Link',
+                        id: 'btn-link'
+                    }],
+                    function () {
+                        let btnText = document.getElementById('btn-text').value;
+                        let btnLink = document.getElementById('btn-link').value;
+                        editor.insertContent(`<a href="${btnLink}"><button class="btn btn-primary" href="#">${btnText}</button></a>`);
+                    },
+                    function () { });
             }
         });
     },
