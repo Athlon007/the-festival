@@ -86,7 +86,13 @@ function createNewPage(data) {
         .then(response => response.json())
         .then(data => {
             if (!data.error_message) {
-                loadTextPagesList();
+                //loadTextPagesList();
+                let option = createNewOptionItem(data);
+                textPagesList.appendChild(option);
+                textPagesList.selectedIndex = textPagesList.length - 1;
+                editedPageId = data.id;
+                isInNewPageMode = false;
+                btnSubmit.innerHTML = 'Save';
                 msgBox.createToast('Success!', 'Page has been created');
 
                 // exit the new page mode
@@ -144,7 +150,15 @@ document.getElementById('delete').onclick = function () {
             .then(response => response.json())
             .then(data => {
                 if (data.success_message) {
-                    loadTextPagesList();
+                    // remove the option from the list
+                    let options = textPagesList.getElementsByTagName('option');
+                    for (let i = 0; i < options.length; i++) {
+                        if (options[i].value == editedPageId) {
+                            options[i].remove();
+                            break;
+                        }
+                    }
+                    toggleEditor(masterEditor, false);
                     msgBox.createToast('Success!', 'Page has been deleted');
                 } else {
                     msgBox.createToast('Somethin went wrong', data.error_message);
@@ -155,13 +169,64 @@ document.getElementById('delete').onclick = function () {
 
 
 document.getElementById('cancel').onclick = function () {
-    tinymce.activeEditor.setContent('');
-    editedPageId = -1;
-    unselectAllImages();
-    textPagesList.selectedIndex = 0;
-    title.value = '';
-    pageHref.value = '';
     toggleEditor(masterEditor, false);
+}
+
+function createNewOptionItem(element) {
+    // create option
+    let option = document.createElement('option');
+    option.innerHTML = element.title;
+    option.value = element.id;
+
+    // on click
+    option.onclick = function () {
+        toggleEditor(masterEditor, true);
+        btnSubmit.innerHTML = 'Save';
+        isInNewPageMode = false;
+        // Do the api call to get the page content.
+        fetch('/api/textpages/' + element.id, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.error_message) {
+                    tinymce.activeEditor.setContent(data.content);
+                    editedPageId = data.id;
+                    title.value = data.title;
+
+                    pageHref.value = data.href;
+
+                    unselectAllImages();
+                    // select images that are used by the page.
+                    data.images.forEach(image => {
+                        let checkboxes = document.getElementsByName('image');
+                        checkboxes.forEach(img => {
+                            if (img.value == image.id) {
+                                img.checked = true;
+                            }
+                        });
+                    });
+
+                    btnOpen.onclick = function () {
+                        let link = data.href;
+                        if (link == '') {
+                            link = "http://" + window.location.hostname;
+                        }
+                        window.open(link, '_blank');
+                    };
+                } else {
+                    msgBox.createToast('Somethin went wrong', data.error_message);
+                }
+            })
+            .catch(error => {
+                msgBox.createToast('Somethin went wrong', error);
+            });
+    }
+
+    return option;
 }
 
 // Load text pages from '/api/admin/text-pages'
@@ -188,58 +253,7 @@ function loadTextPagesList() {
         .then(response => response.json())
         .then(data => {
             data.forEach(element => {
-                // create option
-                let option = document.createElement('option');
-                option.innerHTML = element.title;
-                option.value = element.id;
-
-                // on click
-                option.onclick = function () {
-                    toggleEditor(masterEditor, true);
-                    btnSubmit.innerHTML = 'Save';
-                    isInNewPageMode = false;
-                    // Do the api call to get the page content.
-                    fetch('/api/textpages/' + element.id, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (!data.error_message) {
-                                tinymce.activeEditor.setContent(data.content);
-                                editedPageId = data.id;
-                                title.value = data.title;
-
-                                pageHref.value = data.href;
-
-                                unselectAllImages();
-                                // select images that are used by the page.
-                                data.images.forEach(image => {
-                                    let checkboxes = document.getElementsByName('image');
-                                    checkboxes.forEach(img => {
-                                        if (img.value == image.id) {
-                                            img.checked = true;
-                                        }
-                                    });
-                                });
-
-                                btnOpen.onclick = function () {
-                                    let link = data.href;
-                                    if (link == '') {
-                                        link = "http://" + window.location.hostname;
-                                    }
-                                    window.open(link, '_blank');
-                                };
-                            } else {
-                                msgBox.createToast('Somethin went wrong', data.error_message);
-                            }
-                        })
-                        .catch(error => {
-                            msgBox.createToast('Somethin went wrong', error);
-                        });
-                }
+                let option = createNewOptionItem(element);
 
                 // append option
                 textPagesList.appendChild(option);
@@ -267,6 +281,12 @@ function toggleEditor(element, isEnabled) {
         element.classList.remove('disabled-module');
     } else {
         element.classList.add('disabled-module');
+        tinymce.activeEditor.setContent('');
+        editedPageId = -1;
+        unselectAllImages();
+        textPagesList.selectedIndex = 0;
+        title.value = '';
+        pageHref.value = '';
     }
 }
 
