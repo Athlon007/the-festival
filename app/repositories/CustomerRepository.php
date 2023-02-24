@@ -47,10 +47,6 @@ class CustomerRepository extends Repository{
 
             return $customer;
         }
-        catch(PDOException $ex)
-        {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
-        }
         catch(Exception $ex)
         {
             throw ($ex);
@@ -79,9 +75,31 @@ class CustomerRepository extends Repository{
             
             $stmt->execute();
         }
-        catch(PDOException $ex)
+        catch(Exception $ex)
         {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
+            throw ($ex);
+        }
+    }
+
+    public function updateCustomer(Customer $customer) : void
+    {
+        try{
+            //Update customer address
+            $this->addressRepository->updateAddress($customer->getAddress());
+
+            //Update customer
+            $this->userRepository->updateUser($customer);
+            
+            $query = "UPDATE customers SET dateOfBirth = :dateOfBirth, phoneNumber = :phoneNumber, addressId = :addressId " .
+                        "WHERE userId = :userId";
+            $stmt = $this->connection->prepare($query);
+            
+            $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirthAsString());
+            $stmt->bindValue(":phoneNumber", $customer->getPhoneNumber());
+            $stmt->bindValue(":addressId", $customer->getAddress()->getAddressId());
+            $stmt->bindValue(":userId", $customer->getUserId());
+            
+            $stmt->execute();
         }
         catch(Exception $ex)
         {
