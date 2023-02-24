@@ -12,7 +12,7 @@ class Router
      */
     public function route($request): void
     {
-        if (str_starts_with($request, "/api")) {
+        if (str_starts_with($request, "/api/")) {
             $this->routeAPI($request);
             return;
         }

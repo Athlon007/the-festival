@@ -64,3 +64,12 @@
 input[type=checkbox]:checked~.tile-checked:after {
     opacity: 1;
 }
+
+.disabled-module {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.disabled-module>* {
+    pointer-events: none;
+}
