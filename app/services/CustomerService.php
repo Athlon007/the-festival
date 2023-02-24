@@ -82,8 +82,33 @@ class CustomerService extends UserService{
         return $data;
     }
 
-    public function updateCustomer(){
+    public function updateCustomer($data)
+    {
+        //Sanitise data
+        $data = $this->sanitiseCustomerData($data);
+        $customer = $this->createCustomerFromData($data);
 
+        $this->customerRepository->updateCustomer($customer);
+    }
+
+    public function createCustomerFromData($data){
+        $customer = new Customer();
+        
+        if (isset($data->id))
+        {
+            $customer->setUserId($data->id);
+        }
+
+        $customer->setEmail($data->email);
+        $customer->setFirstName($data->firstName);
+        $customer->setLastName($data->lastName);
+        $customer->setDateOfBirth($data->dateOfBirth);
+        $customer->setPhoneNumber($data->phoneNumber);
+        $customer->setAddress($data->address);
+        $customer->setHashPassword($data->password);
+
+        return $customer;
     }
 }
+
 ?>

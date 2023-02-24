@@ -87,7 +87,7 @@ class CustomerRepository extends Repository{
             //Update customer address
             $this->addressRepository->updateAddress($customer->getAddress());
 
-            //Update customer
+            //Update customer in user table (inheritance parent)
             $this->userRepository->updateUser($customer);
             
             $query = "UPDATE customers SET dateOfBirth = :dateOfBirth, phoneNumber = :phoneNumber, addressId = :addressId " .
