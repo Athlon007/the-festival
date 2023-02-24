@@ -120,4 +120,30 @@ class PageService
 
         return $page;
     }
+
+    public function createTextPage($title, $content, $images, $href): TextPage
+    {
+        $content = htmlspecialchars($content);
+        $title = htmlspecialchars($title);
+        $href = htmlspecialchars($href);
+
+        // Check if page with this href already exists.
+        if ($this->repo->countTextPages($href) > 0) {
+            throw new PageAlreadyExistsException("Page with href '$href' already exists.");
+        }
+
+        $pageId = $this->repo->createTextPage($title, $content, $href);
+
+        require_once("ImageService.php");
+        $imageService = new ImageService();
+        $imageService->setImagesForPage($pageId, $images);
+
+        return $this->getTextPageById($pageId);
+    }
+
+    public function delete($id)
+    {
+        $id = htmlspecialchars($id);
+        $this->repo->delete($id);
+    }
 }

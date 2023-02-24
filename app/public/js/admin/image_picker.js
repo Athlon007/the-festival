@@ -1,12 +1,11 @@
 export function loadImagePicker(container) {
     container.innerHTML = '';
 
-    fetch('/api/admin/images', {
-        method: 'POST',
+    fetch('/api/images', {
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({}), // TODO: Send API key.
+        }
     })
         .then(response => response.json())
         .then(data => {

@@ -1,4 +1,7 @@
 import { loadImagePicker, unselectAllImages } from "./image_picker.js";
+import { MsgBox } from "./modals.js";
+
+const msgBox = new MsgBox();
 
 let images = document.getElementById("images");
 loadImagePicker(images);
@@ -12,12 +15,11 @@ document.addEventListener('image-selected', (event) => {
     checkbox.checked = true;
 
     // Load image details.
-    fetch(`/api/admin/images/${event.detail.id}`, {
-        method: 'POST',
+    fetch(`/api/images/${event.detail.id}`, {
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({}), // TODO: Send API key.
+        }
     })
         .then(response => response.json())
         .then(data => {
@@ -48,26 +50,23 @@ document.addEventListener('image-unselected', (event) => {
 document.getElementById('btn-remove').onclick = () => {
     let id = document.getElementById('id').value;
     if (id) {
-        fetch(`/api/admin/images`, {
-            method: 'POST',
+        fetch(`/api/images/` + id, {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                "action": "delete",
-                "id": id
-            }), // TODO: Send API key.
+            }
         })
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                if (data.success_message) {
+                if (!data.error_message) {
                     // reload image picker
                     images.innerHTML = '';
                     loadImagePicker(images);
                     clearDetails();
+                    msgBox.createToast('Success!', 'Image has been deleted');
                 } else {
-                    // TODO: show error :)
+                    msgBox.createToast('Somethin went wrong', data.error_message);
                 }
             });
     }
@@ -77,26 +76,25 @@ document.getElementById('btn-save').onclick = () => {
     let id = document.getElementById('id').value;
     let alt = document.getElementById('loaded-alt').value;
     if (id) {
-        fetch(`/api/admin/images`, {
-            method: 'POST',
+        fetch(`/api/images/` + id, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "action": "update",
-                "id": id,
                 "alt": alt
             }),
         })
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                if (data.success_message) {
+                if (!data.error_message) {
                     // reload image picker
                     images.innerHTML = '';
                     loadImagePicker(document.getElementById("images"));
+                    msgBox.createToast('Success!', 'Image details have been updated');
                 } else {
-                    // TODO: Show error.
+                    msgBox.createToast('Somethin went wrong', data.error_message);
                 }
             });
     }
