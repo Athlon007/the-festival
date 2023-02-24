@@ -5,7 +5,7 @@ class APIController
     public function initialize($request)
     {
         if ($request == null) {
-            $this->sendErrorMessage("Request cannot be empty.");
+            $this->sendErrorMessage("Request cannot be empty.", 400);
             return;
         }
 
@@ -35,7 +35,7 @@ class APIController
         $data = json_decode(file_get_contents("php://input"));
 
         if ($data == null) {
-            $this->sendErrorMessage("No data received.");
+            $this->sendErrorMessage("No data received.", 400);
         }
     }
 

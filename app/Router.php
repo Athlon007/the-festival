@@ -165,7 +165,7 @@ class Router
             require_once("controllers/APIControllers/ImageAPIController.php");
             $controller = new ImageAPIController();
         } else {
-            http_response_code(500);
+            http_response_code(400);
             // send json
             header('Content-Type: application/json');
             echo json_encode(array("message" => "Unrecognized API request."));

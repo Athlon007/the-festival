@@ -17,7 +17,7 @@ use PHPMailer\PHPMailer\Exception;
 
 class UserService
 {
-    private UserRepository $repository;
+    protected UserRepository $repository;
     private CustomerService $customerService;
 
     public function __construct()
@@ -49,16 +49,6 @@ class UserService
                 throw new IncorrectPasswordException("Incorrect combination of email and password");
             }
 
-        } 
-        catch (Exception $ex) {
-            throw ($ex);
-        }
-    }
-
-    public function registerNewCustomer($data)
-    {
-        try {
-            $this->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, 3);
         } 
         catch (Exception $ex) {
             throw ($ex);
@@ -202,5 +192,13 @@ class UserService
         catch (Exception $ex) {
             throw ($ex);
         }
+    }
+
+    public function sanitiseUserData($data){
+        $data->email = htmlspecialchars($data->email);
+        $data->firstName = htmlspecialchars($data->firstName);
+        $data->lastName = htmlspecialchars($data->lastName);
+        $data->userType = htmlspecialchars($data->userType);
+        return $data;
     }
 }

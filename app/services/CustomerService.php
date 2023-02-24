@@ -8,12 +8,11 @@ require_once(__DIR__ . '/../models/User.php');
 
 class CustomerService extends UserService{
 
-    private $customerRepository;
-    private $userRepository;
     private $addressRepository;
+    protected $customerRepository;
+    protected $userRepository;
 
     public function __construct(){
-        $this->userRepository = new UserRepository();
         $this->customerRepository = new CustomerRepository();
         $this->addressRepository = new AddressRepository();
     }
@@ -22,7 +21,7 @@ class CustomerService extends UserService{
     {
         try{
             //Sanitise data
-            $data = $this->sanitiseRegisterData($data);
+            $data = $this->sanitiseCustomerData($data);
 
             //Create customer object
             $customer = new Customer();
@@ -69,11 +68,9 @@ class CustomerService extends UserService{
         }
     }
 
-    private function sanitiseRegisterData($data){
-        $data->firstName = htmlspecialchars($data->firstName);
-        $data->lastName = htmlspecialchars($data->lastName);
-        $data->email = htmlspecialchars($data->email);
-        $data->password = htmlspecialchars($data->password);
+    private function sanitiseCustomerData($data){
+
+        $data = parent::sanitiseUserData($data);
         $data->dateOfBirth = htmlspecialchars($data->dateOfBirth);
         $data->phoneNumber = htmlspecialchars($data->phoneNumber);
         $data->address->streetName = htmlspecialchars($data->address->streetName);
@@ -86,7 +83,7 @@ class CustomerService extends UserService{
     }
 
     public function updateCustomer(){
-        
+
     }
 }
 ?>
