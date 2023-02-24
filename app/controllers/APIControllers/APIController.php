@@ -50,7 +50,7 @@ class APIController
     }
 
 
-    final protected function sendErrorMessage($message, $code = 200)
+    final protected function sendErrorMessage($message, $code = 500)
     {
         header('Content-Type: application/json');
         http_response_code($code);

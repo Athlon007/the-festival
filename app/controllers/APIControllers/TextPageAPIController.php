@@ -83,7 +83,7 @@ class TextPageAPIController extends APIController
     {
         if (str_starts_with($uri, "/api/textpages") && is_numeric(basename($uri))) {
             $this->service->delete(basename($uri));
-            $this->sendSuccessMessage("Page deleted successfully.", 200);
+            $this->sendSuccessMessage("Page deleted successfully.");
             return;
         }
 

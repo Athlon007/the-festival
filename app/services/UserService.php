@@ -49,8 +49,8 @@ class UserService
                 throw new IncorrectPasswordException("Incorrect combination of email and password");
             }
 
-            return null;
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -59,7 +59,8 @@ class UserService
     {
         try {
             $this->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, 3);
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -80,7 +81,8 @@ class UserService
 
             //Pass to repository
             $this->repository->insertUser($user);
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -94,7 +96,8 @@ class UserService
             else{
                 throw new UserNotFoundException("This email is not registered.");
             }
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -125,7 +128,8 @@ class UserService
                 echo "Message sent!";
                 return true;
             }
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -134,7 +138,8 @@ class UserService
     {
         try {
             $this->repository->checkResetToken($email, $reset_token);
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -143,7 +148,8 @@ class UserService
     {
         try {
             $this->repository->updatePassword($user);
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -152,7 +158,8 @@ class UserService
     {
         try {
             return $this->repository->getAllUsers();
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -161,7 +168,8 @@ class UserService
     {
         try {
             $this->repository->deleteUser($id);
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -170,7 +178,8 @@ class UserService
     {
         try {
             return $this->repository->getUserById($id);
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -179,7 +188,8 @@ class UserService
     {
         try {
             $this->repository->updateUser($user);
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -188,7 +198,8 @@ class UserService
     {
         try {
             return $this->repository->getByEmail($email);
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }

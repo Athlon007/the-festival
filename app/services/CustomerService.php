@@ -6,7 +6,7 @@ require_once(__DIR__ . '/../repositories/AddressRepository.php');
 require_once(__DIR__ . '/../models/Customer.php');
 require_once(__DIR__ . '/../models/User.php');
 
-class CustomerService{
+class CustomerService extends UserService{
 
     private $customerRepository;
     private $userRepository;
@@ -83,6 +83,10 @@ class CustomerService{
         $data->address->country = htmlspecialchars($data->address->country);
 
         return $data;
+    }
+
+    public function updateCustomer(){
+        
     }
 }
 ?>
