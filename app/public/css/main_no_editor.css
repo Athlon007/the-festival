@@ -1,0 +1,33 @@
+@media (max-width: 960px) {
+
+    tbody,
+    td>img {
+        width: 100%;
+    }
+
+    table,
+    tr,
+    tr>td {
+        height: 100% !important;
+    }
+
+    table,
+    tr>th,
+    tr>td,
+    tr {
+        display: block;
+    }
+
+    tbody {
+        height: 100%;
+    }
+
+    .carousel {
+        max-height: 162px;
+        overflow: hidden;
+    }
+
+    colgroup>col {
+        width: 100% !important;
+    }
+}

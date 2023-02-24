@@ -1,45 +1,18 @@
 <?php
+require_once(__DIR__ . "/APIController.php");
 require_once("../services/UserService.php");
 require_once("../services/CustomerService.php");
 
-class APIController
+class UserAPIController extends APIController
 {
-    public function handleGetRequest($uri)
-    {
-        header('Content-Type: application/json');
-        try {
-            if ($_SERVER["REQUEST_METHOD"] == "GET") {
-                switch ($uri) {
-                    case "/api/nav":
-                        // Make sure that only localhost can use this API.
-                        if (!$this->isLocalApiRequest()) {
-                            $this->sendErrorMessage("Access denied.");
-                            return;
-                        }
-                        require_once(__DIR__ . "/../services/NavigationBarItemService.php");
-                        $navService = new NavigationBarItemService();
-                        $output = $navService->getAll();
-                        echo json_encode($output);
-                        break;
-                    default:
-                        $this->sendErrorMessage("Invalid API Request");
-                        break;
-                }
-            }
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
-        }
-    }
 
     public function handlePostRequest($uri)
     {
         try {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $data = json_decode(file_get_contents("php://input"));
 
-                if ($data == null) {
-                    throw new Exception("No data received.");
-                }
+                parent::handlePostRequest($uri);
+                $data = json_decode(file_get_contents("php://input"));
 
                 if (str_starts_with($uri, "/api/admin")) {
                     $this->handleAdminPostRequest($uri, $data);
@@ -47,19 +20,19 @@ class APIController
                 }
 
                 switch ($uri) {
-                    case "/api/login":
+                    case "/api/user/login":
                         $this->login($data);
                         break;
-                    case "/api/logout":
+                    case "/api/user/logout":
                         $this->logout();
                         break;
-                    case "/api/register":
+                    case "/api/user/register":
                         $this->registerCustomer($data);
                         break;
-                    case "/api/resetPassword":
+                    case "/api/user/resetPassword":
                         $this->resetPassword($data);
                         break;
-                    case "/api/updatePassword":
+                    case "/api/user/updatePassword":
                         $this->updateUserPassword($data);
                         break;
                     default:
@@ -68,8 +41,20 @@ class APIController
                 }
             }
         } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendErrorMessage($ex->getMessage());
         }
+    }
+
+    public function handleGetRequest($uri)
+    {
+    }
+
+    public function handlePutRequest($uri)
+    {
+    }
+
+    public function handleDeleteRequest($uri)
+    {
     }
 
     private function login($data)
@@ -92,9 +77,9 @@ class APIController
             session_start();
             $_SESSION["user"] = $user;
 
-            $this->sendSuccessMessage("Login successful.");
+            parent::sendSuccessMessage("Login successful.");
         } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -104,39 +89,39 @@ class APIController
             session_start();
             session_destroy();
         } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
     private function registerCustomer($data)
     {
-        try
-        {
+        try {
             $customerService = new CustomerService();
 
             //Check if all data is present
-            if(!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password) 
-                || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse))
-                {
+            if (
+                !isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password)
+                || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse)
+            ) {
                 throw new Exception("Registration data incomplete.");
             }
-            
+
             //Verify captcha
             $secret = "6LfMgZwkAAAAAFs2hfXUpKQ1wNwHaic9rnZozCbH";
             $response = $data->captchaResponse;
-            $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$response);
+            $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $secret . '&response=' . $response);
             $responseData = json_decode($verifyResponse, true);
-            
-            if(!$responseData["success"]){
+
+            if (!$responseData["success"]) {
                 throw new Exception("Captcha verification failed.");
             }
-            
+
             //Register new customer
             $customerService->registerCustomer($data);
 
-            $this->sendSuccessMessage("Registration successful.");
+            parent::sendSuccessMessage("Registration successful.");
         } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -156,17 +141,16 @@ class APIController
             // here insert the email, reset token, and timestamp into the database (timestamp will be 24 hours from now)
             $userService->storeResetToken($data->email, $reset_token);
             $userService->sendResetTokenToUser($data->email, $reset_token);
-            $this->sendSuccessMessage("Email sent, please check your inbox.");
+            parent::sendSuccessMessage("Email sent, please check your inbox.");
 
             // Log the response being sent back to the client
             error_log(json_encode(['success' => true]));
-
         } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
-    // Vedat: I have added this function to update the user's password (JS)
+    // Vedat: I have added this function to update the user's password (JS) TODO: most of this should be moved to service
     private function updateUserPassword($data)
     {
         try {
@@ -186,16 +170,15 @@ class APIController
                 $user->setEmail($data->email);
                 // hash the password
                 $hash_password = password_hash($data->password, PASSWORD_DEFAULT);
-                $user->setHash($hash_password);
+                $user->setHashPassword($hash_password);
                 // here update the password in the database
                 $userService->updateUserPassword($user);
-
             } else {
                 echo "Please enter your new password.";
             }
-            $this->sendSuccessMessage("Password reset successful.");
+            parent::sendSuccessMessage("Password reset successful.");
         } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -207,36 +190,13 @@ class APIController
             $users = $userService->getAllUsers();
             return $users;
         } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
     private function fetchAddress($data)
     {
         //WIP, currently done through JS
-    }
-
-    private function sendErrorMessage($message)
-    {
-        header('Content-Type: application/json');
-        echo json_encode(["error_message" => $message]);
-    }
-
-    private function sendSuccessMessage($message)
-    {
-        header('Content-Type: application/json');
-        echo json_encode(["success_message" => $message]);
-    }
-
-    /**
-     * Checks if the current request is from localhost.
-     */
-    private function isLocalApiRequest()
-    {
-        return true; // Debug
-
-        //require_once(__DIR__ . "/../Config.php");
-        //return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
     }
 
     private function handleAdminPostRequest($uri, $data)
@@ -246,6 +206,17 @@ class APIController
         //     $this->sendErrorMessage("Access denied.");
         //     return;
         // }
+
+        require_once(__DIR__ . "/../services/ImageService.php");
+        $imageService = new ImageService();
+
+        if (str_starts_with($uri, "/api/admin/images/") && preg_match('/\d+$/', $uri)) {
+            // get the id from the uri
+            $id = substr($uri, strrpos($uri, '/') + 1);
+            $image = $imageService->getImageById($id);
+            echo json_encode($image);
+            return;
+        }
 
         switch ($uri) {
             case "/api/admin/text-pages":
@@ -264,16 +235,32 @@ class APIController
 
                 $pageService->updateTextPage($data->id, $data->title, $data->content, $data->images);
 
-                $this->sendSuccessMessage("Page updated successfully.");
+                parent::sendSuccessMessage("Page updated successfully.");
                 break;
             case "/api/admin/images":
-                require_once(__DIR__ . "/../services/ImageService.php");
-                $imageService = new ImageService();
-                $images = $imageService->getAll();
-                echo json_encode($images);
+                if (isset($data->action)) {
+                    if ($data->action == "delete") {
+                        if (!isset($data->id)) {
+                            throw new Exception("Invalid data received.");
+                        }
+                        $imageService->removeImage($data->id);
+                        parent::sendSuccessMessage("Image deleted successfully.");
+                    } elseif ($data->action == "update") {
+                        if (!isset($data->id) || !isset($data->alt)) {
+                            throw new Exception("Invalid data received.");
+                        }
+                        $imageService->updateImage($data->id, $data->alt);
+                        parent::sendSuccessMessage("Image updated successfully.");
+                    } else {
+                        parent::sendErrorMessage("Invalid API Request");
+                    }
+                } else {
+                    $images = $imageService->getAll();
+                    echo json_encode($images);
+                }
                 break;
             default:
-                $this->sendErrorMessage("Invalid API Request");
+                parent::sendErrorMessage("Invalid API Request");
                 break;
         }
     }

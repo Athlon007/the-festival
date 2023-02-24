@@ -44,7 +44,7 @@ function attemptRegister(captcha)
         captchaResponse: captcha
     }
     
-    fetch("/api/register", {
+    fetch("/api/user/register", {
         method: "POST",
         body: JSON.stringify(data)
     })

@@ -13,7 +13,7 @@ function attemptLogin(){
         password: passwordField.value
     }
     
-    fetch("/api/login", {
+    fetch("/api/user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)

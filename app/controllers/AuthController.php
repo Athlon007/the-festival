@@ -19,7 +19,7 @@ class AuthController
     //     }
     // }
 
-
+    //TODO: This method seems duplicated in UserAPIController.php
     public function updatePassword(): void
     {
         require_once("../services/UserService.php");

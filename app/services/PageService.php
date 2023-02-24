@@ -90,11 +90,12 @@ class PageService
         return $this->repo->getAllTextPages();
     }
 
-    public function updateTextPage($id, $title, $content, $images)
+    public function updateTextPage($id, $title, $content, $images, $href)
     {
         $id = htmlspecialchars($id);
         $content = htmlspecialchars($content);
         $title = htmlspecialchars($title);
+        $href = htmlspecialchars($href);
 
         // Check if it even exists in table.
         if ($this->repo->countTextPagesById($id) == 0) {
@@ -105,6 +106,44 @@ class PageService
         $imageService = new ImageService();
         $imageService->setImagesForPage($id, $images);
 
-        $this->repo->updateTextPage($id, $title, $content);
+        $this->repo->updateTextPage($id, $title, $content, $href);
+    }
+
+    public function getTextPageById($id): TextPage
+    {
+        $id = htmlspecialchars($id);
+        $page = $this->repo->getTextPageById($id);
+
+        if ($page == null) {
+            throw new PageNotFoundException("Page with ID '$id' was not found.");
+        }
+
+        return $page;
+    }
+
+    public function createTextPage($title, $content, $images, $href): TextPage
+    {
+        $content = htmlspecialchars($content);
+        $title = htmlspecialchars($title);
+        $href = htmlspecialchars($href);
+
+        // Check if page with this href already exists.
+        if ($this->repo->countTextPages($href) > 0) {
+            throw new PageAlreadyExistsException("Page with href '$href' already exists.");
+        }
+
+        $pageId = $this->repo->createTextPage($title, $content, $href);
+
+        require_once("ImageService.php");
+        $imageService = new ImageService();
+        $imageService->setImagesForPage($pageId, $images);
+
+        return $this->getTextPageById($pageId);
+    }
+
+    public function delete($id)
+    {
+        $id = htmlspecialchars($id);
+        $this->repo->delete($id);
     }
 }

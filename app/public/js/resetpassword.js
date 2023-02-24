@@ -1,12 +1,10 @@
 const emailField = document.getElementById("emailField");
 
-
-
-
 function resetPassword() {
     const data = {
         email: emailField.value
     }
+    
     fetch("/api/resetPassword", {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},

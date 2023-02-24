@@ -1,6 +1,19 @@
+import { loadImagePicker, unselectAllImages } from "./image_picker.js";
+import { MsgBox } from "./modals.js";
+
 let editedPageId = -1;
 const title = document.getElementById('title');
 const images = document.getElementById('images');
+const pageHref = document.getElementById('page-href');
+const textPagesList = document.getElementById('text-pages-list');
+const masterEditor = document.getElementById('master-editor');
+
+const btnSubmit = document.getElementById('submit');
+let isInNewPageMode = false;
+
+const btnOpen = document.getElementById('open');
+
+const msgBox = new MsgBox();
 
 tinymce.init({
     selector: 'textarea',
@@ -25,29 +38,55 @@ tinymce.init({
     },
 });
 
-function createPopup(msg) {
-    // Create bootstrap popup
-    let popup = document.createElement('div');
-    popup.classList.add('popup');
-    popup.classList.add('alert');
-    popup.classList.add('alert-success');
-    popup.classList.add('alert-dismissible');
-    popup.classList.add('fade');
-    popup.classList.add('show');
-    popup.setAttribute('role', 'alert');
-    popup.innerHTML = msg;
-    // show it
-    document.body.appendChild(popup);
-    // hide it after 3 seconds
-    setTimeout(function () {
-        popup.remove();
-    }
-        , 3000);
+function updateExistingPage(id, data) {
+    fetch('/api/textpages/' + id, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.error_message) {
+                loadTextPagesList();
+                msgBox.createToast('Success!', 'Page has been updated');
+            } else {
+                msgBox.createToast('Somethin went wrong', data.error_message);
+            }
+        })
+        .catch(error => {
+            msgBox.createToast('Somethin went wrong', error);
+        });
 }
 
+function createNewPage(data) {
+    fetch('/api/textpages', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.error_message) {
+                loadTextPagesList();
+                msgBox.createToast('Success!', 'Page has been created');
 
+                // exit the new page mode
+                isInNewPageMode = false;
+                btnSubmit.innerHTML = 'Save';
+            } else {
+                msgBox.createToast('Somethin went wrong', data.error_message);
+            }
+        })
+        .catch(error => {
+            msgBox.createToast('Somethin went wrong', error);
+        });
+}
 
-document.getElementById('submit').onclick = function () {
+btnSubmit.onclick = function () {
     let titleValue = title.value;
     let pickedImageIds = [];
     let checkboxes = document.getElementsByName('image');
@@ -60,129 +99,170 @@ document.getElementById('submit').onclick = function () {
 
     // to json
     let data = {
-        id: editedPageId,
         title: titleValue,
         images: pickedImageIds,
-        content: content
+        content: content,
+        href: pageHref.value
     };
 
-    // fetch with post
-    fetch('/api/admin/text-pages/update', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success_message) {
-                // reload list
-                document.getElementById('text-pages-list').innerHTML = '';
-                loadTextPagesList();
-                createPopup('Page updated!');
-            } else {
-                console.error('Error:', data.error_message);
+    if (isInNewPageMode) {
+        createNewPage(data);
+    } else {
+        updateExistingPage(editedPageId, data);
+    }
+}
+
+document.getElementById('delete').onclick = function () {
+    if (editedPageId === -1) {
+        msgBox.createToast('Error!', 'No page selected');
+        return;
+    }
+
+    msgBox.createYesNoDialog('Delete page', 'Are you sure you want to delete this page? This is irreversible!', function () {
+        // fetch with post
+        fetch('/api/textpages/' + editedPageId, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
             }
         })
-        .catch(error => {
-            console.error('Error:', error);
-            // TODO: Show error message.
-        });
-
+            .then(response => response.json())
+            .then(data => {
+                if (data.success_message) {
+                    loadTextPagesList();
+                    msgBox.createToast('Success!', 'Page has been deleted');
+                } else {
+                    msgBox.createToast('Somethin went wrong', data.error_message);
+                }
+            })
+    }, function () { });
 }
+
 
 document.getElementById('cancel').onclick = function () {
     tinymce.activeEditor.setContent('');
     editedPageId = -1;
     unselectAllImages();
+    textPagesList.selectedIndex = 0;
+    title.value = '';
+    pageHref.value = '';
+    toggleEditor(masterEditor, false);
 }
 
 // Load text pages from '/api/admin/text-pages'
 function loadTextPagesList() {
+    let lastSelectedId = textPagesList.value;
+
+    textPagesList.innerHTML = '';
+    let toSelect = -1;
+
+    // Add empty unselected option
+    let option = document.createElement('option');
+    option.innerHTML = 'Select page';
+    option.value = -1;
+    option.disabled = true;
+    textPagesList.appendChild(option);
+
     // fetch with post
-    fetch('/api/admin/text-pages', {
-        method: 'POST',
+    fetch('/api/textpages', {
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({}), // TODO: Send API key.
+        }
     })
         .then(response => response.json())
         .then(data => {
             data.forEach(element => {
                 // create option
-                let a = document.createElement('a');
-                a.classList.add('d-block');
-                a.href = "#";
-                a.innerHTML = element.title;
+                let option = document.createElement('option');
+                option.innerHTML = element.title;
+                option.value = element.id;
 
                 // on click
-                a.onclick = function () {
-                    tinymce.activeEditor.setContent(element.content);
-                    editedPageId = element.id;
-                    title.value = element.title;
+                option.onclick = function () {
+                    toggleEditor(masterEditor, true);
+                    btnSubmit.innerHTML = 'Save';
+                    isInNewPageMode = false;
+                    // Do the api call to get the page content.
+                    fetch('/api/textpages/' + element.id, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.error_message) {
+                                tinymce.activeEditor.setContent(data.content);
+                                editedPageId = data.id;
+                                title.value = data.title;
 
-                    unselectAllImages();
-                    // select images that are used by the page.
-                    element.images.forEach(image => {
-                        let checkboxes = document.getElementsByName('image');
-                        checkboxes.forEach(element => {
-                            if (element.value == image.id) {
-                                element.checked = true;
+                                pageHref.value = data.href;
+
+                                unselectAllImages();
+                                // select images that are used by the page.
+                                data.images.forEach(image => {
+                                    let checkboxes = document.getElementsByName('image');
+                                    checkboxes.forEach(img => {
+                                        if (img.value == image.id) {
+                                            img.checked = true;
+                                        }
+                                    });
+                                });
+
+                                btnOpen.onclick = function () {
+                                    let link = data.href;
+                                    if (link == '') {
+                                        link = "http://" + window.location.hostname;
+                                    }
+                                    window.open(link, '_blank');
+                                };
+                            } else {
+                                msgBox.createToast('Somethin went wrong', data.error_message);
                             }
+                        })
+                        .catch(error => {
+                            msgBox.createToast('Somethin went wrong', error);
                         });
-                    });
                 }
 
                 // append option
-                document.getElementById('text-pages-list').appendChild(a);
-            })
+                textPagesList.appendChild(option);
+
+                // if last selected
+                // add a delay to make sure that the option is added to the list.
+                if (lastSelectedId == element.id) {
+                    toSelect = textPagesList.options.length - 1;
+                }
+            });
+
+            // select last selected
+            if (toSelect != -1) {
+                textPagesList.selectedIndex = toSelect;
+            }
         });
 }
 
 loadTextPagesList();
 
-function loadImagePicker(container) {
-    fetch('/api/admin/images', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({}), // TODO: Send API key.
-    })
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(element => {
-                let label = document.createElement('label');
-                label.classList.add('brick', 'tile-picker');
-
-                let input = document.createElement('input');
-                input.type = 'checkbox';
-                input.name = 'image';
-                input.value = element.id;
-
-                let img = document.createElement('img');
-                img.src = element.src;
-                img.alt = element.name;
-
-                let i = document.createElement('i');
-                i.classList.add('tile-checked');
-
-                label.appendChild(input);
-                label.appendChild(img);
-                label.appendChild(i);
-
-                container.appendChild(label);
-            })
-        });
-}
 loadImagePicker(images);
 
-function unselectAllImages() {
-    let checkboxes = document.getElementsByName('image');
-    checkboxes.forEach(element => {
-        element.checked = false;
+function toggleEditor(element, isEnabled) {
+    if (isEnabled) {
+        element.classList.remove('disabled-module');
+    } else {
+        element.classList.add('disabled-module');
+    }
+}
 
-    });
+document.getElementById('new-page').onclick = function () {
+    isInNewPageMode = true;
+    toggleEditor(masterEditor, true);
+    tinymce.activeEditor.setContent('');
+    editedPageId = -1;
+    unselectAllImages();
+    textPagesList.selectedIndex = 0;
+    title.value = '';
+    pageHref.value = '';
+    btnSubmit.innerHTML = 'Create';
 }

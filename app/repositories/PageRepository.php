@@ -101,6 +101,18 @@ class PageRepository extends Repository
         return empty($pageArray) ? null : $pageArray[0];
     }
 
+    public function getTextPageById($id): ?TextPage
+    {
+        $sql = "SELECT tp.textPageId, tp.content, p.title, p.href, p.location "
+            . "FROM TextPages tp JOIN Pages p ON p.id = tp.textPageId "
+            . "WHERE tp.textPageId = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $pageArray = $this->textPageBuilder($stmt->fetchAll());
+        return empty($pageArray) ? null : $pageArray[0];
+    }
+
     public function countTextPages(string $href): int
     {
         $sql = "SELECT p.id, p.href FROM Pages p JOIN TextPages tp ON p.id = tp.textPageId WHERE p.href = :href";
@@ -128,7 +140,7 @@ class PageRepository extends Repository
         return $this->textPageBuilder($stmt->fetchAll());
     }
 
-    public function updateTextPage($id, $title, $content)
+    public function updateTextPage($id, $title, $content, $href)
     {
         $sql = "UPDATE TextPages SET content = :content WHERE textPageId = :id";
         $stmt = $this->connection->prepare($sql);
@@ -136,9 +148,38 @@ class PageRepository extends Repository
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
 
-        $sql = "UPDATE Pages SET title = :title WHERE id = :id";
+        $sql = "UPDATE Pages SET title = :title, href = :href WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":title", $title, PDO::PARAM_STR);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->bindParam(":href", $href, PDO::PARAM_STR);
+        $stmt->execute();
+    }
+
+    public function createTextPage($title, $content, $href): int
+    {
+        $sql = "INSERT INTO Pages (title, href, location) VALUES (:title, :href, :location)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":title", $title, PDO::PARAM_STR);
+        $stmt->bindParam(":href", $href, PDO::PARAM_STR);
+        $stmt->bindValue(":location", "", PDO::PARAM_STR);
+        $stmt->execute();
+
+        $lastId = $this->connection->lastInsertId();
+
+        $sql = "INSERT INTO TextPages (textPageId, content) VALUES (:id, :content)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":content", $content, PDO::PARAM_STR);
+        $stmt->bindParam(":id", $lastId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $lastId;
+    }
+
+    public function delete($id)
+    {
+        $sql = "DELETE FROM Pages WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
     }

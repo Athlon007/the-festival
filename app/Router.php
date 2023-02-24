@@ -12,11 +12,8 @@ class Router
      */
     public function route($request): void
     {
-        if (str_starts_with($request, "/api")) {
-            require_once("controllers/APIController.php");
-            $apiController = new APIController();
-            $apiController->handleGetRequest($request);
-            $apiController->handlePostRequest($request);
+        if (str_starts_with($request, "/api/")) {
+            $this->routeAPI($request);
             return;
         }
 
@@ -72,6 +69,17 @@ class Router
             return;
         }
 
+        // Uploader redirect.
+        if (str_starts_with($request, "/uploader")) {
+            require_once("controllers/UploaderController.php");
+            $uploaderController = new UploaderController();
+            $uploaderController->start($request);
+            return;
+        }
+
+        // split off the ?
+        $request = explode("?", $request)[0];
+
         switch ($request) {
             case "":
             case "/home":
@@ -85,6 +93,9 @@ class Router
                 break;
             case "/admin/editor":
                 require("views/admin/editor.php");
+                break;
+            case "/admin/images":
+                require("views/admin/images.php");
                 break;
             case "/home/login":
                 require_once("controllers/HomeController.php");
@@ -129,5 +140,33 @@ class Router
     {
         require(__DIR__ . Router::PAGE_NOT_FOUND_PATH);
         echo $message;
+    }
+
+    private function routeApi($request)
+    {
+        $controller = null;
+
+        // Get correct controller
+        if (str_starts_with($request, "/api/nav")) {
+            require_once("controllers/APIControllers/NavBarAPIController.php");
+            $controller = new NavBarAPIController();
+        } elseif (str_starts_with($request, "/api/user")) {
+            require_once("controllers/APIControllers/UserAPIController.php");
+            $controller = new UserAPIController();
+        } elseif (str_starts_with($request, "/api/textpages")) {
+            require_once("controllers/APIControllers/TextPageAPIController.php");
+            $controller = new TextPageAPIController();
+        } elseif (str_starts_with($request, "/api/images")) {
+            require_once("controllers/APIControllers/ImageAPIController.php");
+            $controller = new ImageAPIController();
+        } else {
+            http_response_code(500);
+            // send json
+            header('Content-Type: application/json');
+            echo json_encode(array("message" => "Unrecognized API request."));
+            return;
+        }
+
+        $controller->initialize($request);
     }
 }
