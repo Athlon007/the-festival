@@ -47,6 +47,7 @@ class UserAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
+        
     }
 
     public function handlePutRequest($uri)

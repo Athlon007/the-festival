@@ -40,7 +40,7 @@ class UserService
                 
                 if ($user->getUserType() == 3)
                 {
-                    $customer = $this->customerService->getCustomerByUserId($user);
+                    $customer = $this->customerService->getCustomerByUser($user);
                     return $customer;
                 }
                 return $user;

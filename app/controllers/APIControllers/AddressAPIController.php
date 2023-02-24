@@ -7,6 +7,13 @@ class AddressAPIController extends APIController
     {
         parent::handlePostRequest($uri);
 
+        switch ($uri) {
+            case "/api/address/fetch-address":
+
+            default:
+                $this->sendErrorMessage("Invalid API Request", 400);
+                break;
+        }
 
     }
 

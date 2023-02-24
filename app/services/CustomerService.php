@@ -55,11 +55,11 @@ class CustomerService extends UserService{
         }
     }
 
-    public function getCustomerByUserId($id) : Customer
+    public function getCustomerByUser(User $user) : Customer
     {
         try
         {
-            $customer = $this->customerRepository->getCustomerByUserId($id);
+            $customer = $this->customerRepository->getCustomerByUser($user);
             return $customer;
         }
         catch(Exception $ex)

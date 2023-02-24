@@ -16,7 +16,7 @@ class CustomerRepository extends Repository{
         $this->userRepository = new UserRepository();
     }
     
-    public function getCustomerByUserId(User $user) : Customer
+    public function getCustomerByUser(User $user) : Customer
     {
         try{
             $query = "SELECT dateOfBirth, phoneNumber, addressId FROM customers WHERE userId = :userId";
@@ -30,10 +30,10 @@ class CustomerRepository extends Repository{
                 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
                 throw new UserNotFoundException("User ID not found");
             }
-                
 
             $result = $result[0];
 
+            //Create customer from the user object and the result from the query
             $customer = new Customer();
             $customer->setUserId($user->getUserId());
             $customer->setFirstName($user->getFirstName());
@@ -46,7 +46,6 @@ class CustomerRepository extends Repository{
             $customer->setAddress($this->addressRepository->getAddressById($result['addressId']));
 
             return $customer;
-
         }
         catch(PDOException $ex)
         {
