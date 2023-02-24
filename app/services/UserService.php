@@ -115,15 +115,7 @@ class UserService
 
             $mail->setFrom("infohaarlemfestival5@gmail.com");
             $mail->addAddress($email);
-
-            if (!$mail->Send()) {
-                $error = 'Mail error: ' . $mail->ErrorInfo;
-                echo $error;
-                return false;
-            } else {
-                echo "Message sent!";
-                return true;
-            }
+            $mail->send();
         } catch (Exception $ex) {
             throw ($ex);
         }
