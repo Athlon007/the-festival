@@ -21,7 +21,7 @@
   <div class="container">
     <h1 class="text-center">Password Reset</h1>
     <p class="text-center">Please enter your new password below</p>
-    <form class="row g-3 needs-validation" method="post" action="updatePassword" novalidate>
+    <!-- <form class="row g-3 needs-validation" method="post" action="" novalidate> -->
       <div class="col-md-12">
         <label for="new-password" class="form-label">New Password *</label>
         <input type="password" class="form-control" id="new-password" name="newPassword" autocomplete="off" required>
@@ -29,15 +29,19 @@
       </div>
       <div class="col-md-12">
         <label for="confirm-password" class="form-label">Confirm New Password *</label>
-        <input type="password" class="form-control" id="confirm-password" name="confirmPassword" autocomplete="off" required>
+        <input type="password" class="form-control" id="confirm-password" name="confirmPassword" autocomplete="off"
+          required>
         <div class="invalid-feedback">Please confirm your new password.</div>
       </div>
       <div class="col-md-12">
-        <button type="submit" class="btn btn-primary" name="resetPasswordButton">Submit</button>
+        <button type="submit" class="btn btn-primary" name="resetPasswordButton"
+          onclick="updatePassword()">Submit</button>
       </div>
-    </form>
+    <!-- </form> -->
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+
+
+  <script src="../js/updatePassword.js"></script>
 
   <footer class="foot row bottom"></footer>
   <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
@@ -46,6 +50,9 @@
     crossorigin="anonymous"></script>
 
   <script type="module" src="/js/foot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

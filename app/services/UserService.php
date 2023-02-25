@@ -24,27 +24,24 @@ class UserService
         $this->repository = new UserRepository();
         $this->customerService = new CustomerService();
     }
-    
-    public function verifyUser($data) : ?User
+
+    public function verifyUser($data): ?User
     {
-        try 
-        {
+        try {
             //Sanitise data
             $data->email = htmlspecialchars($data->email);
             $data->password = htmlspecialchars($data->password);
 
             $user = $this->repository->getByEmail($data->email);
 
-            if(password_verify($data->password, $user->getHashPassword())){
-                
-                if ($user->getUserType() == 3)
-                {
+            if (password_verify($data->password, $user->getHashPassword())) {
+
+                if ($user->getUserType() == 3) {
                     $customer = $this->customerService->getCustomerByUserId($user);
                     return $customer;
                 }
                 return $user;
-            }
-            else{
+            } else {
                 throw new IncorrectPasswordException("Incorrect combination of email and password");
             }
 
@@ -83,14 +80,25 @@ class UserService
             throw ($ex);
         }
     }
+    public function updateUserPassword($data)
+    {
+        try {
+            $user = $this->repository->getByEmail($data->email);
+            $user->setEmail($data->email);
+            $hashedPassword = password_hash($data->newPassword, PASSWORD_DEFAULT);
+            $user->setHashPassword($hashedPassword);
+            $this->repository->updatePassword($user);
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
 
     public function storeResetToken($email, $reset_token)
     {
         try {
-            if ($this->repository->getByEmail($email) != null){
+            if ($this->repository->getByEmail($email) != null) {
                 $this->repository->storeResetToken($email, $reset_token);
-            }
-            else{
+            } else {
                 throw new UserNotFoundException("This email is not registered.");
             }
         } catch (Exception $ex) {
@@ -121,23 +129,15 @@ class UserService
         }
     }
 
-    public function checkResetToken($email, $reset_token)
+    public function verifyResetToken($email, $reset_token)
     {
         try {
-            $this->repository->checkResetToken($email, $reset_token);
+            $this->repository->verifyResetToken($email, $reset_token);
         } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
-    public function updateUserPassword(User $user)
-    {
-        try {
-            $this->repository->updatePassword($user);
-        } catch (Exception $ex) {
-            throw ($ex);
-        }
-    }
 
     public function getAllUsers(): array
     {

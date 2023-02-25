@@ -155,28 +155,26 @@ class UserAPIController extends APIController
     {
         try {
             $userService = new UserService();
-            $user = new User();
-            if (isset($_POST['submitPassword'])) {
-                $data->email = htmlspecialchars($_POST['email']);
-                $data->password = htmlspecialchars($_POST['password']);
-                $data->passwordConfirm = htmlspecialchars($_POST['passwordConfirm']);
-                $data->reset_token = htmlspecialchars($_POST['reset_token']);
 
-                // here check if the reset token is valid
-                $userService->checkResetToken($data->email, $data->reset_token);
-                if (empty($userService->checkResetToken($data->email, $data->reset_token))) {
-                    throw new Exception("Invalid reset token.");
-                }
-                $user->setEmail($data->email);
-                // hash the password
-                $hash_password = password_hash($data->password, PASSWORD_DEFAULT);
-                $user->setHashPassword($hash_password);
-                // here update the password in the database
-                $userService->updateUserPassword($user);
-            } else {
-                echo "Please enter your new password.";
+            if (
+                $data == null || !isset($data->email) || !isset($data->newPassword) ||
+                !isset($data->token) || !isset($data->confirmPassword)
+            ) {
+                throw new Exception("No data received.");
             }
-            parent::sendSuccessMessage("Password reset successful.");
+
+            $userService->verifyResetToken(htmlspecialchars($data->email), htmlspecialchars($data->token));
+
+            $newPassword = htmlspecialchars($data->newPassword); 
+            $confirmPassword = htmlspecialchars($data->confirmPassword);
+
+            if ($newPassword != $confirmPassword) {
+                throw new Exception("New password and confirm password do not match.");
+            }
+            else{
+                $userService->updateUserPassword($data);
+                parent::sendSuccessMessage("Password updated.");
+            }
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
