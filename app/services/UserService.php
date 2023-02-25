@@ -83,11 +83,19 @@ class UserService
     public function updateUserPassword($data)
     {
         try {
-            $user = $this->repository->getByEmail($data->email);
-            $user->setEmail($data->email);
-            $hashedPassword = password_hash($data->newPassword, PASSWORD_DEFAULT);
-            $user->setHashPassword($hashedPassword);
-            $this->repository->updatePassword($user);
+            $this->verifyResetToken(htmlspecialchars($data->email), htmlspecialchars($data->token));
+            $newPassword = htmlspecialchars($data->newPassword);
+            $confirmPassword = htmlspecialchars($data->confirmPassword);
+
+            if ($newPassword != $confirmPassword) {
+                throw new Exception("New password and confirm password do not match.");
+            } else {
+                $user = $this->repository->getByEmail($data->email);
+                $user->setEmail($data->email);
+                $hashedPassword = password_hash($data->newPassword, PASSWORD_DEFAULT);
+                $user->setHashPassword($hashedPassword);
+                $this->repository->updatePassword($user);
+            }
         } catch (Exception $ex) {
             throw ($ex);
         }
@@ -166,9 +174,13 @@ class UserService
         }
     }
 
-    public function updateUser(User $user): void
+    public function updateUser($data): void
     {
         try {
+            $user = $this->repository->getUserById($data->id);
+            $user->setFirstName(htmlspecialchars($data->firstName));
+            $user->setLastName(htmlspecialchars($data->lastName));
+            $user->setEmail(htmlspecialchars($data->email));
             $this->repository->updateUser($user);
         } catch (Exception $ex) {
             throw ($ex);

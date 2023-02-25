@@ -16,31 +16,13 @@ class UserController
 
     public function updateUser()
     {
-        $userService = new UserService();
-
-        if (isset($_GET['id'])) {
-            $userId = $_GET['id'];
-            try {
-                $user = $userService->getUserById($userId);
-                require("../views/admin/updateUser.php");
-            } catch (PDOException $e) {
-                echo $e->getMessage();
-            }
+        try{
+            $userService = new UserService();
+            $user = $userService->getUserById($_GET['id']);
+            require("../views/admin/updateUser.php");
         }
-
-        if (isset($_POST['updateUserButton'])) {
-            $userId = htmlspecialchars($_POST['userID']);
-            $user = $userService->getUserByID($userId);
-
-            $user->setFirstName(htmlspecialchars($_POST['firstName']));
-            $user->setLastName(htmlspecialchars($_POST['lastName']));
-            $user->setEmail(htmlspecialchars($_POST['username']));
-
-            $userService->updateUser($user);
-
-            $url = "manageUsers";
-            header("Location:$url");
-            exit();
+        catch(PDOException $e){
+            echo $e->getMessage();
         }
     }
 }

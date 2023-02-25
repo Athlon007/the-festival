@@ -17,7 +17,9 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <script type="module" src="/js/nav.js"></script>
-    <form action="updateUser" method="POST">
+
+    
+    <!-- <form action="updateUser" method="POST"> -->
         <div class="form-group">
             <label for="userID">User ID</label>
             <input type="text" class="form-control" id="userID" name="userID" value="<?php echo $user->getUserId(); ?>"
@@ -34,8 +36,8 @@
                 value="<?php echo $user->getLastName(); ?>" autocomplete="off">
         </div>
         <div class="form-group">
-            <label for="username">Email</label>
-            <input type="text" class="form-control" id="username" name="username"
+            <label for="email">Email</label>
+            <input type="text" class="form-control" id="email" name="email"
                 value="<?php echo $user->getEmail(); ?>" autocomplete="off">
         </div>
         <div class="form-group">
@@ -44,8 +46,11 @@
                 ?> Editor <?php
             } ?>" readonly>
         </div>
-        <button type="submit" class="btn btn-primary" name="updateUserButton">Update User</button>
-    </form>
+        <button id="updateUserButton" type="button" class="btn btn-primary"
+            onclick="updateUser('<?= $user->getUserId(); ?>')">Update</button>
+    <!-- </form> -->
+
+    <script src="../js/admin/updateUser.js"></script>
 
     <footer class="foot row bottom"></footer>
     <script type="application/javascript"

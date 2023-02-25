@@ -35,8 +35,11 @@ class UserAPIController extends APIController
                     case "/api/user/updatePassword":
                         $this->updateUserPassword($data);
                         break;
-                        case "/api/user/deleteUser":
+                    case "/api/user/deleteUser":
                         $this->deleteUser($data);
+                        break;
+                    case "/api/user/updateUser":
+                        $this->updateUser($data);
                         break;
                     default:
                         $this->sendErrorMessage("Invalid API Request");
@@ -133,7 +136,10 @@ class UserAPIController extends APIController
         try {
             $userService = new UserService();
 
-            if ($data == null || !isset($data->email)) {
+            if (
+                $data == null || !isset($data->email) || !isset($data->token)
+                || !isset($data->newPassword) || !isset($data->confirmPassword)
+            ) {
                 throw new Exception("No data received.");
             }
 
@@ -163,22 +169,15 @@ class UserAPIController extends APIController
             ) {
                 throw new Exception("No data received.");
             }
-            $userService->verifyResetToken(htmlspecialchars($data->email), htmlspecialchars($data->token));
-            $newPassword = htmlspecialchars($data->newPassword);
-            $confirmPassword = htmlspecialchars($data->confirmPassword);
-
-            if ($newPassword != $confirmPassword) {
-                throw new Exception("New password and confirm password do not match.");
-            } else {
-                $userService->updateUserPassword($data);
-                parent::sendSuccessMessage("Password updated.");
-            }
+            $userService->updateUserPassword($data);
+            parent::sendSuccessMessage("Password updated.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
     }
 
-    private function deleteUser($data){
+    private function deleteUser($data)
+    {
         try {
             $userService = new UserService();
 
@@ -189,6 +188,25 @@ class UserAPIController extends APIController
 
             $userService->deleteUser($data);
             parent::sendSuccessMessage("User deleted.");
+        } catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
+        }
+    }
+
+    private function updateUser($data)
+    {
+        try {
+            $userService = new UserService();
+
+            // TODO: More things will be added here
+            if (
+                $data == null || !isset($data->id) || !isset($data->firstName)
+                || !isset($data->lastName) || !isset($data->email)
+            ) {
+                throw new Exception("No data received.");
+            }
+            $userService->updateUser($data);
+            parent::sendSuccessMessage("User updated.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }

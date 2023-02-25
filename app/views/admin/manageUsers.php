@@ -36,7 +36,7 @@
                     <tbody>
                         <?php foreach ($users as $user) { ?>
                             <tr>
-                                <td data-th="User ID" id="userId"</td>
+                                <td data-th="User ID" id="userId" </td>
                                     <?php echo $user->getUserId(); ?>
                                 </td>
                                 <td data-th="Name">
@@ -51,16 +51,18 @@
                                 <td data-th="Role">
                                     <?php if ($user->getUserType() == 3) {
                                         ?>
-                                    Editor/User
-                                <?php
+                                        Editor/User
+                                    <?php
                                     } ?>
                                 </td>
                                 <td>
                                     <div class="form-group">
-                                        <button type="submit" name="delete_user" id="deleteUserButton" value="<?= $user->getUserId(); ?>"
-                                            class="btn btn-danger" onclick="deleteUser('<?= $user->getUserId(); ?>')">Delete</button>
+                                        <button type="submit" name="delete_user" id="deleteUserButton"
+                                            value="<?= $user->getUserId(); ?>" class="btn btn-danger"
+                                            onclick="deleteUser('<?= $user->getUserId(); ?>')">Delete</button>
                                         <a href="updateUser?id=<?php echo $user->getUserId() ?>"
                                             class="btn btn-primary">Update</a>
+
                                     </div>
                                 </td>
                             </tr>
@@ -76,9 +78,6 @@
             </div>
         </div>
     </div>
-
-    <script src="../js/admin/deleteUser.js"></script>
-
 
     <footer class="foot row bottom"></footer>
     <script type="application/javascript"

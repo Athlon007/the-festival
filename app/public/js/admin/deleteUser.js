@@ -3,8 +3,6 @@ function deleteUser(id) {
         const data = {
             id: id
         }
-        console.log(data);
-
         fetch("/api/user/deleteUser", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
