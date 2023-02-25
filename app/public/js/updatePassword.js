@@ -12,7 +12,6 @@ function  updatePassword(){
         token: token,
         email: email
     };
-
     fetch("/api/user/updatePassword", {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},

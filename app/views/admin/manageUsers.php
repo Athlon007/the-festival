@@ -29,14 +29,14 @@
                             <th>User ID</th>
                             <th>Name</th>
                             <th>Last Name</th>
-                            <th>Username</th>
+                            <th>Email</th>
                             <th>Role</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($users as $user) { ?>
                             <tr>
-                                <td data-th="User ID">
+                                <td data-th="User ID" id="userId"</td>
                                     <?php echo $user->getUserId(); ?>
                                 </td>
                                 <td data-th="Name">
@@ -48,22 +48,20 @@
                                 <td data-th="Email">
                                     <?php echo $user->getEmail(); ?>
                                 </td>
-                                <td data-th="Email">
-                                    <?php echo $user->getUserType(); ?>
-                                </td>
-                                <?php if ($user->getUserType() == 3) {
-                                    ?>
-                                    <td>Editor/User</td>
+                                <td data-th="Role">
+                                    <?php if ($user->getUserType() == 3) {
+                                        ?>
+                                    Editor/User
                                 <?php
-                                } ?>
+                                    } ?>
+                                </td>
                                 <td>
-                                    <form action="deleteUser" method="POST">
-                                        <button type="submit" name="delete_user" value="<?= $user->getUserId(); ?>"
-                                            class="btn btn-danger"
-                                            onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
+                                    <div class="form-group">
+                                        <button type="submit" name="delete_user" id="deleteUserButton" value="<?= $user->getUserId(); ?>"
+                                            class="btn btn-danger" onclick="deleteUser('<?= $user->getUserId(); ?>')">Delete</button>
                                         <a href="updateUser?id=<?php echo $user->getUserId() ?>"
                                             class="btn btn-primary">Update</a>
-                                    </form>
+                                    </div>
                                 </td>
                             </tr>
                         <?php } ?>
@@ -78,6 +76,9 @@
             </div>
         </div>
     </div>
+
+    <script src="../js/admin/deleteUser.js"></script>
+
 
     <footer class="foot row bottom"></footer>
     <script type="application/javascript"

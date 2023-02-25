@@ -35,6 +35,9 @@ class UserAPIController extends APIController
                     case "/api/user/updatePassword":
                         $this->updateUserPassword($data);
                         break;
+                        case "/api/user/deleteUser":
+                        $this->deleteUser($data);
+                        break;
                     default:
                         $this->sendErrorMessage("Invalid API Request");
                         break;
@@ -125,7 +128,6 @@ class UserAPIController extends APIController
         }
     }
 
-    // Vedat: I have added this function to send the reset token to the user (JS)
     private function resetPassword($data)
     {
         try {
@@ -150,7 +152,6 @@ class UserAPIController extends APIController
         }
     }
 
-    // Vedat: I have added this function to update the user's password (JS) TODO: most of this should be moved to service
     private function updateUserPassword($data)
     {
         try {
@@ -162,16 +163,13 @@ class UserAPIController extends APIController
             ) {
                 throw new Exception("No data received.");
             }
-
             $userService->verifyResetToken(htmlspecialchars($data->email), htmlspecialchars($data->token));
-
-            $newPassword = htmlspecialchars($data->newPassword); 
+            $newPassword = htmlspecialchars($data->newPassword);
             $confirmPassword = htmlspecialchars($data->confirmPassword);
 
             if ($newPassword != $confirmPassword) {
                 throw new Exception("New password and confirm password do not match.");
-            }
-            else{
+            } else {
                 $userService->updateUserPassword($data);
                 parent::sendSuccessMessage("Password updated.");
             }
@@ -180,18 +178,21 @@ class UserAPIController extends APIController
         }
     }
 
-    // Vedat: I have added this function to get all users (JS)
-    private function getAllUsers()
-    {
+    private function deleteUser($data){
         try {
             $userService = new UserService();
-            $users = $userService->getAllUsers();
-            return $users;
+
+            if ($data == null || !isset($data->id)) {
+                throw new Exception("No data received.");
+            }
+            $data->id = htmlspecialchars($data->id);
+
+            $userService->deleteUser($data);
+            parent::sendSuccessMessage("User deleted.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
     }
-
     private function fetchAddress($data)
     {
         //WIP, currently done through JS
