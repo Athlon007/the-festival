@@ -58,8 +58,8 @@
                                 <td>
                                     <div class="form-group">
                                         <button type="submit" name="delete_user" id="deleteUserButton"
-                                            value="<?= $user->getUserId(); ?>" class="btn btn-danger"
-                                            onclick="deleteUser('<?= $user->getUserId(); ?>')">Delete</button>
+                                            value="<?= $user->getUserId() ?>" class="btn btn-danger"
+                                            onclick="deleteUser('<?= $user->getUserId() ?>')">Delete</button>
                                         <a href="updateUser?id=<?php echo $user->getUserId() ?>"
                                             class="btn btn-primary">Update</a>
 
@@ -78,6 +78,8 @@
             </div>
         </div>
     </div>
+
+    <script src="../js/admin/deleteUser.js"></script>
 
     <footer class="foot row bottom"></footer>
     <script type="application/javascript"
