@@ -16,7 +16,7 @@ class CustomerRepository extends Repository{
         $this->userRepository = new UserRepository();
     }
     
-    public function getCustomerByUserId(User $user) : Customer
+    public function getCustomerByUser(User $user) : Customer
     {
         try{
             $query = "SELECT dateOfBirth, phoneNumber, addressId FROM customers WHERE userId = :userId";
@@ -30,10 +30,10 @@ class CustomerRepository extends Repository{
                 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
                 throw new UserNotFoundException("User ID not found");
             }
-                
 
             $result = $result[0];
 
+            //Create customer from the user object and the result from the query
             $customer = new Customer();
             $customer->setUserId($user->getUserId());
             $customer->setFirstName($user->getFirstName());
@@ -46,11 +46,6 @@ class CustomerRepository extends Repository{
             $customer->setAddress($this->addressRepository->getAddressById($result['addressId']));
 
             return $customer;
-
-        }
-        catch(PDOException $ex)
-        {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
         }
         catch(Exception $ex)
         {
@@ -80,9 +75,31 @@ class CustomerRepository extends Repository{
             
             $stmt->execute();
         }
-        catch(PDOException $ex)
+        catch(Exception $ex)
         {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
+            throw ($ex);
+        }
+    }
+
+    public function updateCustomer(Customer $customer) : void
+    {
+        try{
+            //Update customer address
+            $this->addressRepository->updateAddress($customer->getAddress());
+
+            //Update customer in user table (inheritance parent)
+            $this->userRepository->updateUser($customer);
+            
+            $query = "UPDATE customers SET dateOfBirth = :dateOfBirth, phoneNumber = :phoneNumber, addressId = :addressId " .
+                        "WHERE userId = :userId";
+            $stmt = $this->connection->prepare($query);
+            
+            $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirthAsString());
+            $stmt->bindValue(":phoneNumber", $customer->getPhoneNumber());
+            $stmt->bindValue(":addressId", $customer->getAddress()->getAddressId());
+            $stmt->bindValue(":userId", $customer->getUserId());
+            
+            $stmt->execute();
         }
         catch(Exception $ex)
         {

@@ -6,14 +6,13 @@ require_once(__DIR__ . '/../repositories/AddressRepository.php');
 require_once(__DIR__ . '/../models/Customer.php');
 require_once(__DIR__ . '/../models/User.php');
 
-class CustomerService{
+class CustomerService extends UserService{
 
-    private $customerRepository;
-    private $userRepository;
     private $addressRepository;
+    protected $customerRepository;
+    protected $userRepository;
 
     public function __construct(){
-        $this->userRepository = new UserRepository();
         $this->customerRepository = new CustomerRepository();
         $this->addressRepository = new AddressRepository();
     }
@@ -21,8 +20,11 @@ class CustomerService{
     public function registerCustomer($data)
     {
         try{
+            //Set user type to customer
+            $data->userType = 3;
+
             //Sanitise data
-            $data = $this->sanitiseRegisterData($data);
+            $data = $this->sanitiseCustomerData($data);
 
             //Create customer object
             $customer = new Customer();
@@ -56,11 +58,11 @@ class CustomerService{
         }
     }
 
-    public function getCustomerByUserId($id) : Customer
+    public function getCustomerByUser(User $user) : Customer
     {
         try
         {
-            $customer = $this->customerRepository->getCustomerByUserId($id);
+            $customer = $this->customerRepository->getCustomerByUser($user);
             return $customer;
         }
         catch(Exception $ex)
@@ -69,11 +71,9 @@ class CustomerService{
         }
     }
 
-    private function sanitiseRegisterData($data){
-        $data->firstName = htmlspecialchars($data->firstName);
-        $data->lastName = htmlspecialchars($data->lastName);
-        $data->email = htmlspecialchars($data->email);
-        $data->password = htmlspecialchars($data->password);
+    private function sanitiseCustomerData($data){
+
+        $data = parent::sanitiseUserData($data);
         $data->dateOfBirth = htmlspecialchars($data->dateOfBirth);
         $data->phoneNumber = htmlspecialchars($data->phoneNumber);
         $data->address->streetName = htmlspecialchars($data->address->streetName);
@@ -84,5 +84,36 @@ class CustomerService{
 
         return $data;
     }
+
+    public function updateCustomer($data)
+    {
+        //Sanitise data
+        $data = $this->sanitiseCustomerData($data);
+        //Create customer object
+        $customer = $this->createCustomerFromData($data);
+
+        $this->customerRepository->updateCustomer($customer);
+    }
+
+    public function createCustomerFromData($data){
+        $customer = new Customer();
+        
+        if (isset($data->id))
+        {
+            $customer->setUserId($data->id);
+        }
+
+        $customer->setEmail($data->email);
+        $customer->setHashPassword($data->password);
+        $customer->setFirstName($data->firstName);
+        $customer->setLastName($data->lastName);
+        $customer->setDateOfBirth($data->dateOfBirth);
+        $customer->setPhoneNumber($data->phoneNumber);
+        $customer->setAddress($data->address);
+        
+
+        return $customer;
+    }
 }
+
 ?>

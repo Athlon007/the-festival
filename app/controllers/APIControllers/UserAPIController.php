@@ -47,6 +47,7 @@ class UserAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
+        
     }
 
     public function handlePutRequest($uri)
@@ -99,10 +100,9 @@ class UserAPIController extends APIController
             $customerService = new CustomerService();
 
             //Check if all data is present
-            if (
-                !isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password)
-                || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse)
-            ) {
+            if (!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password)
+            || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse)){
+                
                 throw new Exception("Registration data incomplete.");
             }
 
