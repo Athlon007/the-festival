@@ -5,7 +5,6 @@ require_once __DIR__ . '/../models/User.php';
 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
 require_once(__DIR__ . '/../models/Exceptions/IncorrectPasswordException.php');
 
-// require_once(__DIR__ . "./phpmailer/PHPMailer.php");
 require_once('../phpmailer/PHPMailer.php');
 require_once('../phpmailer/SMTP.php');
 require_once('../phpmailer/Exception.php');
@@ -109,17 +108,8 @@ class UserService
 
             $mail->setFrom("infohaarlemfestival5@gmail.com");
             $mail->addAddress($email);
-
-            if (!$mail->Send()) {
-                $error = 'Mail error: ' . $mail->ErrorInfo;
-                echo $error;
-                return false;
-            } else {
-                echo "Message sent!";
-                return true;
-            }
-        } 
-        catch (Exception $ex) {
+            $mail->send();
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
