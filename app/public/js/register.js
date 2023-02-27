@@ -52,7 +52,7 @@ function attemptRegister(captcha)
     .then(data => {
         if(data.success_message){
             alert(data.success_message);
-            window.location.assign("/login");
+            window.location.assign("/home/login");
         } 
         else {
             alert(data.error_message);
