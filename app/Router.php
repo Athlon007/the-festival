@@ -127,6 +127,12 @@ class Router
                 $userController = new UserController();
                 $userController->deleteUser();
                 break;
+            case "/manageRestaurants":
+                require_once("controllers/RestaurantController.php");
+                $restaurantController = new RestaurantController();
+                $restaurantController->manageRestaurants();
+                break;
+    
             default:
                 $this->route404($message);
                 break;
