@@ -20,6 +20,9 @@ class CustomerService extends UserService{
     public function registerCustomer($data)
     {
         try{
+            //Set user type to customer
+            $data->userType = 3;
+
             //Sanitise data
             $data = $this->sanitiseCustomerData($data);
 
@@ -86,6 +89,7 @@ class CustomerService extends UserService{
     {
         //Sanitise data
         $data = $this->sanitiseCustomerData($data);
+        //Create customer object
         $customer = $this->createCustomerFromData($data);
 
         $this->customerRepository->updateCustomer($customer);
@@ -100,12 +104,13 @@ class CustomerService extends UserService{
         }
 
         $customer->setEmail($data->email);
+        $customer->setHashPassword($data->password);
         $customer->setFirstName($data->firstName);
         $customer->setLastName($data->lastName);
         $customer->setDateOfBirth($data->dateOfBirth);
         $customer->setPhoneNumber($data->phoneNumber);
         $customer->setAddress($data->address);
-        $customer->setHashPassword($data->password);
+        
 
         return $customer;
     }

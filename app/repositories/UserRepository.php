@@ -52,7 +52,7 @@ class UserRepository extends Repository
     public function insertUser(User $user): void
     {
         try {
-            $query = "INSERT INTO user (email, firstName, lastName, hashPassword, userType) VALUES (:email, :firstName, :lastName, :hashPassword, :userType)";
+            $query = "INSERT INTO users (email, firstName, lastName, hashPassword, userType) VALUES (:email, :firstName, :lastName, :hashPassword, :userType)";
             $stmt = $this->connection->prepare($query);
 
             $stmt->bindValue(":email", $user->getEmail());
