@@ -129,7 +129,7 @@ class UserRepository extends Repository
     public function getAllUsers()
     {
         try {
-            $query = "SELECT * FROM users WHERE userType = 3";
+            $query = "SELECT * FROM users WHERE userType = 3 OR userType = 2";
             $stmt = $this->connection->prepare($query);
             $stmt->execute();
             $stmt->setFetchMode(PDO::FETCH_CLASS, 'User');

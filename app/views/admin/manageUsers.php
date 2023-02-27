@@ -21,8 +21,16 @@
 
     <div class="container-fluid">
         <h1 class="text-center mt-3">Manage Users</h1>
+
         <div class="row mt-3">
             <div class="col-12">
+                <label for="userType">Sort User by Role:</label>
+                <select id="userType">
+                    <option value="">All</option>
+                    <option value="customer">Customer</option>
+                    <option value="user">User</option>
+                </select>
+
                 <table class="table">
                     <thead>
                         <tr>
@@ -36,7 +44,7 @@
                     <tbody>
                         <?php foreach ($users as $user) { ?>
                             <tr>
-                                <td data-th="User ID" id="userId" </td>
+                                <td data-th="User ID" id="userId">
                                     <?php echo $user->getUserId(); ?>
                                 </td>
                                 <td data-th="Name">
@@ -51,7 +59,11 @@
                                 <td data-th="Role">
                                     <?php if ($user->getUserType() == 3) {
                                         ?>
-                                        Editor/User
+                                        Customer
+                                    <?php
+                                    } else if ($user->getUserType() == 2) {
+                                        ?>
+                                            User
                                     <?php
                                     } ?>
                                 </td>
@@ -79,6 +91,7 @@
         </div>
     </div>
 
+    <script src="../js/admin/sortUser.js"></script>
     <script src="../js/admin/deleteUser.js"></script>
 
     <footer class="foot row bottom"></footer>
@@ -89,4 +102,5 @@
         crossorigin="anonymous"></script>
 
     <script type="module" src="/js/foot.js"></script>
+
 </body>

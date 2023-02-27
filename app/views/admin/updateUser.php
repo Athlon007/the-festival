@@ -43,7 +43,9 @@
         <div class="form-group">
             <label for="role">Role</label>
             <input type="text" class="form-control" id="role" name="role" value="<?php if ($user->getUserType() == 3) {
-                ?> Editor <?php
+                ?> Customer <?php
+            } else if ($user->getUserType() == 2) {
+                ?> User <?php
             } ?>" readonly>
         </div>
         <button id="updateUserButton" type="button" class="btn btn-primary"
