@@ -129,6 +129,11 @@ function createLanguagePicker() {
 }
 
 function createIcon(href, alt, iconClass) {
+    let collapseLi = document.createElement('li');
+    collapseLi.classList.add('nav-item');
+    collapseLi.classList.add('d-none');
+    collapseLi.classList.add('d-lg-block');
+
     let collapseA = document.createElement('a');
     collapseA.setAttribute('href', href);
 
@@ -139,7 +144,9 @@ function createIcon(href, alt, iconClass) {
     collapseA.classList.add(iconClass);
     collapseA.setAttribute('alt', alt);
 
-    return collapseA
+    collapseLi.appendChild(collapseA);
+
+    return collapseLi;
 }
 
 function createSearch() {
@@ -260,6 +267,7 @@ function loadNavbar() {
             // add language picker
             collapseUl.appendChild(createSearch());
             collapseUl.appendChild(createLanguagePicker());
+            collapseUl.appendChild(createIcon('/home/login', 'Login', 'user-icon'));
             collapseUl.appendChild(createIcon('/shopping-cart', 'Shopping cart', 'shopping-cart-icon'));
         });
 

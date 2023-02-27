@@ -117,11 +117,6 @@ class Router
                 $authController = new AuthController();
                 $authController->sendEmail();
                 break;
-            case "/updatePassword":
-                require_once("controllers/AuthController.php");
-                $authController = new AuthController();
-                $authController->updatePassword();
-                break;
             case "/manageUsers":
                 require_once("controllers/UserController.php");
                 $userController = new UserController();

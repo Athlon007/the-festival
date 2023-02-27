@@ -19,3 +19,16 @@
     background-size: 100% 100%;
     margin-top: 12px;
 }
+
+.user-icon {
+    background-image: url(../img/svg/user.svg);
+    width: 32px;
+    height: 32px;
+    background-size: 100% 100%;
+    margin-top: 12px;
+}
+
+li:has(> .user-icon),
+li:has(> .shopping-cart-icon) {
+    padding: 0;
+}
