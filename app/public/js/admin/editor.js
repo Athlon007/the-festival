@@ -19,7 +19,11 @@ const imgPicker = new ImagePicker();
 tinymce.init({
     selector: 'textarea',
     plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
-    toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | customAddButtonButton | customInsertImageButton | customInsertNavTile',
+    toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+    menu: {
+        custom: { title: 'Festival', items: 'customAddButtonButton customInsertImageButton customInsertNavTile' }
+    },
+    menubar: 'file edit view insert format tools table custom',
     tinycomments_mode: 'embedded',
     tinycomments_author: 'Author name',
     table_default_attributes: {
@@ -31,7 +35,7 @@ tinymce.init({
     ],
     setup: (editor) => {
         try {
-            editor.ui.registry.addButton('customAddButtonButton', {
+            editor.ui.registry.addMenuItem('customAddButtonButton', {
                 text: 'Add Button',
                 onAction: () => {
                     msgBox.createDialogWithInputs('Add Button', [
@@ -51,7 +55,7 @@ tinymce.init({
                         function () { });
                 }
             });
-            editor.ui.registry.addButton('customInsertImageButton', {
+            editor.ui.registry.addMenuItem('customInsertImageButton', {
                 text: 'Insert Image',
                 onAction: () => {
                     let rndInt = Math.floor(Math.random() * 100000000);
@@ -98,7 +102,7 @@ tinymce.init({
                         function () { });
                 }
             });
-            editor.ui.registry.addButton('customInsertNavTile', {
+            editor.ui.registry.addMenuItem('customInsertNavTile', {
                 text: 'Insert Nav Tile',
                 onAction: () => {
                     let rndInt = Math.floor(Math.random() * 100000000);
