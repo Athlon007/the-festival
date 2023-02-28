@@ -115,6 +115,7 @@ h2 {
     padding: 1rem;
     text-align: center;
     width: 100%;
+    margin: 0;
 }
 
 .social-link {
@@ -243,5 +244,9 @@ h2 {
 
     .carousel-caption>p {
         font-size: 64px;
+    }
+
+    .foot>div>ul {
+        padding: 0;
     }
 }
