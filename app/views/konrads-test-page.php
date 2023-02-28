@@ -23,7 +23,9 @@
                     <td style="height: 438px; border-width: 0px; padding: 12px;">
                         <a href="/festival">
                             <div class="card img-fluid nav-tile">
-                                <p class="carousel-caption">Name</p>
+                                <div class="carousel-caption">
+                                    <p>Name</p>
+                                </div>
                                 <img class="card-img-top" src="../img/jpg/food-home.jpg" alt="">
                                 <div class="card-img-overlay" style="top: auto; bottom: 0; position: absolute;">
                                     <p class="card-text w-65 d-inline-block">This card has supporting text below as a natural lead-in to additional content.</p>
@@ -35,7 +37,9 @@
                     <td style="height: 438px; border-width: 0px; padding: 12px;">
                         <a href="/festival">
                             <div class="card img-fluid nav-tile">
-                                <p class="carousel-caption">A Stroll Through Haarlem</p>
+                                <div class="carousel-caption">
+                                    <p>A Stroll Through Haarlem</p>
+                                </div>
                                 <img class="card-img-top" src="../img/jpg/food-home.jpg" alt="">
                                 <div class="card-img-overlay" style="top: auto; bottom: 0; position: absolute;">
                                     <p class="card-text w-65 d-inline-block">This card has supporting text below as a natural lead-in to additional content.</p>
