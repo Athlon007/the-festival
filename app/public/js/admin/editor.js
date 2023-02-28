@@ -54,10 +54,11 @@ tinymce.init({
             editor.ui.registry.addButton('customInsertImageButton', {
                 text: 'Insert Image',
                 onAction: () => {
+                    let rndInt = Math.floor(Math.random() * 100000000);
                     msgBox.createDialogWithInputs('Insert Image From Library', [
                         {
                             label: 'Image Picker',
-                            id: 'image-picker',
+                            id: 'image-picker-' + rndInt,
                             type: 'image-picker'
                         },
                         {
@@ -69,10 +70,30 @@ tinymce.init({
                             id: 'image-height',
                         }],
                         function () {
-                            let imagePicker = document.getElementById('image-picker');
+                            let imagePicker = document.getElementById('image-picker-' + rndInt);
+                            let selectedImage;
+                            for (let label of imagePicker.getElementsByClassName('tile-picker')) {
+                                let input = label.getElementsByTagName('input')[0];
+                                if (input.checked) {
+                                    selectedImage = label.getElementsByTagName('img')[0].src;
+                                }
+                            }
+
+                            // remvoe the first part of the url before the /img
+                            selectedImage = selectedImage.replace(/.*\/img/, '/img');
+
                             let imageWidth = document.getElementById('image-width').value;
                             let imageHeight = document.getElementById('image-height').value;
-                            editor.insertContent(`<img src="${imagePicker.value}" width="${imageWidth}" height="${imageHeight}">`);
+
+                            // if widtth and height are empty, set to auto
+                            if (imageWidth == '') {
+                                imageWidth = 'auto';
+                            }
+                            if (imageHeight == '') {
+                                imageHeight = 'auto';
+                            }
+
+                            editor.insertContent(`<img src="${selectedImage}" width="${imageWidth}" height="${imageHeight}">`);
                         },
                         function () { });
                 }
@@ -116,7 +137,6 @@ function createNewPage(data) {
         .then(response => response.json())
         .then(data => {
             if (!data.error_message) {
-                //loadTextPagesList();
                 let option = createNewOptionItem(data);
                 textPagesList.appendChild(option);
                 textPagesList.selectedIndex = textPagesList.length - 1;

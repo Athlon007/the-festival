@@ -157,6 +157,7 @@ export class MsgBox {
         for (let i of inputsArray) {
             if (i.type == 'image-picker') {
                 let pickerContainer = document.createElement('div');
+                pickerContainer.setAttribute('id', i.id);
                 let picker = new ImagePicker();
                 picker.loadImagePicker(pickerContainer, () => { picker.unselectAllButOneNotInSelectedImages(); }, () => { });
                 modalBodyInputs.appendChild(pickerContainer);
