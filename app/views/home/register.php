@@ -68,7 +68,7 @@
                                             <div class="row">
                                                 <div class="form-outline">
                                                     <label class="form-label" for="email">E-mail*</label>    
-                                                    <input type="text" id="email" class="form-control form-control-lg" />
+                                                    <input type="email" id="email" class="form-control form-control-lg" />
                                                 </div>
                                                 <div class="form-outline">
                                                     <label class="form-label" for="password">Password*</label>

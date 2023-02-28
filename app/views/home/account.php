@@ -18,7 +18,34 @@
     <script type="module" src="/js/nav.js"></script>
 
     <!-- Account management panel -->
-
+    <div class="container py-5 h-100">
+        <div class="row p-6">
+            <div class="col-md-3">
+                <h2 class="text-center">Login Information</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-mail</label>
+                            <input type="text" class="form-control" id="email" name="email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password">
+                        </div>
+                        <div class="card-footer" style="width: 100%">
+                            <a href="/provideEmail">Forgot password?</a> <br>
+                            <p class="mb-1">Don't have an account yet? <a href="/home/register">Register here.</a></p>
+                        </div>
+                        <button id="loginButton" class="btn btn-primary" onclick=attemptLogin()>Login</button>
+                    </div>
+                    <div class="card-footer" style="width: 100%">
+                        <a href="/provideEmail">Forgot password?</a> <br>
+                        <p class="mb-1">Don't have an account yet? <a href="/home/register">Register here.</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <footer class="foot row bottom"></footer>
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>

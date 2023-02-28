@@ -26,15 +26,11 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <label for="email" class="form-label">E-mail</label>
-                            <input type="text" class="form-control" id="email" name="email">
+                            <input type="email" class="form-control" id="email" name="email">
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password">
-                        </div>
-                        <div class="card-footer" style="width: 100%">
-                            <a href="/provideEmail">Forgot password?</a> <br>
-                            <p class="mb-1">Don't have an account yet? <a href="/home/register">Register here.</a></p>
                         </div>
                         <button id="loginButton" class="btn btn-primary" onclick=attemptLogin()>Login</button>
                     </div>

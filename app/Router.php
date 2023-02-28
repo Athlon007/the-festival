@@ -97,10 +97,10 @@ class Router
             case "/admin/images":
                 require("views/admin/images.php");
                 break;
-            case "/home/login":
+            case "/home/account":
                 require_once("controllers/HomeController.php");
                 $homeController = new HomeController();
-                $homeController->login();
+                $homeController->account();
                 break;
             case "/home/register":
                 require_once("controllers/HomeController.php");
