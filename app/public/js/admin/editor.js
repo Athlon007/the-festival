@@ -1,4 +1,4 @@
-import { loadImagePicker, unselectAllImages } from "./image_picker.js";
+import { ImagePicker } from "./image_picker.js";
 import { MsgBox } from "./modals.js";
 
 let editedPageId = -1;
@@ -14,11 +14,12 @@ let isInNewPageMode = false;
 const btnOpen = document.getElementById('open');
 
 const msgBox = new MsgBox();
+const imgPicker = new ImagePicker();
 
 tinymce.init({
     selector: 'textarea',
     plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
-    toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | customAddButtonButton',
+    toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | customAddButtonButton | customInsertImageButton',
     tinycomments_mode: 'embedded',
     tinycomments_author: 'Author name',
     table_default_attributes: {
@@ -28,29 +29,58 @@ tinymce.init({
         "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css",
         "/css/main.css"
     ],
-    setup: function (editor) {
-        editor.ui.registry.addButton('customAddButtonButton', {
-            text: 'Add Button',
-            onAction: function () {
-                //editor.insertContent('<button class="btn btn-primary" href="#">Button</button>');
-                let addButtonGui = msgBox.createDialogWithInputs('Add Button', [
-                    {
-                        label: 'Button Text',
-                        id: 'btn-text'
-                    },
-                    {
-                        label: 'Button Link',
-                        id: 'btn-link'
-                    }],
-                    function () {
-                        let btnText = document.getElementById('btn-text').value;
-                        let btnLink = document.getElementById('btn-link').value;
-                        editor.insertContent(`<a href="${btnLink}"><button class="btn btn-primary" href="#">${btnText}</button></a>`);
-                    },
-                    function () { });
-            }
-        });
-    },
+    setup: (editor) => {
+        try {
+            editor.ui.registry.addButton('customAddButtonButton', {
+                text: 'Add Button',
+                onAction: () => {
+                    msgBox.createDialogWithInputs('Add Button', [
+                        {
+                            label: 'Button Text',
+                            id: 'btn-text'
+                        },
+                        {
+                            label: 'Button Link',
+                            id: 'btn-link'
+                        }],
+                        function () {
+                            let btnText = document.getElementById('btn-text').value;
+                            let btnLink = document.getElementById('btn-link').value;
+                            editor.insertContent(`<a href="${btnLink}"><button class="btn btn-primary" href="#">${btnText}</button></a>`);
+                        },
+                        function () { });
+                }
+            });
+            editor.ui.registry.addButton('customInsertImageButton', {
+                text: 'Insert Image',
+                onAction: () => {
+                    msgBox.createDialogWithInputs('Insert Image From Library', [
+                        {
+                            label: 'Image Picker',
+                            id: 'image-picker',
+                            type: 'image-picker'
+                        },
+                        {
+                            label: 'Image Width',
+                            id: 'image-width',
+                        },
+                        {
+                            label: 'Image Height',
+                            id: 'image-height',
+                        }],
+                        function () {
+                            let imagePicker = document.getElementById('image-picker');
+                            let imageWidth = document.getElementById('image-width').value;
+                            let imageHeight = document.getElementById('image-height').value;
+                            editor.insertContent(`<img src="${imagePicker.value}" width="${imageWidth}" height="${imageHeight}">`);
+                        },
+                        function () { });
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
 });
 
 function updateExistingPage(id, data) {
@@ -109,13 +139,8 @@ function createNewPage(data) {
 
 btnSubmit.onclick = function () {
     let titleValue = title.value;
-    let pickedImageIds = [];
-    let checkboxes = document.getElementsByName('image');
-    checkboxes.forEach(element => {
-        if (element.checked) {
-            pickedImageIds.push(element.value);
-        }
-    });
+    let pickedImageIds = imgPicker.getSelectedImages();
+    console.log(pickedImageIds);
     let content = tinymce.activeEditor.getContent();
 
     // to json
@@ -199,7 +224,7 @@ function createNewOptionItem(element) {
 
                     pageHref.value = data.href;
 
-                    unselectAllImages();
+                    imgPicker.unselectAllImages();
                     // select images that are used by the page.
                     data.images.forEach(image => {
                         let checkboxes = document.getElementsByName('image');
@@ -274,7 +299,7 @@ function loadTextPagesList() {
 
 loadTextPagesList();
 
-loadImagePicker(images);
+imgPicker.loadImagePicker(images, () => { }, () => { });
 
 function toggleEditor(element, isEnabled) {
     if (isEnabled) {
@@ -283,7 +308,7 @@ function toggleEditor(element, isEnabled) {
         element.classList.add('disabled-module');
         tinymce.activeEditor.setContent('');
         editedPageId = -1;
-        unselectAllImages();
+        imgPicker.unselectAllImages();
         textPagesList.selectedIndex = 0;
         title.value = '';
         pageHref.value = '';
@@ -295,7 +320,7 @@ document.getElementById('new-page').onclick = function () {
     toggleEditor(masterEditor, true);
     tinymce.activeEditor.setContent('');
     editedPageId = -1;
-    unselectAllImages();
+    imgPicker.unselectAllImages();
     textPagesList.selectedIndex = 0;
     title.value = '';
     pageHref.value = '';

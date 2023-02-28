@@ -1,3 +1,5 @@
+import { ImagePicker } from "./image_picker.js";
+
 export class MsgBox {
     /**
      * Creates a toast message. Disappears after 3 seconds.
@@ -152,18 +154,25 @@ export class MsgBox {
 
         let modalBodyInputs = document.createElement('div');
 
-        for (let i = 0; i < inputsArray.length; i++) {
-            let label = document.createElement('label');
-            label.classList.add('form-label');
-            label.setAttribute('for', inputsArray[i].id);
-            label.innerHTML = inputsArray[i].label;
-            modalBodyInputs.appendChild(label);
+        for (let i of inputsArray) {
+            if (i.type == 'image-picker') {
+                let pickerContainer = document.createElement('div');
+                let picker = new ImagePicker();
+                picker.loadImagePicker(pickerContainer, () => { picker.unselectAllButOneNotInSelectedImages(); }, () => { });
+                modalBodyInputs.appendChild(pickerContainer);
+            } else {
+                let label = document.createElement('label');
+                label.classList.add('form-label');
+                label.setAttribute('for', i.id);
+                label.innerHTML = i.label;
+                modalBodyInputs.appendChild(label);
 
-            let input = document.createElement('input');
-            input.classList.add('form-control');
-            input.setAttribute('type', 'text');
-            input.setAttribute('id', inputsArray[i].id);
-            modalBodyInputs.appendChild(input);
+                let input = document.createElement('input');
+                input.classList.add('form-control');
+                input.setAttribute('type', 'text');
+                input.setAttribute('id', i.id);
+                modalBodyInputs.appendChild(input);
+            }
         }
         modalBody.appendChild(modalBodyInputs);
 
