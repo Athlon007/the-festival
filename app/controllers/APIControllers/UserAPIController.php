@@ -35,6 +35,12 @@ class UserAPIController extends APIController
                     case "/api/user/updatePassword":
                         $this->updateUserPassword($data);
                         break;
+                    case "/api/user/deleteUser":
+                        $this->deleteUser($data);
+                        break;
+                    case "/api/user/updateUser":
+                        $this->updateUser($data);
+                        break;
                     default:
                         $this->sendErrorMessage("Invalid API Request");
                         break;
@@ -125,13 +131,14 @@ class UserAPIController extends APIController
         }
     }
 
-    // Vedat: I have added this function to send the reset token to the user (JS)
     private function resetPassword($data)
     {
         try {
             $userService = new UserService();
 
-            if ($data == null || !isset($data->email)) {
+            if (
+                $data == null || !isset($data->email) || empty($data->email)
+            ) {
                 throw new Exception("No data received.");
             }
 
@@ -150,50 +157,60 @@ class UserAPIController extends APIController
         }
     }
 
-    // Vedat: I have added this function to update the user's password (JS) TODO: most of this should be moved to service
     private function updateUserPassword($data)
     {
         try {
             $userService = new UserService();
-            $user = new User();
-            if (isset($_POST['submitPassword'])) {
-                $data->email = htmlspecialchars($_POST['email']);
-                $data->password = htmlspecialchars($_POST['password']);
-                $data->passwordConfirm = htmlspecialchars($_POST['passwordConfirm']);
-                $data->reset_token = htmlspecialchars($_POST['reset_token']);
 
-                // here check if the reset token is valid
-                $userService->checkResetToken($data->email, $data->reset_token);
-                if (empty($userService->checkResetToken($data->email, $data->reset_token))) {
-                    throw new Exception("Invalid reset token.");
-                }
-                $user->setEmail($data->email);
-                // hash the password
-                $hash_password = password_hash($data->password, PASSWORD_DEFAULT);
-                $user->setHashPassword($hash_password);
-                // here update the password in the database
-                $userService->updateUserPassword($user);
-            } else {
-                echo "Please enter your new password.";
+            if (
+                $data == null || !isset($data->email) || !isset($data->newPassword) ||
+                !isset($data->token) || !isset($data->confirmPassword) || empty($data->newPassword) ||
+                empty($data->confirmPassword)
+            ) {
+                throw new Exception("No data received.");
             }
-            parent::sendSuccessMessage("Password reset successful.");
+            $userService->updateUserPassword($data);
+            parent::sendSuccessMessage("Password updated.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
     }
 
-    // Vedat: I have added this function to get all users (JS)
-    private function getAllUsers()
+    private function deleteUser($data)
     {
         try {
             $userService = new UserService();
-            $users = $userService->getAllUsers();
-            return $users;
+
+            if ($data == null || !isset($data->id)) {
+                throw new Exception("No data received.");
+            }
+            $data->id = htmlspecialchars($data->id);
+
+            $userService->deleteUser($data);
+            parent::sendSuccessMessage("User deleted.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
     }
 
+    private function updateUser($data)
+    {
+        try {
+            $userService = new UserService();
+
+            // TODO: More things will be added here
+            if (
+                $data == null || !isset($data->id) || !isset($data->firstName)
+                || !isset($data->lastName) || !isset($data->email)
+            ) {
+                throw new Exception("No data received.");
+            }
+            $userService->updateUser($data);
+            parent::sendSuccessMessage("User updated.");
+        } catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
+        }
+    }
     private function fetchAddress($data)
     {
         //WIP, currently done through JS
