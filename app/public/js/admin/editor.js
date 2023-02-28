@@ -19,7 +19,7 @@ const imgPicker = new ImagePicker();
 tinymce.init({
     selector: 'textarea',
     plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
-    toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | customAddButtonButton | customInsertImageButton',
+    toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | customAddButtonButton | customInsertImageButton | customInsertNavTile',
     tinycomments_mode: 'embedded',
     tinycomments_author: 'Author name',
     table_default_attributes: {
@@ -98,6 +98,86 @@ tinymce.init({
                         function () { });
                 }
             });
+            editor.ui.registry.addButton('customInsertNavTile', {
+                text: 'Insert Nav Tile',
+                onAction: () => {
+                    let rndInt = Math.floor(Math.random() * 100000000);
+                    msgBox.createDialogWithInputs('Create Nav Tile', [
+                        {
+                            label: 'Image Picker',
+                            id: 'image-picker-' + rndInt,
+                            type: 'image-picker'
+                        },
+                        {
+                            label: 'Tile Text',
+                            id: 'tile-text'
+                        },
+                        {
+                            label: 'Tile Link',
+                            id: 'tile-link'
+                        },
+                        {
+                            label: 'Description',
+                            id: 'tile-description'
+                        }
+                    ],
+                        () => {
+                            let imagePicker = document.getElementById('image-picker-' + rndInt);
+                            let selectedImage;
+                            for (let label of imagePicker.getElementsByClassName('tile-picker')) {
+                                let input = label.getElementsByTagName('input')[0];
+                                if (input.checked) {
+                                    selectedImage = label.getElementsByTagName('img')[0].src;
+                                }
+                            }
+
+                            // remvoe the first part of the url before the /img
+                            selectedImage = selectedImage.replace(/.*\/img/, '/img');
+
+                            let tileText = document.getElementById('tile-text').value;
+                            let tileLink = document.getElementById('tile-link').value;
+                            let tileDescription = document.getElementById('tile-description').value;
+
+                            // Now we build the tile.
+                            let a = document.createElement('a');
+                            a.href = tileLink;
+                            let div = document.createElement('div');
+                            div.classList.add('card', 'img-fluid', 'nav-tile');
+                            let divCarousel = document.createElement('div');
+                            divCarousel.classList.add('carousel-caption');
+                            let p = document.createElement('p');
+                            p.innerText = tileText;
+                            divCarousel.appendChild(p);
+                            div.appendChild(divCarousel);
+
+                            let img = document.createElement('img');
+                            img.src = selectedImage;
+                            img.classList.add('card-img-top');
+                            div.appendChild(img);
+
+                            let cardOverlay = document.createElement('div');
+                            cardOverlay.classList.add('card-img-overlay');
+                            let pOverlay = document.createElement('p');
+                            pOverlay.classList.add('card-text', 'w-65', 'inline-block');
+                            pOverlay.innerText = tileDescription;
+                            cardOverlay.appendChild(pOverlay);
+                            let btn = document.createElement('button');
+                            btn.classList.add('btn', 'btn-primary', 'float-end');
+                            btn.innerText = 'Learn More';
+                            cardOverlay.appendChild(btn);
+                            div.appendChild(cardOverlay);
+
+                            a.appendChild(div);
+
+                            let container = document.createElement('div');
+                            container.appendChild(a);
+
+                            console.log(a.outerHTML);
+
+                            editor.insertContent(container.outerHTML);
+                        });
+                }
+            })
         } catch (error) {
             console.log(error);
         }
@@ -197,9 +277,9 @@ document.getElementById('delete').onclick = function () {
                 if (data.success_message) {
                     // remove the option from the list
                     let options = textPagesList.getElementsByTagName('option');
-                    for (let i = 0; i < options.length; i++) {
-                        if (options[i].value == editedPageId) {
-                            options[i].remove();
+                    for (let option of options) {
+                        if (option.value == editedPageId) {
+                            option.remove();
                             break;
                         }
                     }

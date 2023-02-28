@@ -27,7 +27,7 @@
                                     <p>Name</p>
                                 </div>
                                 <img class="card-img-top" src="../img/jpg/food-home.jpg" alt="">
-                                <div class="card-img-overlay" style="top: auto; bottom: 0; position: absolute;">
+                                <div class="card-img-overlay">
                                     <p class="card-text w-65 d-inline-block">This card has supporting text below as a natural lead-in to additional content.</p>
                                     <button class="btn btn-primary w-25 d-inline float-end">MY Button</button>
                                 </div>
@@ -41,7 +41,7 @@
                                     <p>A Stroll Through Haarlem</p>
                                 </div>
                                 <img class="card-img-top" src="../img/jpg/food-home.jpg" alt="">
-                                <div class="card-img-overlay" style="top: auto; bottom: 0; position: absolute;">
+                                <div class="card-img-overlay">
                                     <p class="card-text w-65 d-inline-block">This card has supporting text below as a natural lead-in to additional content.</p>
                                     <button class="btn btn-primary w-25 d-inline float-end">MY Button</button>
                                 </div>

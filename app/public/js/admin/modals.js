@@ -49,7 +49,7 @@ export class MsgBox {
      * @param {*} yesCallback Callback for the yes button.
      * @param {*} noCallback Callback for the no button.
      */
-    createYesNoDialog(header, msg, yesCallback, noCallback) {
+    createYesNoDialog(header, msg, yesCallback, noCallback = () => { }) {
         // Create bootstrap modal
         let modal = document.createElement('div');
         modal.classList.add('modal');
@@ -120,7 +120,7 @@ export class MsgBox {
         noButton.focus();
     }
 
-    createDialogWithInputs(header, inputsArray, submitCallback, cancelCallback) {
+    createDialogWithInputs(header, inputsArray, submitCallback, cancelCallback = () => { }) {
         // Create bootstrap modal
         let modal = document.createElement('div');
         modal.classList.add('modal');
