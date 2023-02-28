@@ -16,7 +16,7 @@ use PHPMailer\PHPMailer\Exception;
 
 class UserService
 {
-    private UserRepository $repository;
+    protected UserRepository $repository;
     private CustomerService $customerService;
 
     public function __construct()
@@ -34,10 +34,11 @@ class UserService
 
             $user = $this->repository->getByEmail($data->email);
 
-            if (password_verify($data->password, $user->getHashPassword())) {
-
-                if ($user->getUserType() == 3) {
-                    $customer = $this->customerService->getCustomerByUserId($user);
+            if(password_verify($data->password, $user->getHashPassword())){
+                
+                if ($user->getUserType() == 3)
+                {
+                    $customer = $this->customerService->getCustomerByUser($user);
                     return $customer;
                 }
                 return $user;
@@ -45,17 +46,8 @@ class UserService
                 throw new IncorrectPasswordException("Incorrect combination of email and password");
             }
 
-            return null;
-        } catch (Exception $ex) {
-            throw ($ex);
-        }
-    }
-
-    public function registerNewCustomer($data)
-    {
-        try {
-            $this->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, 3);
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -76,7 +68,8 @@ class UserService
 
             //Pass to repository
             $this->repository->insertUser($user);
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -109,7 +102,8 @@ class UserService
             } else {
                 throw new UserNotFoundException("This email is not registered.");
             }
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -152,6 +146,15 @@ class UserService
         }
     }
 
+    public function checkResetToken($email, $reset_token)
+    {
+        try {
+            $this->repository->checkResetToken($email, $reset_token);
+        } 
+        catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
 
     public function verifyResetToken($email, $reset_token)
     {
@@ -186,7 +189,8 @@ class UserService
     {
         try {
             return $this->repository->getAllUsers();
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -194,8 +198,9 @@ class UserService
     public function deleteUser($data): void
     {
         try {
-            $this->repository->deleteUser($data->id);
-        } catch (Exception $ex) {
+            $this->repository->deleteUser($id);
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -204,7 +209,8 @@ class UserService
     {
         try {
             return $this->repository->getUserById($id);
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -217,7 +223,8 @@ class UserService
             $user->setLastName(htmlspecialchars($data->lastName));
             $user->setEmail(htmlspecialchars($data->email));
             $this->repository->updateUser($user);
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -226,8 +233,17 @@ class UserService
     {
         try {
             return $this->repository->getByEmail($email);
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
+    }
+
+    public function sanitiseUserData($data){
+        $data->email = htmlspecialchars($data->email);
+        $data->firstName = htmlspecialchars($data->firstName);
+        $data->lastName = htmlspecialchars($data->lastName);
+        $data->userType = htmlspecialchars($data->userType);
+        return $data;
     }
 }

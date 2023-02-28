@@ -20,10 +20,6 @@ class AddressRepository extends Repository{
             
             $stmt->execute();
         }
-        catch(PDOException $ex)
-        {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
-        }
         catch(Exception $ex)
         {
             throw ($ex);
@@ -47,14 +43,31 @@ class AddressRepository extends Repository{
             else
                 return $result;
         }
-        catch(PDOException $ex)
-        {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
-        }
         catch(Exception $ex)
         {
             throw ($ex);
         }        
+    }
+
+    public function updateAddress(Address $address) : void
+    {
+        try{
+            $query = "UPDATE addresses SET streetName = :streetName, houseNumber = :houseNumber, postalCode = :postalCode, city = :city, country = :country WHERE addressId = :addressId";
+            $stmt = $this->connection->prepare($query);
+
+            $stmt->bindValue(":streetName", $address->getStreetName());
+            $stmt->bindValue(":houseNumber", $address->getHouseNumber());
+            $stmt->bindValue(":postalCode", $address->getPostalCode());
+            $stmt->bindValue(":city", $address->getCity());
+            $stmt->bindValue(":country", $address->getCountry());
+            $stmt->bindValue(":addressId", $address->getAddressId());
+
+            $stmt->execute();
+        }
+        catch(Exception $ex)
+        {
+            throw ($ex);
+        }
     }
 }
 

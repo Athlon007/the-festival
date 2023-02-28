@@ -5,7 +5,7 @@ require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
 
 class UserRepository extends Repository
 {
-    public function getbyId($userId): ?User
+    public function getbyId($userId): User
     {
         try {
             $query = "SELECT * FROM users WHERE userId = :userId";
@@ -21,9 +21,8 @@ class UserRepository extends Repository
                 throw new UserNotFoundException("User ID not found");
             else
                 return $result;
-        } catch (PDOException $ex) {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -44,9 +43,8 @@ class UserRepository extends Repository
                 return null;
             else
                 return $result;
-        } catch (PDOException $ex) {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -54,7 +52,7 @@ class UserRepository extends Repository
     public function insertUser(User $user): void
     {
         try {
-            $query = "INSERT INTO user (email, firstName, lastName, hashPassword, userType) VALUES (:email, :firstName, :lastName, :hashPassword, :userType)";
+            $query = "INSERT INTO users (email, firstName, lastName, hashPassword, userType) VALUES (:email, :firstName, :lastName, :hashPassword, :userType)";
             $stmt = $this->connection->prepare($query);
 
             $stmt->bindValue(":email", $user->getEmail());
@@ -64,9 +62,8 @@ class UserRepository extends Repository
             $stmt->bindValue(":userType", $user->getUserType());
 
             $stmt->execute();
-        } catch (PDOException $ex) {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        }  
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -79,9 +76,8 @@ class UserRepository extends Repository
             $stmt->bindValue(":email", $email);
             $stmt->bindValue(":reset_token", $reset_token);
             $stmt->execute();
-        } catch (PDOException $ex) {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -95,9 +91,8 @@ class UserRepository extends Repository
                 ':hashPassword' => $user->getHashPassword()
             ];
             $stmt->execute($data);
-        } catch (PDOException $ex) {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -118,9 +113,8 @@ class UserRepository extends Repository
             } else {
                 return $result;
             }
-        } catch (PDOException $ex) {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -140,9 +134,8 @@ class UserRepository extends Repository
                 return null;
             else
                 return $result;
-        } catch (PDOException $ex) {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -153,9 +146,8 @@ class UserRepository extends Repository
             $stmt = $this->connection->prepare("DELETE FROM users WHERE userId = :id");
             $stmt->bindValue(':id', $id);
             $stmt->execute();
-        } catch (PDOException $ex) {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        }
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -175,9 +167,8 @@ class UserRepository extends Repository
                 return null;
             else
                 return $result;
-        } catch (PDOException $ex) {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -193,9 +184,8 @@ class UserRepository extends Repository
                 ':email' => $user->getEmail()
             ];
             $stmt->execute($data);
-        } catch (PDOException $ex) {
-            throw new Exception("PDO Exception: " . $ex->getMessage());
-        } catch (Exception $ex) {
+        } 
+        catch (Exception $ex) {
             throw ($ex);
         }
     }

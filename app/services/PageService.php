@@ -113,7 +113,7 @@ class PageService
     {
         $id = htmlspecialchars($id);
         $page = $this->repo->getTextPageById($id);
-
+        
         if ($page == null) {
             throw new PageNotFoundException("Page with ID '$id' was not found.");
         }

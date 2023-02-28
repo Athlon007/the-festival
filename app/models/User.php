@@ -94,6 +94,11 @@ class User implements JsonSerializable
     {
         $this->userType = $userType;
     }
+
+    public function isAdmin() : bool
+    {
+        return $this->userType == 1;
+    }
 }
 
 ?>
