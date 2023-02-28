@@ -91,4 +91,19 @@ export class ImagePicker {
             });
         });
     }
+
+    selectImage(id) {
+        const labels = this.container.querySelectorAll('label');
+        labels.forEach(element => {
+            let checkboxes = element.querySelectorAll('input');
+            checkboxes.forEach(element => {
+                if (element.value == id) {
+                    element.checked = true;
+                    if (!this.selectedImages.includes(element.value)) {
+                        this.selectedImages.push(element.value);
+                    }
+                }
+            });
+        });
+    }
 }

@@ -248,11 +248,7 @@ function createNewOptionItem(element) {
                     // select images that are used by the page.
                     data.images.forEach(image => {
                         let checkboxes = document.getElementsByName('image');
-                        checkboxes.forEach(img => {
-                            if (img.value == image.id) {
-                                img.checked = true;
-                            }
-                        });
+                        imgPicker.selectImage(image.id);
                     });
 
                     btnOpen.onclick = function () {
