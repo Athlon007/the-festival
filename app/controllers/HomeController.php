@@ -6,9 +6,16 @@ class HomeController
         require("../views/home/index.php");
     }
 
-    public function login(): void
+    public function account() : void
     {
-        require("../views/home/login.php");
+        //Load login screen if user is not logged in, else load account management screen
+        if (!isset($_SESSION['user'])) {
+            require("../views/home/login.php");
+        }
+        else {
+            $user = $_SESSION['user'];
+            require("../views/home/account.php");
+        }
     }
 
     public function register(): void
