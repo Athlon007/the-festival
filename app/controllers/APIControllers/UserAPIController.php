@@ -137,8 +137,7 @@ class UserAPIController extends APIController
             $userService = new UserService();
 
             if (
-                $data == null || !isset($data->email) || !isset($data->token)
-                || !isset($data->newPassword) || !isset($data->confirmPassword)
+                $data == null || !isset($data->email) || empty($data->email)
             ) {
                 throw new Exception("No data received.");
             }
@@ -165,7 +164,8 @@ class UserAPIController extends APIController
 
             if (
                 $data == null || !isset($data->email) || !isset($data->newPassword) ||
-                !isset($data->token) || !isset($data->confirmPassword)
+                !isset($data->token) || !isset($data->confirmPassword) || empty($data->newPassword) ||
+                empty($data->confirmPassword)
             ) {
                 throw new Exception("No data received.");
             }

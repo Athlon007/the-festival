@@ -127,7 +127,22 @@ class UserService
             $mail->Username = "infohaarlemfestival5@gmail.com";
             $mail->Password = 'zznalnrljktsitri';
             $mail->Subject = "Password Reset Request";
-            $mail->Body = "Click this link to reset your password: http://localhost/updatePassword?token=$reset_token&email=$email";
+
+            $user = $this->getUserByEmail($email);
+            $name = $user->getFirstName();
+
+
+            $mail->Body = "Dear $name,
+
+            We received a request to reset your password for The Festival website. If you did not initiate this request, please disregard this message.
+
+            If you did request a password reset, please click the link below to reset your password. This link will expire in 24 hours, so please act promptly.
+
+            For security reasons, please do not share this link with anyone else. If you have any questions or concerns, please contact our support team at infohaarlemfestival5@gmail.com
+            Click this link to reset your password: http://localhost/updatePassword?token=$reset_token&email=$email
+
+            Thank you,
+            The Festival Website Team";
 
             $mail->setFrom("infohaarlemfestival5@gmail.com");
             $mail->addAddress($email);
@@ -137,14 +152,34 @@ class UserService
         }
     }
 
+
     public function verifyResetToken($email, $reset_token)
     {
         try {
-            $this->repository->verifyResetToken($email, $reset_token);
+            $result = $this->repository->verifyResetToken($email, $reset_token);
+
+            if ($result === null) {
+                // reset token not found or expired
+                throw new Exception('Reset token not found or expired, please request a new one.');
+            }
+
+            // check if reset token is still valid based on sendTime column
+            $sendTime = strtotime($result['sendTime']);
+            $currentTime = time();
+            $validTime = 24 * 60 * 60; // 24 hours in seconds
+
+            if (($currentTime - $sendTime) > $validTime) {
+                // reset token has expired
+                throw new Exception('Reset token expired, please request a new one.');
+            }
+
+            // reset token is still valid
+            return $result;
         } catch (Exception $ex) {
-            throw ($ex);
+            throw $ex;
         }
     }
+
 
 
     public function getAllUsers(): array

@@ -105,7 +105,7 @@ class UserRepository extends Repository
     public function verifyResetToken($email, $reset_token)
     {
         try {
-            $stmt = $this->connection->prepare("SELECT * FROM resettokens WHERE email =:email AND reset_token =:reset_token AND sendTime > DATE_SUB(NOW(), INTERVAL 1 DAY)");
+            $stmt = $this->connection->prepare("SELECT * FROM resettokens WHERE email =:email AND reset_token =:reset_token AND sendTime >= DATE_SUB(NOW(), INTERVAL 1 DAY)");
             $data = [
                 ':email' => $email,
                 ':reset_token' => $reset_token
