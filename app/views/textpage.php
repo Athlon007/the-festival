@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/main_no_editor.css">
     <link rel="stylesheet" href="/css/icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <title>Visit Haarlem - <?= $title; ?></title>
 </head>
 
@@ -51,6 +52,7 @@
     <script type="module" src="/js/nav.js"></script>
     <script type="module" src="/js/foot.js"></script>
     <script type="application/javascript" src="/js/textpage.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
 </body>
 
 </html>

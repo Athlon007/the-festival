@@ -33,3 +33,14 @@ $(window).on('resize', function () {
 });
 
 checkResize();
+
+// Load Map (if present)
+let map;
+if (document.getElementById('map')) {
+    // Haarlem: 52.3799269,4.6352652,15.8z
+    map = L.map('map').setView([52.3799269, 4.6352652], 16);
+    L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+}

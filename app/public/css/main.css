@@ -230,6 +230,10 @@ h2 {
     transform: translateY(0);
 }
 
+#map {
+    height: 800px;
+}
+
 @media (min-width: 960px) {
     .lang-picker {
         padding-left: 0.5rem;
