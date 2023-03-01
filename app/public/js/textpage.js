@@ -36,8 +36,11 @@ checkResize();
 
 // Load Map (if present)
 if (document.getElementById('mapContainer')) {
+    console.log('Map container found! Loading map...');
     let script = document.createElement('script');
     script.src = '/js/map.js';
     script.type = 'text/javascript';
     document.getElementsByTagName('head')[0].appendChild(script);
+} else {
+    console.log('No map container found.');
 }

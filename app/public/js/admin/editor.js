@@ -21,7 +21,10 @@ tinymce.init({
     plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
     toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
     menu: {
-        custom: { title: 'Festival', items: 'customAddButtonButton customInsertImageButton customInsertNavTile' }
+        custom: {
+            title: 'Festival',
+            items: 'customAddButtonButton customInsertImageButton customInsertNavTile customInsertMap'
+        }
     },
     menubar: 'file edit view insert format tools table custom',
     tinycomments_mode: 'embedded',
@@ -31,7 +34,8 @@ tinymce.init({
     },
     content_css: [
         "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css",
-        "/css/main.css"
+        "/css/main.css",
+        "/css/editor.css"
     ],
     setup: (editor) => {
         try {
@@ -181,7 +185,13 @@ tinymce.init({
                             editor.insertContent(container.outerHTML);
                         });
                 }
-            })
+            });
+            editor.ui.registry.addMenuItem('customInsertMap', {
+                text: 'Insert Map',
+                onAction: () => {
+                    editor.insertContent("<div id='mapContainer' class='row' data-mapkind='general'></div>");
+                }
+            });
         } catch (error) {
             console.log(error);
         }

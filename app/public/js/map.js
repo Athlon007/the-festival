@@ -16,6 +16,8 @@ script.src = 'https://unpkg.com/leaflet@1.9.3/dist/leaflet.js';
 script.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(script);
 
+console.log('Leaflet loaded.');
+
 // LOAD MAP
 const container = document.getElementById('mapContainer');
 let map;
