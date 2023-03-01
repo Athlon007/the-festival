@@ -97,3 +97,8 @@ input[type=checkbox]:checked~.tile-checked:after {
     font-size: 24px;
     font-weight: bold;
 }
+
+h1,
+h2 {
+    font-size: 2rem;
+}
