@@ -1,4 +1,5 @@
 const HAARLEM_LOCATION = [52.3814425, 4.6360367]; // I don't think Haarlem is going to move anytime soon.
+const DEFAULT_ZOOM_LEVEL = 16;
 
 // LOAD LEAFLET
 // Load the CSS file of Leaflet.
@@ -42,11 +43,32 @@ switch (container.dataset.mapkind) {
         divCollapse.id = 'mapCollapseLayers';
         colViews.appendChild(divCollapse);
 
-        let btnLayerOverview = document.createElement('button');
-        btnLayerOverview.classList.add('list-group-item', 'list-group-item-action', 'active');
-        btnLayerOverview.innerText = 'Overview';
-        btnLayerOverview.onclick = showOverview;
-        divCollapse.appendChild(btnLayerOverview);
+        let buttons = [
+            { name: 'Overview', function: showOverview },
+            { name: 'DANCE!', function: showDance },
+            { name: 'Haarlem Jazz', function: showJazz },
+            { name: 'Stroll Through Haarlem', function: showStroll },
+            { name: 'Yummy!', function: showYummy },
+            { name: 'The Teyler Mystery', function: showTeyler },
+        ]
+
+        buttons.forEach(button => {
+            let btn = document.createElement('button');
+            btn.classList.add('list-group-item', 'list-group-item-action');
+            btn.innerText = button.name;
+            btn.onclick = () => {
+                // Get buttons with active class and remove it.
+                let activeButtons = document.querySelectorAll('.list-group-item.active');
+                activeButtons.forEach(activeButton => {
+                    activeButton.classList.remove('active');
+                });
+                // Make this active.
+                btn.classList.add('active');
+                clearAreas();
+                button.function();
+            }
+            divCollapse.appendChild(btn);
+        });
 
         let mapDiv = document.createElement('div');
         mapDiv.id = 'map';
@@ -55,7 +77,7 @@ switch (container.dataset.mapkind) {
         container.appendChild(colViews);
         container.appendChild(mapDiv);
 
-        map = L.map('map').setView(HAARLEM_LOCATION, 16);
+        map = L.map('map').setView(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
         L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -67,11 +89,12 @@ switch (container.dataset.mapkind) {
 }
 
 function moveMap(location, zoom) {
-    map.panTo(location);
+    map.panTo(location, { animate: false }); // Can't animate, because the zoom fucks up the animation.
     map.setZoom(zoom);
 }
 
 let areas = [];
+let pins = [];
 
 function addArea(name, coordinates, color) {
     let area = L.polygon(coordinates, {
@@ -91,6 +114,33 @@ function clearAreas() {
     areas = [];
 }
 
+function addPin(name, location) {
+    let pin = L.marker(location).addTo(map);
+    pin.bindPopup(name);
+
+    pins.push(pin);
+}
+
+function clearPins() {
+    pins.forEach(pin => {
+        map.removeLayer(pin);
+    });
+    pins = [];
+}
+
+function mapDebug() {
+    // Keep printing the map location to the console.
+    map.on('move', function () {
+        console.log(map.getCenter() + ' ' + map.getZoom());
+    });
+
+    // On click on map, print the location to the console.
+    map.on('click', function (e) {
+        console.log(e.latlng);
+    });
+}
+
+mapDebug();
 
 function showOverview() {
     const LOCATION = [52.393306, 4.622498];
@@ -127,16 +177,23 @@ function showOverview() {
     ], '#4943A0');
 }
 
-function mapDebug() {
-    // Keep printing the map location to the console.
-    map.on('move', function () {
-        console.log(map.getCenter() + ' ' + map.getZoom());
-    });
-
-    // On click on map, print the location to the console.
-    map.on('click', function (e) {
-        console.log(e.latlng);
-    });
+// TODO: Add the other functions.
+function showDance() {
+    moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
 }
 
-mapDebug();
+function showJazz() {
+    moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+}
+
+function showStroll() {
+    moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+}
+
+function showYummy() {
+    moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+}
+
+function showTeyler() {
+    moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+}
