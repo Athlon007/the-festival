@@ -52,7 +52,23 @@
                 </tr>
             </tbody>
         </table>
-        <div id="map"></div>
+        <div id="mapContainer" class="row" data-mapkind="general">
+            <div class="col-0 col-md-2">
+                <h3>Check out the locations per event</h3>
+                <div class="d-block d-md-none">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="layers">Views</button>
+                </div>
+                <div id="layers" class="w-100 list-group d-none d-md-flex">
+                    <button class="list-group-item w-100">Overview</button>
+                    <button class="list-group-item">DANCE!</button>
+                    <button class="list-group-item">Haarlem Jazz</button>
+                    <button class="list-group-item">Stroll Through Haarlem</button>
+                    <button class="list-group-item">Yummy!</button>
+                    <button class="list-group-item">The Teyler Mystery</button>
+                </div>
+            </div>
+            <div id="map" class="col-12 col-md-10"></div>
+        </div>
     </div>
     <footer class="foot row bottom"></footer>
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>

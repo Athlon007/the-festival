@@ -48,7 +48,8 @@ h2,
 h3,
 h4,
 h5,
-.btn {
+.btn,
+.list-group-item {
     font-family: 'Rasa', serif;
 }
 
@@ -231,7 +232,7 @@ h2 {
 }
 
 #map {
-    height: 800px;
+    height: 674px;
 }
 
 @media (min-width: 960px) {
