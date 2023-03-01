@@ -258,4 +258,9 @@ h2 {
     .foot>div>ul {
         padding: 0;
     }
+
+    .carousel-caption>h1 {
+        font-size: 64px;
+        transform: translateY(-70%);
+    }
 }
