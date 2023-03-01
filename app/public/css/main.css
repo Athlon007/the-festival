@@ -235,6 +235,10 @@ h2 {
     height: 674px;
 }
 
+.fc-event {
+    border-width: 4px !important;
+}
+
 @media (min-width: 960px) {
     .lang-picker {
         padding-left: 0.5rem;

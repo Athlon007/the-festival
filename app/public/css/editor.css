@@ -78,7 +78,7 @@ input[type=checkbox]:checked~.tile-checked:after {
     width: 100%;
     height: 674px;
     /* set image as background */
-    background-image: url('../img/jpg/dummymap.jpg');
+    background-image: url('../img/jpg/editor/dummymap.jpg');
     background-size: cover;
 }
 

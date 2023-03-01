@@ -22,72 +22,92 @@ console.log('Leaflet loaded.');
 const container = document.getElementById('mapContainer');
 let map;
 
-switch (container.dataset.mapkind) {
-    case 'general':
-        // Create a map with a general location.
-        let colViews = document.createElement('div');
-        colViews.classList.add('col-0', 'col-md-2');
-        let h3 = document.createElement('h3');
-        h3.innerText = 'Check out the locations per event';
-        colViews.appendChild(h3);
+// Wait for L to be defined 5 times every 1 second.
+let mapLoadRetries = 0;
+let interval = setInterval(() => {
+    if (mapLoadRetries > 5) {
+        clearInterval(interval);
+        console.error('Could not load map.');
+        return;
+    }
+    if (typeof L === 'undefined') {
+        mapLoadRetries++;
+        return;
+    }
+    clearInterval(interval);
+    console.log('L defined. Loading map...');
+    loadMap();
+}, 1000);
 
-        let btnLayers = document.createElement('button');
-        btnLayers.classList.add('btn', 'btn-primary', 'd-block', 'd-md-none', 'collapsed');
-        btnLayers.setAttribute('data-bs-toggle', 'collapse');
-        btnLayers.setAttribute('data-bs-target', '#mapCollapseLayers');
-        btnLayers.setAttribute('aria-expanded', 'false');
-        btnLayers.setAttribute('aria-controls', 'mapCollapseLayers');
-        btnLayers.innerText = 'Views';
-        colViews.appendChild(btnLayers);
 
-        let divCollapse = document.createElement('div');
-        divCollapse.classList.add('w-100', 'list-group', 'collapsed', 'collapse', 'd-md-flex');
-        divCollapse.id = 'mapCollapseLayers';
-        colViews.appendChild(divCollapse);
+function loadMap() {
+    switch (container.dataset.mapkind) {
+        case 'general':
+            // Create a map with a general location.
+            let colViews = document.createElement('div');
+            colViews.classList.add('col-0', 'col-md-2');
+            let h3 = document.createElement('h3');
+            h3.innerText = 'Check out the locations per event';
+            colViews.appendChild(h3);
 
-        let buttons = [
-            { name: 'Overview', function: showOverview },
-            { name: 'DANCE!', function: showDance },
-            { name: 'Haarlem Jazz', function: showJazz },
-            { name: 'Stroll Through Haarlem', function: showStroll },
-            { name: 'Yummy!', function: showYummy },
-            { name: 'The Teyler Mystery', function: showTeyler },
-        ]
+            let btnLayers = document.createElement('button');
+            btnLayers.classList.add('btn', 'btn-primary', 'd-block', 'd-md-none', 'collapsed');
+            btnLayers.setAttribute('data-bs-toggle', 'collapse');
+            btnLayers.setAttribute('data-bs-target', '#mapCollapseLayers');
+            btnLayers.setAttribute('aria-expanded', 'false');
+            btnLayers.setAttribute('aria-controls', 'mapCollapseLayers');
+            btnLayers.innerText = 'Views';
+            colViews.appendChild(btnLayers);
 
-        buttons.forEach(button => {
-            let btn = document.createElement('button');
-            btn.classList.add('list-group-item', 'list-group-item-action');
-            btn.innerText = button.name;
-            btn.onclick = () => {
-                // Get buttons with active class and remove it.
-                let activeButtons = document.querySelectorAll('.list-group-item.active');
-                activeButtons.forEach(activeButton => {
-                    activeButton.classList.remove('active');
-                });
-                // Make this active.
-                btn.classList.add('active');
-                clearAreas();
-                button.function();
-            }
-            divCollapse.appendChild(btn);
-        });
+            let divCollapse = document.createElement('div');
+            divCollapse.classList.add('w-100', 'list-group', 'collapsed', 'collapse', 'd-md-flex');
+            divCollapse.id = 'mapCollapseLayers';
+            colViews.appendChild(divCollapse);
 
-        let mapDiv = document.createElement('div');
-        mapDiv.id = 'map';
-        mapDiv.classList.add('col-12', 'col-md-10');
+            let buttons = [
+                { name: 'Overview', function: showOverview },
+                { name: 'DANCE!', function: showDance },
+                { name: 'Haarlem Jazz', function: showJazz },
+                { name: 'Stroll Through Haarlem', function: showStroll },
+                { name: 'Yummy!', function: showYummy },
+                { name: 'The Teyler Mystery', function: showTeyler },
+            ]
 
-        container.appendChild(colViews);
-        container.appendChild(mapDiv);
+            buttons.forEach(button => {
+                let btn = document.createElement('button');
+                btn.classList.add('list-group-item', 'list-group-item-action');
+                btn.innerText = button.name;
+                btn.onclick = () => {
+                    // Get buttons with active class and remove it.
+                    let activeButtons = document.querySelectorAll('.list-group-item.active');
+                    activeButtons.forEach(activeButton => {
+                        activeButton.classList.remove('active');
+                    });
+                    // Make this active.
+                    btn.classList.add('active');
+                    clearAreas();
+                    button.function();
+                }
+                divCollapse.appendChild(btn);
+            });
 
-        map = L.map('map').setView(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
-        L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
-        break;
-    default:
-        console.error('Unknown map type: ' + container.dataset.maptype);
-        break;
+            let mapDiv = document.createElement('div');
+            mapDiv.id = 'map';
+            mapDiv.classList.add('col-12', 'col-md-10');
+
+            container.appendChild(colViews);
+            container.appendChild(mapDiv);
+
+            map = L.map('map').setView(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+            L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+            break;
+        default:
+            console.error('Unknown map type: ' + container.dataset.maptype);
+            break;
+    }
 }
 
 function moveMap(location, zoom) {
@@ -142,7 +162,6 @@ function mapDebug() {
     });
 }
 
-mapDebug();
 
 function showOverview() {
     const LOCATION = [52.393306, 4.622498];

@@ -18,41 +18,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
 
     <div class="container">
-        <table style="color: var(--bs-body-color); font-family: var(--bs-body-font-family); font-size: var(--bs-body-font-size); text-align: var(--bs-body-text-align); background-color: var(--bs-body-bg); width: 100%; height: 787px; border-width: 0px;">
-            <tbody>
-                <tr style="height: 438px;">
-                    <td style="height: 438px; border-width: 0px; padding: 12px;">
-                        <a href="/festival">
-                            <div class="card img-fluid nav-tile">
-                                <div class="carousel-caption">
-                                    <p>Name</p>
-                                </div>
-                                <img class="card-img-top" src="../img/jpg/food-home.jpg" alt="">
-                                <div class="card-img-overlay">
-                                    <p class="card-text w-65 d-inline-block">This card has supporting text below as a natural lead-in to additional content.</p>
-                                    <button class="btn btn-primary w-25 d-inline float-end">MY Button</button>
-                                </div>
-                            </div>
-                        </a>
-                    </td>
-                    <td style="height: 438px; border-width: 0px; padding: 12px;">
-                        <a href="/festival">
-                            <div class="card img-fluid nav-tile">
-                                <div class="carousel-caption">
-                                    <p>A Stroll Through Haarlem</p>
-                                </div>
-                                <img class="card-img-top" src="../img/jpg/food-home.jpg" alt="">
-                                <div class="card-img-overlay">
-                                    <p class="card-text w-65 d-inline-block">This card has supporting text below as a natural lead-in to additional content.</p>
-                                    <button class="btn btn-primary w-25 d-inline float-end">MY Button</button>
-                                </div>
-                            </div>
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <div id="mapContainer" class="row" data-mapkind="general">
+        <div class="row" id="calendar">
+
         </div>
     </div>
     <footer class="foot row bottom"></footer>
@@ -60,9 +27,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <script type="module" src="/js/nav.js"></script>
     <script type="module" src="/js/foot.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
     <script type="module" src="/js/textpage.js"></script>
-
 </body>
 
 </html>
