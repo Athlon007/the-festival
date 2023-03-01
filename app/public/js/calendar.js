@@ -1,16 +1,16 @@
 const START_DATE = '2023-07-27 10:00:00';
 
 // Load FullCalendar's JS.
-let script = document.createElement('script');
-script.src = 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js';
-script.type = 'text/javascript';
-document.getElementsByTagName('head')[0].appendChild(script);
+let fcScript = document.createElement('script');
+fcScript.src = 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js';
+fcScript.type = 'text/javascript';
+document.getElementsByTagName('head')[0].appendChild(fcScript);
 
 // Wait for FullCalendar to be defined 5 times every 1 second.
 let calendarLoadRetries = 0;
-let interval = setInterval(() => {
+let calLoadInterval = setInterval(() => {
     if (calendarLoadRetries > 5) {
-        clearInterval(interval);
+        clearInterval(calLoadInterval);
         console.error('Could not load calendar.');
         return;
     }
@@ -18,7 +18,7 @@ let interval = setInterval(() => {
         calendarLoadRetries++;
         return;
     }
-    clearInterval(interval);
+    clearInterval(calLoadInterval);
     console.log('FullCalendar defined. Loading calendar...');
     loadCalendar();
 }, 1000);
@@ -91,8 +91,6 @@ function loadCalendar() {
         });
     }
 
-    addEvent('A Stroll Through Haarlem', '2023-07-27 10:00:00', '2023-07-27 18:30:00', '', '#e2e0dc', '#3E2D12');
-    addEvent('Haarlem Jazz', '2023-07-27 18:00:00', '2023-07-27 22:00:00', '', '#d8e6ee', '#03578C');
     $(window).on('resize', function () {
         checkResize();
     });

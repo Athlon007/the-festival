@@ -40,6 +40,9 @@ if (document.getElementById('mapContainer')) {
     script.src = '/js/map.js';
     script.type = 'text/javascript';
     document.getElementsByTagName('head')[0].appendChild(script);
+
+    // Start map after loading script
+    script.onload = () => HMap.start('mapContainer');
 } else {
     console.log('No map container found.');
 }

@@ -23,7 +23,7 @@ tinymce.init({
     menu: {
         custom: {
             title: 'Festival',
-            items: 'customAddButtonButton customInsertImageButton customInsertNavTile customInsertMap'
+            items: 'customAddButtonButton customInsertImageButton customInsertNavTile customInsertMap customInsertCalendar'
         }
     },
     menubar: 'file edit view insert format tools table custom',
@@ -190,6 +190,12 @@ tinymce.init({
                 text: 'Insert Map',
                 onAction: () => {
                     editor.insertContent("<div id='mapContainer' class='row' data-mapkind='general'></div>");
+                }
+            });
+            editor.ui.registry.addMenuItem('customInsertCalendar', {
+                text: 'Insert Calendar',
+                onAction: () => {
+                    editor.insertContent("<div id='calendar' class='row'></div>");
                 }
             });
         } catch (error) {
