@@ -22,7 +22,7 @@
 <nav class="nav nav-pills flex-column flex-sm-row">
   <a class="flex-sm-fill text-sm-center nav-link active" aria-current="page" href="/../manageUsers">Users</a>
   <a class="flex-sm-fill text-sm-center nav-link" href="/../manageRestaurants">Restaurants</a>
-  <a class="flex-sm-fill text-sm-center nav-link" href="/../manageDJs">Dance</a>
+  <a class="flex-sm-fill text-sm-center nav-link" href="/../manageJazz">Jazz</a>
   <a class="flex-sm-fill text-sm-center nav-link" href="/../manageHistory">History</a>
 </nav>
 
