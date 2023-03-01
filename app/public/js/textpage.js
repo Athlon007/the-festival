@@ -35,7 +35,7 @@ $(window).on('resize', function () {
 checkResize();
 
 // Load Map (if present)
-if (document.getElementById('map')) {
+if (document.getElementById('mapContainer')) {
     let script = document.createElement('script');
     script.src = '/js/map.js';
     script.type = 'text/javascript';
