@@ -6,7 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name=”robots” content="index, follow">
-    <link rel="stylesheet" href="/stylesheet.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/icons.css">
@@ -18,9 +17,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
 
     <div class="container">
-        <div class="row" id="calendar">
-
-        </div>
+        <div class="row" id="mapContainer" data-mapkind="general"></div>
+        <div class="row" id="calendar"></div>
     </div>
     <footer class="foot row bottom"></footer>
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>

@@ -28,8 +28,9 @@ function loadCalendar() {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
         themeSystem: 'bootstrap5',
-        height: 650,
         initialView: 'timeGridWeek4Days',
+        selectable: true,
+        height: 650,
         initialDate: getStartDate(),
         headerToolbar: {
             left: 'prev,next today backToEvent',
