@@ -22,7 +22,7 @@ tinymce.init({
     toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
     menu: {
         custom: {
-            title: 'Festival',
+            title: 'Modules',
             items: 'customAddButtonButton customInsertImageButton customInsertNavTile customInsertMap customInsertCalendar'
         }
     },
