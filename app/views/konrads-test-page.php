@@ -16,22 +16,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <div class="container">
-        <div class="row" id="countdown">
-            <h2 id="countdownDays">00</h2>
-            <h2 class="countdown-separator">:</h2>
-            <h2 id="countdownHours">00</h2>
-            <h2 class="countdown-separator">:</h2>
-            <h2 id="countdownMinutes">00</h2>
-            <h2 class="countdown-separator">:</h2>
-            <h2 id="countdownSeconds">00</h2>
-            <p>Days</p>
-            <p></p>
-            <p>Hours</p>
-            <p></p>
-            <p>Minutes</p>
-            <p></p>
-            <p>Seconds</p>
-        </div>
+        <div class="row" id="countdown"></div>
         <div class="row" id="mapContainer" data-mapkind="general"></div>
         <div class="row" id="calendar"></div>
     </div>
