@@ -45,6 +45,18 @@ class Image implements JsonSerializable
 
     public function jsonSerialize(): mixed
     {
+        // if file does not exist, return null
+        if (!file_exists("../public" . $this->src)) {
+            return [
+                'id' => $this->id,
+                'src' => $this->src,
+                'alt' => $this->alt,
+                'size' => null,
+                'resolution' => null,
+                'type' => null
+            ];
+        }
+
         return [
             'id' => $this->id,
             'src' => $this->src,

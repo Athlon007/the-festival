@@ -15,7 +15,6 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
-
     <div class="container">
         <div class="row" id="mapContainer" data-mapkind="general"></div>
         <div class="row" id="calendar"></div>
