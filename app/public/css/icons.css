@@ -27,8 +27,3 @@
     background-size: 100% 100%;
     margin-top: 12px;
 }
-
-li:has(> .user-icon),
-li:has(> .shopping-cart-icon) {
-    padding: 0;
-}
