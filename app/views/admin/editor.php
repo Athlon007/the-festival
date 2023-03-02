@@ -28,18 +28,23 @@
             <div id="master-editor" class="col-10 card p-0 disabled-module">
                 <div class="card-body m-0">
                     <div class="row">
-                        <div class="col-6">
-                            <label for="title" class="form-label">Title</label>
-                            <input type="text" id="title" class="form-control mb-2" placeholder="Title">
-                        </div>
-                        <div class="col-6">
-                            <label for="href" class="form-label">Link</label>
-                            <input type="text" id="page-href" class="form-control mb-2" placeholder="If left empty, will be used as Index">
-                        </div>
+                        <button class="btn" data-bs-toggle="collapse" data-bs-target="#collapsibleArea" aria-expanded="true" aria-controls="collapsibleArea">Show Only Editor</button>
                     </div>
-                    <label for="banner-images" class="form-label">Banner Images</label>
-                    <div class="card">
-                        <div id="images" class="card-body">
+                    <div id="collapsibleArea" class="collapse show">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="title" class="form-label">Title</label>
+                                <input type="text" id="title" class="form-control mb-2" placeholder="Title">
+                            </div>
+                            <div class="col-6">
+                                <label for="href" class="form-label">Link</label>
+                                <input type="text" id="page-href" class="form-control mb-2" placeholder="If left empty, will be used as Index">
+                            </div>
+                        </div>
+                        <label for="banner-images" class="form-label">Banner Images</label>
+                        <div class="card">
+                            <div id="images" class="card-body">
+                            </div>
                         </div>
                     </div>
                     <label for="editor" class="form-label">Content</label>

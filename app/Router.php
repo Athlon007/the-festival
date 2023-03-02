@@ -117,6 +117,9 @@ class Router
                 $userController = new UserController();
                 $userController->manageUsers();
                 break;
+            case "/konradstestpage":
+                require_once("views/konrads-test-page.php");
+                break;
             default:
                 $this->route404($message);
                 break;

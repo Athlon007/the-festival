@@ -1,7 +1,6 @@
 let areImagesSwappedForSmall = false;
 let tableRowsWithImagesOnRight = document.querySelectorAll('tr td:nth-child(2) img');
 
-let counter = 0;
 // If table tr has an image that is in second column, then swap the two tds
 function swapTableImg() {
     tableRowsWithImagesOnRight.forEach(element => {
@@ -33,3 +32,28 @@ $(window).on('resize', function () {
 });
 
 checkResize();
+
+// Load Map (if present)
+if (document.getElementById('mapContainer')) {
+    console.log('Map container found! Loading map...');
+    let script = document.createElement('script');
+    script.src = '/js/map.js';
+    script.type = 'text/javascript';
+    document.getElementsByTagName('head')[0].appendChild(script);
+
+    // Start map after loading script
+    script.onload = () => HMap.start('mapContainer');
+} else {
+    console.log('No map container found.');
+}
+
+// Load calendar (if present)
+if (document.getElementById('calendar')) {
+    console.log('Calendar container found! Loading calendar...');
+    let script = document.createElement('script');
+    script.src = '/js/calendar.js';
+    script.type = 'text/javascript';
+    document.getElementsByTagName('head')[0].appendChild(script);
+} else {
+    console.log('No calendar container found.');
+}
