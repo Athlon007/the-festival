@@ -63,8 +63,9 @@ function loadCalendar() {
             backToEvent: {
                 text: 'back to event',
                 click: function () {
-                    calendar.changeView('timeGridWeek4Days');
+                    calendar.changeView($(window).width() < 960 ? 'timeGridDay' : 'timeGridWeek4Days');
                     calendar.gotoDate(getStartDate());
+                    calendar.scrollToTime('10:00:00');
                 }
             }
         }
@@ -78,6 +79,11 @@ function loadCalendar() {
     }, 1000);
 
     function getStartDate() {
+        // If today is after the start date, return today.
+        if (new Date() > new Date(START_DATE)) {
+            return new Date();
+        }
+
         return START_DATE; // TODO: Pull that from the database
     }
 
