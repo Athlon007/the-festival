@@ -241,9 +241,10 @@ h2 {
 
 #countdown {
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto auto;
-    max-width: 200px;
+    grid-template-columns: 3rem 3rem 3rem 3rem 3rem 3rem 3rem;
     grid-template-rows: 3rem 3rem;
+    text-align: center;
+    justify-content: center;
 }
 
 #countdown>p {

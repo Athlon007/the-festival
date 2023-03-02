@@ -24,11 +24,17 @@ class Countdown {
     }
 
     static start(id) {
-        let container = document.getElementById(id);
-        if (!container) {
+        let spot = document.getElementById(id);
+        if (!spot) {
             console.error('Could not find countdown container.');
             return;
         }
+
+        let container = document.createElement('div');
+        container.id = 'countdown';
+        // Replace the spot with container
+        spot.parentNode.replaceChild(container, spot);
+
         return new Countdown(container);
     }
 
