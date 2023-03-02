@@ -33,11 +33,12 @@ $(window).on('resize', function () {
 
 checkResize();
 
+// LOAD MODULES
 // Load Map (if present)
 if (document.getElementById('mapContainer')) {
     console.log('Map container found! Loading map...');
     let script = document.createElement('script');
-    script.src = '/js/map.js';
+    script.src = '/js/modules/map.js';
     script.type = 'text/javascript';
     document.getElementsByTagName('head')[0].appendChild(script);
 
@@ -51,9 +52,22 @@ if (document.getElementById('mapContainer')) {
 if (document.getElementById('calendar')) {
     console.log('Calendar container found! Loading calendar...');
     let script = document.createElement('script');
-    script.src = '/js/calendar.js';
+    script.src = '/js/modules/calendar.js';
     script.type = 'text/javascript';
     document.getElementsByTagName('head')[0].appendChild(script);
 } else {
     console.log('No calendar container found.');
+}
+
+// Load counter module (if present)
+if (document.getElementById('countdown')) {
+    console.log('Countdown container found! Loading countdown...');
+    let script = document.createElement('script');
+    script.src = '/js/modules/countdown.js';
+    script.type = 'text/javascript';
+    document.getElementsByTagName('head')[0].appendChild(script);
+
+    script.onload = () => Countdown.start('countdown');
+} else {
+    console.log('No countdown container found.');
 }

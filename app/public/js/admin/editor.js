@@ -23,7 +23,7 @@ tinymce.init({
     menu: {
         custom: {
             title: 'Modules',
-            items: 'customAddButtonButton customInsertImageButton customInsertNavTile customInsertMap customInsertCalendar'
+            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile  '
         }
     },
     menubar: 'file edit view insert format tools table custom',
@@ -40,7 +40,7 @@ tinymce.init({
     setup: (editor) => {
         try {
             editor.ui.registry.addMenuItem('customAddButtonButton', {
-                text: 'Add Button',
+                text: 'Button',
                 onAction: () => {
                     msgBox.createDialogWithInputs('Add Button', [
                         {
@@ -60,7 +60,7 @@ tinymce.init({
                 }
             });
             editor.ui.registry.addMenuItem('customInsertImageButton', {
-                text: 'Insert Image',
+                text: 'Image',
                 onAction: () => {
                     let rndInt = Math.floor(Math.random() * 100000000);
                     msgBox.createDialogWithInputs('Insert Image From Library', [
@@ -107,7 +107,7 @@ tinymce.init({
                 }
             });
             editor.ui.registry.addMenuItem('customInsertNavTile', {
-                text: 'Insert Nav Tile',
+                text: 'Nav Tile',
                 onAction: () => {
                     let rndInt = Math.floor(Math.random() * 100000000);
                     msgBox.createDialogWithInputs('Create Nav Tile', [
@@ -187,19 +187,25 @@ tinymce.init({
                 }
             });
             editor.ui.registry.addMenuItem('customInsertMap', {
-                text: 'Insert Map',
+                text: 'Map',
                 onAction: () => {
                     editor.insertContent("<div id='mapContainer' class='row' data-mapkind='general'></div>");
                 }
             });
             editor.ui.registry.addMenuItem('customInsertCalendar', {
-                text: 'Insert Calendar',
+                text: 'Calendar',
                 onAction: () => {
                     editor.insertContent("<div id='calendar' class='row' data-calendar-type='all-events'></div>");
                 }
             });
+            editor.ui.registry.addMenuItem('customInsertCountdown', {
+                text: 'Countdown',
+                onAction: () => {
+                    editor.insertContent("<p id='countdown'>00:00:00:00<br>days hours minutes seconds</p>");
+                }
+            });
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
 });

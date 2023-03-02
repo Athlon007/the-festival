@@ -239,6 +239,24 @@ h2 {
     border-width: 4px !important;
 }
 
+#countdown {
+    display: grid;
+    grid-template-columns: 3rem 3rem 3rem 3rem 3rem 3rem 3rem;
+    grid-template-rows: 3rem 3rem;
+    text-align: center;
+    justify-content: center;
+}
+
+#countdown>p {
+    text-align: center;
+}
+
+.countdown-counter {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+}
+
 @media (min-width: 960px) {
     .lang-picker {
         padding-left: 0.5rem;

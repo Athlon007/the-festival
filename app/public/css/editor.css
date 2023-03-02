@@ -120,6 +120,13 @@ input[type=checkbox]:checked~.tile-checked:after {
     font-weight: bold;
 }
 
+#countdown {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    color: red;
+}
+
 h1,
 h2 {
     font-size: 2rem;
