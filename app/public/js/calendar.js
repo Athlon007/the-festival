@@ -70,7 +70,12 @@ function loadCalendar() {
         }
     });
     calendar.render();
-    calendar.scrollToTime('10:00:00');
+
+    // wait for calendar to be rendered
+    setTimeout(function () {
+        // scroll to 10am
+        calendar.scrollToTime('10:00:00');
+    }, 1000);
 
     function getStartDate() {
         return START_DATE; // TODO: Pull that from the database
