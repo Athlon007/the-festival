@@ -96,4 +96,11 @@ function loadCalendar() {
         checkResize();
     });
     checkResize();
+
+    // Check what kind of calendar it is and load the events.
+    if (calendarEl.dataset.calendarType === 'all-events') {
+        // TODO: Load events from the database.
+    } else if (calendarEl.dataset.calendarType === 'personal') {
+        // TODO: Load events for the current user from the database.
+    }
 }

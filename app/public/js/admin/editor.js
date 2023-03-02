@@ -195,7 +195,7 @@ tinymce.init({
             editor.ui.registry.addMenuItem('customInsertCalendar', {
                 text: 'Insert Calendar',
                 onAction: () => {
-                    editor.insertContent("<div id='calendar' class='row'></div>");
+                    editor.insertContent("<div id='calendar' class='row' data-calendar-type='all-events'></div>");
                 }
             });
         } catch (error) {
