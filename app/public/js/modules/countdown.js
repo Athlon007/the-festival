@@ -3,6 +3,16 @@
 class Countdown {
     constructor(container) {
         this.container = container;
+
+        this.festivalStart = this.getFestivalStartDate();
+
+        // If the festival has already started, show 'Festival started' instead of the countdown
+        if (this.festivalStart < new Date()) {
+            this.container.innerHTML = '<p class="countdown-counter">Festival started!</p>';
+            return;
+        }
+
+
         this.buildCountdown();
         this.updateCountdown();
         // Update the countdown every second
@@ -67,7 +77,7 @@ class Countdown {
 
     updateCountdown() {
         const now = new Date();
-        const festivalStart = this.getFestivalStartDate();
+        const festivalStart = this.festivalStart;
         const timeLeft = festivalStart - now;
 
         this.pDays.innerText = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
@@ -77,6 +87,11 @@ class Countdown {
     }
 
     getFestivalStartDate() {
+        if (this.festivalStart) {
+            // We already have the start date.
+            return this.festivalStart;
+        }
+
         // TODO: Get the start date from the database
         return new Date('2023-07-27 10:00:00');
     }
