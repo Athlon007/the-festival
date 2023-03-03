@@ -66,11 +66,6 @@ class UserAPIController extends APIController
             if (!isset($data->email) || !isset($data->password)) {
                 throw new Exception("Email and password are required.");
             }
-
-            //Sanitise data
-            $email = htmlspecialchars($data->email);
-            $password = htmlspecialchars($data->password);
-
             //Fetch user (method throws error if user not found)
             $user = $userService->verifyUser($data);
 

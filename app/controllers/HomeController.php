@@ -1,4 +1,5 @@
 <?php
+require_once(__DIR__ . "/../models/Customer.php");
 class HomeController
 {
     public function index(): void
@@ -8,11 +9,13 @@ class HomeController
 
     public function account() : void
     {
+        session_start();
         //Load login screen if user is not logged in, else load account management screen
         if (!isset($_SESSION['user'])) {
             require("../views/home/login.php");
         }
         else {
+            $user = new Customer(); 
             $user = $_SESSION['user'];
             require("../views/home/account.php");
         }

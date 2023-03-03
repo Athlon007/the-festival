@@ -13,36 +13,186 @@
     <link rel="stylesheet" href="/css/icons.css">
 </head>
 
-<body>
+<body onload="">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <script type="module" src="/js/nav.js"></script>
 
-    <!-- Account management panel -->
-    <div class="container py-5 h-100">
-        <div class="row p-6">
-            <div class="col-md-3">
-                <h2 class="text-center">Login Information</h2>
-                <div class="card">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">E-mail</label>
-                            <input type="text" class="form-control" id="email" name="email">
+    <!-- Registration container -->
+        <section class="h-100 h-custom">
+            <div class="container py-5 h-100">   
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-10">
+                        <h2 class="m-5">Manage your Account</h2>
+                        <!-- Registration form -->
+                        <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+                            <div class="card-body p-0">
+                                <div class="row g-0">
+                                    <div class="col-lg-6">
+                                        <div class="p-5">
+
+                                            <h3 class="fw-normal mb-5">Personal Information</h3>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6 mb-4 pb-2">
+                                                    <div class="form-outline">
+                                                        <label class="form-label" for="firstName">First Name</label>    
+                                                        <input type="text" id="firstName" class="form-control form-control-lg"/> 
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mb-4 pb-2">
+                                                    <div class="form-outline">
+                                                        <label class="form-label" for="lastName">Last Name</label>
+                                                        <input type="text" id="lastName" class="form-control form-control-lg"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="mb-4 pb-2">
+                                                    <div class="form-outline">
+                                                        <label class="form-label" for="phoneNumber">Phone Number</label>
+                                                        <input type="text" id="phoneNumber" class="form-control form-control-lg" />
+                                                    </div>
+                                                    <div class="form-outline">
+                                                        <label class="form-label" for="dateOfBirth">Date of Birth</label>
+                                                        <input type="date" id="dateOfBirth" class="form-control form-control-lg"/> 
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                            <h3 class="fw-normal mb-5">Account Information</h3>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-outline">
+                                                    <label class="form-label" for="email">E-mail</label>
+                                                    <input type="email" id="email" class="form-control form-control-lg" />
+                                                </div>
+                                                <div class="form-outline">
+                                                    <label class="form-label" for="password">Password</label>
+                                                    <input type="password" id="password" class="form-control form-control-lg" />
+                                                </div>
+                                                <div class="form-outline">
+                                                    <label class="form-label" for="passwordConfirm">Confirm Password</label>
+                                                    <input type="password" id="passwordConfirm" class="form-control form-control-lg" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="p-5">
+                                    
+                                            <h3 class="fw-normal mb-5">Address Details</h3>
+
+                                            <div class="row">
+                                                <div class="col-md-6 mb-4 pb-2">
+                                                    <div class="form-outline form-white">
+                                                        <label class="form-label" for="postalCode">Postal Code</label>
+                                                        <input type="text" id="postalCode" class="form-control form-control-lg" onchange=fetchAddress() />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 mb-4 pb-2">
+                                                    <div class="form-outline form-white">
+                                                        <label class="form-label" for="houseNumber">House Nr</label>
+                                                        <input type="text" id="houseNumber" class="form-control form-control-lg" onchange=fetchAddress() />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 mb-4 pb-2">
+                                                    <div class="form-outline form-white">
+                                                        <label class="form-label" for="extension">Extension</label>
+                                                        <input type="text" id="extension" class="form-control form-control-lg" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-mb-4 pb-2">
+                                                    <div class="form-outline form-white">
+                                                        <label class="form-label" for="streetName">Street Name</label>
+                                                        <input type="text" id="streetName" class="form-control form-control-lg" />
+                                                    </div>
+                                                    <div class="form-outline form-white">
+                                                        <label class="form-label" for="city">Place / City</label>
+                                                        <input type="text" id="city" class="form-control form-control-lg" />
+                                                    </div>
+                                                    <div class="form-outline form-white">
+                                                        <label class="form-label" for="country">Country</label>
+                                                        <input type="text" id="country" class="form-control form-control-lg" />
+                                                    </div>
+                                                </div>
+                                            </div>                                         
+
+                                            <div id="errorBox">
+                                                <ul id="errorList">
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <button type="button" class="btn btn-light" disabled>Save Changes</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password">
-                        </div>
-                        <div class="card-footer" style="width: 100%">
-                            <a href="/provideEmail">Forgot password?</a> <br>
-                            <p class="mb-1">Don't have an account yet? <a href="/home/register">Register here.</a></p>
-                        </div>
-                        <button id="loginButton" class="btn btn-primary" onclick=attemptLogin()>Login</button>
-                    </div>
-                    <div class="card-footer" style="width: 100%">
-                        <a href="/provideEmail">Forgot password?</a> <br>
-                        <p class="mb-1">Don't have an account yet? <a href="/home/register">Register here.</a></p>
                     </div>
                 </div>
+            </div>
+        </section>
+    <!-- Account management panel -->
+    
+    <div class="container h-100">
+        
+        <div class="row p-3 h-100">
+            <div class="col-md-4 p-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Login Information</h4> <button id="editLoginDetails" class="btn btn-light" onclick=>Edit</button>
+                        <div>
+                            <div id="email"><?php echo $user->getEmail()?></div>
+                        </div>
+                        <div>
+                            Password: <br>
+                            **********
+                        </div>
+                    </div>
+                </div>
+                <button id="saveLoginDetails" class="btn mt-2 btn-primary" disabled onclick=>Save changes</button>
+            </div>
+            <div class="col-md-4 p-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Personal Information</h4> <button id="editPersonalDetails" class="btn btn-light" onclick=>Edit</button>
+                        <div>
+                            <?php echo $user->getFirstName() . " " . $user->getLastName()?> 
+                        </div>
+                        <div>
+                            <?php echo $user->getDateOfBirthAsDMY()?>
+                        </div>
+                        <div>
+                            <?php echo $user->getPhoneNumber()?>
+                        </div>
+                    </div>
+                </div>
+                <button id="savePersonalDetails" class="btn mt-2 btn-primary" disabled onclick=>Save changes</button>
+            </div>
+            <div class="col-md-4 p-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Address Information</h4> <button id="editAddressDetails" class="btn btn-light" onclick=>Edit</button>
+                        <div>
+                            <?php echo $user->getAddress()->getStreetName() . " " . $user->getAddress()->getHouseNumber()?> 
+                        </div>
+                        <div>
+                            <?php echo $user->getAddress()->getPostalCode() . " " . $user->getAddress()->getCity()?>
+                        </div>
+                        <div>
+                            <?php echo $user->getAddress()->getCountry()?>
+                        </div>
+                    </div>
+                </div>
+                <button id="saveAddressDetails" class="btn mt-2 btn-primary" disabled onclick=>Save changes</button>
             </div>
         </div>
     </div>
