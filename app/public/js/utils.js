@@ -18,7 +18,6 @@ export function getNavbarItems() {
  * @param {string} href The href to compare to the current page
  */
 export function isCurrentLink(href) {
-    console.log('a ' + window.location.pathname);
     if (href.length == 0) {
         href += "/";
     }

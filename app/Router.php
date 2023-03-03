@@ -112,20 +112,13 @@ class Router
                 $authController = new AuthController();
                 $authController->provideEmail();
                 break;
-            case "/sendEmail":
-                require_once("controllers/AuthController.php");
-                $authController = new AuthController();
-                $authController->sendEmail();
-                break;
             case "/manageUsers":
                 require_once("controllers/UserController.php");
                 $userController = new UserController();
                 $userController->manageUsers();
                 break;
-            case "/deleteUser":
-                require_once("controllers/UserController.php");
-                $userController = new UserController();
-                $userController->deleteUser();
+            case "/konradstestpage":
+                require_once("views/konrads-test-page.php");
                 break;
             default:
                 $this->route404($message);

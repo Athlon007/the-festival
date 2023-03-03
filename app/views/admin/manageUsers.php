@@ -21,22 +21,30 @@
 
     <div class="container-fluid">
         <h1 class="text-center mt-3">Manage Users</h1>
+
         <div class="row mt-3">
             <div class="col-12">
+                <label for="userType">Sort User by Role:</label>
+                <select id="userType">
+                    <option value="">All</option>
+                    <option value="customer">Customer</option>
+                    <option value="user">User</option>
+                </select>
+
                 <table class="table">
                     <thead>
                         <tr>
                             <th>User ID</th>
                             <th>Name</th>
                             <th>Last Name</th>
-                            <th>Username</th>
+                            <th>Email</th>
                             <th>Role</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($users as $user) { ?>
                             <tr>
-                                <td data-th="User ID">
+                                <td data-th="User ID" id="userId">
                                     <?php echo $user->getUserId(); ?>
                                 </td>
                                 <td data-th="Name">
@@ -48,22 +56,26 @@
                                 <td data-th="Email">
                                     <?php echo $user->getEmail(); ?>
                                 </td>
-                                <td data-th="Email">
-                                    <?php echo $user->getUserType(); ?>
+                                <td data-th="Role">
+                                    <?php if ($user->getUserType() == 3) {
+                                        ?>
+                                        Customer
+                                    <?php
+                                    } else if ($user->getUserType() == 2) {
+                                        ?>
+                                            User
+                                    <?php
+                                    } ?>
                                 </td>
-                                <?php if ($user->getUserType() == 3) {
-                                    ?>
-                                    <td>Editor/User</td>
-                                <?php
-                                } ?>
                                 <td>
-                                    <form action="deleteUser" method="POST">
-                                        <button type="submit" name="delete_user" value="<?= $user->getUserId(); ?>"
-                                            class="btn btn-danger"
-                                            onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
+                                    <div class="form-group">
+                                        <button type="submit" name="delete_user" id="deleteUserButton"
+                                            value="<?= $user->getUserId() ?>" class="btn btn-danger"
+                                            onclick="deleteUser('<?= $user->getUserId() ?>')">Delete</button>
                                         <a href="updateUser?id=<?php echo $user->getUserId() ?>"
                                             class="btn btn-primary">Update</a>
-                                    </form>
+
+                                    </div>
                                 </td>
                             </tr>
                         <?php } ?>
@@ -79,6 +91,9 @@
         </div>
     </div>
 
+    <script src="../js/admin/sortUser.js"></script>
+    <script src="../js/admin/deleteUser.js"></script>
+
     <footer class="foot row bottom"></footer>
     <script type="application/javascript"
         src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
@@ -87,4 +102,5 @@
         crossorigin="anonymous"></script>
 
     <script type="module" src="/js/foot.js"></script>
+
 </body>
