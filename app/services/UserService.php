@@ -34,10 +34,9 @@ class UserService
 
             $user = $this->repository->getByEmail($data->email);
 
-            if(password_verify($data->password, $user->getHashPassword())){
-                
-                if ($user->getUserType() == 3)
-                {
+            if (password_verify($data->password, $user->getHashPassword())) {
+
+                if ($user->getUserType() == 3) {
                     $customer = $this->customerService->getCustomerByUser($user);
                     return $customer;
                 }
@@ -46,8 +45,7 @@ class UserService
                 throw new IncorrectPasswordException("Incorrect combination of email and password");
             }
 
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -68,8 +66,7 @@ class UserService
 
             //Pass to repository
             $this->repository->insertUser($user);
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -102,8 +99,7 @@ class UserService
             } else {
                 throw new UserNotFoundException("This email is not registered.");
             }
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -117,6 +113,7 @@ class UserService
             $mail->SMTPAuth = "true";
             $mail->SMTPSecure = "tls";
             $mail->Port = 587;
+            $mail->isHTML(true);
 
             $mail->Username = "infohaarlemfestival5@gmail.com";
             $mail->Password = 'zznalnrljktsitri';
@@ -125,18 +122,70 @@ class UserService
             $user = $this->getUserByEmail($email);
             $name = $user->getFirstName();
 
-
-            $mail->Body = "Dear $name,
-
-            We received a request to reset your password for The Festival website. If you did not initiate this request, please disregard this message.
-
-            If you did request a password reset, please click the link below to reset your password. This link will expire in 24 hours, so please act promptly.
-
-            For security reasons, please do not share this link with anyone else. If you have any questions or concerns, please contact our support team at infohaarlemfestival5@gmail.com
-            Click this link to reset your password: http://localhost/updatePassword?token=$reset_token&email=$email
-
-            Thank you,
-            The Festival Website Team";
+            $mail->Body = "
+                <html>
+                <head>
+                <title>Reset Your Password</title>
+                <style>
+                    body {
+                    font-family: Arial, sans-serif;
+                    font-size: 16px;
+                    line-height: 1.5;
+                    color: #333333;
+                    background-color: #f7f7f7;
+                    }
+                    .container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    background-color: #ffffff;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    }
+                    h1 {
+                    font-size: 24px;
+                    font-weight: bold;
+                    margin-top: 0;
+                    margin-bottom: 20px;
+                    }
+                    p {
+                    margin-top: 0;
+                    margin-bottom: 20px;
+                    }
+                    a.button {
+                    color: #ffffff;
+                    text-decoration: none;
+                    background-color: #007bff;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    display: inline-block;
+                    }
+                    a.button:hover {
+                    background-color: #0069d9;
+                    }
+                    .email {
+                    color: #333333;
+                    font-weight: bold;
+                    }
+                </style>
+                </head>
+                <body>
+                <div class=\"container\">
+                    <h1>Reset Your Password</h1>
+                    <p>Dear $name,</p>
+                    <p>We received a request to reset your password for The Festival website. If you did not initiate this request, please disregard this message.</p>
+                    <p>If you did request a password reset, please click the link below to reset your password. This link will expire in 24 hours, so please act promptly.</p>
+                </div>
+                <div class=\"container\" style=\"margin-top: 20px;\">
+                    <p>For security reasons, please do not share this link with anyone else. If you have any questions or concerns, please contact our support team at <span class=\"email\">infohaarlemfestival5@gmail.com</span></p>
+                    <a href=\"http://localhost/updatePassword?token=$reset_token&email=$email\" class=\"button\">Reset Your Password</a>
+                </div>
+                <div class=\"container\" style=\"margin-top: 20px;\">
+                    <p>Thank you,<br>The Festival Website Team</p>
+                </div>
+                </body>
+                </html>
+                ";
 
             $mail->setFrom("infohaarlemfestival5@gmail.com");
             $mail->addAddress($email);
@@ -179,8 +228,7 @@ class UserService
     {
         try {
             return $this->repository->getAllUsers();
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -189,8 +237,7 @@ class UserService
     {
         try {
             $this->repository->deleteUser($data->id);
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -199,8 +246,7 @@ class UserService
     {
         try {
             return $this->repository->getUserById($id);
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -213,8 +259,7 @@ class UserService
             $user->setLastName(htmlspecialchars($data->lastName));
             $user->setEmail(htmlspecialchars($data->email));
             $this->repository->updateUser($user);
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -223,13 +268,13 @@ class UserService
     {
         try {
             return $this->repository->getByEmail($email);
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
-    public function sanitiseUserData($data){
+    public function sanitiseUserData($data)
+    {
         $data->email = htmlspecialchars($data->email);
         $data->firstName = htmlspecialchars($data->firstName);
         $data->lastName = htmlspecialchars($data->lastName);
