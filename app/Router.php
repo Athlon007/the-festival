@@ -117,6 +117,16 @@ class Router
                 $userController = new UserController();
                 $userController->manageUsers();
                 break;
+            case "/buyTicket":
+                require_once("controllers/TicketController.php");
+                $ticketController = new TicketController();
+                $ticketController->buyTicket();
+                break;
+            case "/generateTicket":
+                require_once("controllers/TicketController.php");
+                $ticketController = new TicketController();
+                $ticketController->generateAndSendTicket();
+                break;
             default:
                 $this->route404($message);
                 break;
