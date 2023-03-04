@@ -119,6 +119,15 @@ class Router
                 break;
             case "/konradstestpage":
                 require_once("views/konrads-test-page.php");
+            case "/buyTicket":
+                require_once("controllers/TicketController.php");
+                $ticketController = new TicketController();
+                $ticketController->buyTicket();
+                break;
+            case "/generateTicket":
+                require_once("controllers/TicketController.php");
+                $ticketController = new TicketController();
+                $ticketController->generateAndSendTicket();
                 break;
             default:
                 $this->route404($message);

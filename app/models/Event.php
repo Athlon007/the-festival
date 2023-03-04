@@ -3,21 +3,33 @@
 class Event implements JsonSerializable
 {
     private $id;
+    private $name;
     private DateTime $startTime;
     private DateTime $endTime;
     private $price;
 
-    public function __construct($id, DateTime $startTime, DateTime $endTime, $price)
-    {
-        $this->id = $id;
-        $this->startTime = $startTime;
-        $this->endTime = $endTime;
-        $this->price = $price;
-    }
+    // public function __construct($id, $name, DateTime $startTime, DateTime $endTime, $price)
+    // {
+    //     $this->id = $id;
+    //     $this->name = $name;
+    //     $this->startTime = $startTime;
+    //     $this->endTime = $endTime;
+    //     $this->price = $price;
+    // }
 
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($value)
+    {
+        $this->name = $value;
     }
 
     public function getStartTime(): DateTime
@@ -54,9 +66,10 @@ class Event implements JsonSerializable
     {
         return [
             "id" => $this->getId(),
+            "name" => $this->getName(),
             "startTime" => $this->getStartTime(),
             "endTime" => $this->getEndTime(),
-            "price" => $this->getPrice()
+            "price" => $this->getPrice(),
         ];
     }
 }
