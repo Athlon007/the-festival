@@ -17,6 +17,16 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Label\Label;
+use Endroid\QrCode\Logo\Logo;
+use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Writer\ValidationException;
+
 class TicketService
 {
     protected TicketRepository $repository;
@@ -28,9 +38,18 @@ class TicketService
 
     public function generatePDFTicket($ticket): Dompdf
     {
-        $options = new Options();
-        $options->setChroot(__DIR__);
-        $dompdf = new Dompdf($options);
+        // $options = new Options();
+        // $options->setChroot(__DIR__);
+        $dompdf = new Dompdf([
+            "chroot" => __DIR__,
+            "isRemoteEnabled" => true,
+            "isHtml5ParserEnabled" => true,
+            "isPhpEnabled" => true,
+            "isJavascriptEnabled" => true,
+            "isFontSubsettingEnabled" => true,
+            "isImageSubsettingEnabled" => true,
+        ]);
+
 
         // Define some styles for the HTML content
         $styles = '
@@ -40,7 +59,7 @@ class TicketService
                 font-family: Arial, sans-serif;
                 font-size: 16px;
             }
-            
+
             h1 {
                 color: brown;
                 font-size: 24px;
@@ -49,7 +68,7 @@ class TicketService
                 text-align: center;
                 text-transform: uppercase;
             }
-            
+
             .container {
                 background-color: #fff;
                 border-radius: 10px;
@@ -58,32 +77,32 @@ class TicketService
                 padding: 30px;
                 max-width: 500px;
             }
-            
+
             .logo {
                 display: block;
                 margin: 0 auto 20px;
                 max-width: 200px;
             }
-            
+
             .ticket-info {
                 display: flex;
                 justify-content: space-between;
                 margin-bottom: 20px;
             }
-            
+
             .ticket-info label {
                 font-weight: bold;
                 margin-right: 10px;
                 width: 140px;
             }
-            
+
             .ticket-info p {
                 margin: 0;
             }
-            
+
             .qr-code {
                 display: block;
-                margin: 20px auto 0;
+                margin: 10px auto 0;
                 max-width: 150px;
             }
         </style>
@@ -91,28 +110,41 @@ class TicketService
 
         //Generate a QR code image with the ticket ID as data
         $qrCodeData = $ticket->getQrCodeData();
-        $qrCodeImage = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode($qrCodeData);
+        $qrCode = new QrCode($qrCodeData);
+        $qrCode->setSize(150);
+        $qrCode->setMargin(10);
 
+        // Create generic label for QR code
+        $label = Label::create('Ticket QR Code')
+            ->setTextColor(new Color(0, 0, 0));
+
+        // Create PNG writer for QR code
+        $writer = new PngWriter();
+
+        // Write QR code to PNG image and encode as base64
+        $qrCodeImage = 'data:image/png;base64,' . base64_encode($writer->write($qrCode, null, $label)->getString());
+
+        $img_src = "../twitter.jpeg";
         $html = '
             <div class="container">
-                <img src="https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U" alt="The Festival" class="logo">
+            <img src="' . $img_src . '" alt="My Image">
                 <h1>The Festival Ticket</h1>
-                
+
                 <div class="ticket-info">
                     <label>Event Name:</label>
                     <p>' . $ticket->getEvent()->getName() . '</p>
                 </div>
-                
+
                 <div class="ticket-info">
                     <label>Event Date:</label>
                     <p>' . $ticket->getEvent()->getStartTime()->format('m/d/Y') . '</p>
                 </div>
-                
+
                 <div class="ticket-info">
                     <label>Event Time:</label>
                     <p>' . $ticket->getEvent()->getStartTime()->format('H:i') . ' - ' . $ticket->getEvent()->getEndTime()->format('H:i') . '</p>
                 </div>
-                
+
                 <div class="ticket-info">
                     <label>Customer Name:</label>
                     <p>' . $ticket->getCustomer()->getFirstName() . ' ' . $ticket->getCustomer()->getLastName() . '</p>
@@ -122,21 +154,22 @@ class TicketService
                     <label>Event Location:</label>
                     <p>' . 'St. Bavo Church' . '</p>
                 </div>
-                
+
                 <div class="ticket-info">
                     <label>Customer Email:</label>
                     <p>' . $ticket->getCustomer()->getEmail() . '</p>
                 </div>
-                
+
                 <div class="ticket-info">
                     <label>Price:</label>
                     <p style="color: red">€ ' . $ticket->getEvent()->getPrice() .
             '</p>
+            <br>
             <hr>
 
                     </div>
-                    <img src="' . $qrCodeImage . '" alt="QR Code" class="qr-code">
-            <hr>
+                    <img src="' . $qrCodeImage . '" alt="Ticket QR Code" class="qr-code">
+                    <hr>
                 </div>
                 ';
 
@@ -149,6 +182,9 @@ class TicketService
 
         return $dompdf;
     }
+
+
+
     public function getTicketByID($ticketID): Ticket
     {
         try {
@@ -163,6 +199,7 @@ class TicketService
     {
         try {
             $ticket = $this->getTicketByID(1);
+
             $dompdf = $this->generatePDFTicket($ticket);
 
             $pdfContents = $dompdf->output();

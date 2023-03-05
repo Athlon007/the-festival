@@ -129,6 +129,11 @@ class Router
                 $ticketController = new TicketController();
                 $ticketController->generateAndSendTicket();
                 break;
+            case "/qrCodeTest":
+                require_once("controllers/TicketController.php");
+                $ticketController = new TicketController();
+                $ticketController->qrCodeTest();
+                break;
             default:
                 $this->route404($message);
                 break;
