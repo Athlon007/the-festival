@@ -198,7 +198,7 @@ class UserService
     public function deleteUser($data): void
     {
         try {
-            $this->repository->deleteUser($id);
+            $this->repository->deleteUser($data->id);
         } 
         catch (Exception $ex) {
             throw ($ex);
