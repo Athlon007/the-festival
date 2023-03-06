@@ -16,9 +16,41 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <div class="container">
-        <div class="row" id="countdown"></div>
-        <div class="row" id="mapContainer" data-mapkind="general"></div>
-        <div class="row" id="calendar"></div>
+        <div class="row col-12 d-flex justify-content-center mx-auto allday-pass px-0" id="allday-pass" data-kind="jazz">
+            <div class="row col-12 col-xl-6 col-xl-5 mx-auto text-center">
+                <h2>All-Access Pass</h2>
+                <hr />
+                <p>Why settle for just one artist, if you can experience them all?</p>
+            </div>
+            <div class="row col-12 col-xl-11 mx-auto p-0 d-flex justify-content-center">
+                <div class="col-12 col-xl-5">
+                    <h3 class="text-center text-xl-start">Perks</h3>
+                    <hr class="col-12 d-block d-xl-none" />
+                    <ul>
+                        <li>Pay once to access everything</li>
+                        <li>Affordable way to experience more than one artist</li>
+                        <li>Save up to <b>€ 145</b></li>
+                    </ul>
+                    <hr class="col-12 d-block d-xl-none" />
+                </div>
+                <div class="col-1 h-100 my-auto px-0 mx-0 d-xl-flex justify-content-center d-none">
+                    <div class="vr" style="height: 110px;"></div>
+                </div>
+                <div class="col-12 col-xl-6">
+                    <div class="row d-inline my-0">
+                        <h3 class="d-inline">One-day Pass</h3>
+                        <p class="d-inline price">€ 35,00</p>
+                        <button class="btn btn-primary w-100 w-sm-auto float-none float-md-end">Add to cart</button>
+                    </div>
+                    <hr class="my-1" />
+                    <div class="row d-inline my-0">
+                        <h3 class="d-inline">One-day Pass</h3>
+                        <p class="d-inline price mw-50">€ 35,00</p>
+                        <button class="btn btn-primary w-100 w-sm-auto float-none float-md-end">Add to cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <footer class="foot row bottom"></footer>
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>

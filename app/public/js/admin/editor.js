@@ -23,7 +23,7 @@ tinymce.init({
     menu: {
         custom: {
             title: 'Modules',
-            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile  '
+            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile customInsertAllDayPass'
         }
     },
     menubar: 'file edit view insert format tools table custom',
@@ -202,6 +202,22 @@ tinymce.init({
                 text: 'Countdown',
                 onAction: () => {
                     editor.insertContent("<p id='countdown'>00:00:00:00<br>days hours minutes seconds</p>");
+                }
+            });
+            editor.ui.registry.addMenuItem('customInsertAllDayPass', {
+                text: 'All Day Pass',
+                onAction: () => {
+                    // show dialog
+                    msgBox.createDialogWithInputs('Create All Day Pass', [
+                        {
+                            label: 'Pass Kind',
+                            id: 'pass-kind',
+                        }
+                    ],
+                        () => {
+                            let passKind = document.getElementById('pass-kind').value;
+                            editor.insertContent(`<div id='allday-pass' data-kind='${passKind}'></div>`);
+                        });
                 }
             });
         } catch (error) {

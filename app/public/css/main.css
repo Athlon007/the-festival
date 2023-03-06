@@ -61,6 +61,12 @@ h2 {
     font-size: 3em;
 }
 
+.nav-item {
+    /* add ... to nav-item if it's too long */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .nav-item>a {
     /* Remove underline from nav-item */
     color: #fff;
@@ -264,6 +270,18 @@ h2 {
     text-align: center;
 }
 
+.price {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.allday-pass {
+    background-color: #8EB3CB;
+    border-radius: 1em;
+    padding: 0.5em;
+}
+
 @media (min-width: 960px) {
     .lang-picker {
         padding-left: 0.5rem;
@@ -287,5 +305,11 @@ h2 {
     .carousel-caption>h1 {
         font-size: 64px;
         transform: translateY(-70%);
+    }
+}
+
+@media (min-width: 576px) {
+    .w-sm-auto {
+        width: auto !important;
     }
 }
