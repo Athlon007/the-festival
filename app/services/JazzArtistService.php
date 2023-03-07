@@ -1,7 +1,6 @@
 <?php
 
 require_once(__DIR__ . "/../repositories/JazzArtistRepository.php");
-require_once("SongService.php");
 require_once("ImageService.php");
 
 class JazzArtistService
@@ -24,7 +23,7 @@ class JazzArtistService
         return $this->repo->getById($id);
     }
 
-    public function insertArtist($name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $songs, $images): JazzArtist
+    public function insertArtist($name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $images): JazzArtist
     {
         $name = htmlspecialchars($name);
         $description = htmlspecialchars($description);
@@ -50,14 +49,7 @@ class JazzArtistService
         );
 
         // Now, we insert the songs and images
-        $songService = new SongService();
         $imageService = new ImageService();
-
-        if (is_array($songs)) {
-            foreach ($songs as $song) {
-                $songService->assignSongToArtist($song->id, $artistId);
-            }
-        }
 
         if (is_array($images)) {
             foreach ($images as $image) {
@@ -74,7 +66,7 @@ class JazzArtistService
         $this->repo->deleteById($id);
     }
 
-    public function updateById($artistId, $name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $songs, $images): JazzArtist
+    public function updateById($artistId, $name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $images): JazzArtist
     {
         $artistId = htmlspecialchars($artistId);
         $name = htmlspecialchars($name);
@@ -102,15 +94,7 @@ class JazzArtistService
         );
 
         // Now, we insert the songs and images
-        $songService = new SongService();
         $imageService = new ImageService();
-
-        if (is_array($songs)) {
-            $songs = array();
-        }
-        foreach ($songs as $song) {
-            $songService->assignSongToArtist($song->id, $artistId);
-        }
 
         if (is_array($images)) {
             $images = array();

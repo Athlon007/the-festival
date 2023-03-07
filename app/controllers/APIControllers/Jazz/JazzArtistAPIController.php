@@ -48,7 +48,6 @@ class JazzArtistAPIController extends APIController
             $twitter = $this->getIfSet($data, "twitter");
             $instagram = $this->getIfSet($data, "instagram");
             $spotify = $this->getIfSet($data, "spotify");
-            $songs = $this->getIfSet($data, "songs");
             $images = $this->getIfSet($data, "images");
 
             echo json_encode($this->service->insertArtist(
@@ -62,7 +61,6 @@ class JazzArtistAPIController extends APIController
                 $twitter,
                 $instagram,
                 $spotify,
-                $songs,
                 $images
             ));
         } catch (Throwable $e) {
@@ -121,7 +119,6 @@ class JazzArtistAPIController extends APIController
             $twitter = $this->getIfSet($data, "twitter");
             $instagram = $this->getIfSet($data, "instagram");
             $spotify = $this->getIfSet($data, "spotify");
-            $songs = $this->getIfSet($data, "songs");
             $images = $this->getIfSet($data, "images");
 
             echo json_encode($this->service->updateById(
@@ -136,7 +133,6 @@ class JazzArtistAPIController extends APIController
                 $twitter,
                 $instagram,
                 $spotify,
-                $songs,
                 $images
             ));
         } catch (Throwable $e) {

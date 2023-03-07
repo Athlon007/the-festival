@@ -1,19 +1,16 @@
 <?php
 
 require_once("Repository.php");
-require_once("SongRepository.php");
 require_once("ImageRepository.php");
 require_once("../models/Jazz/JazzArtist.php");
 
 class JazzArtistRepository extends Repository
 {
-    private $songRepo;
     private $imageRepo;
 
     public function __construct()
     {
         parent::__construct();
-        $this->songRepo = new SongRepository();
         $this->imageRepo = new ImageRepository();
     }
 
@@ -34,7 +31,6 @@ class JazzArtistRepository extends Repository
             $spotify = $this->readIfSet($row, "spotifyUrl");
             $recentAlbums = $this->readIfSet($row, "recentAlbums");
 
-            $songs = $this->songRepo->getSongsForArtistId($artistId);
             $images = $this->imageRepo->getImagesForArtistId($artistId);
 
             $artist = new JazzArtist(
@@ -49,7 +45,6 @@ class JazzArtistRepository extends Repository
                 $twitter,
                 $instagram,
                 $spotify,
-                $songs,
                 $recentAlbums
             );
 
