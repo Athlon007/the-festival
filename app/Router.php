@@ -146,6 +146,9 @@ class Router
         } elseif (str_starts_with($request, "/api/user")) {
             require_once("controllers/APIControllers/UserAPIController.php");
             $controller = new UserAPIController();
+        } elseif (str_starts_with($request, "/api/address")) {
+            require_once("controllers/APIControllers/AddressAPIController.php");
+            $controller = new AddressAPIController();
         } elseif (str_starts_with($request, "/api/textpages")) {
             require_once("controllers/APIControllers/TextPageAPIController.php");
             $controller = new TextPageAPIController();

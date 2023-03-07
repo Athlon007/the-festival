@@ -72,11 +72,12 @@ function checkPassword(){
 
 function createAddressObject(){
     var housenumber = houseNumberField.value + " " + extensionField.value;
+    var postCode = postalCodeField.value.replace(" ", "");
     
     var address = {
         streetName: streetNameField.value,
         houseNumber: housenumber,
-        postalCode: postalCodeField.value,
+        postalCode: postCode,
         city: cityField.value,
         country: countryField.value
     }
@@ -88,19 +89,20 @@ function fetchAddress(){
     var postalCode = postalCodeField.value.replace(" ", "");
     var houseNumber = houseNumberField.value;
 
-    fetch("https://postcode.tech/api/v1/postcode?postcode=" + postalCode + "&number=" + houseNumber, {
-        headers: { "Authorization": "Bearer 1b9faa1d-1521-43ca-af73-4caeb208222b" }              
+    const data = {
+        postalCode: postalCode,
+        houseNumber: houseNumber
+    }
+
+    fetch("/api/address/fetch-address", {
+        method: "POST",
+        body: JSON.stringify(data)
     })
     .then(response => response.json())
     .then(data => {
-        if(data.message != null){
-            streetNameField.value = "";
-            cityField.value = "";
-            countryField.value = "";
-        }
-        else{
-            streetNameField.value = data.street;
-            cityField.value = data.city;
+        if(data.address){
+            streetNameField.value = data.address.street;
+            cityField.value = data.address.city;
             countryField.value = "Netherlands";
         }
     });

@@ -37,13 +37,13 @@
                                                 <div class="col-md-6 mb-4 pb-2">
                                                     <div class="form-outline">
                                                         <label class="form-label" for="firstName">First Name</label>    
-                                                        <input type="text" id="firstName" class="form-control form-control-lg" value=<?php echo $user->getFirstName()?> onchange=/> 
+                                                        <input type="text" id="firstName" class="form-control form-control-lg" value=<?php echo $user->getFirstName()?> onchange=enableSaveChanges()/> 
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 mb-4 pb-2">
                                                     <div class="form-outline">
                                                         <label class="form-label" for="lastName">Last Name</label>
-                                                        <input type="text" id="lastName" class="form-control form-control-lg" value=<?php echo $user->getLastName()?> />
+                                                        <input type="text" id="lastName" class="form-control form-control-lg" value=<?php echo $user->getLastName()?> onchange=enableSaveChanges()/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -52,11 +52,11 @@
                                                 <div class="mb-4 pb-2">
                                                     <div class="form-outline">
                                                         <label class="form-label" for="phoneNumber">Phone Number</label>
-                                                        <input type="text" id="phoneNumber" class="form-control form-control-lg" value=<?php echo $user->getPhoneNumber()?> />
+                                                        <input type="text" id="phoneNumber" class="form-control form-control-lg" value=<?php echo $user->getPhoneNumber()?> onchange=enableSaveChanges()/>
                                                     </div>
                                                     <div class="form-outline">
                                                         <label class="form-label" for="dateOfBirth">Date of Birth</label>
-                                                        <input type="date" id="dateOfBirth" class="form-control form-control-lg" value=<?php echo $user->getDateOfBirthAsString()?> /> 
+                                                        <input type="date" id="dateOfBirth" class="form-control form-control-lg" value=<?php echo $user->getDateOfBirthAsString()?> onchange=enableSaveChanges()/> 
                                                     </div>
                                                     
                                                 </div>
@@ -69,7 +69,7 @@
                                             <div class="row">
                                                 <div class="form-outline">
                                                     <label class="form-label" for="email">E-mail</label>
-                                                    <input type="email" id="email" class="form-control form-control-lg" value=<?php echo $user->getEmail()?> />
+                                                    <input type="email" id="email" class="form-control form-control-lg" value=<?php echo $user->getEmail()?> onchange=enableSaveChanges()/>
                                                 </div>
                                                 <div class="form-outline">
                                                     <label class="form-label" for="password">New password</label>
@@ -77,7 +77,7 @@
                                                 </div>
                                                 <div class="form-outline">
                                                     <label class="form-label" for="passwordConfirm">Enter current password to confirm</label>
-                                                    <input type="password" id="passwordConfirm" class="form-control form-control-lg" />
+                                                    <input type="password" id="passwordConfirm" class="form-control form-control-lg" onchange=enableSaveChanges()/>
                                                 </div>
                                             </div>
                                         </div>
@@ -97,7 +97,7 @@
                                                 <div class="col-md-6 mb-4 pb-2">
                                                     <div class="form-outline form-white">
                                                         <label class="form-label" for="houseNumber">House Nr</label>
-                                                        <input type="text" id="houseNumber" class="form-control form-control-lg" value=<?php echo $user->getAddress()->getHouseNumber()?> onchange=addressChange()  />
+                                                        <input type="text" id="houseNumber" class="form-control form-control-lg" value=<?php echo $user->getAddress()->getHouseNumber()?> onchange=enableSaveChanges()  />
                                                     </div>
                                                 </div>
                                             </div>
@@ -107,13 +107,13 @@
                                                 <div class="col-md-6 mb-4 pb-2">
                                                     <div class="form-outline form-white">
                                                         <label class="form-label" for="postalCode">Postal Code</label>
-                                                        <input type="text" id="postalCode" class="form-control form-control-lg" value=<?php echo $user->getAddress()->getPostalCode()?> onchange=addressChange() />
+                                                        <input type="text" id="postalCode" class="form-control form-control-lg" value=<?php echo $user->getAddress()->getPostalCode()?> onchange=enableSaveChanges() />
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 mb-4 pb-2">
                                                     <div class="form-outline form-white pb-2">
                                                         <label class="form-label" for="city">Place / City</label>
-                                                        <input type="text" id="city" class="form-control form-control-lg" value=<?php echo $user->getAddress()->getCity()?> />
+                                                        <input type="text" id="city" class="form-control form-control-lg" value=<?php echo $user->getAddress()->getCity()?> onchange=enableSaveChanges()/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -123,22 +123,25 @@
                                                 <div class="col-md-6 mb-4 pb-2">
                                                     <div class="form-outline form-white pb-2">
                                                         <label class="form-label" for="country">Country</label>
-                                                        <input type="text" id="country" class="form-control form-control-lg" value=<?php echo $user->getAddress()->getCountry()?> />
+                                                        <input type="text" id="country" class="form-control form-control-lg" value=<?php echo $user->getAddress()->getCountry()?> onchange=enableSaveChanges()/>
                                                     </div>
                                                 </div>
                                             </div>                                         
 
-                                            <div id="errorBox">
+                                            <div id="errorBox" class="p-2">
                                                 <ul id="errorList">
 
                                                 </ul>
                                             </div>
                                         </div>
                                     </div>
-                                    <button id="saveChangesButton" type="button" class="btn btn-primary" disabled>Save Changes</button>
+                                    <button id="saveChangesButton" type="button" class="btn btn-primary" disabled onclick=updateAccount(<?php echo $user->getUserId()?>)>Save Changes</button>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class=col-2>
+                    <button class="btn btn-lg btn-light" onclick=>Log out</button>
                     </div>
                 </div>
             </div>
