@@ -65,6 +65,7 @@ class ImageService
 
         // rename jpeg to jpg
         $fileName = str_replace("jpeg", "jpg", $fileName);
+        $fileExtension = str_replace("jpeg", "jpg", $fileExtension);
         $targetFile = $targetDirectory . $fileExtension . "/" . $fileName;
 
         // if file already exists, append a number to the end of the file name
