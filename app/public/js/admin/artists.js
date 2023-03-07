@@ -81,10 +81,14 @@ function createNewArtist(data) {
 btnSubmit.onclick = function () {
     let pickedImageIds = imgPicker.getSelectedImages();
 
+    let descriptionText = description.value;
+    // Repalce all new lines with <br>
+    descriptionText = descriptionText.replace(/\r?\n/g, '<br>');
+
     // to json
     let data = {
         name: name.value,
-        description: description.value,
+        description: descriptionText,
         images: pickedImageIds,
         country: country.value,
         genres: genres.value,
@@ -165,7 +169,7 @@ function createNewOptionItem(element) {
                     console.log(data);
                     editedArtistId = data.id;
                     name.value = data.name;
-                    description.value = data.description;
+                    description.value = data.description.replace(/<br>/g, '\r\n');
                     country.value = data.country;
                     genres.value = data.genres;
                     facebook.value = data.facebook;
@@ -232,7 +236,7 @@ function loadArtistsList() {
                 // if last selected
                 // add a delay to make sure that the option is added to the list.
                 if (lastSelectedId == element.id) {
-                    toSelect = textPagesList.options.length - 1;
+                    toSelect = artists.options.length - 1;
                 }
             });
 

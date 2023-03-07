@@ -19,7 +19,7 @@
         <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <? $image = $artist->getImages()[0]; ?>
-                <div class="carousel-item <?= $counter == 0 ? 'active' : ''; ?>">
+                <div class="carousel-item active">
                     <img src="<?= $image->getSrc(); ?>" class="d-block w-100" alt="<?= $image->getAlt(); ?>">
                     <div class="carousel-caption">
                         <h1><?= $image->getAlt(); ?></h1>
@@ -29,7 +29,7 @@
         </div>
     <? } ?>
     <div class="container">
-        <div class="row card col-10 mx-auto p-1">
+        <div class="row card col-10 mx-auto p-1 my-2">
             <div class="row">
                 <h2>Overview</h2>
             </div>
@@ -69,19 +69,28 @@
             </div>
         </div>
         <div class="row">
-            <? if (count($artist->getImages()) > 0) {
-                $counter = 0; ?>
-                <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+            <? if (count($artist->getImages()) > 1) { ?>
+                <div id="bannerCarouselSecond" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
-                        <? foreach ($artist->getImages() as $image) {
-                            if ($counter > 0) { ?>
-                                <div class="carousel-item <?= $counter == 0 ? 'active' : ''; ?>">
-                                    <img src="<?= $image->getSrc(); ?>" class="d-block w-100" alt="<?= $image->getAlt(); ?>">
-                                </div>
-                        <? }
-                            $counter++;
-                        } ?>
+                        <?
+                        for ($counter = 1; $counter < count($artist->getImages()); $counter++) {
+                            $image = $artist->getImages()[$counter];
+                        ?>
+                            <div class="carousel-item <?= $counter == 1 ? 'active' : ''; ?>">
+                                <img src="<?= $image->getSrc(); ?>" class="d-block w-100" alt="<?= $image->getAlt(); ?>">
+                            </div>
+                        <? } ?>
                     </div>
+                    <? if (count($artist->getImages()) > 2) { ?>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarouselSecond" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#bannerCarouselSecond" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    <? } ?>
                 </div>
             <? } ?>
         </div>

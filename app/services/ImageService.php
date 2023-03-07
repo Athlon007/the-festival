@@ -101,9 +101,17 @@ class ImageService
         $this->imageRepository->updateImage($id, $alt);
     }
 
-    public function assignImageToArtist($artidtId, $imageId)
+    public function assignImagesToArtist($artistId, $imageIds)
     {
-        $this->imageRepository->assignImageToArtist($artidtId, $imageId);
+        $this->removeImagesFromArtist($artistId);
+        foreach ($imageIds as $imageId) {
+            $this->imageRepository->assignImageToArtist($artistId, $imageId);
+        }
+    }
+
+    public function removeImagesFromArtist($artistId)
+    {
+        $this->imageRepository->removeImagesForArtist($artistId);
     }
 
     public function search($search): array

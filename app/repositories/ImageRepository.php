@@ -105,8 +105,6 @@ class ImageRepository extends Repository
 
     public function assignImageToArtist($artistId, $imageId)
     {
-        $this->removeImagesForArtist($artistId);
-
         $sql = "INSERT INTO JazzArtistImage (artistId, imageId) VALUES (:artistId, :imageId)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":artistId", $artistId, PDO::PARAM_INT);

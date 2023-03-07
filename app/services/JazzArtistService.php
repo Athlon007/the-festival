@@ -52,9 +52,7 @@ class JazzArtistService
         $imageService = new ImageService();
 
         if (is_array($images)) {
-            foreach ($images as $image) {
-                $imageService->assignImageToArtist($artistId, $image);
-            }
+            $imageService->assignImagesToArtist($artistId, $images);
         }
 
         return $this->getById($artistId);
@@ -99,9 +97,7 @@ class JazzArtistService
         if (!is_array($images)) {
             $images = array();
         }
-        foreach ($images as $image) {
-            $imageService->assignImageToArtist($artistId, $image);
-        }
+        $imageService->assignImagesToArtist($artistId, $images);
 
         return $this->getById($artistId);
     }
