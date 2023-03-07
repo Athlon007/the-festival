@@ -103,17 +103,15 @@ class ImageRepository extends Repository
         return $this->imageBuilder($stmt->fetchAll());
     }
 
-    public function assignImageToArtist($artistId, $imageIds)
+    public function assignImageToArtist($artistId, $imageId)
     {
         $this->removeImagesForArtist($artistId);
 
         $sql = "INSERT INTO JazzArtistImage (artistId, imageId) VALUES (:artistId, :imageId)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":artistId", $artistId, PDO::PARAM_INT);
-        foreach ($imageIds as $imageId) {
-            $stmt->bindParam(":imageId", $imageId, PDO::PARAM_INT);
-            $stmt->execute();
-        }
+        $stmt->bindParam(":imageId", $imageId, PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     public function removeImagesForArtist($artistId): void

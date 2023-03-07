@@ -96,11 +96,11 @@ class JazzArtistService
         // Now, we insert the songs and images
         $imageService = new ImageService();
 
-        if (is_array($images)) {
+        if (!is_array($images)) {
             $images = array();
         }
         foreach ($images as $image) {
-            $imageService->assignImageToArtist($image->id, $artistId);
+            $imageService->assignImageToArtist($artistId, $image);
         }
 
         return $this->getById($artistId);
