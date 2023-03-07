@@ -39,10 +39,6 @@
                     <p><?= str_replace(',', "<br>", $artist->getRecentAlbums()); ?></p>
                 </div>
                 <div class="col-3">
-                    <h3>Monthly listeners</h3>
-                    <p>LOL</p>
-                </div>
-                <div class="col-3">
                     <h3>Genres</h3>
                     <p><?= str_replace(',', "<br>", $artist->getGenres()); ?></p>
                 </div>

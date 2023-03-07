@@ -105,6 +105,9 @@ class Router
             case "/admin/editor":
                 require("views/admin/editor.php");
                 break;
+            case "/admin/artists":
+                require("views/admin/artists.php");
+                break;
             case "/admin/images":
                 require("views/admin/images.php");
                 break;
