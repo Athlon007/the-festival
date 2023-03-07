@@ -14,3 +14,5 @@ if ($debugMode) {
 }
 
 $allowed_api_address = "172.23.0.1";
+
+$tomtom_api_key = "hhPEr4bmakfOBlVfPEsMhZWHNlmGt40L";
