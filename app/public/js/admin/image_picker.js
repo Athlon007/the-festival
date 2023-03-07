@@ -1,10 +1,33 @@
 export class ImagePicker {
     loadImagePicker(container, onImageSelected, onImageUnselected) {
         container.innerHTML = '';
+        this.container = container;
 
+        // Load search bar
+        let searchBar = document.createElement('div');
+        searchBar.classList.add('search-bar');
+        searchBar.innerHTML = `<input type="text" class="form-input w-100" name="search" id="search" placeholder="Search images...">`;
+        // when clicking enter, search for images
+        searchBar.addEventListener('keyup', (e) => {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                let search = searchBar.querySelector('input').value;
+                this.loadImages('/api/images?search=' + search);
+            }
+        });
+        container.appendChild(searchBar);
+
+
+        this.imageContainer = document.createElement('div')
+        container.appendChild(this.imageContainer);
         this.selectedImages = [];
 
-        fetch('/api/images', {
+        this.loadImages('/api/images');
+    }
+
+    loadImages(request) {
+        this.imageContainer.innerHTML = '';
+        fetch(request, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -51,15 +74,18 @@ export class ImagePicker {
                     label.appendChild(img);
                     label.appendChild(i);
 
-                    container.appendChild(label);
-
-                    this.container = container;
+                    this.imageContainer.appendChild(label);
                 })
+            })
+            .then(() => {
+                this.restoreLastSelectedImages();
             });
+
+
     }
 
     unselectAllImages() {
-        const labels = this.container.querySelectorAll('label');
+        const labels = this.imageContainer.querySelectorAll('label');
         labels.forEach(element => {
             let checkboxes = element.querySelectorAll('input');
             checkboxes.forEach(element => {
@@ -73,8 +99,14 @@ export class ImagePicker {
         return this.selectedImages;
     }
 
+    restoreLastSelectedImages() {
+        for (let image of this.selectedImages) {
+            this.selectImage(image);
+        }
+    }
+
     unselectAllButOneNotInSelectedImages() {
-        const labels = this.container.querySelectorAll('label');
+        const labels = this.imageContainer.querySelectorAll('label');
         labels.forEach(element => {
             let checkboxes = element.querySelectorAll('input');
             checkboxes.forEach(element => {
@@ -93,7 +125,7 @@ export class ImagePicker {
     }
 
     selectImage(id) {
-        const labels = this.container.querySelectorAll('label');
+        const labels = this.imageContainer.querySelectorAll('label');
         labels.forEach(element => {
             let checkboxes = element.querySelectorAll('input');
             checkboxes.forEach(element => {

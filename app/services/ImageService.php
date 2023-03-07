@@ -83,7 +83,6 @@ class ImageService
 
     public function removeImage($id): void
     {
-        // TODO: remove image from database
         $image = $this->imageRepository->getImageById($id);
         if ($image == null) {
             throw new ImageNotFoundException();
@@ -99,5 +98,18 @@ class ImageService
         $id = htmlspecialchars($id);
         $alt = htmlspecialchars($alt);
         $this->imageRepository->updateImage($id, $alt);
+    }
+
+    public function assignImageToArtist($artidtId, $imageId)
+    {
+        $this->imageRepository->assignImageToArtist($artidtId, $imageId);
+    }
+
+    public function search($search): array
+    {
+        $search = htmlspecialchars($search);
+        // split $search into array by spaces
+        $search = explode(" ", $search);
+        return $this->imageRepository->search($search);
     }
 }
