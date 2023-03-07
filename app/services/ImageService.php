@@ -65,6 +65,7 @@ class ImageService
 
         // rename jpeg to jpg
         $fileName = str_replace("jpeg", "jpg", $fileName);
+        $fileExtension = str_replace("jpeg", "jpg", $fileExtension);
         $targetFile = $targetDirectory . $fileExtension . "/" . $fileName;
 
         // if file already exists, append a number to the end of the file name
@@ -83,7 +84,6 @@ class ImageService
 
     public function removeImage($id): void
     {
-        // TODO: remove image from database
         $image = $this->imageRepository->getImageById($id);
         if ($image == null) {
             throw new ImageNotFoundException();
@@ -104,5 +104,13 @@ class ImageService
     public function assignImageToArtist($artidtId, $imageId)
     {
         $this->imageRepository->assignImageToArtist($artidtId, $imageId);
+    }
+
+    public function search($search): array
+    {
+        $search = htmlspecialchars($search);
+        // split $search into array by spaces
+        $search = explode(" ", $search);
+        return $this->imageRepository->search($search);
     }
 }

@@ -123,4 +123,20 @@ class ImageRepository extends Repository
         $stmt->bindParam(":artistId", $artistId, PDO::PARAM_INT);
         $stmt->execute();
     }
+
+    public function search($search): array
+    {
+        $sql = "SELECT imageId, src, alt FROM Images WHERE ";
+        $counter = 0;
+        foreach ($search as $word) {
+            $sql .= "alt LIKE '%$word%'";
+            if ($counter < count($search) - 1) {
+                $sql .= " OR ";
+            }
+            $counter++;
+        }
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        return $this->imageBuilder($stmt->fetchAll());
+    }
 }
