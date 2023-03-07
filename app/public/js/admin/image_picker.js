@@ -2,10 +2,11 @@ export class ImagePicker {
     loadImagePicker(container, onImageSelected, onImageUnselected) {
         container.innerHTML = '';
         this.container = container;
+        container.classList.add('row');
 
         // Load search bar
         let searchBar = document.createElement('div');
-        searchBar.classList.add('search-bar');
+        searchBar.classList.add('col-12');
         searchBar.innerHTML = `<input type="text" class="form-input w-100" name="search" id="search" placeholder="Search images...">`;
         // when clicking enter, search for images
         searchBar.addEventListener('keyup', (e) => {
@@ -16,6 +17,9 @@ export class ImagePicker {
             }
         });
         container.appendChild(searchBar);
+
+        this.onImageSelected = onImageSelected;
+        this.onImageUnselected = onImageUnselected;
 
 
         this.imageContainer = document.createElement('div')
@@ -48,17 +52,16 @@ export class ImagePicker {
                     // on input click, broadcast event
                     input.addEventListener('click', (e) => {
                         if (e.target.checked) {
-                            onImageSelected();
-                            if (!this.selectedImages.includes(e.target.value)) {
-                                this.selectedImages.push(e.target.value);
+                            // if onImageSelected is defined
+                            if (this.onImageSelected) {
+                                this.onImageSelected();
                             }
+                            this.selectImage(e.target.value);
                         } else {
-                            onImageUnselected();
-                            // remove from selectedImagdes
-                            let index = this.selectedImages.indexOf(e.target.value);
-                            if (index > -1) {
-                                this.selectedImages.splice(index, 1);
+                            if (this.onImageUnselected) {
+                                this.onImageUnselected();
                             }
+                            this.unselectImage(e.target.value);
                         }
 
                     });
@@ -134,6 +137,21 @@ export class ImagePicker {
                     if (!this.selectedImages.includes(element.value)) {
                         this.selectedImages.push(element.value);
                     }
+                }
+            });
+        });
+
+        console.log(this.selectedImages);
+    }
+
+    unselectImage(id) {
+        const labels = this.imageContainer.querySelectorAll('label');
+        labels.forEach(element => {
+            let checkboxes = element.querySelectorAll('input');
+            checkboxes.forEach(element => {
+                if (element.value == id) {
+                    element.checked = false;
+                    this.selectedImages.splice(this.selectedImages.indexOf(element.value), 1);
                 }
             });
         });
