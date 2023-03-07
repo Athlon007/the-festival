@@ -17,9 +17,8 @@ class JazzArtist implements JsonSerializable
     private string $twitter;
     private string $instagram;
     private string $spotify;
-    private array $songs;
 
-    public function __construct($id, $name, $description, $images, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $songs, $recentAlbums)
+    public function __construct($id, $name, $description, $images, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $recentAlbums)
     {
         $this->setId($id);
         $this->setName($name);
@@ -32,7 +31,6 @@ class JazzArtist implements JsonSerializable
         $this->setTwitter($twitter);
         $this->setInstagram($instagram);
         $this->setSpotify($spotify);
-        $this->setSongs($songs);
         $this->setRecentAlbums($recentAlbums);
     }
 
@@ -146,16 +144,6 @@ class JazzArtist implements JsonSerializable
         $this->spotify = $value;
     }
 
-    public function getSongs()
-    {
-        return $this->songs;
-    }
-
-    public function setSongs($value)
-    {
-        $this->songs = $value;
-    }
-
     public function getRecentAlbums()
     {
         return $this->recentAlbums;
@@ -180,7 +168,6 @@ class JazzArtist implements JsonSerializable
             'twitter' => $this->getTwitter(),
             'instagram' => $this->getInstagram(),
             'spotify' => $this->getSpotify(),
-            'songs' => $this->getSongs(),
             'recentAlbums' => $this->getRecentAlbums()
         ];
     }

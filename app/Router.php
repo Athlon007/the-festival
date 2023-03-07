@@ -77,6 +77,17 @@ class Router
             return;
         }
 
+        if (str_starts_with($request, "/festival/jazz-and-more/")) {
+            if (str_starts_with($request, "/festival/jazz-and-more/artist/")) {
+                require_once("controllers/FestivalJazzController.php");
+                $festivalJazzController = new FestivalJazzController();
+                $festivalJazzController->loadArtistPage($request);
+                return;
+            } elseif (str_starts_with($request, "/festival/jazz-and-more/event/")) {
+                // TODO: Implement event page
+            }
+        }
+
         // split off the ?
         $request = explode("?", $request)[0];
 
