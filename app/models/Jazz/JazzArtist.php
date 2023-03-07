@@ -1,6 +1,6 @@
 <?php
 
-require_once("../Image.php");
+require_once(__DIR__ . "/../Image.php");
 require_once("Song.php");
 
 class JazzArtist implements JsonSerializable
@@ -8,10 +8,10 @@ class JazzArtist implements JsonSerializable
     private $id;
     private string $name;
     private string $description;
-    private array $recentAlbums;
+    private string $recentAlbums;
     private array $images;
     private string $country;
-    private array $genres;
+    private string $genres;
     private string $homepage;
     private string $facebook;
     private string $twitter;
@@ -19,20 +19,21 @@ class JazzArtist implements JsonSerializable
     private string $spotify;
     private array $songs;
 
-    public function __construct($id, $name, $description, $images, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $songs)
+    public function __construct($id, $name, $description, $images, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $songs, $recentAlbums)
     {
-        $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
-        $this->images = $images;
-        $this->country = $country;
-        $this->genres = $genres;
-        $this->homepage = $homepage;
-        $this->facebook = $facebook;
-        $this->twitter = $twitter;
-        $this->instagram = $instagram;
-        $this->spotify = $spotify;
-        $this->songs = $songs;
+        $this->setId($id);
+        $this->setName($name);
+        $this->setDescription($description);
+        $this->setImages($images);
+        $this->setCountry($country);
+        $this->setGenres($genres);
+        $this->setHomepage($homepage);
+        $this->setFacebook($facebook);
+        $this->setTwitter($twitter);
+        $this->setInstagram($instagram);
+        $this->setSpotify($spotify);
+        $this->setSongs($songs);
+        $this->setRecentAlbums($recentAlbums);
     }
 
     public function getId()
@@ -155,6 +156,16 @@ class JazzArtist implements JsonSerializable
         $this->songs = $value;
     }
 
+    public function getRecentAlbums()
+    {
+        return $this->recentAlbums;
+    }
+
+    public function setRecentAlbums($value)
+    {
+        $this->recentAlbums = $value;
+    }
+
     public function jsonSerialize(): mixed
     {
         return [
@@ -169,7 +180,8 @@ class JazzArtist implements JsonSerializable
             'twitter' => $this->getTwitter(),
             'instagram' => $this->getInstagram(),
             'spotify' => $this->getSpotify(),
-            'songs' => $this->getSongs()
+            'songs' => $this->getSongs(),
+            'recentAlbums' => $this->getRecentAlbums()
         ];
     }
 }

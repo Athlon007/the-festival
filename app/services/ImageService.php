@@ -100,4 +100,9 @@ class ImageService
         $alt = htmlspecialchars($alt);
         $this->imageRepository->updateImage($id, $alt);
     }
+
+    public function assignImageToArtist($artidtId, $imageId)
+    {
+        $this->imageRepository->assignImageToArtist($artidtId, $imageId);
+    }
 }

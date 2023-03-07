@@ -161,6 +161,9 @@ class Router
         } elseif (str_starts_with($request, "/api/images")) {
             require_once("controllers/APIControllers/ImageAPIController.php");
             $controller = new ImageAPIController();
+        } elseif (str_starts_with($request, "/api/jazz-artists")) {
+            require_once("controllers/APIControllers/Jazz/JazzArtistAPIController.php");
+            $controller = new JazzArtistAPIController();
         } else {
             http_response_code(400);
             // send json
