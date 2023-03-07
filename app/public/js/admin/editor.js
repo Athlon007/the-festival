@@ -3,7 +3,6 @@ import { MsgBox } from "./modals.js";
 
 let editedPageId = -1;
 const title = document.getElementById('title');
-const images = document.getElementById('images');
 const pageHref = document.getElementById('page-href');
 const textPagesList = document.getElementById('text-pages-list');
 const masterEditor = document.getElementById('master-editor');
@@ -353,7 +352,6 @@ function createNewOptionItem(element) {
                     imgPicker.unselectAllImages();
                     // select images that are used by the page.
                     data.images.forEach(image => {
-                        let checkboxes = document.getElementsByName('image');
                         imgPicker.selectImage(image.id);
                     });
 
