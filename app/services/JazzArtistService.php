@@ -53,7 +53,7 @@ class JazzArtistService
 
         if (is_array($images)) {
             foreach ($images as $image) {
-                $imageService->assignImageToArtist($image->id, $artistId);
+                $imageService->assignImageToArtist($artistId, $image);
             }
         }
 
