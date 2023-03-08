@@ -46,7 +46,7 @@ class UploaderController
         $alt = $_POST["alt"];
 
         if ($file["error"] != 0) {
-            throw new UploadException("Error uploading file.");
+            throw new UploadException("Error uploading file. " + $file["error"]);
         }
 
         $this->imageService->addImage($file, $alt);

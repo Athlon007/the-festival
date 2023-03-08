@@ -161,6 +161,24 @@ export class MsgBox {
                 let picker = new ImagePicker();
                 picker.loadImagePicker(pickerContainer, () => { picker.unselectAllButOneNotInSelectedImages(); }, () => { });
                 modalBodyInputs.appendChild(pickerContainer);
+            } else if (i.type == 'textarea') {
+                let label = document.createElement('label');
+                label.classList.add('form-label');
+                label.setAttribute('for', i.id);
+                label.innerHTML = i.label;
+                modalBodyInputs.appendChild(label);
+
+                let textarea = document.createElement('textarea');
+                textarea.classList.add('form-control');
+                textarea.setAttribute('id', i.id);
+                modalBodyInputs.appendChild(textarea);
+                textarea.style.height = '200px';
+                textarea.style.fontSize = '12px';
+                textarea.style.resize = 'both';
+                // set content of textarea
+                if (i.content) {
+                    textarea.innerHTML = i.content;
+                }
             } else {
                 let label = document.createElement('label');
                 label.classList.add('form-label');

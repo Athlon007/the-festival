@@ -18,11 +18,11 @@ const imgPicker = new ImagePicker();
 tinymce.init({
     selector: 'textarea',
     plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-    toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+    toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | customSeeSourceCode',
     menu: {
         custom: {
             title: 'Modules',
-            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile customInsertAllDayPass'
+            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile customJazzOptions'
         }
     },
     menubar: 'file edit view insert format tools table custom',
@@ -203,22 +203,46 @@ tinymce.init({
                     editor.insertContent("<p id='countdown'>00:00:00:00<br>days hours minutes seconds</p>");
                 }
             });
-            editor.ui.registry.addMenuItem('customInsertAllDayPass', {
-                text: 'All Day Pass',
-                onAction: () => {
-                    // show dialog
-                    msgBox.createDialogWithInputs('Create All Day Pass', [
+            editor.ui.registry.addMenuItem('customJazzOptions', {
+                text: 'Jazz Modules >',
+                type: 'nestedmenuitem',
+                getSubmenuItems: () => {
+                    return [
                         {
-                            label: 'Pass Kind',
-                            id: 'pass-kind',
+                            text: 'All Day Pass',
+                            type: 'menuitem',
+                            onAction: () => {
+                                // show dialog
+                                msgBox.createDialogWithInputs('Create All Day Pass', [
+                                    {
+                                        label: 'Pass Kind',
+                                        id: 'pass-kind',
+                                    }
+                                ],
+                                    () => {
+                                        let passKind = document.getElementById('pass-kind').value;
+                                        editor.insertContent(`<div id='allday-pass' data-kind='${passKind}'></div>`);
+                                    });
+                            }
                         }
-                    ],
-                        () => {
-                            let passKind = document.getElementById('pass-kind').value;
-                            editor.insertContent(`<div id='allday-pass' data-kind='${passKind}'></div>`);
-                        });
+                    ];
                 }
             });
+            editor.ui.registry.addButton('customSeeSourceCode', {
+                text: 'Source Code',
+                onAction: () => {
+                    msgBox.createDialogWithInputs('Source Code', [
+                        {
+                            label: 'Source Code',
+                            id: 'source-code',
+                            type: 'textarea',
+                            content: tinyMCE.activeEditor.getContent()
+                        }
+                    ], () => {
+                        tinyMCE.activeEditor.setContent(document.getElementById('source-code').value);
+                    });
+                }
+            })
         } catch (error) {
             console.error(error);
         }
