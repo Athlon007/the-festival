@@ -101,9 +101,10 @@ class Location implements JsonSerializable
             'id' => $this->getLocationId(),
             'name' => $this->getName(),
             'address' => $this->getAddress(),
-            'locationType' => $this->getLocationTypeAsString(),
-            'lon' => $this->getLon(),
-            'lat' => $this->getLat()
+            'locationType' => $this->getLocationType(),
+            'locationTypeFriendly' => $this->getLocationTypeAsString(),
+            'lat' => $this->getLat(),
+            'lon' => $this->getLon()
         ];
     }
 }
