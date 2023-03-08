@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . "/APIController.php");
 require_once(__DIR__ . "/../../services/AddressService.php");
-require_once(__DIR__ . "/../../models/Exceptions/MissingVariableException.php");
+require_once(__DIR__ . "/../../models/Address.php");
 
 class AddressAPIController extends APIController
 {
@@ -14,6 +14,12 @@ class AddressAPIController extends APIController
 
     protected function handlePostRequest($uri)
     {
+        if (str_starts_with($uri, "/api/address/fetch-address")) {
+            $data = json_decode(file_get_contents("php://input"));
+            $this->fetchAddress($data);
+            return;
+        }
+
         $json = file_get_contents('php://input');
 
         $data = json_decode($json);
@@ -130,5 +136,21 @@ class AddressAPIController extends APIController
         $addressId = basename($uri);
         $this->addressService->deleteAddress($addressId);
         $this->sendSuccessMessage("Address deleted successfully");
+    }
+
+    private function fetchAddress($data)
+    {
+        try {
+            $addressService = new AddressService();
+            $address = $addressService->fetchAddressFromPostCodeAPI($data);
+
+            header('Content-Type: application/json');
+            echo json_encode([
+                "street" => $address->street,
+                "city" => $address->city,
+            ]);
+        } catch (Exception $ex) {
+            $this->sendErrorMessage($ex->getMessage());
+        }
     }
 }

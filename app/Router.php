@@ -115,9 +115,10 @@ class Router
                 require("views/admin/locations.php");
                 break;
             case "/home/login":
+            case "/home/account":
                 require_once("controllers/HomeController.php");
                 $homeController = new HomeController();
-                $homeController->login();
+                $homeController->account();
                 break;
             case "/home/register":
                 require_once("controllers/HomeController.php");
@@ -172,6 +173,9 @@ class Router
         } elseif (str_starts_with($request, "/api/user")) {
             require_once("controllers/APIControllers/UserAPIController.php");
             $controller = new UserAPIController();
+        } elseif (str_starts_with($request, "/api/address")) {
+            require_once("controllers/APIControllers/AddressAPIController.php");
+            $controller = new AddressAPIController();
         } elseif (str_starts_with($request, "/api/textpages")) {
             require_once("controllers/APIControllers/TextPageAPIController.php");
             $controller = new TextPageAPIController();

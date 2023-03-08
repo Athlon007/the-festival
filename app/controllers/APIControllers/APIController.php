@@ -49,7 +49,6 @@ class APIController
         // Can be implemented by child class
     }
 
-
     final protected function sendErrorMessage($message, $code = 500)
     {
         header('Content-Type: application/json');
@@ -75,3 +74,4 @@ class APIController
         //return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
     }
 }
+?>

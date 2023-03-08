@@ -48,4 +48,29 @@ class AddressService
         $addressId = htmlspecialchars($addressId);
         $this->repo->deleteAddress($addressId);
     }
+
+    public function fetchAddressFromPostCodeAPI($data): mixed
+    {
+        // Create a stream
+        $opts = array(
+            'http' => array(
+                'method' => "GET",
+                'header' => "Authorization: Bearer 1b9faa1d-1521-43ca-af73-4caeb208222b"
+            )
+        );
+
+        $context = stream_context_create($opts);
+
+        $url = "https://postcode.tech/api/v1/postcode?postcode=" . $data->postalCode . "&number=" . $data->houseNumber;
+        // Open the file using the HTTP headers set above
+        $response = file_get_contents($url, false, $context);
+
+        $address = json_decode($response);
+
+        if (isset($address->message)) {
+            throw new Exception("Invalid postal code or house number");
+        }
+
+        return $address;
+    }
 }
