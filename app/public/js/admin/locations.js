@@ -52,6 +52,7 @@ function createNewEntry(data) {
     })
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             if (!data.error_message) {
                 let option = createNewOptionItem(data);
                 locations.appendChild(option);
@@ -147,7 +148,7 @@ function createNewOptionItem(element) {
         btnSubmit.innerHTML = 'Save';
         isInCreationMode = false;
         // Do the api call to get the page content.
-        fetch('/api/jazz-artists/' + element.id, {
+        fetch('/api/locations/' + element.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -166,6 +167,7 @@ function createNewOptionItem(element) {
                     country.value = data.address.country;
                     lat.value = data.lat;
                     lon.value = data.lon;
+                    locationType.value = data.locationType;
                 } else {
                     msgBox.createToast('Somethin went wrong', data.error_message);
                 }
@@ -201,22 +203,25 @@ function loadList() {
     })
         .then(response => response.json())
         .then(data => {
-            data.forEach(element => {
-                let option = createNewOptionItem(element);
+            // check if data is array
+            if (Array.isArray(data)) {
+                data.forEach(element => {
+                    let option = createNewOptionItem(element);
 
-                // append option
-                locations.appendChild(option);
+                    // append option
+                    locations.appendChild(option);
 
-                // if last selected
-                // add a delay to make sure that the option is added to the list.
-                if (lastSelectedId == element.id) {
-                    toSelect = locations.options.length - 1;
+                    // if last selected
+                    // add a delay to make sure that the option is added to the list.
+                    if (lastSelectedId == element.id) {
+                        toSelect = locations.options.length - 1;
+                    }
+                });
+
+                // select last selected
+                if (toSelect != -1) {
+                    locations.selectedIndex = toSelect;
                 }
-            });
-
-            // select last selected
-            if (toSelect != -1) {
-                locations.selectedIndex = toSelect;
             }
         });
 }
@@ -259,11 +264,21 @@ function fetchAddress() {
         return;
     }
 
-    fetch("https://postcode.tech/api/v1/postcode?postcode=" + postalCode + "&number=" + houseNumber, {
-        headers: { "Authorization": "Bearer 1b9faa1d-1521-43ca-af73-4caeb208222b" }
+    let sendData = {
+        postalCode: postalCode,
+        houseNumber: houseNumber
+    }
+
+    fetch("/api/address/fetch-address", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(sendData)
     })
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             if (data.message != null) {
                 street.value = "";
                 city.value = "";
@@ -273,6 +288,32 @@ function fetchAddress() {
                 street.value = data.street;
                 city.value = data.city;
                 country.value = "Netherlands";
+
+                fetchGeocode();
+            }
+        });
+}
+
+function fetchGeocode() {
+
+    fetch("/api/locations/geocode?street="
+        + street.value + "&number=" + number.value + "&postal=" + postal.value + "&city=" + city.value,
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.message != null) {
+                lat.value = "";
+                lon.value = "";
+            }
+            else {
+                lat.value = data.lat;
+                lon.value = data.lon;
             }
         });
 }

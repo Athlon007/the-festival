@@ -15,6 +15,34 @@ class LocationAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
+        if (str_starts_with($uri, "/api/locations/geocode")) {
+            if (!isset($_GET['street'])) {
+                $this->sendErrorMessage("Street is required", 400);
+                return;
+            }
+            if (!isset($_GET['number'])) {
+                $this->sendErrorMessage("House number is required", 400);
+                return;
+            }
+            if (!isset($_GET['postal'])) {
+                $this->sendErrorMessage("Postal code is required", 400);
+                return;
+            }
+            if (!isset($_GET['city'])) {
+                $this->sendErrorMessage("City is required", 400);
+                return;
+            }
+
+            $street = $_GET['street'];
+            $houseNumber = $_GET['number'];
+            $postalCode = $_GET['postal'];
+            $city = $_GET['city'];
+
+            $output = $this->locationService->fetchGeocoding($street, $houseNumber, $postalCode, $city);
+            echo json_encode($output);
+            return;
+        }
+
         if (is_numeric(basename($uri))) {
             echo json_encode($this->locationService->getById(basename($uri)));
             return;
@@ -78,14 +106,14 @@ class LocationAPIController extends APIController
 
             $location = $this->locationService->insertLocation(
                 $name,
-                $locationType,
-                $lon,
-                $lat,
                 $streetName,
                 $houseNumber,
                 $postalCode,
                 $city,
-                $country
+                $country,
+                $locationType,
+                $lon,
+                $lat
             );
 
             echo json_encode($location);

@@ -4,6 +4,7 @@ require_once(__DIR__ . "/../repositories/LocationRepository.php");
 require_once(__DIR__ . "/AddressService.php");
 require_once(__DIR__ . "/../models/Location.php");
 
+
 class LocationService
 {
     private LocationRepository $repo;
@@ -61,5 +62,43 @@ class LocationService
     {
         $locationId = htmlspecialchars($locationId);
         $this->repo->deleteLocation($locationId);
+    }
+
+    const TOMTOM_API_KEY = "hhPEr4bmakfOBlVfPEsMhZWHNlmGt40L";
+
+    public function fetchGeocoding($street, $buildingNumber, $postal, $city)
+    {
+        //https://api.tomtom.com/search/2/geocode/Zijlsingel 2, 2013 DN, Haarlem.json?key=hhPEr4bmakfOBlVfPEsMhZWHNlmGt40L
+        $opts = array(
+            'http' => array(
+                'method' => "GET",
+                'header' => "Content-Type: application/json"
+            ),
+            "ssl" => array(
+                "verify_peer" => false,
+                "verify_peer_name" => false,
+            )
+        );
+
+        $context = stream_context_create($opts);
+
+        $address = urlencode($street . " " . $buildingNumber . ", " . $postal . " " . $city);
+        $url = "https://api.tomtom.com/search/2/geocode/$address.json?key=" . self::TOMTOM_API_KEY;
+
+        $response = file_get_contents($url, true, $context);
+        $response = json_decode($response, true);
+
+        // chekc if response is null
+        if ($response == null) {
+            throw new Exception("Invalid JSON");
+        }
+
+        $lat = $response['results'][0]['position']['lat'];
+        $lon = $response['results'][0]['position']['lon'];
+
+        return [
+            "lat" => $lat,
+            "lon" => $lon
+        ];
     }
 }

@@ -31,7 +31,7 @@ class LocationRepository extends Repository
 
     public function getAll()
     {
-        $sql = "SELECT locationId, name, addressId, locationType, lon, lat FROM Locations";
+        $sql = "SELECT locationId, name, addressId, locationType, lon, lat FROM `Locations`";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
