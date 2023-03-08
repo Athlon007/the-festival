@@ -18,7 +18,6 @@ class AddressAPIController extends APIController
                 $this->sendErrorMessage("Invalid API Request", 400);
                 break;
         }
-
     }
 
     protected function handleGetRequest($uri)

@@ -26,7 +26,8 @@ p {
 }
 
 #errorBox {
-    background-color: #ff9292;;
+    display: none;
+    background-color: #ffbfbf;;
     border: 2px solid red;
     color: red;
     font-weight: bold;
