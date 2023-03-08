@@ -9,7 +9,8 @@ class RestaurantService{
 
 function getAllRestaurants(){
     try {
-        return $this->repository->getAllRestaurants();
+        $this->repository = new RestaurantRepository();
+        //return $this->repository->getAllRestaurants();
     } catch (Exception $ex) {
         throw ($ex);
     }

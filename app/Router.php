@@ -132,6 +132,16 @@ class Router
                 $restaurantController = new RestaurantController();
                 $restaurantController->manageRestaurants();
                 break;
+            case "/manageJazz":
+                require_once("controllers/JazzController.php");
+                $jazzController = new JazzController();
+                $jazzController->manageJazz();
+                break;
+            case "/manageDance":
+                require_once("controllers/DanceController.php");
+                $danceController = new DanceController();
+                $danceController->manageDance();
+                break;
     
             default:
                 $this->route404($message);

@@ -8,7 +8,7 @@ class RestaurantRepository extends Repository
     public function getAllRestaurants()
     {
         try {
-            $query = "...";
+            $query = "Select * from ";
             $stmt = $this->connection->prepare($query);
             $stmt->execute();
             $stmt->setFetchMode(PDO::FETCH_CLASS, 'Restaurant');
