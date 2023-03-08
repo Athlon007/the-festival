@@ -80,9 +80,8 @@ class HMap {
      * @param {*} name Name displayed
      * @param {*} location [lat, long]
      */
-    addPin(name, location) {
-        let pin = this.L.marker(location).addTo(map);
-        pin.bindPopup(name);
+    addPin(markerContent, location) {
+        let pin = L.marker(location).addTo(this.map).bindPopup(markerContent);
 
         this.pins.push(pin);
     }
@@ -172,6 +171,7 @@ class GeneralMap extends HMap {
         const LOCATION = [52.393306, 4.622498];
         const ZOOM = 14;
         this.moveMap(LOCATION, ZOOM);
+        this.clearPins();
 
         this.clearAreas();
 
@@ -206,21 +206,55 @@ class GeneralMap extends HMap {
     // TODO: Add the other functions.
     showDance() {
         this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+        this.clearPins()
+    }
+
+    loadPinsForType(type) {
+        fetch('/api/locations/type/' + type, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(locations => {
+                locations.forEach(location => {
+                    // add marker
+
+                    // add marker and popup
+                    let markerContent = `<h3>${location.name}</h3>`;
+                    // add google maps link
+                    if (location.address) {
+                        let fullAddress = `${location.address.streetName} ${location.address.houseNumber}, ${location.address.postalCode} ${location.address.city}`;
+                        markerContent += `<a href="https://www.google.com/maps/search/?api=1&query=${location.name} ${location.address.streetName} ${location.address.postalCode}"
+                        target="_blank">${fullAddress}</a>`;
+                    }
+                    this.addPin(markerContent, [location.lat, location.lon]);
+                });
+            }
+            );
     }
 
     showJazz() {
         this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+        this.clearPins();
+        this.loadPinsForType(1);
     }
 
     showStroll() {
         this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+        this.clearPins();
+        this.loadPinsForType(3);
     }
 
     showYummy() {
         this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+        this.clearPins();
+        this.loadPinsForType(2);
     }
 
     showTeyler() {
         this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+        this.clearPins();
     }
 }

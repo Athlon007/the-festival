@@ -43,6 +43,11 @@ class LocationAPIController extends APIController
             return;
         }
 
+        if (str_starts_with($uri, "/api/locations/type/")) {
+            echo json_encode($this->locationService->getLocationsByType(basename($uri)));
+            return;
+        }
+
         if (is_numeric(basename($uri))) {
             echo json_encode($this->locationService->getById(basename($uri)));
             return;
