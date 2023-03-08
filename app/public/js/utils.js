@@ -24,3 +24,7 @@ export function isCurrentLink(href) {
     href = href.split('?')[0];
     return window.location.pathname == href;
 }
+
+export function isValidPassword(password){
+    return (password.length >= 8);
+}

@@ -43,9 +43,9 @@ class AddressAPIController extends APIController
         $address = $addressService->fetchAddressFromPostCodeAPI($data);
 
         header('Content-Type: application/json');
-        echo json_encode(["address" => $address]);
-        }
-        catch(Exception $ex){
+        echo json_encode(["street" => $address->street,
+                          "city" => $address->city,]);
+        }catch(Exception $ex){
             $this->sendErrorMessage($ex->getMessage());
         }
     }
