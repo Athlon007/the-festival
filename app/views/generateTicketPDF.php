@@ -1,0 +1,1 @@
+<h2>Ticket has been sent..</h2>

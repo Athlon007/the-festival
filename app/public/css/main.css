@@ -69,6 +69,12 @@ h2 {
     font-size: 3em;
 }
 
+.nav-item {
+    /* add ... to nav-item if it's too long */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .nav-item>a {
     /* Remove underline from nav-item */
     color: #fff;
@@ -179,6 +185,10 @@ h2 {
     max-height: 525px;
 }
 
+.carousel-item>img {
+    object-fit: cover;
+}
+
 .carousel-caption {
     top: 55%;
     transform: translateY(-50%);
@@ -259,10 +269,29 @@ h2 {
     text-align: center;
 }
 
+.lang-drop>input[type="text"] {
+    border-radius: 0;
+    margin: 0;
+    background-color: white;
+    font-family: 'Open Sans', sans-serif;
+}
+
 .countdown-counter {
     font-size: 2rem;
     font-weight: bold;
     text-align: center;
+}
+
+.price {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.allday-pass {
+    background-color: #8EB3CB;
+    border-radius: 1em;
+    padding: 0.5em;
 }
 
 @media (min-width: 960px) {
@@ -288,5 +317,11 @@ h2 {
     .carousel-caption>h1 {
         font-size: 64px;
         transform: translateY(-70%);
+    }
+}
+
+@media (min-width: 576px) {
+    .w-sm-auto {
+        width: auto !important;
     }
 }

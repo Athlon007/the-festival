@@ -146,16 +146,6 @@ class UserService
         }
     }
 
-    public function checkResetToken($email, $reset_token)
-    {
-        try {
-            $this->repository->checkResetToken($email, $reset_token);
-        } 
-        catch (Exception $ex) {
-            throw ($ex);
-        }
-    }
-
     public function verifyResetToken($email, $reset_token)
     {
         try {

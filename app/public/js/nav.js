@@ -133,6 +133,7 @@ function createIcon(href, alt, iconClass) {
     collapseLi.classList.add('nav-item');
     collapseLi.classList.add('d-none');
     collapseLi.classList.add('d-lg-block');
+    collapseLi.classList.add('px-2');
 
     let collapseA = document.createElement('a');
     collapseA.setAttribute('href', href);

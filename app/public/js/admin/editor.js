@@ -3,7 +3,6 @@ import { MsgBox } from "./modals.js";
 
 let editedPageId = -1;
 const title = document.getElementById('title');
-const images = document.getElementById('images');
 const pageHref = document.getElementById('page-href');
 const textPagesList = document.getElementById('text-pages-list');
 const masterEditor = document.getElementById('master-editor');
@@ -18,12 +17,12 @@ const imgPicker = new ImagePicker();
 
 tinymce.init({
     selector: 'textarea',
-    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
-    toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+    toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | customSeeSourceCode',
     menu: {
         custom: {
             title: 'Modules',
-            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile  '
+            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile customJazzOptions'
         }
     },
     menubar: 'file edit view insert format tools table custom',
@@ -204,6 +203,46 @@ tinymce.init({
                     editor.insertContent("<p id='countdown'>00:00:00:00<br>days hours minutes seconds</p>");
                 }
             });
+            editor.ui.registry.addMenuItem('customJazzOptions', {
+                text: 'Jazz Modules >',
+                type: 'nestedmenuitem',
+                getSubmenuItems: () => {
+                    return [
+                        {
+                            text: 'All Day Pass',
+                            type: 'menuitem',
+                            onAction: () => {
+                                // show dialog
+                                msgBox.createDialogWithInputs('Create All Day Pass', [
+                                    {
+                                        label: 'Pass Kind',
+                                        id: 'pass-kind',
+                                    }
+                                ],
+                                    () => {
+                                        let passKind = document.getElementById('pass-kind').value;
+                                        editor.insertContent(`<div id='allday-pass' data-kind='${passKind}'></div>`);
+                                    });
+                            }
+                        }
+                    ];
+                }
+            });
+            editor.ui.registry.addButton('customSeeSourceCode', {
+                text: 'Source Code',
+                onAction: () => {
+                    msgBox.createDialogWithInputs('Source Code', [
+                        {
+                            label: 'Source Code',
+                            id: 'source-code',
+                            type: 'textarea',
+                            content: tinyMCE.activeEditor.getContent()
+                        }
+                    ], () => {
+                        tinyMCE.activeEditor.setContent(document.getElementById('source-code').value);
+                    });
+                }
+            })
         } catch (error) {
             console.error(error);
         }
@@ -353,7 +392,6 @@ function createNewOptionItem(element) {
                     imgPicker.unselectAllImages();
                     // select images that are used by the page.
                     data.images.forEach(image => {
-                        let checkboxes = document.getElementsByName('image');
                         imgPicker.selectImage(image.id);
                     });
 

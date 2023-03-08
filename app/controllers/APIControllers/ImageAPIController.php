@@ -13,18 +13,20 @@ class ImageAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
-        if (str_starts_with($uri, "/api/images")) {
-            if (is_numeric(basename($uri))) {
-                $image = $this->service->getImageById(basename($uri));
-                echo json_encode($image);
-                return;
-            }
-
-            $images = $this->service->getAll();
+        if (isset($_GET["search"])) {
+            $images = $this->service->search($_GET["search"]);
             echo json_encode($images);
-        } else {
-            $this->sendErrorMessage("Invalid request.");
+            return;
         }
+
+        if (is_numeric(basename($uri))) {
+            $image = $this->service->getImageById(basename($uri));
+            echo json_encode($image);
+            return;
+        }
+
+        $images = $this->service->getAll();
+        echo json_encode($images);
     }
 
     public function handleDeleteRequest($uri)

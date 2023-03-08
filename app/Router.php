@@ -77,6 +77,17 @@ class Router
             return;
         }
 
+        if (str_starts_with($request, "/festival/jazz/")) {
+            if (str_starts_with($request, "/festival/jazz/artist/")) {
+                require_once("controllers/FestivalJazzController.php");
+                $festivalJazzController = new FestivalJazzController();
+                $festivalJazzController->loadArtistPage($request);
+                return;
+            } elseif (str_starts_with($request, "/festival/jazz/event/")) {
+                // TODO: Implement event page
+            }
+        }
+
         // split off the ?
         $request = explode("?", $request)[0];
 
@@ -94,9 +105,16 @@ class Router
             case "/admin/editor":
                 require("views/admin/editor.php");
                 break;
+            case "/admin/artists":
+                require("views/admin/artists.php");
+                break;
             case "/admin/images":
                 require("views/admin/images.php");
                 break;
+            case "/admin/locations":
+                require("views/admin/locations.php");
+                break;
+            case "/home/login":
             case "/home/account":
                 require_once("controllers/HomeController.php");
                 $homeController = new HomeController();
@@ -119,6 +137,15 @@ class Router
                 break;
             case "/konradstestpage":
                 require_once("views/konrads-test-page.php");
+            case "/buyTicket":
+                require_once("controllers/TicketController.php");
+                $ticketController = new TicketController();
+                $ticketController->buyTicket();
+                break;
+            case "/generateTicket":
+                require_once("controllers/TicketController.php");
+                $ticketController = new TicketController();
+                $ticketController->generateAndSendTicket();
                 break;
             default:
                 $this->route404($message);
@@ -155,6 +182,15 @@ class Router
         } elseif (str_starts_with($request, "/api/images")) {
             require_once("controllers/APIControllers/ImageAPIController.php");
             $controller = new ImageAPIController();
+        } elseif (str_starts_with($request, "/api/jazz-artists")) {
+            require_once("controllers/APIControllers/Jazz/JazzArtistAPIController.php");
+            $controller = new JazzArtistAPIController();
+        } elseif (str_starts_with($request, "/api/addresses")) {
+            require_once("controllers/APIControllers/AddressAPIController.php");
+            $controller = new AddressAPIController();
+        } elseif (str_starts_with($request, "/api/locations")) {
+            require_once("controllers/APIControllers/LocationAPIController.php");
+            $controller = new LocationAPIController();
         } else {
             http_response_code(400);
             // send json

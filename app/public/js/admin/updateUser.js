@@ -9,7 +9,6 @@ function updateUser(id) {
         lastName: lastName,
         email: email
     }
-    console.log(data);
     fetch("/api/user/updateUser", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
