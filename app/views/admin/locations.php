@@ -44,15 +44,9 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-6">
                             <label for="postal" class="form-label">Postal Code</label>
                             <input type="text" id="postal" class="form-control mb-2" placeholder="1234 AB">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <label for="street" class="form-label">Street Name</label>
-                            <input type="text" id="street" class="form-control mb-2" placeholder="Bijdroplaan">
                         </div>
                         <div class="col-6">
                             <label for="number" class="form-label">Building Number</label>
@@ -61,10 +55,16 @@
                     </div>
                     <div class="row">
                         <div class="col-6">
+                            <label for="street" class="form-label">Street Name</label>
+                            <input type="text" id="street" class="form-control mb-2" placeholder="Bijdroplaan">
+                        </div>
+                        <div class="col-6">
                             <label for="city" class="form-label">City</label>
                             <input type="text" id="city" class="form-control mb-2" placeholder="Haarlem">
                         </div>
-                        <div class="col-6">
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
                             <label for="country" class="form-label">Country</label>
                             <input type="text" id="country" class="form-control mb-2" placeholder="Netherlands">
                         </div>

@@ -45,20 +45,24 @@ class LocationAPIController extends APIController
             if (!isset($data['lat'])) {
                 throw new MissingVariableException("Latitude is required");
             }
+
             // now also check for variables needed for Address
-            if (!isset($data['streetName'])) {
+            if (!isset($data['address'])) {
+                throw new MissingVariableException("Address is required");
+            }
+            if (!isset($data['address']['streetName'])) {
                 throw new MissingVariableException("Street name is required");
             }
-            if (!isset($data['houseNumber'])) {
+            if (!isset($data['address']['houseNumber'])) {
                 throw new MissingVariableException("House number is required");
             }
-            if (!isset($data['postalCode'])) {
+            if (!isset($data['address']['postalCode'])) {
                 throw new MissingVariableException("Postal code is required");
             }
-            if (!isset($data['city'])) {
+            if (!isset($data['address']['city'])) {
                 throw new MissingVariableException("City is required");
             }
-            if (!isset($data['country'])) {
+            if (!isset($data['address']['country'])) {
                 throw new MissingVariableException("Country is required");
             }
 
@@ -66,11 +70,11 @@ class LocationAPIController extends APIController
             $locationType = $data['locationType'];
             $lon = $data['lon'];
             $lat = $data['lat'];
-            $streetName = $data['streetName'];
-            $houseNumber = $data['houseNumber'];
-            $postalCode = $data['postalCode'];
-            $city = $data['city'];
-            $country = $data['country'];
+            $streetName = $data['address']['streetName'];
+            $houseNumber = $data['address']['houseNumber'];
+            $postalCode = $data['address']['postalCode'];
+            $city = $data['address']['city'];
+            $country = $data['address']['country'];
 
             $location = $this->locationService->insertLocation(
                 $name,

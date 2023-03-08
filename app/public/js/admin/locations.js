@@ -17,12 +17,10 @@ const lon = document.getElementById('lon');
 const btnSubmit = document.getElementById('submit');
 let isInCreationMode = false;
 
-const btnOpen = document.getElementById('open');
-
 const msgBox = new MsgBox();
 
 
-function updateExistingArtist(id, data) {
+function updateExistingEntry(id, data) {
     fetch('/api/locations/' + id, {
         method: 'PUT',
         headers: {
@@ -44,7 +42,7 @@ function updateExistingArtist(id, data) {
         });
 }
 
-function createNewArtist(data) {
+function createNewEntry(data) {
     fetch('/api/locations', {
         method: 'POST',
         headers: {
@@ -76,30 +74,25 @@ function createNewArtist(data) {
 }
 
 btnSubmit.onclick = function () {
-    let pickedImageIds = imgPicker.getSelectedImages();
-
-    let descriptionText = description.value;
-    // Repalce all new lines with <br>
-    descriptionText = descriptionText.replace(/\r?\n/g, '<br>');
-
     // to json
     let data = {
         name: name.value,
-        description: descriptionText,
-        images: pickedImageIds,
-        country: country.value,
-        genres: genres.value,
-        facebook: facebook.value,
-        instagram: instagram.value,
-        twitter: twitter.value,
-        spotify: spotify.value,
-        recentAlbums: albums.value
+        locationType: locationType.value,
+        lon: lon.value,
+        lat: lat.value,
+        address: {
+            postalCode: postal.value,
+            streetName: street.value,
+            houseNumber: number.value,
+            city: city.value,
+            country: country.value
+        }
     };
 
     if (isInCreationMode) {
-        createNewArtist(data);
+        createNewEntry(data);
     } else {
-        updateExistingArtist(editedId, data);
+        updateExistingEntry(editedId, data);
     }
 }
 
@@ -109,9 +102,9 @@ document.getElementById('delete').onclick = function () {
         return;
     }
 
-    msgBox.createYesNoDialog('Delete page', 'Are you sure you want to delete this page? This is irreversible!', function () {
+    msgBox.createYesNoDialog('Delete page', 'Are you sure you want to delete this location? This is irreversible!', function () {
         // fetch with post
-        fetch('/api/jazz-artists/' + editedId, {
+        fetch('/api/locations/' + editedId, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -173,14 +166,6 @@ function createNewOptionItem(element) {
                     country.value = data.address.country;
                     lat.value = data.lat;
                     lon.value = data.lon;
-
-                    btnOpen.onclick = function () {
-                        let link = 'http://' + window.location.hostname + '/festival/jazz-and-more/artist/' + data.id;
-                        if (link == '') {
-                            link = "http://" + window.location.hostname;
-                        }
-                        window.open(link, '_blank');
-                    };
                 } else {
                     msgBox.createToast('Somethin went wrong', data.error_message);
                 }
@@ -259,7 +244,6 @@ document.getElementById('new-page').onclick = function () {
     isInCreationMode = true;
     toggleEditor(masterEditor, true);
     editedId = -1;
-    imgPicker.unselectAllImages();
     locations.selectedIndex = 0;
     title.value = '';
     pageHref.value = '';
@@ -268,8 +252,12 @@ document.getElementById('new-page').onclick = function () {
 
 
 function fetchAddress() {
-    var postalCode = postalCodeField.value.replace(" ", "");
-    var houseNumber = houseNumberField.value;
+    let postalCode = postal.value.replace(" ", "");
+    let houseNumber = number.value;
+
+    if (postalCode.length < 6 || houseNumber.length < 1) {
+        return;
+    }
 
     fetch("https://postcode.tech/api/v1/postcode?postcode=" + postalCode + "&number=" + houseNumber, {
         headers: { "Authorization": "Bearer 1b9faa1d-1521-43ca-af73-4caeb208222b" }
@@ -277,14 +265,22 @@ function fetchAddress() {
         .then(response => response.json())
         .then(data => {
             if (data.message != null) {
-                streetNameField.value = "";
-                cityField.value = "";
-                countryField.value = "";
+                street.value = "";
+                city.value = "";
+                country.value = "";
             }
             else {
-                streetNameField.value = data.street;
-                cityField.value = data.city;
-                countryField.value = "Netherlands";
+                street.value = data.street;
+                city.value = data.city;
+                country.value = "Netherlands";
             }
         });
+}
+
+// on postal unselected
+number.onblur = function () {
+    fetchAddress();
+}
+postal.onblur = function () {
+    fetchAddress();
 }
