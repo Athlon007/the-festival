@@ -9,8 +9,6 @@ class Address implements JsonSerializable
     private string $postalCode;
     private string $city;
     private string $country;
-    private $lon;
-    private $lat;
 
     public function jsonSerialize(): mixed
     {
@@ -20,9 +18,7 @@ class Address implements JsonSerializable
             'houseNumber' => $this->houseNumber,
             'postalCode' => $this->postalCode,
             'city' => $this->city,
-            'country' => $this->country,
-            'lon' => $this->lon,
-            'lat' => $this->lat
+            'country' => $this->country
         ];
     }
 
@@ -84,25 +80,5 @@ class Address implements JsonSerializable
     public function getCountry()
     {
         return $this->country;
-    }
-
-    public function setLon($lon)
-    {
-        $this->lon = $lon;
-    }
-
-    public function getLon()
-    {
-        return $this->lon;
-    }
-
-    public function setLat($lat)
-    {
-        $this->lat = $lat;
-    }
-
-    public function getLat()
-    {
-        return $this->lat;
     }
 }
