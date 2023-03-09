@@ -191,6 +191,9 @@ class Router
         } elseif (str_starts_with($request, "/api/locations")) {
             require_once("controllers/APIControllers/LocationAPIController.php");
             $controller = new LocationAPIController();
+        } elseif (str_starts_with($request, "/api/events")) {
+            require_once("controllers/APIControllers/EventAPIController.php");
+            $controller = new EventAPIController();
         } else {
             http_response_code(400);
             // send json

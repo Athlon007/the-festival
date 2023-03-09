@@ -32,7 +32,6 @@ class Location implements JsonSerializable
     {
         return $this->locationId;
     }
-
     public function setName($name)
     {
         $this->name = $name;

@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="/css/icons.css">
     <link rel="stylesheet" href="/css/editor.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <script src="https://cdn.tiny.cloud/1/k1ij9ynmcbqgglyj7dnenvnadfy29ad47qa4kewvc2udoshh/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
+    <script src=" https://cdn.tiny.cloud/1/k1ij9ynmcbqgglyj7dnenvnadfy29ad47qa4kewvc2udoshh/tinymce/6/tinymce.min.js" referrerpolicy="origin">
+    </script>
 </head>
 
 <body>
@@ -88,7 +90,7 @@
                     <div class="mt-1">
                         <button id="submit" class="btn btn-success">Save</button>
                         <button id="cancel" class="btn btn-secondary">Cancel</button>
-                        <button id="delete" class="btn btn-danger float-end">Delete Artist</button>
+                        <button id="delete" class="btn btn-danger float-end">Delete</button>
                     </div>
                 </div>
             </div>

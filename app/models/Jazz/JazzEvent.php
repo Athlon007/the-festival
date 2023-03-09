@@ -1,14 +1,14 @@
 <?php
-require_once('../Event.php');
+require_once(__DIR__ . '/../Event.php');
 require_once('JazzArtist.php');
-require_once('../Location.php');
+require_once(__DIR__ . '/../Location.php');
 
 class JazzEvent extends Event implements JsonSerializable
 {
     private JazzArtist $artist;
     private Location $location;
 
-    public function __construct($id, $name, DateTime $startTime, DateTime $endTime, $price, $artist, $location)
+    public function __construct($id, $name, DateTime $startTime, DateTime $endTime, $price, JazzArtist $artist, Location $location)
     {
         $this->setId($id);
         $this->setName($name);
