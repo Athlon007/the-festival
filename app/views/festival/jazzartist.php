@@ -106,6 +106,51 @@
                 </div>
             <? } ?>
         </div>
+        <div class="row my-1">
+            <div class="col-12 mx-auto">
+                <h2>Events</h2>
+            </div>
+            <div class="row col-12">
+                <?php foreach ($events as $event) { ?>
+                    <div class="row col-11 mx-auto my-2 card">
+                        <div class="row col-12 py-2">
+                            <h2><?= $event->getStartTime()->format('l, F jS'); ?></h2>
+                        </div>
+                        <div class="row mx-auto">
+                            <div class="col-3">
+                                <h3>Location</h3>
+                                <p><?= $event->getLocation()->getName() ?></p>
+                            </div>
+                            <div class="col-3">
+                                <h3>Time</h3>
+                                <p><?= $event->getStartTime()->format('H:i') ?> - <?= $event->getEndTime()->format('H:i') ?></p>
+                            </div>
+                            <?php if ($event->getPrice() > 0) { ?>
+                                <div class="col-3">
+                                    <h3>Seats</h3>
+                                    <p>X/<?= $event->getLocation()->getCapacity(); ?></p>
+                                </div>
+                            <?php } ?>
+                            <div class="col-3">
+                                <h3>Price</h3>
+                                <p class="price" style="text-align:left"><?= $event->getPrice() == 0 ? "FREE" : $event->getPrice(); ?>€</p>
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-end py-2">
+                            <?php if ($event->getPrice() > 0) { ?>
+                                <input type="number" class="form-control w-auto" id="ticketAmount" name="ticketAmount" min="1" max="10" value="1">
+                                <button class="btn btn-primary px-2 mx-1 w-auto">Add ticket to cart</button>
+                            <?php } else { ?>
+                                <button class="btn btn-primary px-2 mx-1 w-auto">Book a ticket</button>
+                            <?php } ?>
+                            <a href="/festival/jazz/event/<?= $event->getId(); ?>" class="w-auto p-0">
+                                <button class="btn btn-secondary px-2 w-auto">About event</button>
+                            </a>
+                        </div>
+                    <?php } ?>
+                    </div>
+            </div>
+        </div>
     </div>
     <footer class="foot row bottom"></footer>
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
