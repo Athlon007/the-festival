@@ -72,11 +72,17 @@
                     <div class="row">
                         <div class="col-6">
                             <label for="lat" class="form-label">Latitude</label>
-                            <input type="text" id="lat" class="form-control mb-2" placeholder="0" disabled>
+                            <input type="number" id="lat" class="form-control mb-2" placeholder="0" disabled>
                         </div>
                         <div class="col-6">
                             <label for="lon" class="form-label">Longtitude</label>
-                            <input type="text" id="lon" class="form-control mb-2" placeholder="0" disabled>
+                            <input type="number" id="lon" class="form-control mb-2" placeholder="0" disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="capacity" class="form-label">Capacity</label>
+                            <input type="number" id="capacity" class="form-control mb-2" placeholder="0"></input>
                         </div>
                     </div>
                     <div class="mt-1">

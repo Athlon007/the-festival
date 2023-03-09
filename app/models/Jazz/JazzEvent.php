@@ -1,18 +1,22 @@
 <?php
 require_once('../Event.php');
 require_once('JazzArtist.php');
-require_once('Venue.php');
+require_once('../Location.php');
 
 class JazzEvent extends Event implements JsonSerializable
 {
     private JazzArtist $artist;
-    private Venue $venue;
+    private Location $location;
 
-    public function __construct($id, $name, DateTime $startTime, DateTime $endTime, $price, $artist, $venue)
+    public function __construct($id, $name, DateTime $startTime, DateTime $endTime, $price, $artist, $location)
     {
-        //parent::__construct($id, $name, $startTime, $endTime, $price);
+        $this->setId($id);
+        $this->setName($name);
+        $this->setStartTime($startTime);
+        $this->setEndTime($endTime);
+        $this->setPrice($price);
         $this->artist = $artist;
-        $this->venue = $venue;
+        $this->location = $location;
     }
 
     public function getArtist(): JazzArtist
@@ -25,21 +29,21 @@ class JazzEvent extends Event implements JsonSerializable
         $this->artist = $value;
     }
 
-    public function getVenue(): Venue
+    public function getLocation(): Location
     {
-        return $this->venue;
+        return $this->location;
     }
 
-    public function setVenue(Venue $value)
+    public function setLocation(Location $value)
     {
-        $this->venue = $value;
+        $this->location = $value;
     }
 
     public function jsonSerialize(): mixed
     {
         return array_merge(parent::jsonSerialize(), [
             'artist' => $this->getArtist(),
-            'venue' => $this->getVenue()
+            'location' => $this->getLocation()
         ]);
     }
 }

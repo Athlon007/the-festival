@@ -1,6 +1,7 @@
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;
+let editedAddressId = -1;
 const locations = document.getElementById('locations');
 const masterEditor = document.getElementById('master-editor');
 
@@ -13,6 +14,8 @@ const city = document.getElementById('city');
 const country = document.getElementById('country');
 const lat = document.getElementById('lat');
 const lon = document.getElementById('lon');
+const locationType = document.getElementById('locationType');
+const capacity = document.getElementById('capacity');
 
 const btnSubmit = document.getElementById('submit');
 let isInCreationMode = false;
@@ -34,11 +37,11 @@ function updateExistingEntry(id, data) {
                 loadList();
                 msgBox.createToast('Success!', 'Location has been updated');
             } else {
-                msgBox.createToast('Somethin went wrong', data.error_message);
+                msgBox.createToast('Something went wrong', data.error_message);
             }
         })
         .catch(error => {
-            msgBox.createToast('Somethin went wrong', error);
+            msgBox.createToast('Something went wrong', error);
         });
 }
 
@@ -52,12 +55,12 @@ function createNewEntry(data) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             if (!data.error_message) {
                 let option = createNewOptionItem(data);
                 locations.appendChild(option);
                 locations.selectedIndex = locations.length - 1;
                 editedId = data.id;
+                editedAddressId = data.address.addressId;
                 isInCreationMode = false;
                 btnSubmit.innerHTML = 'Save';
                 msgBox.createToast('Success!', 'Location has been created');
@@ -66,11 +69,11 @@ function createNewEntry(data) {
                 isInCreationMode = false;
                 btnSubmit.innerHTML = 'Save';
             } else {
-                msgBox.createToast('Somethin went wrong', data.error_message);
+                msgBox.createToast('Something went wrong', data.error_message);
             }
         })
         .catch(error => {
-            msgBox.createToast('Somethin went wrong', error);
+            msgBox.createToast('Something went wrong', error);
         });
 }
 
@@ -79,9 +82,11 @@ btnSubmit.onclick = function () {
     let data = {
         name: name.value,
         locationType: locationType.value,
+        capacity: capacity.value,
         lon: lon.value,
         lat: lat.value,
         address: {
+            addressId: editedAddressId,
             postalCode: postal.value,
             streetName: street.value,
             houseNumber: number.value,
@@ -125,7 +130,7 @@ document.getElementById('delete').onclick = function () {
                     toggleEditor(masterEditor, false);
                     msgBox.createToast('Success!', 'Page has been deleted');
                 } else {
-                    msgBox.createToast('Somethin went wrong', data.error_message);
+                    msgBox.createToast('Something went wrong', data.error_message);
                 }
             })
     }, function () { });
@@ -157,8 +162,8 @@ function createNewOptionItem(element) {
             .then(response => response.json())
             .then(data => {
                 if (!data.error_message) {
-                    console.log(data);
                     editedId = data.id;
+                    editedAddressId = data.address.addressId;
                     name.value = data.name;
                     postal.value = data.address.postalCode;
                     street.value = data.address.streetName;
@@ -168,12 +173,13 @@ function createNewOptionItem(element) {
                     lat.value = data.lat;
                     lon.value = data.lon;
                     locationType.value = data.locationType;
+                    capacity.value = data.capacity;
                 } else {
-                    msgBox.createToast('Somethin went wrong', data.error_message);
+                    msgBox.createToast('Something went wrong', data.error_message);
                 }
             })
             .catch(error => {
-                msgBox.createToast('Somethin went wrong', error);
+                msgBox.createToast('Something went wrong', error);
             });
     }
 
@@ -234,6 +240,7 @@ function toggleEditor(element, isEnabled) {
     } else {
         element.classList.add('disabled-module');
         editedId = -1;
+        editedAddressId = -1;
         name.value = '';
         postal.value = '';
         street.value = '';
@@ -242,6 +249,8 @@ function toggleEditor(element, isEnabled) {
         country.value = '';
         lat.value = '';
         lon.value = '';
+        locationType.value = -1;
+        capacity.value = '';
     }
 }
 
@@ -249,6 +258,7 @@ document.getElementById('new-page').onclick = function () {
     isInCreationMode = true;
     toggleEditor(masterEditor, true);
     editedId = -1;
+    editedAddressId = -1;
     locations.selectedIndex = 0;
     title.value = '';
     pageHref.value = '';
@@ -278,7 +288,6 @@ function fetchAddress() {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             if (data.message != null) {
                 street.value = "";
                 city.value = "";
@@ -306,7 +315,6 @@ function fetchGeocode() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             if (data.message != null) {
                 lat.value = "";
                 lon.value = "";

@@ -31,7 +31,7 @@ class LocationService
         return $this->repo->getLocationsByType($type);
     }
 
-    public function insertLocation($name, $streetName, $houseNumber, $postalCode, $city, $country, $locationType, $lon, $lat): Location
+    public function insertLocation($name, $streetName, $houseNumber, $postalCode, $city, $country, $locationType, $lon, $lat, $capacity): Location
     {
         $address = $this->addressService->insertAddress($streetName, $houseNumber, $postalCode, $city, $country);
 
@@ -39,22 +39,32 @@ class LocationService
         $locationType = htmlspecialchars($locationType);
         $lon = htmlspecialchars($lon);
         $lat = htmlspecialchars($lat);
+        $capacity = htmlspecialchars($capacity);
 
-        $locationId = $this->repo->insertLocation($name, $address->getAddressId(), $locationType, $lon, $lat);
+        $locationId = $this->repo->insertLocation($name, $address->getAddressId(), $locationType, $lon, $lat, $capacity);
         return $this->getById($locationId);
     }
 
-    public function updateLocation($locationId, $name, $streetName, $houseNumber, $postalCode, $city, $country, $locationType, $lon, $lat): Location
+    public function updateLocation($locationId, $name, $streetName, $houseNumber, $postalCode, $city, $country, $locationType, $lon, $lat, $capacity, $addressId): Location
     {
         $locationId = htmlspecialchars($locationId);
         $name = htmlspecialchars($name);
         $locationType = htmlspecialchars($locationType);
         $lon = htmlspecialchars($lon);
         $lat = htmlspecialchars($lat);
+        $capacity = htmlspecialchars($capacity);
+        $addressId = htmlspecialchars($addressId);
 
-        $address = $this->addressService->updateAddress($locationId, $streetName, $houseNumber, $postalCode, $city, $country);
+        $address = $this->addressService->updateAddress(
+            $addressId,
+            $streetName,
+            $houseNumber,
+            $postalCode,
+            $city,
+            $country
+        );
 
-        $this->repo->updateLocation($locationId, $name, $address->getAddressId(), $locationType, $lon, $lat);
+        $this->repo->updateLocation($locationId, $name, $address->getAddressId(), $locationType, $lon, $lat, $capacity);
         return $this->getById($locationId);
     }
 
@@ -68,7 +78,6 @@ class LocationService
 
     public function fetchGeocoding($street, $buildingNumber, $postal, $city)
     {
-        //https://api.tomtom.com/search/2/geocode/Zijlsingel 2, 2013 DN, Haarlem.json?key=hhPEr4bmakfOBlVfPEsMhZWHNlmGt40L
         $opts = array(
             'http' => array(
                 'method' => "GET",
