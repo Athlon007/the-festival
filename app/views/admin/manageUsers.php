@@ -45,26 +45,26 @@
                         <?php foreach ($users as $user) { ?>
                             <tr>
                                 <td data-th="User ID" id="userId">
-                                    <?php echo $user->getUserId(); ?>
+                                    <?= $user->getUserId(); ?>
                                 </td>
                                 <td data-th="Name">
-                                    <?php echo $user->getFirstName(); ?>
+                                    <?= $user->getFirstName(); ?>
                                 </td>
                                 <td data-th="Last Name">
-                                    <?php echo $user->getLastName(); ?>
+                                    <?= $user->getLastName(); ?>
                                 </td>
                                 <td data-th="Email">
-                                    <?php echo $user->getEmail(); ?>
+                                    <?= $user->getEmail(); ?>
                                 </td>
                                 <td data-th="Role">
                                     <?php if ($user->getUserType() == 3) {
                                         ?>
                                         Customer
-                                    <?php
+                                        <?php
                                     } else if ($user->getUserType() == 2) {
                                         ?>
                                             User
-                                    <?php
+                                        <?php
                                     } ?>
                                 </td>
                                 <td>
@@ -72,8 +72,7 @@
                                         <button type="submit" name="delete_user" id="deleteUserButton"
                                             value="<?= $user->getUserId() ?>" class="btn btn-danger"
                                             onclick="deleteUser('<?= $user->getUserId() ?>')">Delete</button>
-                                        <a href="updateUser?id=<?php echo $user->getUserId() ?>"
-                                            class="btn btn-primary">Update</a>
+                                        <a href="updateUser?id=<?= $user->getUserId() ?>" class="btn btn-primary">Update</a>
 
                                     </div>
                                 </td>
