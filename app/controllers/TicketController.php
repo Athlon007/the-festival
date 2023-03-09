@@ -22,6 +22,7 @@ class TicketController
             $ticket = $ticketService->getTicketByID(1);
             $qrCodeImage = $ticketService->generateQRCode($ticket);
             $dompdf = $ticketService->generatePDFTicket($ticket, $qrCodeImage);
+
             //$ticketService->sendTicketByEmail($dompdf, $ticket);
         } catch (PDOException $e) {
             echo $e->getMessage();

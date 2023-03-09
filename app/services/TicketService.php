@@ -54,6 +54,8 @@ class TicketService
 
     public function generatePDFTicket($ticket,$qrCodeImage): Dompdf
     {
+      // buffer the following html with PHP so we can pass it to the PDF generator
+      ob_start();
         $dompdf = new Dompdf([
             "chroot" => __DIR__,
             "isRemoteEnabled" => true,
@@ -66,14 +68,17 @@ class TicketService
 
         $html = require_once(__DIR__ . '/../views/generateTicketPDF.php');
 
+        // retrieve the HTML generated in our buffer and delete the buffer
+        $html = ob_get_clean();
+
         $dompdf->loadHtml($html);
+
         $dompdf->setPaper('A4', 'portrait');
 
         $dompdf->render();
         $dompdf->addInfo('Title', 'The Festival Ticket');
 
-        // $dompdf->stream("ticket.pdf", ["Attachment" => 0]);
-
+        $dompdf->stream("ticket.pdf", array("Attachment" => false));
         return $dompdf;
     }
 

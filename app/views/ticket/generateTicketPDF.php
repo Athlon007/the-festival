@@ -1,24 +1,3 @@
-<?php
-// require_once(__DIR__ . '/../vendor/autoload.php');
-
-// use Endroid\QrCode\QrCode;
-// use Endroid\QrCode\Label\Label;
-// use Endroid\QrCode\Writer\PngWriter;
-// use Endroid\QrCode\Color\Color;
-
-// $qrCodeData = $ticket->getQrCodeData();
-// $qrCode = new QrCode($qrCodeData);
-// $qrCode->setSize(150);
-// $qrCode->setMargin(10);
-
-// $label = Label::create('Ticket QR Code')
-//     ->setTextColor(new Color(0, 0, 0));
-
-// $writer = new PngWriter();
-
-// $qrCodeImage = 'data:image/png;base64,' . base64_encode($writer->write($qrCode, null, $label)->getString());
-?>
-
 <div class="container">
     <h1>The Festival Ticket</h1>
 
@@ -26,27 +5,31 @@
 
     <div class="ticket-info">
         <label>Event Name:</label>
-        <p> 
-            <?php echo $ticket->getEvent()->getName() ?>
+        <p>
+            <?= $ticket->getEvent()->getName() ?>
         </p>
     </div>
 
     <div class="ticket-info">
         <label>Event Date:</label>
         <p>
-            <?php echo $ticket->getEvent()->getStartTime()->format('l, m/d/Y') ?>
+            <?= $ticket->getEvent()->getStartTime()->format('l, m/d/Y') ?>
         </p>
     </div>
 
     <div class="ticket-info">
         <label>Event Time:</label>
-        <p> <?php echo $ticket->getEvent()->getStartTime()->format('H:i') ?> - <?php echo
-            $ticket->getEvent()->getEndTime()->format('H:i') ?> </p>
+        <p>
+            <?= $ticket->getEvent()->getStartTime()->format('H:i') ?> -
+            <?= $ticket->getEvent()->getEndTime()->format('H:i') ?>            
+        </p>
     </div>
 
     <div class="ticket-info">
         <label>Customer Name:</label>
-        <p> <?php echo $ticket->getCustomer()->getFirstName() . ' ' . $ticket->getCustomer()->getLastName() ?></p>
+        <p>
+            <?= $ticket->getCustomer()->getFirstName() . ' ' . $ticket->getCustomer()->getLastName() ?>
+        </p>
     </div>
 
     <div class="ticket-info">
@@ -56,16 +39,20 @@
 
     <div class="ticket-info">
         <label>Customer Email:</label>
-        <p> <?php echo $ticket->getCustomer()->getEmail() ?></p>
+        <p>
+            <?= $ticket->getCustomer()->getEmail() ?>
+        </p>
     </div>
 
     <div class="ticket-info">
         <label>Price:</label>
-        <p style="color: red">€ <?php echo $ticket->getEvent()->getPrice() ?></p>
+        <p style="color: red"><strong>€
+                <?= $ticket->getEvent()->getPrice() ?>
+            </strong></p>
     </div>
     <br>
     <hr>
-    <img src="<?php echo $qrCodeImage ?>" alt="Ticket QR Code" class="qr-code">
+    <img src="<?= $qrCodeImage ?>" alt="Ticket QR Code" class="qr-code">
     <hr>
 </div>
 </div>
@@ -100,12 +87,6 @@
         max-width: 500px;
     }
 
-    .logo {
-        display: block;
-        margin: 0 auto 20px;
-        max-width: 200px;
-    }
-
     .ticket-info {
         display: flex;
         justify-content: space-between;
@@ -126,8 +107,6 @@
     }
 
     .qr-code {
-        display: block;
-        margin: 10px auto 0;
         max-width: 150px;
     }
 </style>
