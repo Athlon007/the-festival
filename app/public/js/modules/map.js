@@ -229,7 +229,7 @@ class GeneralMap extends HMap {
                         markerContent += `<a href="https://www.google.com/maps/search/?api=1&query=${location.name} ${location.address.streetName} ${location.address.postalCode}"
                         target="_blank">${fullAddress}</a>`;
                     }
-                    this.addPin(markerContent, [location.lat, location.lon]);
+                    this.addPin(markerContent, [location.lon, location.lat]);
                 });
             }
             );
