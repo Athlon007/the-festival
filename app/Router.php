@@ -117,6 +117,11 @@ class Router
                 $userController = new UserController();
                 $userController->manageUsers();
                 break;
+            case "/addUser":
+                require_once("controllers/UserController.php");
+                $userController = new UserController();
+                $userController->addUser();
+                break;
             case "/konradstestpage":
                 require_once("views/konrads-test-page.php");
             case "/buyTicket":

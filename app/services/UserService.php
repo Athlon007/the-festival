@@ -223,11 +223,31 @@ class UserService
     }
 
 
-
     public function getAllUsers(): array
     {
         try {
             return $this->repository->getAllUsers();
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
+
+    public function addUser($data) : void{
+        try {
+            $user = new User();
+            $user->setFirstName(htmlspecialchars($data->firstName));
+            $user->setLastName(htmlspecialchars($data->lastName));
+            $user->setEmail(htmlspecialchars($data->email));
+            $password = htmlspecialchars($data->password);
+            $user->setHashPassword(password_hash($password, PASSWORD_DEFAULT));
+
+            if (htmlspecialchars($data->role == "admin")) {
+                $user->setUserType(1);
+            } else {
+                $user->setUserType(2);
+            }
+
+            $this->repository->addUser($user);
         } catch (Exception $ex) {
             throw ($ex);
         }
@@ -258,6 +278,16 @@ class UserService
             $user->setFirstName(htmlspecialchars($data->firstName));
             $user->setLastName(htmlspecialchars($data->lastName));
             $user->setEmail(htmlspecialchars($data->email));
+
+            if (htmlspecialchars($data->role == "admin")) {
+                $user->setUserType(1);
+            } else if (htmlspecialchars($data->role == "employee")){
+                $user->setUserType(2);
+            }
+            else {
+                $user->setUserType(3);
+            }
+            
             $this->repository->updateUser($user);
         } catch (Exception $ex) {
             throw ($ex);

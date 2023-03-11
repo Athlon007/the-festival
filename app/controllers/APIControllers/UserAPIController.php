@@ -35,6 +35,9 @@ class UserAPIController extends APIController
                     case "/api/user/updatePassword":
                         $this->updateUserPassword($data);
                         break;
+                    case "/api/user/addUser":
+                        $this->addUser($data);
+                        break; 
                     case "/api/user/deleteUser":
                         $this->deleteUser($data);
                         break;
@@ -176,6 +179,25 @@ class UserAPIController extends APIController
         }
     }
 
+    private function addUser($data)
+    {
+        try {
+            $userService = new UserService();
+
+            if (
+                $data == null || !isset($data->firstName) || !isset($data->lastName)
+                || !isset($data->email) || !isset($data->password) || empty($data->firstName) ||
+                empty($data->lastName) || empty($data->email) || empty($data->password)
+            ) {
+                throw new Exception("Please fill all the information.");
+            }
+            $userService->addUser($data);
+            parent::sendSuccessMessage("User added.");
+        } catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
+        }
+    }
+
     private function deleteUser($data)
     {
         try {
@@ -197,11 +219,10 @@ class UserAPIController extends APIController
     {
         try {
             $userService = new UserService();
-
-            // TODO: More things will be added here
             if (
                 $data == null || !isset($data->id) || !isset($data->firstName)
-                || !isset($data->lastName) || !isset($data->email)
+                || !isset($data->lastName) || !isset($data->email) || empty($data->firstName) ||
+                empty($data->lastName) || empty($data->email)
             ) {
                 throw new Exception("No data received.");
             }

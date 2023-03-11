@@ -57,13 +57,18 @@
                                     <?= $user->getEmail(); ?>
                                 </td>
                                 <td data-th="Role">
-                                    <?php if ($user->getUserType() == 3) {
+                                    <?php if ($user->getUserType() == 1) {
                                         ?>
-                                        Customer
+                                        Admin
                                         <?php
                                     } else if ($user->getUserType() == 2) {
                                         ?>
-                                            User
+                                        Employee
+                                        <?php
+                                    } ?>
+                                    <?php if ($user->getUserType() == 3) {
+                                        ?>
+                                        Customer
                                         <?php
                                     } ?>
                                 </td>
@@ -73,7 +78,6 @@
                                             value="<?= $user->getUserId() ?>" class="btn btn-danger"
                                             onclick="deleteUser('<?= $user->getUserId() ?>')">Delete</button>
                                         <a href="updateUser?id=<?= $user->getUserId() ?>" class="btn btn-primary">Update</a>
-
                                     </div>
                                 </td>
                             </tr>
@@ -83,7 +87,7 @@
                 <!-- Add User/Customer button -->
                 <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
                     <div class="col-12 text-right">
-                        <a href="/home/register" class="btn btn-success btn-lg">Add User</a>
+                        <a href="addUser" class="btn btn-success">Add User</a>
                     </div>
                 </div>
             </div>
@@ -91,7 +95,7 @@
     </div>
 
     <script src="../js/admin/sortUser.js"></script>
-    <script src="../js/admin/deleteUser.js"></script>
+    <script src="../js/admin/manageUser.js"></script>
 
     <footer class="foot row bottom"></footer>
     <script type="application/javascript"

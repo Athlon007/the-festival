@@ -21,7 +21,7 @@
         <label>Event Time:</label>
         <p>
             <?= $ticket->getEvent()->getStartTime()->format('H:i') ?> -
-            <?= $ticket->getEvent()->getEndTime()->format('H:i') ?>            
+            <?= $ticket->getEvent()->getEndTime()->format('H:i') ?>
         </p>
     </div>
 
