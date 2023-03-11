@@ -18,44 +18,43 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <script type="module" src="/js/nav.js"></script>
 
-    <div class="container mt-5">
-        <h2>Register User/Admin</h2>
+    <div class="container mt-2">
+        <h1>Register User/Admin</h1>
         <div class="form-group">
-            <label for="firstName">First Name *</label>
+            <label for="firstName" style="margin-top:15px;">First Name *</label>
             <input type="text" class="form-control" name="firstName" id="firstName" placeholder="Enter a first name"
                 autocomplete="off">
         </div>
-        <div class="form-group">
-            <label for="lastName">Last Name</label>
+        <div class="form-group" style="margin-top:15px;">
+            <label for="lastName">Last Name *</label>
             <input type="text" class="form-control" name="lastName" id="lastName" placeholder="Enter a last name"
-                autocomplete="off" required>
+                autocomplete="off">
         </div>
-        <div class="form-group">
-            <label for="email">Username</label>
+        <div class="form-group" style="margin-top:15px;">
+            <label for="email">Username *</label>
             <input type="email" class="form-control" name="email" id="email" placeholder="Enter the email"
                 autocomplete="off">
         </div>
         <div>
-            <label for="role">Role</label>
+            <label for="role" style="margin-top:15px;">Role *</label>
             <select class="form-select" name="role" id="role">
                 <option value="user">Employee</option>
                 <option value="admin">Admin</option>
             </select>
         </div>
-        <div class="form-group">
-            <label for="password">Password</label>
+        <div class="form-group" style="margin-top:15px;">
+            <label for="password">Password *</label>
             <input type="password" class="form-control" name="password" id="password" placeholder="Enter a password"
                 autocomplete="off">
         </div>
-        <div class="form-group">
-            <label for="confirmPassword">Confirm Password</label>
+        <div class="form-group" style="margin-top:15px;">
+            <label for="confirmPassword">Confirm Password *</label>
             <input type="password" class="form-control" name="confirmPassword" id="confirmPassword"
                 placeholder="Confirm the password" autocomplete="off">
         </div>
 
-        <div class="mt-3">
-            <button type="submit" class="btn btn-outline-primary" name="register" onclick="addUser()">Submit</button>
-            <a href="home/login" class="btn btn-outline-success">Login</a>
+        <div class="mt-3" style="margin-bottom:10px;">
+            <button type="submit" class="btn btn-outline-success" name="register" onclick="addUser()">Submit</button>
         </div>
 
         </form>

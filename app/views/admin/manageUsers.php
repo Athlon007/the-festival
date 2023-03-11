@@ -28,7 +28,8 @@
                 <select id="userType">
                     <option value="">All</option>
                     <option value="customer">Customer</option>
-                    <option value="user">User</option>
+                    <option value="employee">Employee</option>
+                    <option value="admin">Admin</option>
                 </select>
 
                 <table class="table">
