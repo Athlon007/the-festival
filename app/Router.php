@@ -134,6 +134,9 @@ class Router
                 $ticketController = new TicketController();
                 $ticketController->generateAndSendTicket();
                 break;
+            case "/festival/history-stroll":
+                require_once("views/festival/history-stroll.php");
+                break;
             default:
                 $this->route404($message);
                 break;
