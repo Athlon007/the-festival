@@ -2,7 +2,6 @@
 
 class Address implements JsonSerializable
 {
-
     private int $addressId;
     private string $streetName;
     private string $houseNumber;

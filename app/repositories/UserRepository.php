@@ -189,4 +189,21 @@ class UserRepository extends Repository
             throw ($ex);
         }
     }
+
+    public function emailAlreadyExists($email){
+        try{
+            $stmt = $this->connection->prepare("SELECT * FROM users WHERE email = :email");
+            $stmt->bindValue(':email', $email);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if(empty($result)){
+                return false;
+            }else{
+                return true;
+            }
+        }catch(Exception $ex){
+            throw($ex);
+        }
+    }
 }
