@@ -18,7 +18,6 @@ var passwordConfirmField = document.getElementById("passwordConfirm");
 //Address information fields
 var streetNameField = document.getElementById("streetName");
 var houseNumberField = document.getElementById("houseNumber");
-var extensionField = document.getElementById("extension");
 var postalCodeField = document.getElementById("postalCode");
 var cityField = document.getElementById("city");
 var countryField = document.getElementById("country");
@@ -31,24 +30,17 @@ function disableSaveChanges(){
     saveChangesButton.disabled = true;
 }
 
-function addressChange(){
-    enableSaveChanges();
-}
-
 function updateAccount(){
-    
     removeAllSpaces();
-    var housenumber;
-    if(extensionField.value == ""){
-         housenumber= houseNumberField.value;
-    }
-    else{
-        housenumber = houseNumberField.value + "-" + extensionField.value;
+    //Check if all fields are filled in
+    if(!allFieldsFilled()){
+        alert("Please fill in all required fields");
+        return;
     }
 
     var address = {
         streetName: streetNameField.value,
-        houseNumber: housenumber,
+        houseNumber: houseNumberField.value,
         postalCode: postalCodeField.value,
         city: cityField.value,
         country: countryField.value
@@ -79,21 +71,17 @@ function updateAccount(){
             address: address
         }
     } 
-    //Pass the data to the update api    
-    fetch("api/user/update-customer", {
+    //Pass the data to the update api
+    fetch("/api/user/update-customer", {
         method: "POST",
         body: JSON.stringify(data)
     })
     .then(response => response.json())
     .then(data => {
-        if(data.success_message){
             alert(data.success_message);
             window.location.assign("/");
-        } 
-        else {
-            alert(data.error_message);
-        }
-    });
+    })
+    .catch(error => {alert(error)});
 }
 
 
@@ -103,14 +91,10 @@ function logout(){
         body: JSON.stringify({logout: "true"})
     })
     .then(response => response.json())
-    .then(data => {
-        if(data.success_message){
+    .then(data =>{
             window.location.assign("/home/login");
-        } 
-        else {
-            alert(data.error_message);
-        }
-    });
+    })
+    .catch(error => {alert(error)});
 }
 
 function removeAllSpaces(){
@@ -118,9 +102,16 @@ function removeAllSpaces(){
     lastNameField.value = lastNameField.value.replace(/\s/g, '');
     streetNameField.value = streetNameField.value.replace(/\s/g, '');
     houseNumberField.value = houseNumberField.value.replace(/\s/g, '');
-    extensionField.value = extensionField.value.replace(/\s/g, '');
     postalCodeField.value = postalCodeField.value.replace(/\s/g, '');
     cityField.value = cityField.value.replace(/\s/g, '');
     countryField.value = countryField.value.replace(/\s/g, '');
     emailField.value = emailField.value.replace(/\s/g, '');
+}
+
+function allFieldsFilled(){
+    return !(firstNameField.value == "" || lastNameField.value == "" || 
+    doBField.value == "" || phoneNumberField.value == "" || 
+    streetNameField.value == "" || houseNumberField.value == "" || 
+    postalCodeField.value == "" || cityField.value == "" || 
+    countryField.value == "" || emailField.value == "")
 }

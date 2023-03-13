@@ -2,6 +2,7 @@
 require_once(__DIR__ . "/APIController.php");
 require_once("../services/UserService.php");
 require_once("../services/CustomerService.php");
+require_once("../models/Exceptions/MissingVariableException.php");
 
 class UserAPIController extends APIController
 {
@@ -36,7 +37,7 @@ class UserAPIController extends APIController
                     case "/api/user/updateUser":
                         $this->updateUser($data);
                         break;
-                    case "api/user/update-customer":
+                    case "/api/user/update-customer":
                         $this->updateCustomer($data);
                         break;
                     default:
@@ -215,12 +216,11 @@ class UserAPIController extends APIController
             $customerService = new CustomerService();
 
             if (!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->dateOfBirth)
-                || !isset($data->phoneNumber) || !isset($data->streetName) || !isset($data->houseNumber)
-                || !isset($data->postalCode) || !isset($data->city) || !isset($data->country)
-            ) {
+                || !isset($data->phoneNumber) || !isset($data->address)){
                 throw new MissingVariableException("Not all data received.");
             }
-            $customer = $_SESSION["user"];
+            session_start();
+            $customer = $_SESSION['user'];
             $customerService->updateCustomer($customer, $data);
 
             parent::sendSuccessMessage("Your account was successfully updated.");
