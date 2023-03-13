@@ -32,11 +32,7 @@ class APIController
 
     protected function handlePostRequest($uri)
     {
-        $data = json_decode(file_get_contents("php://input"));
-
-        if ($data == null) {
-            $this->sendErrorMessage("No data received.", 400);
-        }
+        // Can be implemented by child class
     }
 
     protected function handlePutRequest($uri)

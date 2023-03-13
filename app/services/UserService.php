@@ -41,9 +41,10 @@ class UserService
                     $customer = $this->customerService->getCustomerByUser($user);
                     return $customer;
                 }
+                
                 return $user;
             } else {
-                throw new IncorrectPasswordException("Incorrect combination of email and password");
+                throw new IncorrectPasswordException();
             }
 
         } 
@@ -173,8 +174,6 @@ class UserService
         }
     }
 
-
-
     public function getAllUsers(): array
     {
         try {
@@ -208,10 +207,13 @@ class UserService
     public function updateUser($data): void
     {
         try {
+            //Sanitise user data
+            $data = $this->sanitiseUserData($data);
+
             $user = $this->repository->getUserById($data->id);
-            $user->setFirstName(htmlspecialchars($data->firstName));
-            $user->setLastName(htmlspecialchars($data->lastName));
-            $user->setEmail(htmlspecialchars($data->email));
+            $user->setFirstName($data->firstName);
+            $user->setLastName($data->lastName);
+            $user->setEmail($data->email);
             $this->repository->updateUser($user);
         } 
         catch (Exception $ex) {
@@ -229,11 +231,32 @@ class UserService
         }
     }
 
+    public function emailAlreadyExists($email): bool
+    {
+        try {
+            return $this->repository->emailAlreadyExists($email);
+        } 
+        catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
+
     public function sanitiseUserData($data){
-        $data->email = htmlspecialchars($data->email);
-        $data->firstName = htmlspecialchars($data->firstName);
-        $data->lastName = htmlspecialchars($data->lastName);
-        $data->userType = htmlspecialchars($data->userType);
+        if(isset($data->email)){
+            $data->email = htmlspecialchars($data->email);
+        }
+        if(isset($data->password)){
+            $data->password = htmlspecialchars($data->password);
+        }
+        if(isset($data->firstName)){
+            $data->firstName = htmlspecialchars($data->firstName);
+        }
+        if(isset($data->lastName)){
+            $data->lastName = htmlspecialchars($data->lastName);
+        }
+        if(isset($data->userType)){
+            $data->userType = htmlspecialchars($data->userType);
+        }
         return $data;
     }
 }

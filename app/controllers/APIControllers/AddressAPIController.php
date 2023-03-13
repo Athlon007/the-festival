@@ -106,11 +106,11 @@ class AddressAPIController extends APIController
                 throw new MissingVariableException("Country is required");
             }
 
-            $streetName = $data->streetName;
-            $houseNumber = $data->houseNumber;
-            $postalCode = $data->postalCode;
-            $city = $data->city;
-            $country = $data->country;
+            $streetName =   $data->streetName;
+            $houseNumber =  $data->houseNumber;
+            $postalCode =   $data->postalCode;
+            $city =         $data->city;
+            $country =      $data->country;
 
             $address = $this->addressService->updateAddress(
                 $addressId,

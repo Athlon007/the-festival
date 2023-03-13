@@ -32,7 +32,7 @@
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password">
                         </div>
-                        <button id="loginButton" class="btn btn-primary" onclick=attemptLogin()>Login</button>
+                        <button type="submit" id="loginButton" class="btn btn-primary" onclick=attemptLogin()>Login</button>
                     </div>
                     <div class="card-footer" style="width: 100%">
                         <a href="/provideEmail">Forgot password?</a> <br>

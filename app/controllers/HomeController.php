@@ -12,17 +12,23 @@ class HomeController
         session_start();
         //Load login screen if user is not logged in, else load account management screen
         if (!isset($_SESSION['user'])) {
-            require("../views/home/login.php");
+            require("../views/account/login.php");
         }
         else {
-            $user = new Customer(); 
             $user = $_SESSION['user'];
-            require("../views/home/account.php");
+            if ($user->getUserType() == 3)
+            {
+                require("../views/account/customerAccount.php");
+            }
+            else
+            {
+                require("../views/account/employeeAccount.php");
+            }
         }
     }
 
     public function register(): void
     {
-        require("../views/home/register.php");
+        require("../views/account/register.php");
     }
 }
