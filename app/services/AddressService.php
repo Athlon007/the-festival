@@ -24,7 +24,13 @@ class AddressService
         $city = htmlspecialchars($city);
         $country = htmlspecialchars($country);
 
-        $address = new Address(-1, $streetName, $houseNumber, $postalCode, $city, $country);
+        $address = new Address();
+        $address->setStreetName($streetName);
+        $address->setHouseNumber($houseNumber);
+        $address->setPostalCode($postalCode);
+        $address->setCity($city);
+        $address->setCountry($country);
+
         $addressId = $this->repo->insertAddress($address);
         return $this->getAddressById($addressId);
     }
@@ -38,7 +44,13 @@ class AddressService
         $city = htmlspecialchars($city);
         $country = htmlspecialchars($country);
 
-        $address = new Address($addressId, $streetName, $houseNumber, $postalCode, $city, $country);
+        $address = new Address();
+        $address->setAddressId($addressId);
+        $address->setStreetName($streetName);
+        $address->setHouseNumber($houseNumber);
+        $address->setPostalCode($postalCode);
+        $address->setCity($city);
+        $address->setCountry($country);
         $this->repo->updateAddress($address);
         return $this->getAddressById($addressId);
     }

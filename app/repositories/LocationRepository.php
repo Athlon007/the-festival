@@ -18,10 +18,11 @@ class LocationRepository extends Repository
             $locationType = $row["locationType"];
             $lon = $row["lon"];
             $lat = $row["lat"];
+            $capacity = $row["capacity"];
 
             $address = $addressRepository->getAddressById($addressId);
 
-            $location = new Location($locationId, $name, $address, $locationType, $lon, $lat);
+            $location = new Location($locationId, $name, $address, $locationType, $lon, $lat, $capacity);
 
             array_push($output, $location);
         }
@@ -31,7 +32,7 @@ class LocationRepository extends Repository
 
     public function getAll()
     {
-        $sql = "SELECT locationId, name, addressId, locationType, lon, lat FROM Locations";
+        $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat FROM `Locations`";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
@@ -40,7 +41,7 @@ class LocationRepository extends Repository
 
     public function getById($id)
     {
-        $sql = "SELECT locationId, name, addressId, locationType, lon, lat FROM Locations WHERE locationId = :id";
+        $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat FROM Locations WHERE locationId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -51,7 +52,7 @@ class LocationRepository extends Repository
 
     public function getLocationsByType($type)
     {
-        $sql = "SELECT locationId, name, addressId, locationType, lon, lat FROM Locations WHERE locationType = :type";
+        $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat FROM Locations WHERE locationType = :type";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":type", $type, PDO::PARAM_INT);
         $stmt->execute();
@@ -59,23 +60,24 @@ class LocationRepository extends Repository
         return $this->buildLocations($result);
     }
 
-    public function insertLocation($name, $addressId, $locationType, $lon, $lat): int
+    public function insertLocation($name, $addressId, $locationType, $lon, $lat, $capacity): int
     {
-        $sql = "INSERT INTO Locations (name, addressId, locationType, lon, lat) VALUES (:name, :addressId, :locationType, :lon, :lat)";
+        $sql = "INSERT INTO Locations (name, addressId, locationType, lon, lat, capacity) VALUES (:name, :addressId, :locationType, :lon, :lat, :capacity)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":name", $name, PDO::PARAM_STR);
         $stmt->bindParam(":addressId", $addressId, PDO::PARAM_INT);
         $stmt->bindParam(":locationType", $locationType, PDO::PARAM_INT);
         $stmt->bindParam(":lon", $lon, PDO::PARAM_STR);
         $stmt->bindParam(":lat", $lat, PDO::PARAM_STR);
+        $stmt->bindParam(":capacity", $capacity, PDO::PARAM_INT);
         $stmt->execute();
 
         return $this->connection->lastInsertId();
     }
 
-    public function updateLocation($id, $name, $addressId, $locationType, $lon, $lat)
+    public function updateLocation($id, $name, $addressId, $locationType, $lon, $lat, $capacity)
     {
-        $sql = "UPDATE Locations SET name = :name, addressId = :addressId, locationType = :locationType, lon = :lon, lat = :lat WHERE locationId = :id";
+        $sql = "UPDATE Locations SET name = :name, addressId = :addressId, locationType = :locationType, lon = :lon, lat = :lat, capacity = :capacity WHERE locationId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->bindParam(":name", $name, PDO::PARAM_STR);
@@ -83,6 +85,7 @@ class LocationRepository extends Repository
         $stmt->bindParam(":locationType", $locationType, PDO::PARAM_INT);
         $stmt->bindParam(":lon", $lon, PDO::PARAM_STR);
         $stmt->bindParam(":lat", $lat, PDO::PARAM_STR);
+        $stmt->bindParam(":capacity", $capacity, PDO::PARAM_INT);
         $stmt->execute();
     }
 
