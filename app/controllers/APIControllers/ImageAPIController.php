@@ -1,5 +1,4 @@
 <?php
-
 require_once(__DIR__ . "/APIController.php");
 require_once(__DIR__ . "/../../services/ImageService.php");
 
@@ -64,3 +63,4 @@ class ImageAPIController extends APIController
         $this->sendErrorMessage("Invalid request.");
     }
 }
+?>

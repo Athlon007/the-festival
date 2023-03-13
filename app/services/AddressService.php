@@ -79,10 +79,11 @@ class AddressService
 
         $address = json_decode($response);
 
-        if (isset($address->message)) {
-            throw new Exception("Invalid postal code or house number");
+        if (isset($address->message)){
+            throw new Exception("Something went wrong while fetching the address: " . $address->message);
         }
 
         return $address;
     }
 }
+        

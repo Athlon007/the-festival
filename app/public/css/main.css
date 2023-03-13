@@ -25,14 +25,6 @@ p {
     text-decoration: underline;
 }
 
-#errorBox {
-    background-color: #ff9292;
-    ;
-    border: 2px solid red;
-    color: red;
-    font-weight: bold;
-}
-
 .nav-item {
     /* Add padding to the left and right of nav-item */
     padding: 0 30px;

@@ -25,8 +25,6 @@ class AddressRepository extends Repository
         } catch (Exception $ex) {
             throw ($ex);
         }
-
-        return -1;
     }
 
     public function getAddressById($addressId): ?Address
@@ -37,14 +35,17 @@ class AddressRepository extends Repository
 
             $stmt->bindValue(":addressId", $addressId);
             $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_CLASS, 'Address');
-
-            $result = $stmt->fetch();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (is_bool($result))
-                throw new AddressNotFoundException("Address ID does not exist");
+                throw new AddressNotFoundException();
             else
-                return $result;
+                $streetName = $result['streetName'];
+                $houseNumber = $result['houseNumber'];
+                $postalCode = $result['postalCode'];
+                $city = $result['city'];
+                $country = $result['country'];
+                return new Address($addressId, $streetName, $houseNumber, $postalCode, $city, $country);
         } catch (Exception $ex) {
             throw ($ex);
         }

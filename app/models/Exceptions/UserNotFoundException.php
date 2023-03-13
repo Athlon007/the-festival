@@ -1,8 +1,7 @@
 <?php
 
 /**
- * Thrown when requested user was not found in the db.
+ * Thrown when requested user was not found in the database.
  */
-class UserNotFoundException extends Exception
-{
+class UserNotFoundException extends Exception{
 }
