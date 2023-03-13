@@ -19,8 +19,13 @@ class HMap {
             return;
         }
 
-        if (container.dataset.mapkind === 'general') {
-            return new GeneralMap(container);
+        switch (container.dataset.mapkind) {
+            case 'general':
+                return new GeneralMap(container);
+            case 'event':
+                return new EventMap(container);
+            default:
+                break;
         }
 
         console.error('Could not find map kind.');
@@ -82,8 +87,14 @@ class HMap {
      */
     addPin(markerContent, location) {
         let pin = L.marker(location).addTo(this.map).bindPopup(markerContent);
-
         this.pins.push(pin);
+        return pin;
+    }
+
+    addPin(location) {
+        let pin = L.marker(location).addTo(this.map);
+        this.pins.push(pin);
+        return pin;
     }
 
     clearPins() {
@@ -256,5 +267,48 @@ class GeneralMap extends HMap {
     showTeyler() {
         this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
         this.clearPins();
+    }
+}
+
+class EventMap extends HMap {
+    constructor(container) {
+        super(container);
+    }
+
+    loadMap(L) {
+        // Get data.lon and data.lat from the container
+        // First check if they are se
+        let data = this.container.dataset;
+
+        if (!data.lon || !data.lat) {
+            console.error('No location data found');
+            return;
+        }
+
+        let div = document.createElement('div');
+        div.id = 'map';
+        div.classList.add('col-12');
+        this.container.appendChild(div);
+
+        this.map = L.map('mapContainer').setView([data.lon, data.lat], DEFAULT_ZOOM_LEVEL);
+        L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(this.map);
+
+        // disable map's zoom
+        this.map.scrollWheelZoom.disable();
+
+        // create pin
+        const pin = this.addPin([data.lon, data.lat]);
+
+        // on pin click, navigate to Google Maps
+        this.map.on('click', () => {
+            window.open(`https://www.google.com/maps/search/?api=1&query=${data.name} ${data.street}`)
+        });
+    }
+
+    showEvent(event) {
+        this.moveMap([event.location.lon, event.location.lat], DEFAULT_ZOOM_LEVEL);
     }
 }
