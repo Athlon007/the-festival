@@ -268,7 +268,7 @@ function loadNavbar() {
             // add language picker
             collapseUl.appendChild(createSearch());
             collapseUl.appendChild(createLanguagePicker());
-            collapseUl.appendChild(createIcon('/home/login', 'Login', 'user-icon'));
+            collapseUl.appendChild(createIcon('/home/account', 'Account', 'user-icon'));
             collapseUl.appendChild(createIcon('/shopping-cart', 'Shopping cart', 'shopping-cart-icon'));
         });
 

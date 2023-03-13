@@ -17,6 +17,12 @@ class Event implements JsonSerializable
     //     $this->price = $price;
     // }
 
+
+    public function setId($value)
+    {
+        $this->id = $value;
+    }
+
     public function getId()
     {
         return $this->id;
