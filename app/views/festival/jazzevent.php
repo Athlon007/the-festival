@@ -47,7 +47,7 @@
                 </div>
                 <div class="col-4">
                     <h2>Price</h2>
-                    <p class="price" style="text-align:left;">&euro; <?= $event->getPrice() ?></p>
+                    <p class="price text-start">&euro; <?= $event->getPrice() ?></p>
                 </div>
             </div>
         </div>

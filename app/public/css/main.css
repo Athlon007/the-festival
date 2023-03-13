@@ -26,7 +26,8 @@ p {
 }
 
 #errorBox {
-    background-color: #ff9292;;
+    background-color: #ff9292;
+    ;
     border: 2px solid red;
     color: red;
     font-weight: bold;
@@ -291,6 +292,11 @@ h2 {
     background-color: #8EB3CB;
     border-radius: 1em;
     padding: 0.5em;
+}
+
+.gy-1>* {
+    margin-bottom: 1em;
+    margin-top: 1em
 }
 
 @media (min-width: 960px) {

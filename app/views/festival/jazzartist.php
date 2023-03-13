@@ -133,7 +133,7 @@
                             <?php } ?>
                             <div class="col-3">
                                 <h3>Price</h3>
-                                <p class="price" style="text-align:left"><?= $event->getPrice() == 0 ? "FREE" : $event->getPrice(); ?>€</p>
+                                <p class="price text-start"><?= $event->getPrice() == 0 ? "FREE" : $event->getPrice(); ?>€</p>
                             </div>
                         </div>
                         <div class="row d-flex justify-content-end py-2">
