@@ -26,9 +26,6 @@
 
                         <!--Pop-up message-->
                         <div id="popup">
-                        <div class="alert alert-success p-3" role="alert">
-                            This is a success alert—check it out!
-                        </div>
                         </div>
                         
                         <!-- Account management form -->

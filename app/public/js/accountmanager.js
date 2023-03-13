@@ -1,8 +1,8 @@
 //Save changes button
 var saveChangesButton = document.getElementById("saveChangesButton");
 
-//Error list
-var errorList = document.getElementById("errorList");
+//Popup space
+var popup = document.getElementById("popup");
 
 //Personal information fields
 var firstNameField = document.getElementById("firstName");
@@ -31,10 +31,13 @@ function disableSaveChanges(){
 }
 
 function updateAccount(){
+    //Clear popups
+    popup.innerHTML = "";
+    //Remove all spaces from the appropriate fields
     removeAllSpaces();
     //Check if all fields are filled in
     if(!allFieldsFilled()){
-        alert("Please fill in all required fields");
+        displayError("Please fill in all required fields");
         return;
     }
 
@@ -78,10 +81,9 @@ function updateAccount(){
     })
     .then(response => response.json())
     .then(data => {
-            alert(data.success_message);
-            window.location.assign("/");
+        displaySuccess(data.success_message);
     })
-    .catch(error => {alert(error)});
+    .catch(error => {displayError(error)});
 }
 
 
@@ -94,17 +96,12 @@ function logout(){
     .then(data =>{
             window.location.assign("/home/login");
     })
-    .catch(error => {alert(error)});
+    .catch(error => {displayError(error)});
 }
 
 function removeAllSpaces(){
-    firstNameField.value = firstNameField.value.replace(/\s/g, '');
-    lastNameField.value = lastNameField.value.replace(/\s/g, '');
-    streetNameField.value = streetNameField.value.replace(/\s/g, '');
     houseNumberField.value = houseNumberField.value.replace(/\s/g, '');
     postalCodeField.value = postalCodeField.value.replace(/\s/g, '');
-    cityField.value = cityField.value.replace(/\s/g, '');
-    countryField.value = countryField.value.replace(/\s/g, '');
     emailField.value = emailField.value.replace(/\s/g, '');
 }
 
@@ -115,3 +112,23 @@ function allFieldsFilled(){
     postalCodeField.value == "" || cityField.value == "" || 
     countryField.value == "" || emailField.value == "")
 }
+
+function displayError(error){
+    errorDiv = document.createElement("div");
+    errorDiv.innerHTML = error;
+    errorDiv.classList.add("alert");
+    errorDiv.classList.add("alert-danger");
+    errorDiv.classList.add("p-3");
+    errorDiv.setAttribute("role", "alert");
+    popup.appendChild(errorDiv);
+}
+
+function displaySuccess(success){
+    successDiv = document.createElement("div");
+    successDiv.innerHTML = success;
+    successDiv.classList.add("alert");
+    successDiv.classList.add("alert-success");
+    successDiv.classList.add("p-3");
+    successDiv.setAttribute("role", "alert");
+    popup.appendChild(successDiv);
+}   
