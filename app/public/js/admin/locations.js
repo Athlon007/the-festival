@@ -1,6 +1,7 @@
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;
+let editedAddressId = -1;
 const locations = document.getElementById('locations');
 const masterEditor = document.getElementById('master-editor');
 
@@ -13,6 +14,8 @@ const city = document.getElementById('city');
 const country = document.getElementById('country');
 const lat = document.getElementById('lat');
 const lon = document.getElementById('lon');
+const locationType = document.getElementById('locationType');
+const capacity = document.getElementById('capacity');
 
 const btnSubmit = document.getElementById('submit');
 let isInCreationMode = false;
@@ -34,11 +37,11 @@ function updateExistingEntry(id, data) {
                 loadList();
                 msgBox.createToast('Success!', 'Location has been updated');
             } else {
-                msgBox.createToast('Somethin went wrong', data.error_message);
+                msgBox.createToast('Something went wrong', data.error_message);
             }
         })
         .catch(error => {
-            msgBox.createToast('Somethin went wrong', error);
+            msgBox.createToast('Something went wrong', error);
         });
 }
 
@@ -57,6 +60,7 @@ function createNewEntry(data) {
                 locations.appendChild(option);
                 locations.selectedIndex = locations.length - 1;
                 editedId = data.id;
+                editedAddressId = data.address.addressId;
                 isInCreationMode = false;
                 btnSubmit.innerHTML = 'Save';
                 msgBox.createToast('Success!', 'Location has been created');
@@ -65,11 +69,11 @@ function createNewEntry(data) {
                 isInCreationMode = false;
                 btnSubmit.innerHTML = 'Save';
             } else {
-                msgBox.createToast('Somethin went wrong', data.error_message);
+                msgBox.createToast('Something went wrong', data.error_message);
             }
         })
         .catch(error => {
-            msgBox.createToast('Somethin went wrong', error);
+            msgBox.createToast('Something went wrong', error);
         });
 }
 
@@ -78,9 +82,11 @@ btnSubmit.onclick = function () {
     let data = {
         name: name.value,
         locationType: locationType.value,
+        capacity: capacity.value,
         lon: lon.value,
         lat: lat.value,
         address: {
+            addressId: editedAddressId,
             postalCode: postal.value,
             streetName: street.value,
             houseNumber: number.value,
@@ -124,7 +130,7 @@ document.getElementById('delete').onclick = function () {
                     toggleEditor(masterEditor, false);
                     msgBox.createToast('Success!', 'Page has been deleted');
                 } else {
-                    msgBox.createToast('Somethin went wrong', data.error_message);
+                    msgBox.createToast('Something went wrong', data.error_message);
                 }
             })
     }, function () { });
@@ -147,7 +153,7 @@ function createNewOptionItem(element) {
         btnSubmit.innerHTML = 'Save';
         isInCreationMode = false;
         // Do the api call to get the page content.
-        fetch('/api/jazz-artists/' + element.id, {
+        fetch('/api/locations/' + element.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -156,8 +162,8 @@ function createNewOptionItem(element) {
             .then(response => response.json())
             .then(data => {
                 if (!data.error_message) {
-                    console.log(data);
                     editedId = data.id;
+                    editedAddressId = data.address.addressId;
                     name.value = data.name;
                     postal.value = data.address.postalCode;
                     street.value = data.address.streetName;
@@ -166,12 +172,14 @@ function createNewOptionItem(element) {
                     country.value = data.address.country;
                     lat.value = data.lat;
                     lon.value = data.lon;
+                    locationType.value = data.locationType;
+                    capacity.value = data.capacity;
                 } else {
-                    msgBox.createToast('Somethin went wrong', data.error_message);
+                    msgBox.createToast('Something went wrong', data.error_message);
                 }
             })
             .catch(error => {
-                msgBox.createToast('Somethin went wrong', error);
+                msgBox.createToast('Something went wrong', error);
             });
     }
 
@@ -201,22 +209,25 @@ function loadList() {
     })
         .then(response => response.json())
         .then(data => {
-            data.forEach(element => {
-                let option = createNewOptionItem(element);
+            // check if data is array
+            if (Array.isArray(data)) {
+                data.forEach(element => {
+                    let option = createNewOptionItem(element);
 
-                // append option
-                locations.appendChild(option);
+                    // append option
+                    locations.appendChild(option);
 
-                // if last selected
-                // add a delay to make sure that the option is added to the list.
-                if (lastSelectedId == element.id) {
-                    toSelect = locations.options.length - 1;
+                    // if last selected
+                    // add a delay to make sure that the option is added to the list.
+                    if (lastSelectedId == element.id) {
+                        toSelect = locations.options.length - 1;
+                    }
+                });
+
+                // select last selected
+                if (toSelect != -1) {
+                    locations.selectedIndex = toSelect;
                 }
-            });
-
-            // select last selected
-            if (toSelect != -1) {
-                locations.selectedIndex = toSelect;
             }
         });
 }
@@ -229,6 +240,7 @@ function toggleEditor(element, isEnabled) {
     } else {
         element.classList.add('disabled-module');
         editedId = -1;
+        editedAddressId = -1;
         name.value = '';
         postal.value = '';
         street.value = '';
@@ -237,6 +249,8 @@ function toggleEditor(element, isEnabled) {
         country.value = '';
         lat.value = '';
         lon.value = '';
+        locationType.value = -1;
+        capacity.value = '';
     }
 }
 
@@ -244,6 +258,7 @@ document.getElementById('new-page').onclick = function () {
     isInCreationMode = true;
     toggleEditor(masterEditor, true);
     editedId = -1;
+    editedAddressId = -1;
     locations.selectedIndex = 0;
     title.value = '';
     pageHref.value = '';
@@ -259,8 +274,17 @@ function fetchAddress() {
         return;
     }
 
-    fetch("https://postcode.tech/api/v1/postcode?postcode=" + postalCode + "&number=" + houseNumber, {
-        headers: { "Authorization": "Bearer 1b9faa1d-1521-43ca-af73-4caeb208222b" }
+    let sendData = {
+        postalCode: postalCode,
+        houseNumber: houseNumber
+    }
+
+    fetch("/api/address/fetch-address", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(sendData)
     })
         .then(response => response.json())
         .then(data => {
@@ -273,6 +297,31 @@ function fetchAddress() {
                 street.value = data.street;
                 city.value = data.city;
                 country.value = "Netherlands";
+
+                fetchGeocode();
+            }
+        });
+}
+
+function fetchGeocode() {
+
+    fetch("/api/locations/geocode?street="
+        + street.value + "&number=" + number.value + "&postal=" + postal.value + "&city=" + city.value,
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message != null) {
+                lat.value = "";
+                lon.value = "";
+            }
+            else {
+                lat.value = data.lat;
+                lon.value = data.lon;
             }
         });
 }

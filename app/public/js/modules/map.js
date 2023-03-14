@@ -19,8 +19,13 @@ class HMap {
             return;
         }
 
-        if (container.dataset.mapkind === 'general') {
-            return new GeneralMap(container);
+        switch (container.dataset.mapkind) {
+            case 'general':
+                return new GeneralMap(container);
+            case 'event':
+                return new EventMap(container);
+            default:
+                break;
         }
 
         console.error('Could not find map kind.');
@@ -80,11 +85,16 @@ class HMap {
      * @param {*} name Name displayed
      * @param {*} location [lat, long]
      */
-    addPin(name, location) {
-        let pin = this.L.marker(location).addTo(map);
-        pin.bindPopup(name);
-
+    addPin(markerContent, location) {
+        let pin = L.marker(location).addTo(this.map).bindPopup(markerContent);
         this.pins.push(pin);
+        return pin;
+    }
+
+    addPin(location) {
+        let pin = L.marker(location).addTo(this.map);
+        this.pins.push(pin);
+        return pin;
     }
 
     clearPins() {
@@ -172,6 +182,7 @@ class GeneralMap extends HMap {
         const LOCATION = [52.393306, 4.622498];
         const ZOOM = 14;
         this.moveMap(LOCATION, ZOOM);
+        this.clearPins();
 
         this.clearAreas();
 
@@ -206,21 +217,98 @@ class GeneralMap extends HMap {
     // TODO: Add the other functions.
     showDance() {
         this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+        this.clearPins()
+    }
+
+    loadPinsForType(type) {
+        fetch('/api/locations/type/' + type, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(locations => {
+                locations.forEach(location => {
+                    // add marker
+
+                    // add marker and popup
+                    let markerContent = `<h3>${location.name}</h3>`;
+                    // add google maps link
+                    if (location.address) {
+                        let fullAddress = `${location.address.streetName} ${location.address.houseNumber}, ${location.address.postalCode} ${location.address.city}`;
+                        markerContent += `<a href="https://www.google.com/maps/search/?api=1&query=${location.name} ${location.address.streetName} ${location.address.postalCode}"
+                        target="_blank">${fullAddress}</a>`;
+                    }
+                    this.addPin(markerContent, [location.lon, location.lat]);
+                });
+            }
+            );
     }
 
     showJazz() {
         this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+        this.clearPins();
+        this.loadPinsForType(1);
     }
 
     showStroll() {
         this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+        this.clearPins();
+        this.loadPinsForType(3);
     }
 
     showYummy() {
         this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+        this.clearPins();
+        this.loadPinsForType(2);
     }
 
     showTeyler() {
         this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
+        this.clearPins();
+    }
+}
+
+class EventMap extends HMap {
+    constructor(container) {
+        super(container);
+    }
+
+    loadMap(L) {
+        // Get data.lon and data.lat from the container
+        // First check if they are se
+        let data = this.container.dataset;
+
+        if (!data.lon || !data.lat) {
+            console.error('No location data found');
+            return;
+        }
+
+        let div = document.createElement('div');
+        div.id = 'map';
+        div.classList.add('col-12');
+        this.container.appendChild(div);
+
+        this.map = L.map('mapContainer').setView([data.lon, data.lat], DEFAULT_ZOOM_LEVEL);
+        L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(this.map);
+
+        // disable map's zoom
+        this.map.scrollWheelZoom.disable();
+
+        // create pin
+        const pin = this.addPin([data.lon, data.lat]);
+
+        // on pin click, navigate to Google Maps
+        this.map.on('click', () => {
+            window.open(`https://www.google.com/maps/search/?api=1&query=${data.name} ${data.street}`)
+        });
+    }
+
+    showEvent(event) {
+        this.moveMap([event.location.lon, event.location.lat], DEFAULT_ZOOM_LEVEL);
     }
 }

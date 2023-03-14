@@ -5,7 +5,7 @@ $db_username = "haarlemfestivaluser";
 $db_password = "D4LL84w9f7Cb99z4Pz";
 
 // Uncomment lines below, to use local database.
-$debugMode = false;
+$debugMode = true;
 if ($debugMode) {
     $db_host = "mysql";
     $db_name = "developmentdb";
@@ -14,5 +14,3 @@ if ($debugMode) {
 }
 
 $allowed_api_address = "172.23.0.1";
-
-$tomtom_api_key = "hhPEr4bmakfOBlVfPEsMhZWHNlmGt40L";

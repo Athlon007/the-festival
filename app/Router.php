@@ -78,13 +78,14 @@ class Router
         }
 
         if (str_starts_with($request, "/festival/jazz/")) {
+            require_once("controllers/FestivalJazzController.php");
+            $festivalJazzController = new FestivalJazzController();
             if (str_starts_with($request, "/festival/jazz/artist/")) {
-                require_once("controllers/FestivalJazzController.php");
-                $festivalJazzController = new FestivalJazzController();
                 $festivalJazzController->loadArtistPage($request);
                 return;
             } elseif (str_starts_with($request, "/festival/jazz/event/")) {
-                // TODO: Implement event page
+                $festivalJazzController->loadEventPage($request);
+                return;
             }
         }
 
@@ -191,6 +192,9 @@ class Router
         } elseif (str_starts_with($request, "/api/locations")) {
             require_once("controllers/APIControllers/LocationAPIController.php");
             $controller = new LocationAPIController();
+        } elseif (str_starts_with($request, "/api/events")) {
+            require_once("controllers/APIControllers/EventAPIController.php");
+            $controller = new EventAPIController();
         } else {
             http_response_code(400);
             // send json
