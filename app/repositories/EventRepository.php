@@ -133,11 +133,11 @@ class EventRepository extends Repository
                     case 'price_to':
                         $sql .= " e.price <= :$key ";
                         break;
-                    case 'date_from':
-                        $sql .= " e.startTime >= :$key ";
+                    case 'time_from':
+                        $sql .= " HOUR(e.startTime) >= :$key ";
                         break;
-                    case 'date_to':
-                        $sql .= " e.startTime <= :$key ";
+                    case 'time_to':
+                        $sql .= " HOUR(e.endTime) <= :$key ";
                         break;
                     case 'hide_no_seats':
                         // TODO: Hide events with no seats.

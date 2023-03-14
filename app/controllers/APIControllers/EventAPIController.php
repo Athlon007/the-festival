@@ -19,11 +19,11 @@ class EventAPIController extends APIController
         $sort = $_GET['sort'] ?? 'time';
         $filters = [];
 
-        if (isset($_GET['start_time'])) {
-            $filters['start_time'] = $_GET['start_time'];
+        if (isset($_GET['time_from'])) {
+            $filters['time_from'] = $_GET['time_from'];
         }
-        if (isset($_GET['end_time'])) {
-            $filters['end_time'] = $_GET['end_time'];
+        if (isset($_GET['time_to'])) {
+            $filters['time_to'] = $_GET['time_to'];
         }
 
         if (isset($_GET['price_from'])) {
