@@ -25,7 +25,9 @@ class JazzArtistAPIController extends APIController
             return;
         }
 
-        echo json_encode($this->service->getAll());
+        $sort = $_GET["sort"] ?? "name";
+
+        echo json_encode($this->service->getAll($sort));
     }
 
     public function handlePostRequest($uri)
@@ -54,7 +56,7 @@ class JazzArtistAPIController extends APIController
             $instagram = $this->getIfSet($data, "instagram");
             $spotify = $this->getIfSet($data, "spotify");
             $images = $this->getIfSet($data, "images");
-            $artsitKindId = $this->getIfSet($data, "artistKindId");
+            $kindId = $this->getIfSet($data, "kindId");
 
             echo json_encode($this->service->insertArtist(
                 $name,
@@ -68,7 +70,7 @@ class JazzArtistAPIController extends APIController
                 $instagram,
                 $spotify,
                 $images,
-                $artsitKindId
+                $kindId
             ));
         } catch (Throwable $e) {
             $this->sendErrorMessage($e->getMessage());
@@ -127,7 +129,7 @@ class JazzArtistAPIController extends APIController
             $instagram = $this->getIfSet($data, "instagram");
             $spotify = $this->getIfSet($data, "spotify");
             $images = $this->getIfSet($data, "images");
-            $artistKindId = $this->getIfSet($data, "artistKindId");
+            $kindId = $this->getIfSet($data, "kindId");
 
             echo json_encode($this->service->updateById(
                 $artistId,
@@ -142,7 +144,7 @@ class JazzArtistAPIController extends APIController
                 $instagram,
                 $spotify,
                 $images,
-                $artistKindId
+                $kindId
             ));
         } catch (Throwable $e) {
             $this->sendErrorMessage($e->getMessage());

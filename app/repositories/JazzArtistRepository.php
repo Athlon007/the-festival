@@ -70,10 +70,23 @@ class JazzArtistRepository extends Repository
     /**
      * Returns all artists.
      */
-    public function getAll(): array
+    public function getAll($sort): array
     {
         $sql = "SELECT artistId, name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, recentAlbums, artistKindId "
             . "FROM JazzArtists";
+
+        switch ($sort) {
+            case "name":
+                $sql .= " ORDER BY name";
+                break;
+            case "name_desc":
+                $sql .= " ORDER BY name DESC";
+                break;
+            default:
+                $sql .= " ORDER BY artistId";
+                break;
+        }
+
         $statement = $this->connection->prepare($sql);
         $statement->execute();
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);

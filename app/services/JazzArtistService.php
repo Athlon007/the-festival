@@ -12,9 +12,9 @@ class JazzArtistService
         $this->repo = new JazzArtistRepository();
     }
 
-    public function getAll(): array
+    public function getAll($sort): array
     {
-        return $this->repo->getAll();
+        return $this->repo->getAll($sort);
     }
 
     public function getById($id): Artist
