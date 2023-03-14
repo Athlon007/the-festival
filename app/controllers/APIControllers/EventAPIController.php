@@ -16,9 +16,21 @@ class EventAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
-        $sortBy = '';
-        if (isset($_GET['sortby'])) {
-            $sortBy = $_GET['sortby'];
+        $sort = $_GET['sort'] ?? 'time';
+        $filters = [];
+
+        if (isset($_GET['start_time'])) {
+            $filters['start_time'] = $_GET['start_time'];
+        }
+        if (isset($_GET['end_time'])) {
+            $filters['end_time'] = $_GET['end_time'];
+        }
+
+        if (isset($_GET['price_from'])) {
+            $filters['price_from'] = $_GET['price_from'];
+        }
+        if (isset($_GET['price_to'])) {
+            $filters['price_to'] = $_GET['price_to'];
         }
 
         if (str_starts_with($uri, '/api/events/jazz')) {
@@ -35,7 +47,11 @@ class EventAPIController extends APIController
                 return;
             }
 
-            echo json_encode($this->service->getJazzEvents());
+            if (isset($_GET['hide_no_seats'])) {
+                $filters['hide_no_seats'] = $_GET['hide_no_seats'];
+            }
+
+            echo json_encode($this->service->getJazzEvents($sort, $filters));
         } else {
             if (is_numeric(basename($uri))) {
                 $id = basename($uri);

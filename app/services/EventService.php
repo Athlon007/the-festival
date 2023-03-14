@@ -28,18 +28,23 @@ class EventService
         return $this->repo->getEventById($id);
     }
 
-    public function getJazzEvents(): array
+    public function getJazzEvents($sort, $filters): array
     {
-        return $this->repo->getAllJazzEvents();
+        $sort = htmlspecialchars($sort);
+        $filters = array_map('htmlspecialchars', $filters);
+
+        return $this->repo->getAllJazzEvents($sort, $filters);
     }
 
     public function getJazzEventById($id): MusicEvent
     {
+        $id = htmlspecialchars($id);
         return $this->repo->getJazzEventById($id);
     }
 
     public function getJazzEventsByArtistId($artistId): array
     {
+        $artistId = htmlspecialchars($artistId);
         return $this->repo->getJazzEventsForArtist($artistId);
     }
 

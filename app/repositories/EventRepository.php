@@ -113,12 +113,73 @@ class EventRepository extends Repository
         return count($arr) > 0;
     }
 
-    public function getAllJazzEvents()
+    public function getAllJazzEvents($sort, array $filters)
     {
         $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.price "
             . "FROM JazzEvents je "
             . "JOIN Events e ON e.eventId = je.eventId";
+
+
+        if (!empty($filters)) {
+            $sql .= " WHERE ";
+            $i = 0;
+            foreach ($filters as $filter) {
+                $key = array_keys($filters, $filter)[0];
+
+                switch ($key) {
+                    case 'price_from':
+                        $sql .= " e.price >= :$key ";
+                        break;
+                    case 'price_to':
+                        $sql .= " e.price <= :$key ";
+                        break;
+                    case 'date_from':
+                        $sql .= " e.startTime >= :$key ";
+                        break;
+                    case 'date_to':
+                        $sql .= " e.startTime <= :$key ";
+                        break;
+                    case 'hide_no_seats':
+                        // TODO: Hide events with no seats.
+                        break;
+                    default:
+                        // no filtering by default
+                        break;
+                }
+
+                if ($i < count($filters) - 1) {
+                    $sql .= " AND ";
+                }
+                $i++;
+            }
+        }
+
+        switch ($sort) {
+            case "time_desc":
+                $sql .= " ORDER BY e.startTime DESC";
+                break;
+            case "price":
+                $sql .= " ORDER BY e.price";
+                break;
+            case "price_desc":
+                $sql .= " ORDER BY e.price DESC";
+                break;
+            default:
+                $sql .= " ORDER BY e.startTime";
+                break;
+        }
+
         $stmt = $this->connection->prepare($sql);
+
+        foreach ($filters as $filter) {
+            $key = array_keys($filters, $filter)[0];
+            $pdoType = is_numeric($filter) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            if (str_starts_with($key, 'price')) {
+                $pdoType = PDO::PARAM_STR;
+            }
+            $stmt->bindValue(':' . $key, $filter, $pdoType);
+        }
+
         $stmt->execute();
         $arr = $stmt->fetchAll();
         return $this->buildJazzEvent($arr);
