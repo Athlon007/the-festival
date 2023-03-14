@@ -1,7 +1,7 @@
 <?php
 
 require_once(__DIR__ . "/../models/Event.php");
-require_once(__DIR__ . "/../models/Jazz/JazzEvent.php");
+require_once(__DIR__ . "/../models/Music/MusicEvent.php");
 require_once(__DIR__ . "/../repositories/EventRepository.php");
 
 class EventService
@@ -33,7 +33,7 @@ class EventService
         return $this->repo->getAllJazzEvents();
     }
 
-    public function getJazzEventById($id): JazzEvent
+    public function getJazzEventById($id): MusicEvent
     {
         return $this->repo->getJazzEventById($id);
     }
@@ -53,7 +53,7 @@ class EventService
         );
 
         // if event is type of jazzevent
-        if ($event instanceof JazzEvent) {
+        if ($event instanceof MusicEvent) {
             $this->repo->createJazzEvent(
                 $id,
                 $event->getArtist()->getId(),

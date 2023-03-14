@@ -2,7 +2,7 @@
 
 require_once("Repository.php");
 require_once("ImageRepository.php");
-require_once("../models/Jazz/JazzArtist.php");
+require_once("../models/Music/Artist.php");
 
 class JazzArtistRepository extends Repository
 {
@@ -33,7 +33,7 @@ class JazzArtistRepository extends Repository
 
             $images = $this->imageRepo->getImagesForArtistId($artistId);
 
-            $artist = new JazzArtist(
+            $artist = new Artist(
                 $artistId,
                 $name,
                 $description,
@@ -79,7 +79,7 @@ class JazzArtistRepository extends Repository
     /**
      * Returns the artist with the given id.
      */
-    public function getById($id): JazzArtist
+    public function getById($id): Artist
     {
         $sql = "SELECT artistId, name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, recentAlbums "
             . "FROM JazzArtists WHERE artistId = :id";

@@ -3,7 +3,7 @@
 require_once(__DIR__ . "/../Image.php");
 require_once("Song.php");
 
-class JazzArtist implements JsonSerializable
+class Artist implements JsonSerializable
 {
     private $id;
     private string $name;

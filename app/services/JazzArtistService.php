@@ -17,13 +17,13 @@ class JazzArtistService
         return $this->repo->getAll();
     }
 
-    public function getById($id): JazzArtist
+    public function getById($id): Artist
     {
         $id = htmlspecialchars($id);
         return $this->repo->getById($id);
     }
 
-    public function insertArtist($name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $images): JazzArtist
+    public function insertArtist($name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $images): Artist
     {
         $name = htmlspecialchars($name);
         $description = htmlspecialchars($description);
@@ -64,7 +64,7 @@ class JazzArtistService
         $this->repo->deleteById($id);
     }
 
-    public function updateById($artistId, $name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $images): JazzArtist
+    public function updateById($artistId, $name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $images): Artist
     {
         $artistId = htmlspecialchars($artistId);
         $name = htmlspecialchars($name);

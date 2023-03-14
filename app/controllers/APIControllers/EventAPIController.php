@@ -1,7 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/../../models/Event.php');
-require_once(__DIR__ . '/../../models/Jazz/JazzEvent.php');
+require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
 require_once("APIController.php");
 
@@ -16,6 +16,11 @@ class EventAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
+        $sortBy = '';
+        if (isset($_GET['sortby'])) {
+            $sortBy = $_GET['sortby'];
+        }
+
         if (str_starts_with($uri, '/api/events/jazz')) {
             if (isset($_GET['artist'])) {
                 $artistId = $_GET['artist'];
@@ -57,7 +62,7 @@ class EventAPIController extends APIController
             $locationService = new LocationService();
             $location = $locationService->getById($data['location']['locationId']);
 
-            $event = new JazzEvent(
+            $event = new MusicEvent(
                 null,
                 $data['name'],
                 new DateTime($data['startTime']),
@@ -67,7 +72,9 @@ class EventAPIController extends APIController
                 $location
             );
 
-            $this->service->addEvent($event);
+            $event = $this->service->addEvent($event);
+
+            echo json_encode($event);
         } else {
             $this->sendErrorMessage('Invalid request', 400);
         }
