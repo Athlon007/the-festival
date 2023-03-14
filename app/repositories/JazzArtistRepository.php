@@ -226,4 +226,16 @@ class JazzArtistRepository extends Repository
 
         return $this->buildArtistKinds($stmt->fetchAll());
     }
+
+    public function getKindOfArtist($id): ArtistKind
+    {
+        $sql = "SELECT a.artistId, ak.id, ak.name "
+            . "FROM JazzArtists a "
+            . "INNER JOIN ArtistKinds ak ON a.artistKindId = ak.id "
+            . "WHERE a.artistId = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+        return $this->buildArtistKinds($stmt->fetchAll())[0];
+    }
 }

@@ -33,7 +33,7 @@ class EventAPIController extends APIController
             $filters['price_to'] = $_GET['price_to'];
         }
 
-        if (str_starts_with($uri, '/api/events/jazz')) {
+        if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
             if (isset($_GET['artist'])) {
                 $artistId = $_GET['artist'];
                 echo json_encode($this->service->getJazzEventsByArtistId($artistId));
@@ -49,6 +49,13 @@ class EventAPIController extends APIController
 
             if (isset($_GET['hide_no_seats'])) {
                 $filters['hide_no_seats'] = $_GET['hide_no_seats'];
+            }
+
+            // Get the appropriate kind, or all artists if none is specified.
+            if (str_starts_with($uri, '/api/events/jazz')) {
+                $filters['artist_kind'] = 'jazz';
+            } elseif (str_starts_with($uri, '/api/events/dance')) {
+                $filters['artist_kind'] = 'dance';
             }
 
             echo json_encode($this->service->getJazzEvents($sort, $filters));

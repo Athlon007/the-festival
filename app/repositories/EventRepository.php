@@ -27,13 +27,13 @@ class EventRepository extends Repository
         return $events;
     }
 
-    private function buildJazzEvent($arr): array
+    private function buildJazzEvent($arr, $filters = null): array
     {
         $events = [];
         $locationRepo = new LocationRepository();
         $artistRepo = new JazzArtistRepository();
         foreach ($arr as $event) {
-            $events[] = new MusicEvent(
+            $event = new MusicEvent(
                 $event['eventId'],
                 $event['name'],
                 new DateTime($event['startTime']),
@@ -42,6 +42,17 @@ class EventRepository extends Repository
                 $artistRepo->getById($event['artistId']),
                 $locationRepo->getById($event['locationId'])
             );
+
+            if (isset($filters['artist_kind'])) {
+                if ($filters['artist_kind'] === 'jazz' && $event->getArtist()->getArtistKind()->getName() !== 'Jazz') {
+                    continue;
+                }
+                if ($filters['artist_kind'] === 'dance' && $event->getArtist()->getArtistKind()->getName() !== 'DANCE!') {
+                    continue;
+                }
+            }
+
+            array_push($events, $event);
         }
         return $events;
     }
@@ -120,7 +131,8 @@ class EventRepository extends Repository
             . "JOIN Events e ON e.eventId = je.eventId";
 
 
-        if (!empty($filters)) {
+        if (!empty($filters) && !(count($filters) === 1 && isset($filters['artist_kind']))) {
+            // if only filter is artist_kind, skip
             $sql .= " WHERE ";
             $i = 0;
             foreach ($filters as $filter) {
@@ -144,7 +156,8 @@ class EventRepository extends Repository
                         break;
                     default:
                         // no filtering by default
-                        break;
+                        $i++;
+                        continue 2;
                 }
 
                 if ($i < count($filters) - 1) {
@@ -171,18 +184,25 @@ class EventRepository extends Repository
 
         $stmt = $this->connection->prepare($sql);
 
-        foreach ($filters as $filter) {
-            $key = array_keys($filters, $filter)[0];
-            $pdoType = is_numeric($filter) ? PDO::PARAM_INT : PDO::PARAM_STR;
-            if (str_starts_with($key, 'price')) {
-                $pdoType = PDO::PARAM_STR;
+        if (!(count($filters) === 1 && isset($filters['artist_kind']))) {
+            foreach ($filters as $filter) {
+                $key = array_keys($filters, $filter)[0];
+
+                if ($key == 'artist_kind') {
+                    continue;
+                }
+
+                $pdoType = is_numeric($filter) ? PDO::PARAM_INT : PDO::PARAM_STR;
+                if (str_starts_with($key, 'price')) {
+                    $pdoType = PDO::PARAM_STR;
+                }
+                $stmt->bindValue(':' . $key, $filter, $pdoType);
             }
-            $stmt->bindValue(':' . $key, $filter, $pdoType);
         }
 
         $stmt->execute();
         $arr = $stmt->fetchAll();
-        return $this->buildJazzEvent($arr);
+        return $this->buildJazzEvent($arr, $filters);
     }
 
     public function getJazzEventById($id)
