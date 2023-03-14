@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . "/../Image.php");
+require_once("ArtistKind.php");
 require_once("Song.php");
 
 class Artist implements JsonSerializable
@@ -17,8 +18,9 @@ class Artist implements JsonSerializable
     private string $twitter;
     private string $instagram;
     private string $spotify;
+    private ArtistKind $kind;
 
-    public function __construct($id, $name, $description, $images, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $recentAlbums)
+    public function __construct($id, $name, $description, $images, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $recentAlbums, ArtistKind $kind)
     {
         $this->setId($id);
         $this->setName($name);
@@ -32,6 +34,7 @@ class Artist implements JsonSerializable
         $this->setInstagram($instagram);
         $this->setSpotify($spotify);
         $this->setRecentAlbums($recentAlbums);
+        $this->setArtistKind($kind);
     }
 
     public function getId()
@@ -154,6 +157,16 @@ class Artist implements JsonSerializable
         $this->recentAlbums = $value;
     }
 
+    public function getArtistKind()
+    {
+        return $this->kind;
+    }
+
+    public function setArtistKind($value)
+    {
+        $this->kind = $value;
+    }
+
     public function jsonSerialize(): mixed
     {
         return [
@@ -168,7 +181,8 @@ class Artist implements JsonSerializable
             'twitter' => $this->getTwitter(),
             'instagram' => $this->getInstagram(),
             'spotify' => $this->getSpotify(),
-            'recentAlbums' => $this->getRecentAlbums()
+            'recentAlbums' => $this->getRecentAlbums(),
+            'kind' => $this->getArtistKind()
         ];
     }
 }

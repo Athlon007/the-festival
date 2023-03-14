@@ -72,7 +72,10 @@
                             <label for="albums" class="form-label">Recent Albums</label>
                             <input type="text" id="albums" class="form-control mb-2" placeholder="Recent Albums (comma separated)">
                         </div>
-                        <div class="col-6"></div>
+                        <div class="col-6">
+                            <label for="kind" class="form-label">Kind</label>
+                            <select id="kind" class="form-select mb-2"></select>
+                        </div>
                     </div>
                     <label for="banner-images" class="form-label">Images</label>
                     <div class="card">

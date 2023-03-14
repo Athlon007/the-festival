@@ -23,7 +23,7 @@ class JazzArtistService
         return $this->repo->getById($id);
     }
 
-    public function insertArtist($name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $images): Artist
+    public function insertArtist($name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $images, $artistKindId): Artist
     {
         $name = htmlspecialchars($name);
         $description = htmlspecialchars($description);
@@ -34,6 +34,8 @@ class JazzArtistService
         $twitter = htmlspecialchars($twitter);
         $instagram = htmlspecialchars($instagram);
         $spotify = htmlspecialchars($spotify);
+        $recentAlbums = htmlspecialchars($recentAlbums);
+        $artistKindId = htmlspecialchars($artistKindId);
 
         $artistId = $this->repo->insert(
             $name,
@@ -45,7 +47,8 @@ class JazzArtistService
             $facebook,
             $twitter,
             $instagram,
-            $spotify
+            $spotify,
+            $artistKindId
         );
 
         // Now, we insert the songs and images
@@ -64,7 +67,7 @@ class JazzArtistService
         $this->repo->deleteById($id);
     }
 
-    public function updateById($artistId, $name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $images): Artist
+    public function updateById($artistId, $name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $images, $artistKindId): Artist
     {
         $artistId = htmlspecialchars($artistId);
         $name = htmlspecialchars($name);
@@ -76,6 +79,8 @@ class JazzArtistService
         $twitter = htmlspecialchars($twitter);
         $instagram = htmlspecialchars($instagram);
         $spotify = htmlspecialchars($spotify);
+        $recentAlbums = htmlspecialchars($recentAlbums);
+        $artistKindId = htmlspecialchars($artistKindId);
 
         $this->repo->update(
             $artistId,
@@ -88,7 +93,8 @@ class JazzArtistService
             $facebook,
             $twitter,
             $instagram,
-            $spotify
+            $spotify,
+            $artistKindId
         );
 
         // Now, we insert the songs and images
@@ -100,5 +106,10 @@ class JazzArtistService
         $imageService->assignImagesToArtist($artistId, $images);
 
         return $this->getById($artistId);
+    }
+
+    public function getArtistKinds()
+    {
+        return $this->repo->getArtistKinds();
     }
 }
