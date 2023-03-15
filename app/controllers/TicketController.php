@@ -19,7 +19,7 @@ class TicketController
     {
         try {
             $ticketService = new TicketService();
-            $ticket = $ticketService->getTicketByID(1);
+            $ticket = $ticketService->getTicketByID(3);
             $qrCodeImage = $ticketService->generateQRCode($ticket);
             $dompdf = $ticketService->generatePDFTicket($ticket, $qrCodeImage);
 
