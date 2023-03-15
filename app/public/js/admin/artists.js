@@ -15,6 +15,7 @@ const instagram = document.getElementById('instagram');
 const twitter = document.getElementById('twitter');
 const spotify = document.getElementById('spotify');
 const albums = document.getElementById('albums');
+const kind = document.getElementById('kind');
 
 const btnSubmit = document.getElementById('submit');
 let isInCreationMode = false;
@@ -26,7 +27,7 @@ const imgPicker = new ImagePicker();
 
 
 function updateExistingArtist(id, data) {
-    fetch('/api/jazz-artists/' + id, {
+    fetch('/api/artists/' + id, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -48,7 +49,7 @@ function updateExistingArtist(id, data) {
 }
 
 function createNewArtist(data) {
-    fetch('/api/jazz-artists', {
+    fetch('/api/artists', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -96,7 +97,8 @@ btnSubmit.onclick = function () {
         instagram: instagram.value,
         twitter: twitter.value,
         spotify: spotify.value,
-        recentAlbums: albums.value
+        recentAlbums: albums.value,
+        kindId: kind.value
     };
 
     if (isInCreationMode) {
@@ -114,7 +116,7 @@ document.getElementById('delete').onclick = function () {
 
     msgBox.createYesNoDialog('Delete page', 'Are you sure you want to delete this page? This is irreversible!', function () {
         // fetch with post
-        fetch('/api/jazz-artists/' + editedArtistId, {
+        fetch('/api/artists/' + editedArtistId, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -157,7 +159,7 @@ function createNewOptionItem(element) {
         btnSubmit.innerHTML = 'Save';
         isInCreationMode = false;
         // Do the api call to get the page content.
-        fetch('/api/jazz-artists/' + element.id, {
+        fetch('/api/artists/' + element.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -177,6 +179,7 @@ function createNewOptionItem(element) {
                     twitter.value = data.twitter;
                     spotify.value = data.spotify;
                     albums.value = data.recentAlbums;
+                    kind.value = data.kind.id;
 
                     imgPicker.unselectAllImages();
                     // select images that are used by the page.
@@ -219,7 +222,7 @@ function loadArtistsList() {
     artists.appendChild(option);
 
     // fetch with post
-    fetch('/api/jazz-artists', {
+    fetch('/api/artists?sort=name', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -268,6 +271,7 @@ function toggleEditor(element, isEnabled) {
         twitter.value = '';
         spotify.value = '';
         albums.value = '';
+        kind.value = -1;
     }
 }
 
@@ -277,7 +281,42 @@ document.getElementById('new-page').onclick = function () {
     editedArtistId = -1;
     imgPicker.unselectAllImages();
     artists.selectedIndex = 0;
-    title.value = '';
-    pageHref.value = '';
+    name.value = '';
+    description.value = '';
+    country.value = '';
+    genres.value = '';
+    facebook.value = '';
+    instagram.value = '';
+    twitter.value = '';
+    spotify.value = '';
+    albums.value = '';
+    kind.value = -1;
     btnSubmit.innerHTML = 'Create';
 }
+
+// load artist kidns
+fetch('/api/artists/kinds', {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+    .then(response => response.json())
+    .then(data => {
+        // Create first -- SELECT OPTION -- option
+        let option = document.createElement('option');
+        option.innerHTML = '-- Select Artist Kind --';
+        option.value = -1;
+        option.disabled = true;
+        kind.appendChild(option);
+
+        data.forEach(element => {
+            let option = document.createElement('option');
+            option.innerHTML = element.name;
+            option.value = element.id;
+            kind.appendChild(option);
+        });
+
+        kind.value = -1;
+    }
+    );

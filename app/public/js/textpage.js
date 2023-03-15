@@ -83,3 +83,16 @@ if (document.getElementById('allday-pass')) {
 } else {
     console.log('No all day pass container found.');
 }
+
+// Load events module
+if (document.getElementById('events')) {
+    console.log('Events container found! Loading events...');
+    let script = document.createElement('script');
+    script.src = '/js/modules/events.js';
+    script.type = 'text/javascript';
+    document.getElementsByTagName('head')[0].appendChild(script);
+
+    script.onload = () => EventsList.build('events');
+} else {
+    console.log('No events container found.');
+}

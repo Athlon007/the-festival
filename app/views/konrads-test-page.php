@@ -16,7 +16,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <div class="container">
-        <div class="row col-12" id="jazz-events">
+        <div class="row col-12">
             <div class="col-3 p-1">
                 <div class="row">
                     <h2>Sort</h2>
@@ -106,7 +106,7 @@
                     <h2>Attributes</h2>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="attr1" name="attr1" value="attr1">
-                        <label for="attr1" class="form-label-chekc"> Hide events without seats</label>
+                        <label for="attr1" class="form-check-label"> Hide events without seats</label>
                     </div>
                 </div>
             </div>
@@ -174,12 +174,15 @@
                     </div>
                 </div>
             </div>
-            <footer class="foot row bottom"></footer>
-            <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-            <script type="module" src="/js/nav.js"></script>
-            <script type="module" src="/js/foot.js"></script>
-            <script type="module" src="/js/textpage.js"></script>
+            <hr />
+            <div id="events" data-type="jazz"></div>
+        </div>
+        <footer class="foot row bottom"></footer>
+        <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+        <script type="module" src="/js/nav.js"></script>
+        <script type="module" src="/js/foot.js"></script>
+        <script type="module" src="/js/textpage.js"></script>
 </body>
 
 </html>
