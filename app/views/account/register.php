@@ -23,6 +23,10 @@
             <div class="container py-5 h-100">   
                 <div class="row d-flex justify-content-center align-items-center h-100">
                     <div class="col-10">
+                        
+                        <!--Pop-up message-->
+                        <div id="popup">
+                        </div>
 
                         <!-- Registration form -->
                         <div class="card card-registration card-registration-2" style="border-radius: 15px;">

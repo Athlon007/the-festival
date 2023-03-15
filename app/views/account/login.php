@@ -22,6 +22,11 @@
         <div class="row p-6">
             <div class="col-md-6 offset-md-3 ">
                 <h2 class=text-center>Log in to Visit Haarlem</h2>
+
+                <!--Pop-up message-->
+                <div id="popup">
+                </div>
+
                 <div class="card">
                     <div class="card-body">
                         <div class="mb-3">
