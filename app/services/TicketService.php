@@ -6,7 +6,6 @@ require_once(__DIR__ . '/../models/Exceptions/TicketNotFoundException.php');
 
 require_once(__DIR__ . '../../vendor/autoload.php');
 use Dompdf\Dompdf;
-use Dompdf\Options;
 
 require_once('../phpmailer/PHPMailer.php');
 require_once('../phpmailer/SMTP.php');
@@ -17,6 +16,16 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Label\Label;
+use Endroid\QrCode\Logo\Logo;
+use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Writer\ValidationException;
+
 class TicketService
 {
     protected TicketRepository $repository;
@@ -26,129 +35,55 @@ class TicketService
         $this->repository = new TicketRepository();
     }
 
-    public function generatePDFTicket($ticket): Dompdf
-    {
-        $options = new Options();
-        $options->setChroot(__DIR__);
-        $dompdf = new Dompdf($options);
-
-        // Define some styles for the HTML content
-        $styles = '
-        <style>
-            body {
-                background-color: #f2f2f2;
-                font-family: Arial, sans-serif;
-                font-size: 16px;
-            }
-            
-            h1 {
-                color: brown;
-                font-size: 24px;
-                font-weight: bold;
-                margin: 0 0 20px;
-                text-align: center;
-                text-transform: uppercase;
-            }
-            
-            .container {
-                background-color: #fff;
-                border-radius: 10px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-                margin: 30px auto;
-                padding: 30px;
-                max-width: 500px;
-            }
-            
-            .logo {
-                display: block;
-                margin: 0 auto 20px;
-                max-width: 200px;
-            }
-            
-            .ticket-info {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 20px;
-            }
-            
-            .ticket-info label {
-                font-weight: bold;
-                margin-right: 10px;
-                width: 140px;
-            }
-            
-            .ticket-info p {
-                margin: 0;
-            }
-            
-            .qr-code {
-                display: block;
-                margin: 20px auto 0;
-                max-width: 150px;
-            }
-        </style>
-        ';
-
+    public function generateQRCode($ticket): string {
         //Generate a QR code image with the ticket ID as data
         $qrCodeData = $ticket->getQrCodeData();
-        $qrCodeImage = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode($qrCodeData);
+        $qrCode = new QrCode($qrCodeData);
+        $qrCode->setSize(150);
+        $qrCode->setMargin(10);
 
-        $html = '
-            <div class="container">
-                <img src="https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U" alt="The Festival" class="logo">
-                <h1>The Festival Ticket</h1>
-                
-                <div class="ticket-info">
-                    <label>Event Name:</label>
-                    <p>' . $ticket->getEvent()->getName() . '</p>
-                </div>
-                
-                <div class="ticket-info">
-                    <label>Event Date:</label>
-                    <p>' . $ticket->getEvent()->getStartTime()->format('m/d/Y') . '</p>
-                </div>
-                
-                <div class="ticket-info">
-                    <label>Event Time:</label>
-                    <p>' . $ticket->getEvent()->getStartTime()->format('H:i') . ' - ' . $ticket->getEvent()->getEndTime()->format('H:i') . '</p>
-                </div>
-                
-                <div class="ticket-info">
-                    <label>Customer Name:</label>
-                    <p>' . $ticket->getCustomer()->getFirstName() . ' ' . $ticket->getCustomer()->getLastName() . '</p>
-                </div>
+        $label = Label::create('Ticket QR Code')
+            ->setTextColor(new Color(0, 0, 0));
 
-                <div class="ticket-info">
-                    <label>Event Location:</label>
-                    <p>' . 'St. Bavo Church' . '</p>
-                </div>
-                
-                <div class="ticket-info">
-                    <label>Customer Email:</label>
-                    <p>' . $ticket->getCustomer()->getEmail() . '</p>
-                </div>
-                
-                <div class="ticket-info">
-                    <label>Price:</label>
-                    <p style="color: red">€ ' . $ticket->getEvent()->getPrice() .
-            '</p>
-            <hr>
+        $writer = new PngWriter();
 
-                    </div>
-                    <img src="' . $qrCodeImage . '" alt="QR Code" class="qr-code">
-            <hr>
-                </div>
-                ';
+        $qrCodeImage = 'data:image/png;base64,' . base64_encode($writer->write($qrCode, null, $label)->getString());
+        return $qrCodeImage;
+    }
 
-        $dompdf->loadHtml($styles . $html);
+
+    public function generatePDFTicket($ticket,$qrCodeImage): Dompdf
+    {
+      // buffer the following html with PHP so we can pass it to the PDF generator
+      ob_start();
+        $dompdf = new Dompdf([
+            "chroot" => __DIR__,
+            "isRemoteEnabled" => true,
+            "isHtml5ParserEnabled" => true,
+            "isPhpEnabled" => true,
+            "isJavascriptEnabled" => true,
+            "isFontSubsettingEnabled" => true,
+            "isImageSubsettingEnabled" => true,
+        ]);
+
+        $html = require_once(__DIR__ . '/../views/generateTicketPDF.php');
+
+        // retrieve the HTML generated in our buffer and delete the buffer
+        $html = ob_get_clean();
+
+        $dompdf->loadHtml($html);
+
         $dompdf->setPaper('A4', 'portrait');
 
         $dompdf->render();
         $dompdf->addInfo('Title', 'The Festival Ticket');
-        $dompdf->stream("ticket.pdf", ["Attachment" => 0]);
 
+        $dompdf->stream("ticket.pdf", array("Attachment" => false));
         return $dompdf;
     }
+
+
+
     public function getTicketByID($ticketID): Ticket
     {
         try {
@@ -159,12 +94,9 @@ class TicketService
         }
     }
 
-    public function sendTicketPDF()
+    public function sendTicketByEmail(Dompdf $dompdf, Ticket $ticket)
     {
         try {
-            $ticket = $this->getTicketByID(1);
-            $dompdf = $this->generatePDFTicket($ticket);
-
             $pdfContents = $dompdf->output();
 
             $mail = new PHPMailer(true);
