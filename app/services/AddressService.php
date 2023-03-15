@@ -40,6 +40,7 @@ class AddressService
         $country = htmlspecialchars($country);
 
         $address = new Address($addressId, $streetName, $houseNumber, $postalCode, $city, $country);
+
         $this->repo->updateAddress($address);
         return $this->getAddressById($addressId);
     }
@@ -68,11 +69,10 @@ class AddressService
 
         $address = json_decode($response);
 
-        if (isset($address->message)){
+        if (isset($address->message)) {
             throw new Exception("Something went wrong while fetching the address: " . $address->message);
         }
 
         return $address;
     }
 }
-        

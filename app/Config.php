@@ -4,7 +4,7 @@ $db_name = "development";
 $db_username = "haarlemfestivaluser";
 $db_password = "D4LL84w9f7Cb99z4Pz";
 
-// Uncomment lines below, to use local database.
+// Set to false, if you don't want to use local database.
 $debugMode = false;
 if ($debugMode) {
     $db_host = "mysql";

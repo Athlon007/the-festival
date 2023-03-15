@@ -28,7 +28,7 @@ class FestivalJazzController
         $event = $eventService->getEventById(basename($uri));
 
         // if event is of jazzevent type
-        if (!($event instanceof JazzEvent)) {
+        if (!($event instanceof MusicEvent)) {
             // redirect to 404
             return;
         }

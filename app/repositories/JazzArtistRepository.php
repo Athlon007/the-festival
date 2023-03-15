@@ -2,7 +2,8 @@
 
 require_once("Repository.php");
 require_once("ImageRepository.php");
-require_once("../models/Jazz/JazzArtist.php");
+require_once("../models/Music/Artist.php");
+require_once("../models/Music/ArtistKind.php");
 
 class JazzArtistRepository extends Repository
 {
@@ -33,7 +34,9 @@ class JazzArtistRepository extends Repository
 
             $images = $this->imageRepo->getImagesForArtistId($artistId);
 
-            $artist = new JazzArtist(
+            $artistKind = $this->getArtistKindById($row["artistKindId"]);
+
+            $artist = new Artist(
                 $artistId,
                 $name,
                 $description,
@@ -45,7 +48,8 @@ class JazzArtistRepository extends Repository
                 $twitter,
                 $instagram,
                 $spotify,
-                $recentAlbums
+                $recentAlbums,
+                $artistKind
             );
 
             array_push($output, $artist);
@@ -66,10 +70,23 @@ class JazzArtistRepository extends Repository
     /**
      * Returns all artists.
      */
-    public function getAll(): array
+    public function getAll($sort): array
     {
-        $sql = "SELECT artistId, name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, recentAlbums "
+        $sql = "SELECT artistId, name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, recentAlbums, artistKindId "
             . "FROM JazzArtists";
+
+        switch ($sort) {
+            case "name":
+                $sql .= " ORDER BY name";
+                break;
+            case "name_desc":
+                $sql .= " ORDER BY name DESC";
+                break;
+            default:
+                $sql .= " ORDER BY artistId";
+                break;
+        }
+
         $statement = $this->connection->prepare($sql);
         $statement->execute();
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -79,9 +96,9 @@ class JazzArtistRepository extends Repository
     /**
      * Returns the artist with the given id.
      */
-    public function getById($id): JazzArtist
+    public function getById($id): Artist
     {
-        $sql = "SELECT artistId, name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, recentAlbums "
+        $sql = "SELECT artistId, name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, recentAlbums, artistKindId "
             . "FROM JazzArtists WHERE artistId = :id";
         $statement = $this->connection->prepare($sql);
         $statement->bindParam(":id", $id);
@@ -104,11 +121,12 @@ class JazzArtistRepository extends Repository
         $facebookUrl,
         $twitterUrl,
         $instagramUrl,
-        $spotifyUrl
+        $spotifyUrl,
+        $artistKindId
     ): int {
         $sql = "INSERT INTO JazzArtists "
             . "(name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl) "
-            . "VALUES (:name, :description, :recentAlbums, :genres, :country, :homepageUrl, :facebookUrl, :twitterUrl, :instagramUrl, :spotifyUrl)";
+            . "VALUES (:name, :description, :recentAlbums, :genres, :country, :homepageUrl, :facebookUrl, :twitterUrl, :instagramUrl, :spotifyUrl, :artistKindId)";
         $statement = $this->connection->prepare($sql);
         $statement->bindParam(":name", $name);
         $statement->bindParam(":description", $description);
@@ -120,6 +138,7 @@ class JazzArtistRepository extends Repository
         $statement->bindParam(":twitterUrl", $twitterUrl);
         $statement->bindParam(":instagramUrl", $instagramUrl);
         $statement->bindParam(":spotifyUrl", $spotifyUrl);
+        $statement->bindParam(":artistKindId", $artistKindId);
         $statement->execute();
 
         return $this->connection->lastInsertId();
@@ -144,7 +163,8 @@ class JazzArtistRepository extends Repository
         $facebookUrl,
         $twitterUrl,
         $instagramUrl,
-        $spotifyUrl
+        $spotifyUrl,
+        $artistKindId
     ) {
         $sql = "UPDATE JazzArtists SET "
             . "name = :name, "
@@ -156,7 +176,8 @@ class JazzArtistRepository extends Repository
             . "facebookUrl = :facebookUrl, "
             . "twitterUrl = :twitterUrl, "
             . "instagramUrl = :instagramUrl, "
-            . "spotifyUrl = :spotifyUrl "
+            . "spotifyUrl = :spotifyUrl, "
+            . "artistKindId = :artistKindId "
             . "WHERE artistId = :artistId";
 
         $statement = $this->connection->prepare($sql);
@@ -171,6 +192,50 @@ class JazzArtistRepository extends Repository
         $statement->bindParam(":twitterUrl", $twitterUrl);
         $statement->bindParam(":instagramUrl", $instagramUrl);
         $statement->bindParam(":spotifyUrl", $spotifyUrl);
+        $statement->bindParam(":artistKindId", $artistKindId);
         $statement->execute();
+    }
+
+    private function buildArtistKinds($arr): array
+    {
+        $output = [];
+        foreach ($arr as $row) {
+            $id = $row["id"];
+            $name = $row["name"];
+            $output[] = new ArtistKind($id, $name);
+        }
+
+        return $output;
+    }
+
+    private function getArtistKindById($id): ArtistKind
+    {
+        $sql = "SELECT id, name FROM ArtistKinds WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+
+        return $this->buildArtistKinds($stmt->fetchAll())[0];
+    }
+
+    public function getArtistKinds(): array
+    {
+        $sql = "SELECT id, name FROM ArtistKinds";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+
+        return $this->buildArtistKinds($stmt->fetchAll());
+    }
+
+    public function getKindOfArtist($id): ArtistKind
+    {
+        $sql = "SELECT a.artistId, ak.id, ak.name "
+            . "FROM JazzArtists a "
+            . "INNER JOIN ArtistKinds ak ON a.artistKindId = ak.id "
+            . "WHERE a.artistId = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+        return $this->buildArtistKinds($stmt->fetchAll())[0];
     }
 }
