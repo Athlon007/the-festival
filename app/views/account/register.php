@@ -19,7 +19,7 @@
         <script type="module" src="/js/nav.js"></script>
        
         <!-- Registration container -->
-        <section class="h-100 h-custom gradient-custom-2">
+        <section class="h-100 h-custom">
             <div class="container py-5 h-100">   
                 <div class="row d-flex justify-content-center align-items-center h-100">
                     <div class="col-10">
@@ -68,7 +68,7 @@
                                             <div class="row">
                                                 <div class="form-outline">
                                                     <label class="form-label" for="email">E-mail*</label>    
-                                                    <input type="text" id="email" class="form-control form-control-lg" />
+                                                    <input type="email" id="email" class="form-control form-control-lg" />
                                                 </div>
                                                 <div class="form-outline">
                                                     <label class="form-label" for="password">Password*</label>

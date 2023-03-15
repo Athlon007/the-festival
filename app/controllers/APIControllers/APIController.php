@@ -32,11 +32,7 @@ class APIController
 
     protected function handlePostRequest($uri)
     {
-        $data = json_decode(file_get_contents("php://input"));
-
-        if ($data == null) {
-            $this->sendErrorMessage("No data received.", 400);
-        }
+        // Can be implemented by child class
     }
 
     protected function handlePutRequest($uri)
@@ -48,7 +44,6 @@ class APIController
     {
         // Can be implemented by child class
     }
-
 
     final protected function sendErrorMessage($message, $code = 500)
     {
@@ -75,3 +70,4 @@ class APIController
         //return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
     }
 }
+?>

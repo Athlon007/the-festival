@@ -37,6 +37,11 @@ class Customer extends User{
         return $this->dateOfBirth->format('Y-m-d');
     }
 
+    public function getDateOfBirthAsDMY() : string
+    {
+        return $this->dateOfBirth->format('d-m-Y');
+    }
+
     public function setDateOfBirth(DateTime $dateOfBirth) : void
     {
         $this->dateOfBirth = $dateOfBirth;

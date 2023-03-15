@@ -56,6 +56,13 @@ class CustomerRepository extends Repository{
     public function insertCustomer(Customer $customer) : void
     {
         try{
+            //Throw error if email already exists
+            if($this->userRepository->emailAlreadyExists($customer->getEmail()))
+            {
+                require_once(__DIR__ . '/../models/Exceptions/EmailAlreadyExistsException.php');
+                throw new EmailAlreadyExistsException();
+            }
+
             //Insert customer address into address table and retrieve the new addressId
             $this->addressRepository->insertAddress($customer->getAddress());
             $customer->getAddress()->setAddressId($this->addressRepository->connection->lastInsertId());
@@ -90,7 +97,7 @@ class CustomerRepository extends Repository{
             //Update customer in user table (inheritance parent)
             $this->userRepository->updateUser($customer);
             
-            $query = "UPDATE customers SET dateOfBirth = :dateOfBirth, phoneNumber = :phoneNumber, addressId = :addressId " .
+            $query =    "UPDATE customers SET dateOfBirth = :dateOfBirth, phoneNumber = :phoneNumber, addressId = :addressId " .
                         "WHERE userId = :userId";
             $stmt = $this->connection->prepare($query);
             

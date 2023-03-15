@@ -71,3 +71,15 @@ if (document.getElementById('countdown')) {
 } else {
     console.log('No countdown container found.');
 }
+// Load all day pass module
+if (document.getElementById('allday-pass')) {
+    console.log('All day pass container found! Loading all day pass...');
+    let script = document.createElement('script');
+    script.src = '/js/modules/allaccesspass.js';
+    script.type = 'text/javascript';
+    document.getElementsByTagName('head')[0].appendChild(script);
+
+    script.onload = () => AllAccessPass.start('allday-pass');
+} else {
+    console.log('No all day pass container found.');
+}
