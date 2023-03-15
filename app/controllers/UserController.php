@@ -7,6 +7,10 @@ class UserController
     {
         try {
             session_start();
+            
+            if (!isset($_SESSION['user'])) {
+                header("Location: /");
+            }
 
             $user = $_SESSION['user'];
             if ($user->getUserTypeAsString() != "Admin") {
