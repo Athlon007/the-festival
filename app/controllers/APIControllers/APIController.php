@@ -4,6 +4,9 @@ class APIController
 {
     public function initialize($request)
     {
+        // disable error reporting
+        error_reporting(0);
+
         if ($request == null) {
             $this->sendErrorMessage("Request cannot be empty.", 400);
             return;
@@ -70,4 +73,3 @@ class APIController
         //return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
     }
 }
-?>

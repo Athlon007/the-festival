@@ -33,41 +33,51 @@ class EventAPIController extends APIController
             $filters['price_to'] = $_GET['price_to'];
         }
 
-        if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
-            if (isset($_GET['artist'])) {
-                $artistId = $_GET['artist'];
-                echo json_encode($this->service->getJazzEventsByArtistId($artistId));
-                return;
-            }
+        try {
+            if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
+                if (isset($_GET['artist'])) {
+                    $artistId = $_GET['artist'];
+                    echo json_encode($this->service->getJazzEventsByArtistId($artistId));
+                    return;
+                }
 
-            if (is_numeric(basename($uri))) {
-                $id = basename($uri);
-                $event = $this->service->getJazzEventById($id);
-                echo json_encode($event);
-                return;
-            }
+                if (is_numeric(basename($uri))) {
+                    $id = basename($uri);
+                    $event = $this->service->getJazzEventById($id);
+                    echo json_encode($event);
+                    return;
+                }
 
-            if (isset($_GET['hide_no_seats'])) {
-                $filters['hide_no_seats'] = $_GET['hide_no_seats'];
-            }
+                if (isset($_GET['hide_no_seats'])) {
+                    $filters['hide_no_seats'] = $_GET['hide_no_seats'];
+                }
 
-            // Get the appropriate kind, or all artists if none is specified.
-            if (str_starts_with($uri, '/api/events/jazz')) {
-                $filters['artist_kind'] = 'jazz';
-            } elseif (str_starts_with($uri, '/api/events/dance')) {
-                $filters['artist_kind'] = 'dance';
-            }
+                // Get the appropriate kind, or all artists if none is specified.
+                if (str_starts_with($uri, '/api/events/jazz')) {
+                    $filters['artist_kind'] = 'jazz';
+                } elseif (str_starts_with($uri, '/api/events/dance')) {
+                    $filters['artist_kind'] = 'dance';
+                }
 
-            echo json_encode($this->service->getJazzEvents($sort, $filters));
-        } else {
-            if (is_numeric(basename($uri))) {
-                $id = basename($uri);
-                $event = $this->service->getEventById($id);
-                echo json_encode($event);
-                return;
-            }
+                echo json_encode($this->service->getJazzEvents($sort, $filters));
+            } else {
+                if (is_numeric(basename($uri))) {
+                    $id = basename($uri);
+                    $event = $this->service->getEventById($id);
+                    if ($event == null) {
+                        $this->sendErrorMessage("Event with id $id not found", 404);
+                        return;
+                    }
+                    echo json_encode($event);
+                    return;
+                }
 
-            echo json_encode($this->service->getAllEvents());
+                echo json_encode($this->service->getAllEvents());
+            }
+        } catch (TypeError $e) {
+            $this->sendErrorMessage("Event not found", 404);
+        } catch (Throwable $e) {
+            $this->sendErrorMessage("Unhandled exception", 500);
         }
     }
 
@@ -95,9 +105,14 @@ class EventAPIController extends APIController
                 $location
             );
 
-            $event = $this->service->addEvent($event);
+            try {
+                $event = $this->service->addEvent($event);
 
-            echo json_encode($event);
+                echo json_encode($event);
+            } catch (Exception $e) {
+                $this->sendErrorMessage($e->getMessage());
+            }
+        } elseif (str_starts_with($uri, '/api/events/stroll')) {
         } else {
             $this->sendErrorMessage('Invalid request', 400);
         }
