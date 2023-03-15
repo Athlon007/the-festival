@@ -7,16 +7,22 @@ var popup = document.getElementById("popup");
 
 function attemptLogin(){
 
+    //Clear popups
+    popup.innerHTML = "";
+
+    //Check if all fields have input
     if(!emailField.value || !passwordField.value){
-        alert("Please fill in all fields.");
+        displayError("Please fill in all fields.");
         return;
     }
 
+    //Create data object
     const data = {
         email: emailField.value,
         password: passwordField.value
     }
     
+    //Try to verify login
     fetch("/api/user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
