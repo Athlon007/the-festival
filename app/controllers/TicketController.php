@@ -1,6 +1,9 @@
 <?php
 require_once("../services/TicketService.php");
 
+require_once(__DIR__ . '/../vendor/autoload.php');
+
+
 class TicketController
 {
     public function buyTicket()
@@ -16,9 +19,11 @@ class TicketController
     {
         try {
             $ticketService = new TicketService();
-            $ticketService->sendTicketPDF();
+            $ticket = $ticketService->getTicketByID(1);
+            $qrCodeImage = $ticketService->generateQRCode($ticket);
+            $dompdf = $ticketService->generatePDFTicket($ticket, $qrCodeImage);
 
-            require("../views/generateTicketPDF.php");
+            //$ticketService->sendTicketByEmail($dompdf, $ticket);
         } catch (PDOException $e) {
             echo $e->getMessage();
         }

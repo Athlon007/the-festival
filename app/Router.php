@@ -136,6 +136,11 @@ class Router
                 $userController = new UserController();
                 $userController->manageUsers();
                 break;
+            case "/addUser":
+                require_once("controllers/UserController.php");
+                $userController = new UserController();
+                $userController->addUser();
+                break;
             case "/konradstestpage":
                 require_once("views/konrads-test-page.php");
             case "/buyTicket":
@@ -147,6 +152,9 @@ class Router
                 require_once("controllers/TicketController.php");
                 $ticketController = new TicketController();
                 $ticketController->generateAndSendTicket();
+                break;
+            case "/festival/history-stroll":
+                require_once("views/festival/history-stroll.php");
                 break;
             default:
                 $this->route404($message);
