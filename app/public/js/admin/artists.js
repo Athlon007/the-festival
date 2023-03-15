@@ -189,7 +189,7 @@ function createNewOptionItem(element) {
                     });
 
                     btnOpen.onclick = function () {
-                        let link = 'http://' + window.location.hostname + '/festival/jazz-and-more/artist/' + data.id;
+                        let link = 'http://' + window.location.hostname + '/festival/jazz/artist/' + data.id;
                         if (link == '') {
                             link = "http://" + window.location.hostname;
                         }
