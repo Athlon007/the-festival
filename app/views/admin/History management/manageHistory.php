@@ -28,11 +28,22 @@
 </nav>
 <h1 class="text-center mt-3">Manage the Tours</h1>
 <br>
-<div>
-        <div>
+
+<h3>What do you want to manage:</h3>
+    <div class="menu">
+        <select id="name" class="form-select" aria-label="Default select example">
+            <option selected><i>--Select a section--</i></option>
+            <option value="Tour">Venues</option>
+            <option value="Location">Location</option>
+        </select>
+    </div>
+
+
+    <div class="content">
+        <div id="Tour" class="data">
             <table class="table">
                 <tr>
-                    <th>Name</th>
+                <th>Name</th>
                     <th>Description</th>
                     <th>Price</th>
                     <th>Language</th>
@@ -42,12 +53,27 @@
             <!-- Add button -->
             <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
                 <div class="col-12 text-right">
-                    <a href="/addRestaurant" class="btn btn-success btn-lg">Add Tours</a>
+                    <a href="/addTour" class="btn btn-success btn-lg">Add Tours</a>
                 </div>
             </div>
         </div>
 
+        <div id="Loction" class="data">
+            <table class="table">
+                <tr>
+                    <th>Location</th>
 
+                </tr>
+            </table>
+            <!-- Add button -->
+            <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
+                <div class="col-12 text-right">
+                    <a href="/addLocation" class="btn btn-success btn-lg">Add Location to Tour</a>
+                </div>
+            </div>
+        </div>
+</div>
+<br>
     <footer class="foot row bottom"></footer>
     <script type="application/javascript"
         src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
@@ -56,4 +82,16 @@
         crossorigin="anonymous"></script>
 
     <script type="module" src="/js/foot.js"></script>
+    <script>
+            $(document).ready(function () {
+                $("#name").on("change", function () {
+                    //alert($(this).val());
+                    $(".data").hide();
+                    $("#" + $(this).val()).fadeIn(700);
+                })
+                .change();
+            });
+
+</script>
+
 </body>
