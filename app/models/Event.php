@@ -7,6 +7,7 @@ class Event implements JsonSerializable
     private DateTime $startTime;
     private DateTime $endTime;
     private $price;
+    private float $vat;
 
     // public function __construct($id, $name, DateTime $startTime, DateTime $endTime, $price)
     // {
@@ -68,6 +69,16 @@ class Event implements JsonSerializable
         $this->price = $value;
     }
 
+    public function getVat()
+    {
+        return $this->vat;
+    }
+
+    public function setVat($value)
+    {
+        $this->vat = $value;
+    }
+
     public function jsonSerialize(): mixed
     {
         return [
@@ -76,6 +87,7 @@ class Event implements JsonSerializable
             "startTime" => $this->getStartTime(),
             "endTime" => $this->getEndTime(),
             "price" => $this->getPrice(),
+            "vat" => $this->getVat()
         ];
     }
 }
