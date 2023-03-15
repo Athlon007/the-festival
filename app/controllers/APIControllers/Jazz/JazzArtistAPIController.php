@@ -15,12 +15,19 @@ class JazzArtistAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
+        if (basename($uri) == "kinds") {
+            echo json_encode($this->service->getArtistKinds());
+            return;
+        }
+
         if (is_numeric(basename($uri))) {
             echo json_encode($this->service->getById(basename($uri)));
             return;
         }
 
-        echo json_encode($this->service->getAll());
+        $sort = $_GET["sort"] ?? "name";
+
+        echo json_encode($this->service->getAll($sort));
     }
 
     public function handlePostRequest($uri)
@@ -49,6 +56,7 @@ class JazzArtistAPIController extends APIController
             $instagram = $this->getIfSet($data, "instagram");
             $spotify = $this->getIfSet($data, "spotify");
             $images = $this->getIfSet($data, "images");
+            $kindId = $this->getIfSet($data, "kindId");
 
             echo json_encode($this->service->insertArtist(
                 $name,
@@ -61,7 +69,8 @@ class JazzArtistAPIController extends APIController
                 $twitter,
                 $instagram,
                 $spotify,
-                $images
+                $images,
+                $kindId
             ));
         } catch (Throwable $e) {
             $this->sendErrorMessage($e->getMessage());
@@ -120,6 +129,7 @@ class JazzArtistAPIController extends APIController
             $instagram = $this->getIfSet($data, "instagram");
             $spotify = $this->getIfSet($data, "spotify");
             $images = $this->getIfSet($data, "images");
+            $kindId = $this->getIfSet($data, "kindId");
 
             echo json_encode($this->service->updateById(
                 $artistId,
@@ -133,7 +143,8 @@ class JazzArtistAPIController extends APIController
                 $twitter,
                 $instagram,
                 $spotify,
-                $images
+                $images,
+                $kindId
             ));
         } catch (Throwable $e) {
             $this->sendErrorMessage($e->getMessage());

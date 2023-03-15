@@ -1,7 +1,7 @@
 <?php
 
 require_once(__DIR__ . "/../models/Event.php");
-require_once(__DIR__ . "/../models/Jazz/JazzEvent.php");
+require_once(__DIR__ . "/../models/Music/MusicEvent.php");
 require_once("Repository.php");
 require_once("LocationRepository.php");
 require_once("JazzArtistRepository.php");
@@ -27,13 +27,13 @@ class EventRepository extends Repository
         return $events;
     }
 
-    private function buildJazzEvent($arr): array
+    private function buildJazzEvent($arr, $filters = null): array
     {
         $events = [];
         $locationRepo = new LocationRepository();
         $artistRepo = new JazzArtistRepository();
         foreach ($arr as $event) {
-            $events[] = new JazzEvent(
+            $event = new MusicEvent(
                 $event['eventId'],
                 $event['name'],
                 new DateTime($event['startTime']),
@@ -42,6 +42,17 @@ class EventRepository extends Repository
                 $artistRepo->getById($event['artistId']),
                 $locationRepo->getById($event['locationId'])
             );
+
+            if (isset($filters['artist_kind'])) {
+                if ($filters['artist_kind'] === 'jazz' && $event->getArtist()->getArtistKind()->getName() !== 'Jazz') {
+                    continue;
+                }
+                if ($filters['artist_kind'] === 'dance' && $event->getArtist()->getArtistKind()->getName() !== 'DANCE!') {
+                    continue;
+                }
+            }
+
+            array_push($events, $event);
         }
         return $events;
     }
@@ -113,15 +124,85 @@ class EventRepository extends Repository
         return count($arr) > 0;
     }
 
-    public function getAllJazzEvents()
+    public function getAllJazzEvents($sort, array $filters)
     {
         $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.price "
             . "FROM JazzEvents je "
             . "JOIN Events e ON e.eventId = je.eventId";
+
+
+        if (!empty($filters) && !(count($filters) === 1 && isset($filters['artist_kind']))) {
+            // if only filter is artist_kind, skip
+            $sql .= " WHERE ";
+            $i = 0;
+            foreach ($filters as $filter) {
+                $key = array_keys($filters, $filter)[0];
+
+                switch ($key) {
+                    case 'price_from':
+                        $sql .= " e.price >= :$key ";
+                        break;
+                    case 'price_to':
+                        $sql .= " e.price <= :$key ";
+                        break;
+                    case 'time_from':
+                        $sql .= " HOUR(e.startTime) >= :$key ";
+                        break;
+                    case 'time_to':
+                        $sql .= " HOUR(e.endTime) <= :$key ";
+                        break;
+                    case 'hide_no_seats':
+                        // TODO: Hide events with no seats.
+                        break;
+                    default:
+                        // no filtering by default
+                        $i++;
+                        continue 2;
+                }
+
+                if ($i < count($filters) - 1) {
+                    $sql .= " AND ";
+                }
+                $i++;
+            }
+        }
+
+        switch ($sort) {
+            case "time_desc":
+                $sql .= " ORDER BY e.startTime DESC";
+                break;
+            case "price":
+                $sql .= " ORDER BY e.price";
+                break;
+            case "price_desc":
+                $sql .= " ORDER BY e.price DESC";
+                break;
+            default:
+                $sql .= " ORDER BY e.startTime";
+                break;
+        }
+
         $stmt = $this->connection->prepare($sql);
+
+        if (!(count($filters) === 1 && isset($filters['artist_kind']))) {
+            foreach ($filters as $filter) {
+                $key = array_keys($filters, $filter)[0];
+
+                if ($key == 'artist_kind') {
+                    continue;
+                }
+
+                $pdoType = is_numeric($filter) ? PDO::PARAM_INT : PDO::PARAM_STR;
+                if (str_starts_with($key, 'price')) {
+                    $pdoType = PDO::PARAM_STR;
+                }
+                $stmt->bindValue(':' . $key, $filter, $pdoType);
+            }
+        }
+
         $stmt->execute();
         $arr = $stmt->fetchAll();
-        return $this->buildJazzEvent($arr);
+        return $this->buildJazzEvent($arr, $filters);
     }
 
     public function getJazzEventById($id)

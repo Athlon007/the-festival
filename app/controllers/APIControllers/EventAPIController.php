@@ -1,7 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/../../models/Event.php');
-require_once(__DIR__ . '/../../models/Jazz/JazzEvent.php');
+require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
 require_once("APIController.php");
 
@@ -16,7 +16,24 @@ class EventAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
-        if (str_starts_with($uri, '/api/events/jazz')) {
+        $sort = $_GET['sort'] ?? 'time';
+        $filters = [];
+
+        if (isset($_GET['time_from'])) {
+            $filters['time_from'] = $_GET['time_from'];
+        }
+        if (isset($_GET['time_to'])) {
+            $filters['time_to'] = $_GET['time_to'];
+        }
+
+        if (isset($_GET['price_from'])) {
+            $filters['price_from'] = $_GET['price_from'];
+        }
+        if (isset($_GET['price_to'])) {
+            $filters['price_to'] = $_GET['price_to'];
+        }
+
+        if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
             if (isset($_GET['artist'])) {
                 $artistId = $_GET['artist'];
                 echo json_encode($this->service->getJazzEventsByArtistId($artistId));
@@ -30,7 +47,18 @@ class EventAPIController extends APIController
                 return;
             }
 
-            echo json_encode($this->service->getJazzEvents());
+            if (isset($_GET['hide_no_seats'])) {
+                $filters['hide_no_seats'] = $_GET['hide_no_seats'];
+            }
+
+            // Get the appropriate kind, or all artists if none is specified.
+            if (str_starts_with($uri, '/api/events/jazz')) {
+                $filters['artist_kind'] = 'jazz';
+            } elseif (str_starts_with($uri, '/api/events/dance')) {
+                $filters['artist_kind'] = 'dance';
+            }
+
+            echo json_encode($this->service->getJazzEvents($sort, $filters));
         } else {
             if (is_numeric(basename($uri))) {
                 $id = basename($uri);
@@ -57,7 +85,7 @@ class EventAPIController extends APIController
             $locationService = new LocationService();
             $location = $locationService->getById($data['location']['locationId']);
 
-            $event = new JazzEvent(
+            $event = new MusicEvent(
                 null,
                 $data['name'],
                 new DateTime($data['startTime']),
@@ -67,7 +95,9 @@ class EventAPIController extends APIController
                 $location
             );
 
-            $this->service->addEvent($event);
+            $event = $this->service->addEvent($event);
+
+            echo json_encode($event);
         } else {
             $this->sendErrorMessage('Invalid request', 400);
         }

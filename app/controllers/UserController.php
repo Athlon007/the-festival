@@ -32,4 +32,15 @@ class UserController
             echo $e->getMessage();
         }
     }
+
+    public function addUser()
+    {
+        try{
+            $userService = new UserService();
+            require("../views/admin/addUser.php");
+        }
+        catch(PDOException $e){
+            echo $e->getMessage();
+        }
+    }
 }
