@@ -66,7 +66,7 @@ class TicketService
             "isImageSubsettingEnabled" => true,
         ]);
 
-        $html = require_once(__DIR__ . '/../views/generateTicketPDF.php');
+        $html = require_once(__DIR__ . '/../views/ticket/generateTicketPDF.php');
 
         // retrieve the HTML generated in our buffer and delete the buffer
         $html = ob_get_clean();
