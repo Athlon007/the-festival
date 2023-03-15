@@ -7,7 +7,7 @@ class UserController
             require_once("../services/UserService.php");
             $userService = new UserService();
             $users = $userService->getAllUsers();
-            require("../views/admin/manageUsers.php");
+            require("../views/admin/User management/manageUsers.php");
         }
         catch (PDOException $e){
             echo $e->getMessage();

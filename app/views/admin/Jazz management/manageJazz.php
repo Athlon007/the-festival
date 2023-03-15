@@ -22,8 +22,8 @@
     <br>
     <nav class="nav nav-pills flex-column flex-sm-row">
         <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/../manageUsers">Users</a>
-        <a class="flex-sm-fill text-sm-center nav-link" href="/../manageJazz">Jazz</a>
-        <a class="flex-sm-fill text-sm-center nav-link active" href="/../manageRestaurants">Restaurants</a>
+        <a class="flex-sm-fill text-sm-center nav-link active" href="/../manageJazz">Jazz</a>
+        <a class="flex-sm-fill text-sm-center nav-link" href="/../manageRestaurants">Restaurants</a>
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageDJs">Dance</a>
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageHistory">History</a>
     </nav>
@@ -51,7 +51,7 @@
             <!-- Add button -->
             <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
                 <div class="col-12 text-right">
-                    <a href="" class="btn btn-success btn-lg">Add Venue</a>
+                    <a href="/addVenue" class="btn btn-success btn-lg">Add Venue</a>
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@
             <!-- Add button -->
             <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
                 <div class="col-12 text-right">
-                    <a href="" class="btn btn-success btn-lg">Add Artist</a>
+                    <a href="/addArtist" class="btn btn-success btn-lg">Add Artist</a>
                 </div>
             </div>
         </div>
