@@ -66,7 +66,7 @@ class JazzController
             require_once("../services/JazzService.php");
             $jazzService = new JazzService();
             $jazz = $jazzService->getAllJazz();
-            require("../views/admin/Jazz management/Artist/addEvent.php");
+            require("../views/admin/Jazz management/Event/addEvent.php");
         }
                 catch (PDOException $e){
             echo $e->getMessage();
@@ -78,7 +78,7 @@ class JazzController
             require_once("../services/JazzService.php");
             $jazzService = new JazzService();
             $jazz = $jazzService->getAllJazz();
-            require("../views/admin/Jazz management/Artist/updateEvent.php");
+            require("../views/admin/Jazz management/Event/updateEvent.php");
         }
                 catch (PDOException $e){
             echo $e->getMessage();

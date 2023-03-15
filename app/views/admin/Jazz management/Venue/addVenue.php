@@ -17,51 +17,27 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <script type="module" src="/js/nav.js"></script>
-    <h1>Artist</h1>
+    <h1>Venue</h1>
                 
-                <form action="updateArtist" method="POST">
+                <form action="addVenue" method="POST">
                     <div class="form-group">
-                        <label for="shortDescription">Short description</label>
+                        <label for="">Name</label>
                         <input type="text" class="form-control" id="" name="" value="">
                     </div>
                     <div class="form-group">
-                        <label for="longDescription">Long description</label>
+                        <label for="">Capacity</label>
                         <input type="text" class="form-control" id="" name="" value="">
                     </div>
                     <div class="form-group">
-                        <label for="recentAlbums">Recent Albums</label>
+                        <label for="">Postal Code</label>
                         <input type="text" class="form-control" id="" name="" value="">
                     </div>
                     <div class="form-group">
-                        <label for="genres">Genres</label>
+                        <label for="">House number</label>
                         <input type="text" class="form-control" id="" name="" value="">
                     </div>
-                    <div class="form-group">
-                        <label for="Country">Country</label>
-                        <input type="text" class="form-control" id="" name="" value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="homepage">Homepage</label>
-                        <input type="text" class="form-control" id="" name="" value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="fbLink">Facebook Link</label>
-                        <input type="text" class="form-control" id="" name="" value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="twitterLink">Twitter Link</label>
-                        <input type="text" class="form-control" id="" name="" value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="instagramLink">Instagram Link</label>
-                        <input type="text" class="form-control" id="" name="" value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="spotifyLink">Spotify Link</label>
-                        <input type="text" class="form-control" id="" name="" value="">
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" name="updateArtistButton">Update Artist</button>
+<br>
+                    <button type="submit" class="btn btn-primary" name="updateArtistButton">Update Venue</button>
                 </form>
 
 

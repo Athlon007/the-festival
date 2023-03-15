@@ -32,7 +32,7 @@
 <br>
 <h3>What do you want to manage:</h3>
     <div class="menu">
-        <select id="name" class="form-select" aria-label="Default select example">
+        <select id="name" class="form-select" aria-label="Default select example" onchange="changeContent()">
             <option selected><i>--Select a section--</i></option>
             <option value="Venues">Venues</option>
             <option value="Artist">Artist</option>
@@ -46,7 +46,8 @@
             <table class="table">
                 <tr>
                     <th>Name</th>
-                    <th>Location</th>
+                    <th>Postal Code</th>
+                    <th>house number</th>
                     <th>Capacity</th>
                 </tr>
             </table>
@@ -93,7 +94,7 @@
             <!-- Add button -->
             <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
                 <div class="col-12 text-right">
-                    <a href="" class="btn btn-success btn-lg">Add Event</a>
+                    <a href="/addEvent" class="btn btn-success btn-lg">Add Event</a>
                 </div>
             </div>
         </div>
@@ -109,14 +110,13 @@
 
     <script type="module" src="/js/foot.js"></script>
     <script>
-            $(document).ready(function () {
-                $("#name").on("change", function () {
-                    //alert($(this).val());
-                    $(".data").hide();
-                    $("#" + $(this).val()).fadeIn(700);
-                })
-                .change();
-            });
-
-</script>
+          $(document).ready(function () {
+    $("#name").on("change", function () {
+        //alert($(this).val());
+        $(".data").hide();
+        $("#" + $(this).val()).fadeIn(700);
+    })
+    .change();
+});
+    </script>
 </body>
