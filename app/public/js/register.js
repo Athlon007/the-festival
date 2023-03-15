@@ -17,19 +17,25 @@ const emailField = document.getElementById("email");
 const passwordField = document.getElementById("password");
 const passwordConfirmField = document.getElementById("passwordConfirm");
 
+//Popup window
+var popup = document.getElementById("popup");
+
 
 function attemptRegister(captcha)
 {
+    //Clear popups
+    popup.innerHTML = "";
+    
     if(!allFieldsFilled()){
-        alert("Please fill in all fields");
+        displayError("Please fill in all fields");
         return;
     }
     else if(!checkPassword()){
-        alert("Confirmed password does not match.");
+        displayError("Confirmed password does not match.");
         return;
     }
     else if(!document.getElementById("termsAcceptance").checked){
-        alert("You must agree to our terms and conditions.");
+        displayError("You must agree to our terms and conditions.");
         return;
     }
 
@@ -50,14 +56,9 @@ function attemptRegister(captcha)
     })
     .then(response => response.json())
     .then(data => {
-        if(data.success_message){
-            alert(data.success_message);
             window.location.assign("/home/login");
-        } 
-        else {
-            alert(data.error_message);
-        }
-    });
+        })
+    .catch(error => {displayError(error)});
 }
 
 function allFieldsFilled(){
@@ -105,12 +106,26 @@ function fetchAddress(){
             cityField.value = data.address.city;
             countryField.value = "Netherlands";
         }
-    });
+    })
+    .catch(error => {displayError(error)});
 }
 
-function addError(message){
-    const error = document.createElement("li");
-    error.innerHTML = message;
-    appendChild(error);
-    return error;
+function displayError(error){
+    errorDiv = document.createElement("div");
+    errorDiv.innerHTML = error;
+    errorDiv.classList.add("alert");
+    errorDiv.classList.add("alert-danger");
+    errorDiv.classList.add("p-3");
+    errorDiv.setAttribute("role", "alert");
+    popup.appendChild(errorDiv);
 }
+
+function displaySuccess(success){
+    successDiv = document.createElement("div");
+    successDiv.innerHTML = success;
+    successDiv.classList.add("alert");
+    successDiv.classList.add("alert-success");
+    successDiv.classList.add("p-3");
+    successDiv.setAttribute("role", "alert");
+    popup.appendChild(successDiv);
+}   

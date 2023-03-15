@@ -22,6 +22,14 @@ let isInCreationMode = false;
 
 const msgBox = new MsgBox();
 
+const map = L.map('map').setView([52.3814425, 4.6360367], 13);
+L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+let pin;
+
 
 function updateExistingEntry(id, data) {
     fetch('/api/locations/' + id, {
@@ -83,8 +91,8 @@ btnSubmit.onclick = function () {
         name: name.value,
         locationType: locationType.value,
         capacity: capacity.value,
-        lon: lon.value,
         lat: lat.value,
+        lon: lon.value,
         address: {
             addressId: editedAddressId,
             postalCode: postal.value,
@@ -94,6 +102,10 @@ btnSubmit.onclick = function () {
             country: country.value
         }
     };
+
+    if (data.capacity === '') {
+        data.capacity = 0;
+    }
 
     if (isInCreationMode) {
         createNewEntry(data);
@@ -139,6 +151,7 @@ document.getElementById('delete').onclick = function () {
 
 document.getElementById('cancel').onclick = function () {
     toggleEditor(masterEditor, false);
+    clearPin();
 }
 
 function createNewOptionItem(element) {
@@ -174,6 +187,8 @@ function createNewOptionItem(element) {
                     lon.value = data.lon;
                     locationType.value = data.locationType;
                     capacity.value = data.capacity;
+
+                    putPin([data.lat, data.lon]);
                 } else {
                     msgBox.createToast('Something went wrong', data.error_message);
                 }
@@ -318,10 +333,12 @@ function fetchGeocode() {
             if (data.message != null) {
                 lat.value = "";
                 lon.value = "";
+                clearPin();
             }
             else {
                 lat.value = data.lat;
                 lon.value = data.lon;
+                putPin([data.lat, data.lon])
             }
         });
 }
@@ -332,4 +349,21 @@ number.onblur = function () {
 }
 postal.onblur = function () {
     fetchAddress();
+}
+
+
+function putPin(location) {
+    // remove existing pin
+    if (pin != null) {
+        map.removeLayer(pin);
+    }
+    pin = L.marker(location).addTo(map);
+
+    map.setView(location, 15);
+}
+
+function clearPin() {
+    if (pin != null) {
+        map.removeLayer(pin);
+    }
 }

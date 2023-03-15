@@ -22,7 +22,7 @@ tinymce.init({
     menu: {
         custom: {
             title: 'Modules',
-            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile customJazzOptions'
+            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile customJazzOptions customEventsViewer'
         }
     },
     menubar: 'file edit view insert format tools table custom',
@@ -228,6 +228,22 @@ tinymce.init({
                     ];
                 }
             });
+            editor.ui.registry.addMenuItem('customEventsViewer', {
+                text: 'Events Viewer',
+                onAction: () => {
+                    msgBox.createDialogWithInputs('Create Events Viewer', [
+                        {
+                            label: 'Events Viewer Type',
+                            id: 'events-viewer-type',
+                        }
+                    ],
+                        () => {
+                            let eventsViewerType = document.getElementById('events-viewer-type').value;
+                            editor.insertContent(`<div id='events' data-type='${eventsViewerType}'></div>`);
+                        }
+                    );
+                }
+            });
             editor.ui.registry.addButton('customSeeSourceCode', {
                 text: 'Source Code',
                 onAction: () => {
@@ -293,6 +309,14 @@ function createNewPage(data) {
                 // exit the new page mode
                 isInNewPageMode = false;
                 btnSubmit.innerHTML = 'Save';
+
+                btnOpen.onclick = function () {
+                    let link = data.href;
+                    if (link == '') {
+                        link = "http://" + window.location.hostname;
+                    }
+                    window.open(link, '_blank');
+                };
             } else {
                 msgBox.createToast('Somethin went wrong', data.error_message);
             }
