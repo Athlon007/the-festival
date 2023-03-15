@@ -103,8 +103,9 @@ btnSubmit.onclick = function () {
         }
     };
 
-    console.log(data.lon + " " + data.lat);
-    return;
+    if (data.capacity === '') {
+        data.capacity = 0;
+    }
 
     if (isInCreationMode) {
         createNewEntry(data);
@@ -150,6 +151,7 @@ document.getElementById('delete').onclick = function () {
 
 document.getElementById('cancel').onclick = function () {
     toggleEditor(masterEditor, false);
+    clearPin();
 }
 
 function createNewOptionItem(element) {
