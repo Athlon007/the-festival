@@ -30,7 +30,6 @@ function attemptLogin(){
         })
     .then(response => response.json())
     .then(data => {
-        
             displaySuccess(data.success_message);
             window.location.assign("/");
         })
