@@ -309,6 +309,14 @@ function createNewPage(data) {
                 // exit the new page mode
                 isInNewPageMode = false;
                 btnSubmit.innerHTML = 'Save';
+
+                btnOpen.onclick = function () {
+                    let link = data.href;
+                    if (link == '') {
+                        link = "http://" + window.location.hostname;
+                    }
+                    window.open(link, '_blank');
+                };
             } else {
                 msgBox.createToast('Somethin went wrong', data.error_message);
             }

@@ -83,7 +83,7 @@ class HMap {
     /**
      * Adds a pin to the map.
      * @param {*} name Name displayed
-     * @param {*} location [lat, long]
+     * @param {*} location [longtitude, latitude]
      */
     addPin(markerContent, location) {
         let pin = L.marker(location).addTo(this.map).bindPopup(markerContent);
@@ -94,7 +94,6 @@ class HMap {
     addPinNoContent(location) {
         console.log(location);
         let pin = L.marker(location).addTo(this.map);
-        //let pin = L.marker([0, 0]).addTo(this.map);
         this.pins.push(pin);
         return pin;
     }
@@ -239,10 +238,10 @@ class GeneralMap extends HMap {
                     // add google maps link
                     if (location.address) {
                         let fullAddress = `${location.address.streetName} ${location.address.houseNumber}, ${location.address.postalCode} ${location.address.city}`;
-                        markerContent += `<a href="https://www.google.com/maps/search/?api=1&query=${location.name} ${location.address.streetName} ${location.address.postalCode}"
+                        markerContent += `<a href="https://www.google.com/maps/search/?api=1&query=${location.name} ${location.address.streetName} ${location.address.houseNumber} ${location.address.postalCode} "
                         target="_blank">${fullAddress}</a>`;
                     }
-                    this.addPin(markerContent, [location.lon, location.lat]);
+                    this.addPin(markerContent, [location.lat, location.lon]);
                 });
             }
             );
@@ -292,7 +291,7 @@ class EventMap extends HMap {
         div.classList.add('col-12');
         this.container.appendChild(div);
 
-        this.map = L.map('mapContainer').setView([data.lon, data.lat], DEFAULT_ZOOM_LEVEL);
+        this.map = L.map('mapContainer').setView([data.lat, data.lon], DEFAULT_ZOOM_LEVEL);
         L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -302,7 +301,7 @@ class EventMap extends HMap {
         this.map.scrollWheelZoom.disable();
 
         // create pin
-        const pin = this.addPinNoContent([data.lon, data.lat]);
+        const pin = this.addPinNoContent([data.lat, data.lon]);
 
         // on pin click, navigate to Google Maps
         this.map.on('click', () => {
@@ -311,6 +310,6 @@ class EventMap extends HMap {
     }
 
     showEvent(event) {
-        this.moveMap([event.location.lon, event.location.lat], DEFAULT_ZOOM_LEVEL);
+        this.moveMap([event.location.lat, event.location.lon], DEFAULT_ZOOM_LEVEL);
     }
 }
