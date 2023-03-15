@@ -90,8 +90,8 @@ hr {
 
 .about-section {
   color: #fff;
-  /* padding: 50px 0; */
   height: 350px;
+  padding: 20px;
 }
 
 .about-section h2 {
@@ -101,72 +101,14 @@ hr {
 }
 
 .about-section p {
-  /* font-size: 1.2em; */
   line-height: 1.5em;
 }
 
-.location-box {
+.location-and-time {
   background-color: rgba(195, 190, 182, 1);
-  height: 200px;
-  margin-top: 20px;
-  padding: 20px;
-  display: flex;
+  border-radius: 10px;
 }
 
-
-
-.location-text {
-  flex: 3;
-  margin-right: 20px;
-}
-
-.location-text h3 {
-  font-size: 1.5em;
-  margin-bottom: 10px;
-}
-
-.location-icon {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.location-icon i {
-  font-size: 3em;
-}
-
-.location-icon p {
-  font-size: 1.2em;
-  margin-top: 15px;
-}
-
-.festival-day {
-  background-color: #ccc;
-  /* padding: 20px; */
-  /* display: flex; */
-  flex-direction: column;
-  align-items: center;
-}
-
-.clock-icon {
-  font-size: 4em;
-  color: #000;
-}
-
-.festival-time {
-  font-size: 1.2em;
-  margin-bottom: 15px;
-}
-
-.festival-details ul {
-  list-style: none;
-  padding: 0;
-}
-
-.festival-details li {
-  font-size: 1.2em;
-}
 
 .ticket h4 {
   color: ffffff;
@@ -184,11 +126,6 @@ hr {
   margin: 0 -15px;
 }
 
-.col-md-6 {
-  flex: 0 0 50%;
-  max-width: 50%;
-  padding: 0 15px;
-}
 
 .form-label {
   font-weight: bold;
@@ -294,13 +231,12 @@ hr {
   color: #ffffff;
 }
 
-.languageOfTour {
-  margin-top: 120px !important;
+
+.languageOfTour,
+.ticketOfTour {
+  margin-top: 50px !important;
 }
 
-.ticketOfTour {
-  margin-top: 120px !important;
-}
 
 .addToCartButton {
   width: 100%;
@@ -312,6 +248,23 @@ hr {
 
 .addToCartButton:hover {
   background-color: rgb(190, 165, 125) !important;
+}
+
+.destinations h2 {
+  margin-top: 50px;
+  color: #ffffff;
+}
+
+.st-bavo-church{
+  background-color: rgba(195, 190, 182, 1);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.advertisement-drink{
+  background-color: rgb(136, 96, 31);
+  border-radius: 10px;
+  padding: 20px;
 }
 
 body {
@@ -341,11 +294,24 @@ body {
     margin: 5vw auto;
   }
 
-  .about-section{
+  .about-section {
+    height: auto;
     font-size: 5vw;
   }
 
   .location-box {
     font-size: 5vw;
+  }
+
+  .destination {
+    height: 350px;
+  }
+
+  .destination-image {
+    height: 200px;
+  }
+
+  .destination-info {
+    height: 150px;
   }
 }

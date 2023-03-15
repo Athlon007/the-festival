@@ -1,3 +1,34 @@
+<?php
+
+$destinations = array(
+    array(
+        'title' => 'St. Bavo Church',
+        'image' => 'stbavo.jpg',
+        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+    ),
+    array(
+        'title' => 'Destination 1',
+        'image' => 'destination1.jpg',
+        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+    ),
+    array(
+        'title' => 'Destination 2',
+        'image' => 'destination2.jpg',
+        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+    ),
+    array(
+        'title' => 'Destination 3',
+        'image' => 'destination3.jpg',
+        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+    ),
+    array(
+        'title' => 'One drink per person',
+        'image' => 'onedrink.jpg',
+        'description' => '15 min. break at Jopenkerk'
+    )
+);
+?>
+
 <!doctype html>
 <html lang="en">
 
@@ -58,56 +89,37 @@
 
 
         <section class="about-section">
-            <div class="container aboutContainer">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <h2>Let's Tour Around Haarlem</h2>
-                        <p>Welcome to a city that is filled with historical monuments, spectacular museums and
-                            world-famous art! Cars are not allowed on many streets in Haarlem which makes it a great
-                            city for a tour! We organise tours every day during The Festival Haarlem.</p>
-                    </div>
+            <div class="row">
+                <!-- First column -->
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <h2>Let's Tour Around Haarlem</h2>
+                    <p>Welcome to a city that is filled with historical monuments, spectacular museums and
+                        world-famous art! Cars are not allowed on many streets in Haarlem which makes it a great
+                        city for a tour! We organise tours every day during The Festival Haarlem.
+                    </p>
 
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div class="location-box">
-                            <div class="row">
-                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                                    <div class="location-icon">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <p>Starting Point<br>St. Bavo Church</p>
-                                        <div class="icons-row">
-                                            <i class="fas fa-ban"></i>
-                                            <i class="fas fa-child"></i>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
-                                    <div class="festival-day">
-                                        <div class="row">
-                                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                                                <div class="clock-icon">
-                                                    <i class="far fa-clock"></i>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
-                                                <div class="festival-details">
-                                                    <p class="festival-time">Every Festival Day</p>
-                                                    <ul>
-                                                        <li>- 10:00 am</li>
-                                                        <li>- 13:00 pm</li>
-                                                        <li>- 16:00 pm</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
+                    <button type="submit" class="btn btn-outline-success">See Overview</button>
 
                 </div>
+
+                <!-- This is location and time column -->
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 location-and-time">
+                    <div class="row location-time-row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 location-column">
+                            <p>Starting Point<br>St. Bavo Church</p>
+                        </div>
+
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 festival-day-column">
+                            <p>Every Festival Day</p>
+                            <ul>
+                                <li> 10:00 am</li>
+                                <li> 13:00 pm</li>
+                                <li> 16:00 pm</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -116,7 +128,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="row mb-3">
-                        <div class="col-md-6 dateOfTour">
+                        <div class="col-md-6 dateOfTour" style="width: 50%; float:left;">
                             <label for="date" class="form-label">Date</label>
                             <select class="form-select" id="date">
                                 <option selected>Choose Date</option>
@@ -126,7 +138,7 @@
                                 <option value="30">Sun 30/07/2023</option>
                             </select>
                         </div>
-                        <div class="col-md-6 timeOfTour">
+                        <div class="col-md-6 timeOfTour" style="width: 50%; float:right;">
                             <label for="time" class="form-label">Time</label>
                             <select class="form-select" id="time">
                                 <option selected>Choose Time</option>
@@ -137,7 +149,7 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-6 languageOfTour">
+                        <div class="col-md-6 languageOfTour" style="width: 50%; float:left;">
                             <label for="language" class="form-label">Language</label>
                             <select class="form-select" id="language">
                                 <option selected>Select language</option>
@@ -146,12 +158,12 @@
                                 <option value="dutch">Dutch</option>
                             </select>
                         </div>
-                        <div class="col-md-6 ticketOfTour">
+                        <div class="col-md-6 ticketOfTour" style="width: 50%; float:right;">
                             <label for="ticket" class="form-label">Ticket</label>
                             <select class="form-select" id="ticket">
                                 <option selected>Select ticket</option>
-                                <option value="adult">Single</option>
-                                <option value="child">Family</option>
+                                <option value="adult">Single € 17.50</option>
+                                <option value="child">Family € 60.00</option>
                             </select>
                         </div>
                     </div>
@@ -234,8 +246,26 @@
         </div>
 
 
+        <div class="container destinations">
+            <h2 class="text-center"> During 2.5 hours, you will visit</h2>
 
-        <footer class="foot row bottom"></footer>
+            <div class="row">
+                <div class="col-8 st-bavo-church">
+                    1 of 2 
+                </div>
+
+                <div class="col-4 advertisement-drink">
+                    2 of 2
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <footer class="foot row bottom">
+        </footer>
         <script type="application/javascript"
             src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
