@@ -7,7 +7,7 @@ class RestaurantController
             require_once("../services/RestaurantService.php");
             $restaurantService = new RestaurantService();
             $restaurants = $restaurantService->getAllRestaurants();
-            require("../views/admin/Restaurant management/manageRestaurants.php");
+            require_once("../views/admin/Restaurant management/manageRestaurants.php");
         }
         catch (PDOException $e){
             echo $e->getMessage();

@@ -26,7 +26,26 @@
   <a class="flex-sm-fill text-sm-center nav-link" href="/../manageDJs">Dance</a>
   <a class="flex-sm-fill text-sm-center nav-link" href="/../manageHistory">History</a>
 </nav>
-
+<h1 class="text-center mt-3">Manage Restaurants</h1>
+<br>
+<div>
+        <div>
+            <table class="table">
+                <tr>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Number of Sessions</th>
+                    <th>Duration of Sessions</th>
+                    <th>Available seats</th>
+                </tr>
+            </table>
+            <!-- Add button -->
+            <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
+                <div class="col-12 text-right">
+                    <a href="/addRestaurant" class="btn btn-success btn-lg">Add Restautrant</a>
+                </div>
+            </div>
+        </div>
 
 
     <footer class="foot row bottom"></footer>

@@ -27,19 +27,21 @@
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageDJs">Dance</a>
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageHistory">History</a>
     </nav>
+
+    <h1 class="text-center mt-3">Manage Jazz</h1>
+<br>
+<h3>What do you want to manage:</h3>
     <div class="menu">
         <select id="name" class="form-select" aria-label="Default select example">
-            <option selected>What do you want to edit</option>
+            <option selected><i>--Select a section--</i></option>
             <option value="Venues">Venues</option>
             <option value="Artist">Artist</option>
-            <option value="Song">Song</option>
             <option value="Event">Event</option>
         </select>
     </div>
 
 
     <div class="content">
-        <h1 class="text-center mt-3">Manage Jazz</h1>
         <div id="Venues" class="data">
             <table class="table">
                 <tr>
@@ -78,21 +80,6 @@
             </div>
         </div>
 
-        <div id="Song" class="data">
-            <table class="table">
-                <tr>
-                    <th>Name</th>
-                    <th>Artist</th>
-                </tr>
-            </table>
-            <!-- Add button -->
-            <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
-                <div class="col-12 text-right">
-                    <a href="" class="btn btn-success btn-lg">Add Song</a>
-                </div>
-            </div>
-        </div>
-
         <div id="Event" class="data">
             <table class="table">
                 <tr>
@@ -112,7 +99,7 @@
         </div>
 
     </div>
-
+<br>
     <footer class="foot row bottom"></footer>
     <script type="application/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>

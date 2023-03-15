@@ -61,6 +61,31 @@ class JazzController
         }
 
     }
+    public function addEvent(){
+        try{
+            require_once("../services/JazzService.php");
+            $jazzService = new JazzService();
+            $jazz = $jazzService->getAllJazz();
+            require("../views/admin/Jazz management/Artist/addEvent.php");
+        }
+                catch (PDOException $e){
+            echo $e->getMessage();
+        }
+
+    }
+    public function updateEvent(){
+        try{
+            require_once("../services/JazzService.php");
+            $jazzService = new JazzService();
+            $jazz = $jazzService->getAllJazz();
+            require("../views/admin/Jazz management/Artist/updateEvent.php");
+        }
+                catch (PDOException $e){
+            echo $e->getMessage();
+        }
+
+    }
+
 
 }
 

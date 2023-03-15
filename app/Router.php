@@ -156,7 +156,23 @@ class Router
                     require_once("controllers/JazzController.php");
                     $jazzController = new JazzController();
                     $jazzController->updateArtist();
+                    break;
+                case "/addEvent":
+                    require_once("controllers/JazzController.php");
+                    $jazzController = new JazzController();
+                    $jazzController->addEvent();
+                    break;
+                case "/updateEvent":
+                    require_once("controllers/JazzController.php");
+                    $jazzController = new JazzController();
+                    $jazzController->updateEvent();
                     break;    
+            case "/manageHistory":
+                require_once("controllers/HistoryController.php");
+                $historyController = new HistoryController();
+                $historyController->manageHistory();
+                break;
+        
             case "/manageDance":
                 require_once("controllers/DanceController.php");
                 $danceController = new DanceController();
