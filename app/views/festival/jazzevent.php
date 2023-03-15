@@ -29,6 +29,10 @@
         </div>
     <? } ?>
     <div class="container">
+        <div class="row col-12 py-1 justify-content-center ">
+            <input type="number" class="form-control" style="width:4em" id="ticketAmount" name="ticketAmount" min="1" max="10" value="1">
+            <button class="btn btn-primary px-2 mx-1 w-auto">Add ticket to cart</button>
+        </div>
         <div class="row card col-10 mx-auto p-1 my-2">
             <div class="row mx-auto">
                 <div class="col-8">
