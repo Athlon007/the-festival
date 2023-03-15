@@ -91,8 +91,10 @@ class HMap {
         return pin;
     }
 
-    addPin(location) {
+    addPinNoContent(location) {
+        console.log(location);
         let pin = L.marker(location).addTo(this.map);
+        //let pin = L.marker([0, 0]).addTo(this.map);
         this.pins.push(pin);
         return pin;
     }
@@ -300,7 +302,7 @@ class EventMap extends HMap {
         this.map.scrollWheelZoom.disable();
 
         // create pin
-        const pin = this.addPin([data.lon, data.lat]);
+        const pin = this.addPinNoContent([data.lon, data.lat]);
 
         // on pin click, navigate to Google Maps
         this.map.on('click', () => {
