@@ -6,10 +6,17 @@ class UserController
     public function manageUsers()
     {
         try {
+            session_start();
+
+            $user = $_SESSION['user'];
+            if ($user->getUserTypeAsString() != "Admin") {
+                header("Location: /");
+            }
+
             $userService = new UserService();
             $users = $userService->getAllUsers();
             require("../views/admin/manageUsers.php");
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             echo $e->getMessage();
         }
     }
@@ -21,7 +28,7 @@ class UserController
             $user = $userService->getUserById($_GET['id']);
             require("../views/admin/updateUser.php");
         }
-        catch(PDOException $e){
+        catch(Exception $e){
             echo $e->getMessage();
         }
     }
