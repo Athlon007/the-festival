@@ -255,16 +255,50 @@ hr {
   color: #ffffff;
 }
 
-.st-bavo-church{
+.st-bavo-church {
   background-color: rgba(195, 190, 182, 1);
   border-radius: 10px;
   padding: 20px;
 }
 
-.advertisement-drink{
-  background-color: rgb(136, 96, 31);
-  border-radius: 10px;
-  padding: 20px;
+.ellipse {
+  margin-right: 80%;
+  width: 200px;
+  height: 150px;
+  border-radius: 50%;
+  background-image: url("../img/jpg/history2.JPG");
+  background-size: cover;
+  /* or "contain" */
+  background-position: center;
+  /* or another position */
+}
+
+.learn-more-btn {
+  margin-left: 65%;
+  background-color: rgba(62, 45, 18, 1);
+  color: rgba(236, 234, 231, 1);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 18px;
+  width: 35%;
+  cursor: pointer;
+}
+
+
+.advertisement-drink {
+  width: 230px;
+  height: 200px;
+  border-radius: 50%;
+  background-image: url("../img/jpg/history2.JPG");
+  background-size: cover;
+  background-position: center;
+  margin-top: 35px !important;
+}
+
+.text-center {
+  color: #ffffff;
+  margin-top: 35px;
 }
 
 body {
