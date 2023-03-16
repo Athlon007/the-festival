@@ -251,16 +251,36 @@ $destinations = array(
 
             <div class="row">
                 <div class="col-8 st-bavo-church">
-                    1 of 2 
+                    1 of 2
+                    <div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="ellipse"></div>
+                            </div>
+                            <div class="col-8">
+                                <h3>St. Bavo Church</h3>
+                                <p>St. Bavo's Cathedral is a Roman Catholic cathedral in Haarlem, Netherlands. It is the
+                                    largest Gothic church in the country and one of the most important monuments of
+                                    Dutch
+                                    Gothic architecture. The church is dedicated to Saint Bavo of Ghent, the patron
+                                    saint of
+                                    Haarlem. The church is a UNESCO World Heritage Site.</p>
+
+                                <button class="learn-more-btn">Learn More</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-4 advertisement-drink">
-                    2 of 2
+                <div class="col-3">
+                    <div class="row">
+                        <div class="col-9 advertisement-drink">
+                        </div>
+                    </div>
+                    <p class="text-center">15 min. break at Jopenkerk</p>
                 </div>
             </div>
         </div>
-
-
 
 
 
@@ -280,7 +300,3 @@ $destinations = array(
             crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </body>
-
-    <style>
-
-    </style>
