@@ -2,31 +2,59 @@
 
 $destinations = array(
     array(
-        'title' => 'St. Bavo Church',
-        'image' => 'stbavo.jpg',
-        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+        "name" => "Ellipse",
+        "image" => "ellipse.jpg",
+        "description" => "A beautiful and unique elliptical plaza located in the heart of the city.
+        A beautiful and unique elliptical plaza located in the heart of the city.
+        A beautiful and unique elliptical plaza located in the heart of the city.
+        A beautiful and unique elliptical plaza located in the heart of the city.
+        ",
+        "location" => "City Center"
     ),
     array(
-        'title' => 'Destination 1',
-        'image' => 'destination1.jpg',
-        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+        "name" => "St. Bavo Church",
+        "image" => "stbavo.jpg",
+        "description" => "A stunning Gothic-style church that dates back to the 14th century.",
+        "location" => "Old Town"
     ),
     array(
-        'title' => 'Destination 2',
-        'image' => 'destination2.jpg',
-        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+        "name" => "City Hall",
+        "image" => "cityhall.jpg",
+        "description" => "A historic government building that has served as the seat of local government for over a century.",
+        "location" => "City Center"
     ),
     array(
-        'title' => 'Destination 3',
-        'image' => 'destination3.jpg',
-        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+        "name" => "Central Park",
+        "image" => "centralpark.jpg",
+        "description" => "A beautiful public park that offers a peaceful oasis in the midst of the bustling city.",
+        "location" => "City Center"
     ),
     array(
-        'title' => 'One drink per person',
-        'image' => 'onedrink.jpg',
-        'description' => '15 min. break at Jopenkerk'
+        "name" => "Museum of Fine Arts",
+        "image" => "museum.jpg",
+        "description" => "A world-renowned art museum featuring an impressive collection of paintings, sculptures, and other works of art.",
+        "location" => "Old Town"
+    ),
+    array(
+        "name" => "Opera House",
+        "image" => "opera.jpg",
+        "description" => "A magnificent theater that hosts world-class opera performances, ballets, and other cultural events.",
+        "location" => "City Center"
+    ),
+    array(
+        "name" => "Riverfront Promenade",
+        "image" => "riverfront.jpg",
+        "description" => "A scenic walkway that follows the river, offering stunning views of the city skyline and the water.",
+        "location" => "City Center"
+    ),
+    array(
+        "name" => "Historic District",
+        "image" => "historic.jpg",
+        "description" => "A charming neighborhood with cobblestone streets, historic homes, and quaint shops and restaurants.",
+        "location" => "Old Town"
     )
 );
+
 ?>
 
 <!doctype html>
@@ -282,6 +310,31 @@ $destinations = array(
             </div>
         </div>
 
+        <div class="container destinations-section">
+            <div class="row tour-destinations">
+                <?php
+                foreach ($destinations as $destination) {
+                    ?>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="destination-box">
+                            <div class="destination-image">
+                            </div>
+                            <div class="destination-info">
+                                <h3>
+                                    <?= $destination['name']; ?>
+                                </h3>
+                                <p>
+                                    <?= $destination['description']; ?>
+                                </p>
+                                <a href="#" class="btn btn-primary destination-learn-more-button">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
 
 
         <footer class="foot row bottom">
