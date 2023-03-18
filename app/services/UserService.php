@@ -332,5 +332,7 @@ class UserService
         if(isset($data->userType)){
             $data->userType = htmlspecialchars($data->userType);
         }
+
+        return $data;
       }
 }

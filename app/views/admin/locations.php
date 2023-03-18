@@ -48,11 +48,11 @@
                     <div class="row">
                         <div class="col-6">
                             <label for="postal" class="form-label">Postal Code</label>
-                            <input type="text" id="postal" class="form-control mb-2" placeholder="1234 AB">
+                            <input type="text" id="postal" class="form-control mb-2" placeholder="2015 CE" required>
                         </div>
                         <div class="col-6">
                             <label for="number" class="form-label">Building Number</label>
-                            <input type="text" id="number" class="form-control mb-2" placeholder="15">
+                            <input type="text" id="number" class="form-control mb-2" placeholder="15" required>
                         </div>
                     </div>
                     <div class="row">

@@ -22,7 +22,7 @@ tinymce.init({
     menu: {
         custom: {
             title: 'Modules',
-            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile customJazzOptions customEventsViewer'
+            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile | customJazzOptions customStrollOptions customYummyOptions '
         }
     },
     menubar: 'file edit view insert format tools table custom',
@@ -224,24 +224,45 @@ tinymce.init({
                                         editor.insertContent(`<div id='allday-pass' data-kind='${passKind}'></div>`);
                                     });
                             }
+                        },
+                        {
+                            text: 'Events Viewer',
+                            type: 'menuitem',
+                            onAction: () => {
+                                editor.insertContent(`<div id='events' data-type='jazz'></div>`);
+                            }
                         }
                     ];
                 }
             });
-            editor.ui.registry.addMenuItem('customEventsViewer', {
-                text: 'Events Viewer',
-                onAction: () => {
-                    msgBox.createDialogWithInputs('Create Events Viewer', [
+            editor.ui.registry.addMenuItem('customStrollOptions', {
+                text: 'Stroll Modules >',
+                type: 'nestedmenuitem',
+                getSubmenuItems: () => {
+                    return [
                         {
-                            label: 'Events Viewer Type',
-                            id: 'events-viewer-type',
+                            text: 'Events Viewer',
+                            type: 'menuitem',
+                            onAction: () => {
+                                editor.insertContent(`<div id='events' data-type='stroll'></div>`);
+                            }
                         }
-                    ],
-                        () => {
-                            let eventsViewerType = document.getElementById('events-viewer-type').value;
-                            editor.insertContent(`<div id='events' data-type='${eventsViewerType}'></div>`);
+                    ];
+                }
+            });
+            editor.ui.registry.addMenuItem('customYummyOptions', {
+                text: 'Yummy Modules >',
+                type: 'nestedmenuitem',
+                getSubmenuItems: () => {
+                    return [
+                        {
+                            text: 'Events Viewer',
+                            type: 'menuitem',
+                            onAction: () => {
+                                editor.insertContent(`<div id='events' data-type='yummy'></div>`);
+                            }
                         }
-                    );
+                    ];
                 }
             });
             editor.ui.registry.addButton('customSeeSourceCode', {
