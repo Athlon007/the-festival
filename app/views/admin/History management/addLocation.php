@@ -1,3 +1,4 @@
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -16,31 +17,18 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <script type="module" src="/js/nav.js"></script>
-    <h1>Venue</h1>
+    <h1>Artist</h1>
                 
-                <form action="addVenue" method="POST">
+                <form action="updateArtist" method="POST">
                     <div class="form-group">
-                        <label for="">Artist</label>
+                        <label for="shortDescription">Number of Locations</label>
                         <input type="text" class="form-control" id="" name="" value="">
                     </div>
                     <div class="form-group">
-                        <label for="">Venue</label>
+                        <label for="longDescription">Location</label>
                         <input type="text" class="form-control" id="" name="" value="">
                     </div>
-                    <div class="form-group">
-                        <label for="">Price</label>
-                        <input type="text" class="form-control" id="" name="" value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="">Start Time</label>
-                        <input type="time" class="form-control" id="" name="" value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="">End Time</label>
-                        <input type="time" class="form-control" id="" name="" value="">
-                    </div>
-<br>
-                    <button type="submit" class="btn btn-primary" name="updateArtistButton">Update Venue</button>
+                    <button type="submit" class="btn btn-primary" name="updateArtistButton">Add Tour</button>
                 </form>
 
 
