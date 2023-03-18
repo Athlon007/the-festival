@@ -1,3 +1,5 @@
+console.log('test');
+
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;
