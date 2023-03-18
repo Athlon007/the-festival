@@ -2,31 +2,59 @@
 
 $destinations = array(
     array(
-        'title' => 'St. Bavo Church',
-        'image' => 'stbavo.jpg',
-        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+        "name" => "Ellipse",
+        "image" => "ellipse.jpg",
+        "description" => "A beautiful and unique elliptical plaza located in the heart of the city.
+        A beautiful and unique elliptical plaza located in the heart of the city.
+        A beautiful and unique elliptical plaza located in the heart of the city.
+        A beautiful and unique elliptical plaza located in the heart of the city.
+        ",
+        "location" => "City Center"
     ),
     array(
-        'title' => 'Destination 1',
-        'image' => 'destination1.jpg',
-        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+        "name" => "St. Bavo Church",
+        "image" => "stbavo.jpg",
+        "description" => "A stunning Gothic-style church that dates back to the 14th century.",
+        "location" => "Old Town"
     ),
     array(
-        'title' => 'Destination 2',
-        'image' => 'destination2.jpg',
-        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+        "name" => "City Hall",
+        "image" => "cityhall.jpg",
+        "description" => "A historic government building that has served as the seat of local government for over a century.",
+        "location" => "City Center"
     ),
     array(
-        'title' => 'Destination 3',
-        'image' => 'destination3.jpg',
-        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+        "name" => "Central Park",
+        "image" => "centralpark.jpg",
+        "description" => "A beautiful public park that offers a peaceful oasis in the midst of the bustling city.",
+        "location" => "City Center"
     ),
     array(
-        'title' => 'One drink per person',
-        'image' => 'onedrink.jpg',
-        'description' => '15 min. break at Jopenkerk'
+        "name" => "Museum of Fine Arts",
+        "image" => "museum.jpg",
+        "description" => "A world-renowned art museum featuring an impressive collection of paintings, sculptures, and other works of art.",
+        "location" => "Old Town"
+    ),
+    array(
+        "name" => "Opera House",
+        "image" => "opera.jpg",
+        "description" => "A magnificent theater that hosts world-class opera performances, ballets, and other cultural events.",
+        "location" => "City Center"
+    ),
+    array(
+        "name" => "Riverfront Promenade",
+        "image" => "riverfront.jpg",
+        "description" => "A scenic walkway that follows the river, offering stunning views of the city skyline and the water.",
+        "location" => "City Center"
+    ),
+    array(
+        "name" => "Historic District",
+        "image" => "historic.jpg",
+        "description" => "A charming neighborhood with cobblestone streets, historic homes, and quaint shops and restaurants.",
+        "location" => "Old Town"
     )
 );
+
 ?>
 
 <!doctype html>
@@ -251,17 +279,62 @@ $destinations = array(
 
             <div class="row">
                 <div class="col-8 st-bavo-church">
-                    1 of 2 
+                    1 of 2
+                    <div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="ellipse"></div>
+                            </div>
+                            <div class="col-8">
+                                <h3>St. Bavo Church</h3>
+                                <p>St. Bavo's Cathedral is a Roman Catholic cathedral in Haarlem, Netherlands. It is the
+                                    largest Gothic church in the country and one of the most important monuments of
+                                    Dutch
+                                    Gothic architecture. The church is dedicated to Saint Bavo of Ghent, the patron
+                                    saint of
+                                    Haarlem. The church is a UNESCO World Heritage Site.</p>
+
+                                <button class="learn-more-btn">Learn More</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-4 advertisement-drink">
-                    2 of 2
+                <div class="col-3">
+                    <div class="row">
+                        <div class="col-9 advertisement-drink">
+                        </div>
+                    </div>
+                    <p class="text-center">15 min. break at Jopenkerk</p>
                 </div>
             </div>
         </div>
 
-
-
+        <div class="container destinations-section">
+            <div class="row tour-destinations">
+                <?php
+                foreach ($destinations as $destination) {
+                    ?>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="destination-box">
+                            <div class="destination-image">
+                            </div>
+                            <div class="destination-info">
+                                <h3>
+                                    <?= $destination['name']; ?>
+                                </h3>
+                                <p>
+                                    <?= $destination['description']; ?>
+                                </p>
+                                <a href="#" class="btn btn-primary destination-learn-more-button">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
 
 
         <footer class="foot row bottom">
@@ -280,7 +353,3 @@ $destinations = array(
             crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </body>
-
-    <style>
-
-    </style>
