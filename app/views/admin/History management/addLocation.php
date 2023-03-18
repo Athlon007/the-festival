@@ -17,18 +17,14 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <script type="module" src="/js/nav.js"></script>
-    <h1>Artist</h1>
+    <h1>Add Location</h1>
                 
                 <form action="updateArtist" method="POST">
-                    <div class="form-group">
-                        <label for="shortDescription">Number of Locations</label>
-                        <input type="text" class="form-control" id="" name="" value="">
-                    </div>
                     <div class="form-group">
                         <label for="longDescription">Location</label>
                         <input type="text" class="form-control" id="" name="" value="">
                     </div>
-                    <button type="submit" class="btn btn-primary" name="updateArtistButton">Add Tour</button>
+                    <button type="submit" class="btn btn-primary" name="updateArtistButton">Add Location</button>
                 </form>
 
 

@@ -33,8 +33,8 @@
     <div class="menu">
         <select id="name" class="form-select" aria-label="Default select example">
             <option selected><i>--Select a section--</i></option>
-            <option value="Tour">Venues</option>
-            <option value="Location">Location</option>
+            <option value="Tour">Tours</option>
+            <option value="Location">Locations</option>
         </select>
     </div>
 
@@ -57,21 +57,21 @@
                 </div>
             </div>
         </div>
-
-        <div id="Loction" class="data">
+        <div id="Location" class="data">
             <table class="table">
                 <tr>
-                    <th>Location</th>
+                <th>Locations</th>
 
                 </tr>
             </table>
             <!-- Add button -->
             <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
                 <div class="col-12 text-right">
-                    <a href="/addLocation" class="btn btn-success btn-lg">Add Location to Tour</a>
+                    <a href="/addLocation" class="btn btn-success btn-lg">Add Location</a>
                 </div>
             </div>
         </div>
+
 </div>
 <br>
     <footer class="foot row bottom"></footer>

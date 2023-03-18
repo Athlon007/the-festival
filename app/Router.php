@@ -172,7 +172,16 @@ class Router
                 $historyController = new HistoryController();
                 $historyController->manageHistory();
                 break;
-        
+                case "/addLocation":
+                    require_once("controllers/HistoryController.php");
+                    $historyController = new HistoryController();
+                    $historyController->addLocation();
+                    break;
+                    case "/addTour":
+                        require_once("controllers/HistoryController.php");
+                        $historyController = new HistoryController();
+                        $historyController->addTour();
+                        break;   
             case "/manageDance":
                 require_once("controllers/DanceController.php");
                 $danceController = new DanceController();

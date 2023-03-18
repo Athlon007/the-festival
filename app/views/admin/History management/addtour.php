@@ -17,7 +17,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <script type="module" src="/js/nav.js"></script>
-    <h1>Artist</h1>
+    <h1> Add a Tour</h1>
                 
                 <form action="updateArtist" method="POST">
                     <div class="form-group">

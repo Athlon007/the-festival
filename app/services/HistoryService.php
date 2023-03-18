@@ -11,6 +11,9 @@ function getAllTours(){
         throw ($ex);
     }
 }
+function getAllLocations(){
+    
+}
 
 }
 
