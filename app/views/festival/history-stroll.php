@@ -1,5 +1,4 @@
 <?php
-
 $destinations = array(
     array(
         "name" => "Ellipse",
@@ -200,68 +199,37 @@ $destinations = array(
                 <div class="col-md-6">
                     <div class="scrollable-tickets">
                         <?php
-                        // example array of tickets
-                        $tickets = array(
-                            array(
-                                "name" => "History Tour",
-                                "guide" => "John Doe",
-                                "language" => "English",
-                                "time" => "10:00",
-                                "spot" => "St. Bavo Church",
-                                "price" => 17.50
-                            ),
-                            array(
-                                "name" => "History Tour",
-                                "guide" => "Jane Smith",
-                                "language" => "English",
-                                "time" => "10:00",
-                                "spot" => "St.Bavo Church",
-                                "price" => 17.50
-                            ),
-                            array(
-                                "name" => "History Tour",
-                                "guide" => "Jane Smith",
-                                "language" => "English",
-                                "time" => "10:00",
-                                "spot" => "St.Bavo Church",
-                                "price" => 17.50
-                            ),
-                            array(
-                                "name" => "History Tour",
-                                "guide" => "Jane Smith",
-                                "language" => "English",
-                                "time" => "10:00",
-                                "spot" => "St.Bavo Church",
-                                "price" => 17.50
-                            )
-                        );
-                        foreach ($tickets as $ticket) { ?>
+                        foreach ($historyEvents as $historyEvent) { ?>
                             <div class="ticket">
                                 <div class="ticket-header">
                                     <h4>
-                                        <?php echo $ticket["name"]; ?>
+                                        <?= $historyEvent->getName() ?>
                                     </h4>
                                     <p>
                                         Guide:
-                                        <?php echo $ticket["guide"]; ?>
+                                        <?= $historyEvent->getGuide()->getFirstName(); ?>
+                                        <?= $historyEvent->getGuide()->getLastName(); ?>
                                     </p>
                                 </div>
                                 <div class="ticket-body">
                                     <div class="ticket-info">
+                                        <p><strong>Start Point:</strong>
+                                            <?= $historyEvent->getLocation()->getName(); ?>
+                                        </p>
                                         <p><strong>Language:</strong>
-                                            <?php echo $ticket["language"]; ?>
+                                            <?= $historyEvent->getGuide()->getLanguage(); ?>
                                         </p>
                                         <p><strong>Time:</strong>
-                                            <?php echo $ticket["time"]; ?>
+                                            <?= $historyEvent->getStartTime()->format('j F / H:i'); ?>
                                         </p>
                                         <p><strong>Spot:</strong>
-                                            <?php echo $ticket["spot"]; ?>
+                                            <?= $historyEvent->getLocation()->getCapacity(); ?> Available
                                         </p>
                                     </div>
                                     <div class="ticket-price">
                                         <p<strong>Price:</strong>
                                             €
-                                            <?php echo $ticket["price"]; ?>
+                                            <?= $historyEvent->getPrice(); ?>
                                             </p>
                                             <button class="btn btn-primary addToCartButton">Add to cart</button>
                                     </div>
@@ -346,10 +314,4 @@ $destinations = array(
             crossorigin="anonymous"></script>
 
         <script type="module" src="/js/foot.js"></script>
-
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper-core.min.js"
-            integrity="sha384-6JHuUaD+LX9EBy7v/klcnSyJZ5av5AGzxR5GzC5RSIhz1ibcsCq3X9lOESL9X+M/"
-            crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </body>

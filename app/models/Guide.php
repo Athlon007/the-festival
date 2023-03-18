@@ -7,7 +7,9 @@ class Guide implements JsonSerializable
     private string $lastName;
     private string $language;
 
-    public function jsonSerialize() : mixed
+    private $description;
+
+    public function jsonSerialize(): mixed
     {
         return [
             'guideId' => $this->guideId,
@@ -17,38 +19,48 @@ class Guide implements JsonSerializable
         ];
     }
 
-    public function getGuideId() : int
+    public function getGuideId(): int
     {
         return $this->guideId;
     }
 
-    public function getFirstName() : string
+    public function getFirstName(): string
     {
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName) : void
+    public function setFirstName(string $firstName): void
     {
         $this->firstName = $firstName;
     }
 
-    public function getLastName() : string
+    public function getLastName(): string
     {
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName) : void
+    public function setLastName(string $lastName): void
     {
         $this->lastName = $lastName;
     }
 
-    public function getLanguage() : string
+    public function getLanguage(): string
     {
         return $this->language;
     }
 
-    public function setLanguage(string $language) : void
+    public function setLanguage(string $language): void
     {
         $this->language = $language;
+    }
+
+    public function getDescription(): mixed
+    {
+        return $this->description;
+    }
+
+    public function setDescription(mixed $description): void
+    {
+        $this->description = $description;
     }
 }
