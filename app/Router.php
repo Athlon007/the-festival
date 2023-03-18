@@ -77,6 +77,13 @@ class Router
             return;
         }
 
+        // if (str_starts_with($request, "/festival/history")) {
+        //     require_once("controllers/FestivalHistoryController.php");
+        //     $festivalHistoryController = new FestivalHistoryController();
+        //     $festivalHistoryController->loadHistoryStrollPage();
+        //     return;
+        // }
+
         if (str_starts_with($request, "/festival/jazz/")) {
             require_once("controllers/FestivalJazzController.php");
             $festivalJazzController = new FestivalJazzController();
@@ -154,7 +161,9 @@ class Router
                 $ticketController->generateAndSendTicket();
                 break;
             case "/festival/history-stroll":
-                require_once("views/festival/history-stroll.php");
+                require_once("controllers/FestivalHistoryController.php");
+                $festivalHistoryController = new FestivalHistoryController();
+                $festivalHistoryController->loadHistoryStrollPage();
                 break;
             default:
                 $this->route404($message);
