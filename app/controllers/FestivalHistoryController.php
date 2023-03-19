@@ -8,7 +8,9 @@ class FestivalHistoryController
     {
         try {
             $festivalHistoryService = new FestivalHistoryService();
+
             $historyEvents = $festivalHistoryService->getAllHistoryEvents();
+            $locations = $festivalHistoryService->getAllTourLocations();
             
             require("../views/festival/history-stroll.php");
         } catch (PDOException $e) {
