@@ -14,4 +14,18 @@ class FestivalHistoryService
             echo $e->getMessage();
         }
     }
+
+    public function getAllTourLocations()
+    {
+        try{
+            // Call location repository
+            require_once("../repositories/LocationRepository.php");
+            $locationRepository = new LocationRepository();
+            $locations = $locationRepository->getAllHistoryLocations();
+
+            return $locations;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
 }

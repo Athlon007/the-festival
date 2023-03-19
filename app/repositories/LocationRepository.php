@@ -19,10 +19,11 @@ class LocationRepository extends Repository
             $lon = $row["lon"];
             $lat = $row["lat"];
             $capacity = $row["capacity"];
+            $description = isset($row["description"]) ? $row["description"] : null;
 
             $address = $addressRepository->getAddressById($addressId);
 
-            $location = new Location($locationId, $name, $address, $locationType, $lon, $lat, $capacity);
+            $location = new Location($locationId, $name, $address, $locationType, $lon, $lat, $capacity, $description);
 
             array_push($output, $location);
         }
@@ -32,13 +33,22 @@ class LocationRepository extends Repository
 
     public function getAll()
     {
-        $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat FROM `Locations`";
+        $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat, description FROM `Locations`";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
         return $this->buildLocations($result);
     }
 
+    // Location type of history is 3
+    public function getAllHistoryLocations()
+    {
+        $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat, description FROM `Locations` WHERE locationType = 3";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        return $this->buildLocations($result);
+    }
     public function getById($id)
     {
         $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat FROM Locations WHERE locationId = :id";

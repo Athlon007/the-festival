@@ -153,7 +153,7 @@ $destinations = array(
 
         <div class="container ticket-container">
             <div class="row">
-                <div class="col-md-6">
+                <!-- <div class="col-md-6">
                     <div class="row mb-3">
                         <div class="col-md-6 dateOfTour" style="width: 50%; float:left;">
                             <label for="date" class="form-label">Date</label>
@@ -191,6 +191,59 @@ $destinations = array(
                                 <option selected>Select ticket</option>
                                 <option value="adult">Single € 17.50</option>
                                 <option value="child">Family € 60.00</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary applyPreferencesButton">Apply preferences</button>
+                </div> -->
+                <div class="col-md-6">
+                    <div class="row mb-3">
+                        <div class="col-md-6 dateOfTour" style="width: 50%; float:left;">
+                            <label for="date" class="form-label">Date</label>
+                            <select class="form-select" id="date">
+                                <option selected>Choose Date</option>
+                                <?php
+                                foreach ($uniqueDates as $date) {
+                                    echo "<option value=\"$date\">$date</option>";
+                                }
+                                ?>
+
+                            </select>
+                        </div>
+                        <div class="col-md-6 timeOfTour" style="width: 50%; float:right;">
+                            <label for="time" class="form-label">Time</label>
+                            <select class="form-select" id="time">
+                                <option selected>Choose Time</option>
+                                <?php
+                                foreach ($uniqueTimes as $time) {
+                                    echo '<option value="' . $time . '">' . $time . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 languageOfTour" style="width: 50%; float:left;">
+                            <label for="language" class="form-label">Language</label>
+                            <select class="form-select" id="language">
+                                <option selected>Select language</option>
+                                <?php foreach ($languages as $language) { ?>
+                                    <option value="<?= $language ?>"><?= $language ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6 ticketOfTour" style="width: 50%; float:right;">
+                            <label for="ticket" class="form-label">Ticket</label>
+                            <select class="form-select" id="ticket">
+                                <option selected>Select ticket</option>
+                                <?php foreach ($uniquePrices as $uniquePrice) { ?>
+                                    <option value="<?= $ticket ?>"><?php if ($uniquePrice < 30){
+                                        echo "Single    :  € " . $uniquePrice;
+                                    } else {
+                                        echo "Family(4p): € " . $uniquePrice;
+                                    } ?></option>
+                                    } ?></option>
+                                <?php } ?>
                             </select>
                         </div>
                     </div>
@@ -254,14 +307,16 @@ $destinations = array(
                                 <div class="ellipse"></div>
                             </div>
                             <div class="col-8">
-                                <h3>St. Bavo Church</h3>
-                                <p>St. Bavo's Cathedral is a Roman Catholic cathedral in Haarlem, Netherlands. It is the
-                                    largest Gothic church in the country and one of the most important monuments of
-                                    Dutch
-                                    Gothic architecture. The church is dedicated to Saint Bavo of Ghent, the patron
-                                    saint of
-                                    Haarlem. The church is a UNESCO World Heritage Site.</p>
-
+                                <?php foreach ($locations as $location) {
+                                    if ($location->getLocationId() == 2) { ?>
+                                        <h3>
+                                            <?= $location->getName(); ?>
+                                        </h3>
+                                        <p>
+                                            <?= $location->getDescription(); ?>
+                                        </p>
+                                    <?php }
+                                } ?>
                                 <button class="learn-more-btn">Learn More</button>
                             </div>
                         </div>
@@ -280,29 +335,30 @@ $destinations = array(
 
         <div class="container destinations-section">
             <div class="row tour-destinations">
-                <?php
-                foreach ($destinations as $destination) {
-                    ?>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="destination-box">
-                            <div class="destination-image">
-                            </div>
-                            <div class="destination-info">
-                                <h3>
-                                    <?= $destination['name']; ?>
-                                </h3>
-                                <p>
-                                    <?= $destination['description']; ?>
-                                </p>
-                                <a href="#" class="btn btn-primary destination-learn-more-button">Learn More</a>
+                <?php foreach ($locations as $location) {
+                    if ($location->getLocationId() != 2) { ?>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="destination-box">
+                                <div class="destination-image"></div>
+                                <div class="destination-info">
+                                    <h3>
+                                        <?= $location->getName(); ?>
+                                    </h3>
+                                    <p>
+                                        <?= $location->getDescription(); ?>
+                                    </p>
+                                    <?php if ($location->getLocationId() == 6) { ?>
+                                        <a href="#" class="btn btn-primary destination-learn-more-button">Learn More</a>
+                                    <?php } ?>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <?php
-                }
-                ?>
+                    <?php }
+                } ?>
             </div>
         </div>
+
+
 
 
         <footer class="foot row bottom">

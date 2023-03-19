@@ -12,7 +12,9 @@ class Location implements JsonSerializable
     private $lon;
     private $lat;
 
-    public function __construct($locationId, $name, Address $address, $locationType, $lon, $lat, $capacity)
+    private ?string $description;
+
+    public function __construct($locationId, $name, Address $address, $locationType, $lon, $lat, $capacity, $description)
     {
         $this->locationId = $locationId;
         $this->name = $name;
@@ -21,6 +23,7 @@ class Location implements JsonSerializable
         $this->lon = $lon;
         $this->lat = $lat;
         $this->capacity = $capacity;
+        $this->description = $description;
     }
 
     public function setLocationId($locationId)
@@ -106,6 +109,16 @@ class Location implements JsonSerializable
         return $this->capacity;
     }
 
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
     public function jsonSerialize(): mixed
     {
         return [
@@ -116,7 +129,8 @@ class Location implements JsonSerializable
             'locationTypeFriendly' => $this->getLocationTypeAsString(),
             'capacity' => $this->getCapacity(),
             'lon' => $this->getLon(),
-            'lat' => $this->getLat()
+            'lat' => $this->getLat(),
+            'description' => $this->getDescription()
         ];
     }
 }
