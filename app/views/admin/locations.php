@@ -31,7 +31,7 @@
                     <div class="row">
                         <div class="col-6">
                             <label for="name" class="form-label">Name</label>
-                            <input type="text" id="name" class="form-control" placeholder="Name">
+                            <input type="text" id="name-place" class="form-control" placeholder="Name">
                         </div>
                         <div class="col-6">
                             <label for="locationType" class="form-label">Location Type</label>

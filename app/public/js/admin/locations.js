@@ -8,7 +8,7 @@ const locations = document.getElementById('locations');
 const masterEditor = document.getElementById('master-editor');
 
 // Artist fields.
-const name = document.getElementById('name');
+const name = document.getElementById('name-place');
 const postal = document.getElementById('postal');
 const street = document.getElementById('street');
 const number = document.getElementById('number');
@@ -217,8 +217,16 @@ function loadList() {
     option.disabled = true;
     locations.appendChild(option);
 
+    let url = '/api/locations';
+    if (locations.dataset.locations != undefined) {
+        url += "/type/" + locations.dataset.locations;
+        // We can set locationTypes to locked.
+        locationType.disabled = true;
+        locationType.value = locations.dataset.locations;
+    }
+
     // fetch with post
-    fetch('/api/locations', {
+    fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -268,6 +276,10 @@ function toggleEditor(element, isEnabled) {
         lon.value = '';
         locationType.value = -1;
         capacity.value = '';
+
+        if (locations.dataset.locations != undefined) {
+            locationType.value = locations.dataset.locations;
+        }
     }
 }
 
@@ -277,8 +289,15 @@ document.getElementById('new-page').onclick = function () {
     editedId = -1;
     editedAddressId = -1;
     locations.selectedIndex = 0;
-    title.value = '';
-    pageHref.value = '';
+    name.value = '';
+    postal.value = '';
+    street.value = '';
+    city.value = '';
+    number.value = '';
+    country.value = '';
+    lat.value = '';
+    lon.value = '';
+    capacity.value = '';
     btnSubmit.innerHTML = 'Create';
 }
 
