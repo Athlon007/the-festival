@@ -106,7 +106,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div id="map" style="height:400px"></div>
+                            <div id="map" style="height:400px; min-width:400px;"></div>
                         </div>
                         <div class="row">
                             <div class="col-12">

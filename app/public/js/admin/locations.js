@@ -299,6 +299,8 @@ document.getElementById('new-page').onclick = function () {
     lon.value = '';
     capacity.value = '';
     btnSubmit.innerHTML = 'Create';
+
+    clearPin();
 }
 
 
@@ -374,6 +376,8 @@ postal.onblur = function () {
 
 
 function putPin(location) {
+    map.invalidateSize()
+
     // remove existing pin
     if (pin != null) {
         map.removeLayer(pin);
