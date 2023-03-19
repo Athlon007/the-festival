@@ -223,6 +223,11 @@ function loadList() {
         // We can set locationTypes to locked.
         locationType.disabled = true;
         locationType.value = locations.dataset.locations;
+    } else if (window.frameElement.getAttribute('data-locations') != undefined) {
+        url += "/type/" + window.frameElement.getAttribute('data-locations');
+        // We can set locationTypes to locked.
+        locationType.disabled = true;
+        locationType.value = window.frameElement.getAttribute('data-locations');
     }
 
     // fetch with post

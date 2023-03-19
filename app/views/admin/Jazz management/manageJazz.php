@@ -43,107 +43,11 @@
 
     <div class="content">
         <div id="Venues" class="data">
-            <div class="row">
-                <div class="col-2 card m-0">
-                    <div class="card-body p-0 m-0 mt-1 mh-100">
-                        <button id="new-page" class="btn btn-success mb-1 w-100">Add Location</button>
-                        <select id="locations" class="form-select" size="25" aria-label="size 3 select example" data-live-search="true" style="overflow-y: scroll;" data-locations="1">
-                        </select>
-                    </div>
-                </div>
-                <div id="master-editor" class="col-10 card p-0 disabled-module">
-                    <div class="card-body m-0">
-                        <div class="row">
-                            <div class="col-6">
-                                <label for="name" class="form-label">Name</label>
-                                <input type="text" id="name-place" class="form-control" placeholder="Name">
-                            </div>
-                            <div class="col-6">
-                                <label for="locationType" class="form-label">Location Type</label>
-                                <select id="locationType" class="form-label d-block w-100">
-                                    <option value="-1" disabled selected>-- Select Type --</option>
-                                    <option value="1">Jazz</option>
-                                    <option value="2">Restaurant</option>
-                                    <option value="3">History</option>
-                                    <option value="99">Unknown</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <label for="postal" class="form-label">Postal Code</label>
-                                <input type="text" id="postal" class="form-control mb-2" placeholder="2015 CE" required>
-                            </div>
-                            <div class="col-6">
-                                <label for="number" class="form-label">Building Number</label>
-                                <input type="text" id="number" class="form-control mb-2" placeholder="15" required>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <label for="street" class="form-label">Street Name</label>
-                                <input type="text" id="street" class="form-control mb-2" placeholder="Bijdroplaan">
-                            </div>
-                            <div class="col-6">
-                                <label for="city" class="form-label">City</label>
-                                <input type="text" id="city" class="form-control mb-2" placeholder="Haarlem">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <label for="country" class="form-label">Country</label>
-                                <input type="text" id="country" class="form-control mb-2" placeholder="Netherlands">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <label for="lon" class="form-label">Longtitude</label>
-                                <input type="number" id="lon" class="form-control mb-2" placeholder="0" disabled>
-                            </div>
-                            <div class="col-6">
-                                <label for="lat" class="form-label">Latitude</label>
-                                <input type="number" id="lat" class="form-control mb-2" placeholder="0" disabled>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div id="map" style="height:400px; min-width:400px;"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <label for="capacity" class="form-label">Capacity</label>
-                                <input type="number" id="capacity" class="form-control mb-2" placeholder="0"></input>
-                            </div>
-                        </div>
-                        <div class="mt-1">
-                            <button id="submit" class="btn btn-success">Save</button>
-                            <button id="cancel" class="btn btn-secondary">Cancel</button>
-                            <button id="delete" class="btn btn-danger float-end">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <iframe id="iframe" src="/admin/locations" data-locations="1" style="width: 100%; height: 600px; border: none;"></iframe>
         </div>
 
         <div id="Artist" class="data">
-            <table class="table">
-                <tr>
-                    <th>Short description</th>
-                    <th>Long description</th>
-                    <th>Recent Albums</th>
-                    <th>Genres</th>
-                    <th>Country</th>
-                    <th>Homepage</th>
-                    <th>Facebook Page</th>
-                    <th>Instagram Page</th>
-                    <th>Spotify Page</th>
-                </tr>
-            </table>
-            <!-- Add button -->
-            <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
-                <div class="col-12 text-right">
-                    <a href="/addArtist" class="btn btn-success btn-lg">Add Artist</a>
-                </div>
-            </div>
+            <iframe id="iframe" src="/admin/artists" style="width: 100%; height: 600px; border: none;"></iframe>
         </div>
 
         <div id="Event" class="data">
