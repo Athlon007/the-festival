@@ -153,7 +153,7 @@ $destinations = array(
 
         <div class="container ticket-container">
             <div class="row">
-                <div class="col-md-6">
+                <!-- <div class="col-md-6">
                     <div class="row mb-3">
                         <div class="col-md-6 dateOfTour" style="width: 50%; float:left;">
                             <label for="date" class="form-label">Date</label>
@@ -191,6 +191,59 @@ $destinations = array(
                                 <option selected>Select ticket</option>
                                 <option value="adult">Single € 17.50</option>
                                 <option value="child">Family € 60.00</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary applyPreferencesButton">Apply preferences</button>
+                </div> -->
+                <div class="col-md-6">
+                    <div class="row mb-3">
+                        <div class="col-md-6 dateOfTour" style="width: 50%; float:left;">
+                            <label for="date" class="form-label">Date</label>
+                            <select class="form-select" id="date">
+                                <option selected>Choose Date</option>
+                                <?php
+                                foreach ($uniqueDates as $date) {
+                                    echo "<option value=\"$date\">$date</option>";
+                                }
+                                ?>
+
+                            </select>
+                        </div>
+                        <div class="col-md-6 timeOfTour" style="width: 50%; float:right;">
+                            <label for="time" class="form-label">Time</label>
+                            <select class="form-select" id="time">
+                                <option selected>Choose Time</option>
+                                <?php
+                                foreach ($uniqueTimes as $time) {
+                                    echo '<option value="' . $time . '">' . $time . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 languageOfTour" style="width: 50%; float:left;">
+                            <label for="language" class="form-label">Language</label>
+                            <select class="form-select" id="language">
+                                <option selected>Select language</option>
+                                <?php foreach ($languages as $language) { ?>
+                                    <option value="<?= $language ?>"><?= $language ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6 ticketOfTour" style="width: 50%; float:right;">
+                            <label for="ticket" class="form-label">Ticket</label>
+                            <select class="form-select" id="ticket">
+                                <option selected>Select ticket</option>
+                                <?php foreach ($uniquePrices as $uniquePrice) { ?>
+                                    <option value="<?= $ticket ?>"><?php if ($uniquePrice < 30){
+                                        echo "Single    :  € " . $uniquePrice;
+                                    } else {
+                                        echo "Family(4p): € " . $uniquePrice;
+                                    } ?></option>
+                                    } ?></option>
+                                <?php } ?>
                             </select>
                         </div>
                     </div>
@@ -262,7 +315,8 @@ $destinations = array(
                                         <p>
                                             <?= $location->getDescription(); ?>
                                         </p>
-                                    <?php } }?>
+                                    <?php }
+                                } ?>
                                 <button class="learn-more-btn">Learn More</button>
                             </div>
                         </div>
