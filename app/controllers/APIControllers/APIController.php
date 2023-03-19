@@ -4,6 +4,9 @@ class APIController
 {
     public function initialize($request)
     {
+        // disable error reporting
+        error_reporting(0);
+
         if ($request == null) {
             $this->sendErrorMessage("Request cannot be empty.", 400);
             return;
@@ -32,11 +35,7 @@ class APIController
 
     protected function handlePostRequest($uri)
     {
-        $data = json_decode(file_get_contents("php://input"));
-
-        if ($data == null) {
-            $this->sendErrorMessage("No data received.", 400);
-        }
+        // Can be implemented by child class
     }
 
     protected function handlePutRequest($uri)
@@ -48,7 +47,6 @@ class APIController
     {
         // Can be implemented by child class
     }
-
 
     final protected function sendErrorMessage($message, $code = 500)
     {

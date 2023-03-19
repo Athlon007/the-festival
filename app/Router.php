@@ -77,6 +77,25 @@ class Router
             return;
         }
 
+        // if (str_starts_with($request, "/festival/history")) {
+        //     require_once("controllers/FestivalHistoryController.php");
+        //     $festivalHistoryController = new FestivalHistoryController();
+        //     $festivalHistoryController->loadHistoryStrollPage();
+        //     return;
+        // }
+
+        if (str_starts_with($request, "/festival/jazz/")) {
+            require_once("controllers/FestivalJazzController.php");
+            $festivalJazzController = new FestivalJazzController();
+            if (str_starts_with($request, "/festival/jazz/artist/")) {
+                $festivalJazzController->loadArtistPage($request);
+                return;
+            } elseif (str_starts_with($request, "/festival/jazz/event/")) {
+                $festivalJazzController->loadEventPage($request);
+                return;
+            }
+        }
+
         // split off the ?
         $request = explode("?", $request)[0];
 
@@ -94,13 +113,20 @@ class Router
             case "/admin/editor":
                 require("views/admin/editor.php");
                 break;
+            case "/admin/artists":
+                require("views/admin/artists.php");
+                break;
             case "/admin/images":
                 require("views/admin/images.php");
                 break;
+            case "/admin/locations":
+                require("views/admin/locations.php");
+                break;
             case "/home/login":
+            case "/home/account":
                 require_once("controllers/HomeController.php");
                 $homeController = new HomeController();
-                $homeController->login();
+                $homeController->account();
                 break;
             case "/home/register":
                 require_once("controllers/HomeController.php");
@@ -112,20 +138,32 @@ class Router
                 $authController = new AuthController();
                 $authController->provideEmail();
                 break;
-            case "/sendEmail":
-                require_once("controllers/AuthController.php");
-                $authController = new AuthController();
-                $authController->sendEmail();
-                break;
             case "/manageUsers":
                 require_once("controllers/UserController.php");
                 $userController = new UserController();
                 $userController->manageUsers();
                 break;
-            case "/deleteUser":
+            case "/addUser":
                 require_once("controllers/UserController.php");
                 $userController = new UserController();
-                $userController->deleteUser();
+                $userController->addUser();
+                break;
+            case "/konradstestpage":
+                require_once("views/konrads-test-page.php");
+            case "/buyTicket":
+                require_once("controllers/TicketController.php");
+                $ticketController = new TicketController();
+                $ticketController->buyTicket();
+                break;
+            case "/generateTicket":
+                require_once("controllers/TicketController.php");
+                $ticketController = new TicketController();
+                $ticketController->generateAndSendTicket();
+                break;
+            case "/festival/history-stroll":
+                require_once("controllers/FestivalHistoryController.php");
+                $festivalHistoryController = new FestivalHistoryController();
+                $festivalHistoryController->loadHistoryStrollPage();
                 break;
             case "/manageRestaurants":
                 require_once("controllers/RestaurantController.php");
@@ -214,12 +252,27 @@ class Router
         } elseif (str_starts_with($request, "/api/user")) {
             require_once("controllers/APIControllers/UserAPIController.php");
             $controller = new UserAPIController();
+        } elseif (str_starts_with($request, "/api/address")) {
+            require_once("controllers/APIControllers/AddressAPIController.php");
+            $controller = new AddressAPIController();
         } elseif (str_starts_with($request, "/api/textpages")) {
             require_once("controllers/APIControllers/TextPageAPIController.php");
             $controller = new TextPageAPIController();
         } elseif (str_starts_with($request, "/api/images")) {
             require_once("controllers/APIControllers/ImageAPIController.php");
             $controller = new ImageAPIController();
+        } elseif (str_starts_with($request, "/api/artists")) {
+            require_once("controllers/APIControllers/Jazz/JazzArtistAPIController.php");
+            $controller = new JazzArtistAPIController();
+        } elseif (str_starts_with($request, "/api/addresses")) {
+            require_once("controllers/APIControllers/AddressAPIController.php");
+            $controller = new AddressAPIController();
+        } elseif (str_starts_with($request, "/api/locations")) {
+            require_once("controllers/APIControllers/LocationAPIController.php");
+            $controller = new LocationAPIController();
+        } elseif (str_starts_with($request, "/api/events")) {
+            require_once("controllers/APIControllers/EventAPIController.php");
+            $controller = new EventAPIController();
         } else {
             http_response_code(400);
             // send json

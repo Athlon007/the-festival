@@ -17,35 +17,45 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <script type="module" src="/js/nav.js"></script>
-    <form action="updateUser" method="POST">
-        <div class="form-group">
-            <label for="userID">User ID</label>
-            <input type="text" class="form-control" id="userID" name="userID" value="<?php echo $user->getUserId(); ?>"
-                readonly>
-        </div>
-        <div class="form-group">
-            <label for="firstName">First Name</label>
-            <input type="text" class="form-control" id="firstName" name="firstName"
-                value="<?php echo $user->getFirstName(); ?>" autocomplete="off">
-        </div>
-        <div class="form-group">
-            <label for="lastName">Last Name</label>
-            <input type="text" class="form-control" id="lastName" name="lastName"
-                value="<?php echo $user->getLastName(); ?>" autocomplete="off">
-        </div>
-        <div class="form-group">
-            <label for="username">Email</label>
-            <input type="text" class="form-control" id="username" name="username"
-                value="<?php echo $user->getEmail(); ?>" autocomplete="off">
-        </div>
-        <div class="form-group">
-            <label for="role">Role</label>
-            <input type="text" class="form-control" id="role" name="role" value="<?php if ($user->getUserType() == 3) {
-                ?> Editor <?php
-            } ?>" readonly>
-        </div>
-        <button type="submit" class="btn btn-primary" name="updateUserButton">Update User</button>
-    </form>
+
+
+    <!-- <form action="updateUser" method="POST"> -->
+    <div class="form-group">
+        <label for="userID">User ID</label>
+        <input type="text" style="background-color:gray" class="form-control" id="userID" name="userID"
+            value="<?php echo $user->getUserId(); ?>" readonly>
+    </div>
+    <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" class="form-control" id="firstName" name="firstName"
+            value="<?php echo $user->getFirstName(); ?>" autocomplete="off">
+    </div>
+    <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" class="form-control" id="lastName" name="lastName"
+            value="<?php echo $user->getLastName(); ?>" autocomplete="off">
+    </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" class="form-control" id="email" name="email" value="<?php echo $user->getEmail(); ?>"
+            autocomplete="off">
+    </div>
+
+    <div class="form-group">
+        <label for="role">Role</label>
+        <select class="form-select" name="role" id="role">
+            <option value="employee" <?php if ($user->getUserType() == 2) { ?>selected<?php } ?>>Employee</option>
+            <option value="admin" <?php if ($user->getUserType() == 1) { ?>selected<?php } ?>>Admin</option>
+            <option value="customer" <?php if ($user->getUserType() == 3) { ?>selected<?php } ?>>Customer</option>
+        </select>
+    </div>
+
+
+    <button id="updateUserButton" type="button" class="btn btn-primary"
+        onclick="updateUser('<?= $user->getUserId(); ?>')">Update</button>
+    <!-- </form> -->
+
+    <script src="../js/admin/manageUser.js"></script>
 
     <footer class="foot row bottom"></footer>
     <script type="application/javascript"

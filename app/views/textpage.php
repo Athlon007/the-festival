@@ -6,7 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name=”robots” content="index, follow">
-    <link rel="stylesheet" href="/stylesheet.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/main_no_editor.css">
@@ -23,7 +22,7 @@
                 <? foreach ($images as $image) { ?>
                     <div class="carousel-item <?= $counter == 0 ? 'active' : ''; ?>">
                         <img src="<?= $image->getSrc(); ?>" class="d-block w-100" alt="<?= $image->getAlt(); ?>">
-                        <div class="carousel-caption d-none d-md-block">
+                        <div class="carousel-caption">
                             <h1><?= $image->getAlt(); ?></h1>
                         </div>
                     </div>

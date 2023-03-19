@@ -97,10 +97,10 @@ class UserRepository extends Repository
         }
     }
 
-    public function checkResetToken($email, $reset_token)
+    public function verifyResetToken($email, $reset_token)
     {
         try {
-            $stmt = $this->connection->prepare("SELECT * FROM resettokens WHERE email =:email AND reset_token =:reset_token AND sendTime > DATE_SUB(NOW(), INTERVAL 1 DAY)");
+            $stmt = $this->connection->prepare("SELECT * FROM resettokens WHERE email =:email AND reset_token =:reset_token AND sendTime >= DATE_SUB(NOW(), INTERVAL 1 DAY)");
             $data = [
                 ':email' => $email,
                 ':reset_token' => $reset_token
@@ -123,7 +123,7 @@ class UserRepository extends Repository
     public function getAllUsers()
     {
         try {
-            $query = "SELECT * FROM users WHERE userType = 3";
+            $query = "SELECT * FROM users";
             $stmt = $this->connection->prepare($query);
             $stmt->execute();
             $stmt->setFetchMode(PDO::FETCH_CLASS, 'User');
@@ -134,6 +134,26 @@ class UserRepository extends Repository
                 return null;
             else
                 return $result;
+        } 
+        catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
+
+    // add new user or admin to database
+
+    public function addUser(User $user)
+    {
+        try {
+            $stmt = $this->connection->prepare("INSERT INTO users (email, firstName, lastName, hashPassword, userType) VALUES (:email, :firstName, :lastName, :hashPassword, :userType)");
+            $data = [
+                ':email' => $user->getEmail(),
+                ':firstName' => $user->getFirstName(),
+                ':lastName' => $user->getLastName(),
+                ':hashPassword' => $user->getHashPassword(),
+                ':userType' => $user->getUserType()
+            ];
+            $stmt->execute($data);
         } 
         catch (Exception $ex) {
             throw ($ex);
@@ -176,17 +196,35 @@ class UserRepository extends Repository
     public function updateUser(User $user)
     {
         try {
-            $stmt = $this->connection->prepare("UPDATE users SET firstName = :firstName, lastName = :lastName, email = :email WHERE userId = :id");
+            $stmt = $this->connection->prepare("UPDATE users SET firstName = :firstName, lastName = :lastName, email = :email, userType = :userType WHERE userId = :id");
             $data = [
                 ':id' => $user->getUserId(),
                 ':firstName' => $user->getFirstName(),
                 ':lastName' => $user->getLastName(),
-                ':email' => $user->getEmail()
+                ':email' => $user->getEmail(),
+                ':userType' => $user->getUserType()
             ];
             $stmt->execute($data);
         } 
         catch (Exception $ex) {
             throw ($ex);
+        }
+    }
+
+    public function emailAlreadyExists($email){
+        try{
+            $stmt = $this->connection->prepare("SELECT * FROM users WHERE email = :email");
+            $stmt->bindValue(':email', $email);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if(empty($result)){
+                return false;
+            }else{
+                return true;
+            }
+        }catch(Exception $ex){
+            throw($ex);
         }
     }
 }

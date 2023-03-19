@@ -91,4 +91,48 @@ class ImageRepository extends Repository
         $stmt->bindParam(":alt", $alt, PDO::PARAM_STR);
         $stmt->execute();
     }
+
+    public function getImagesForArtistId($artistId): array
+    {
+        $sql = "SELECT i.imageId, i.src, i.alt FROM Images i
+                INNER JOIN JazzArtistImage ai ON i.imageId = ai.imageId
+                WHERE ai.artistId = :artistId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":artistId", $artistId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $this->imageBuilder($stmt->fetchAll());
+    }
+
+    public function assignImageToArtist($artistId, $imageId)
+    {
+        $sql = "INSERT INTO JazzArtistImage (artistId, imageId) VALUES (:artistId, :imageId)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":artistId", $artistId, PDO::PARAM_INT);
+        $stmt->bindParam(":imageId", $imageId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function removeImagesForArtist($artistId): void
+    {
+        $sql = "DELETE FROM JazzArtistImage WHERE artistId = :artistId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":artistId", $artistId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function search($search): array
+    {
+        $sql = "SELECT imageId, src, alt FROM Images WHERE ";
+        $counter = 0;
+        foreach ($search as $word) {
+            $sql .= "alt LIKE '%$word%'";
+            if ($counter < count($search) - 1) {
+                $sql .= " OR ";
+            }
+            $counter++;
+        }
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        return $this->imageBuilder($stmt->fetchAll());
+    }
 }
