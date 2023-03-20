@@ -22,7 +22,7 @@ const maxNameLength = 12;
 const maxLocationLength = 15;
 
 function updateExistingEntry(id, data) {
-    fetch('/api/eventz/jazz' + id, {
+    fetch('/api/events/jazz/' + id, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -32,7 +32,26 @@ function updateExistingEntry(id, data) {
         .then(response => response.json())
         .then(data => {
             if (!data.error_message) {
-                loadList();
+
+                // update the option in the list
+                let options = locations.getElementsByTagName('option');
+                for (let option of options) {
+                    if (option.value == editedId) {
+                        // remove the option from the list
+                        option.remove();
+                        break;
+                    }
+                }
+
+                // create new option
+                let option = createNewOptionItem(data);
+                locations.appendChild(option);
+                locations.selectedIndex = locations.length - 1;
+                editedId = data.id;
+                editedEvent = data;
+                isInCreationMode = false;
+                btnSubmit.innerHTML = 'Save';
+
                 msgBox.createToast('Success!', 'Location has been updated');
             } else {
                 msgBox.createToast('Something went wrong', data.error_message);
@@ -112,7 +131,7 @@ document.getElementById('delete').onclick = function () {
 
     msgBox.createYesNoDialog('Delete page', 'Are you sure you want to delete this event? This is irreversible!', function () {
         // fetch with post
-        fetch('/api/locations/' + editedId, {
+        fetch('/api/events/' + editedId, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -266,7 +285,7 @@ function loadList() {
     option.disabled = true;
     locations.appendChild(option);
 
-    let url = '/api/events/jazz';
+    let url = '/api/events/jazz?sort=time';
     // fetch with post
     fetch(url, {
         method: 'GET',

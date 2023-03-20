@@ -106,11 +106,11 @@ class EventRepository extends Repository
     {
         $sql = "UPDATE Events SET name = :name, startTime = :startTime, endTime = :endTime, price = :price WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':startTime', $startTime);
-        $stmt->bindParam(':endTime', $endTime);
-        $stmt->bindParam(':price', $price);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+        $stmt->bindParam(':startTime', $this->formatDateTimeToString($startTime), PDO::PARAM_STR);
+        $stmt->bindParam(':endTime', $this->formatDateTimeToString($endTime), PDO::PARAM_STR);
+        $stmt->bindValue(':price', $price);
         $stmt->execute();
     }
 
