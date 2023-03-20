@@ -18,6 +18,8 @@ let isInCreationMode = false;
 
 const msgBox = new MsgBox();
 
+const maxNameLength = 12;
+const maxLocationLength = 15;
 
 function updateExistingEntry(id, data) {
     fetch('/api/eventz/jazz' + id, {
@@ -151,19 +153,24 @@ function createNewOptionItem(element) {
     let dispEndTime = element.endTime.date;
 
     // make sure that name always is 15 chars long
-    if (name.length > 15) {
-        name = name.substring(0, 15) + '...';
+    if (name.length > maxNameLength) {
+        name = name.substring(0, maxNameLength) + '...';
     } else {
-        while (name.length < 15) {
+        let spacesAdded = 0;
+        let spacesToAdd = maxNameLength - name.length;
+        while (spacesAdded < spacesToAdd) {
             name += '&nbsp;';
+            spacesAdded++;
         }
+
+        console.log(name);
     }
 
     // make sure that location always is 15 chars long
-    if (location.length > 15) {
-        location = location.substring(0, 15) + '...';
+    if (location.length > maxLocationLength) {
+        location = location.substring(0, maxLocationLength) + '...';
     } else {
-        while (location.length < 15) {
+        while (location.length < maxLocationLength) {
             location += '&nbsp;';
         }
     }
@@ -251,9 +258,10 @@ function loadList() {
 
     // Add empty unselected option
     let option = document.createElement('option');
-    option.innerHTML = 'Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-        '| Location&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-        ' | START&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | END';
+    let head = 'Name' + ('&nbsp;').repeat(maxNameLength - 3) +
+        '| Location' + ('&nbsp;').repeat(maxLocationLength - 5) +
+        ' | START' + ('&nbsp;').repeat(12) + '| END';
+    option.innerHTML = head;
     option.value = -1;
     option.disabled = true;
     locations.appendChild(option);
@@ -320,11 +328,6 @@ function loadList() {
 
     // and now, load jazz locations.
     location.innerHTML = '';
-    let jazzLocationOption = document.createElement('option');
-    jazzLocationOption.innerHTML = '-- Select Location -- ';
-    jazzLocationOption.value = -1;
-    jazzLocationOption.disabled = true;
-    locationSelect.appendChild(jazzLocationOption);
     fetch('/api/locations/type/1?sort=name', {
         method: 'GET',
         headers: {
@@ -372,6 +375,8 @@ document.getElementById('new-page').onclick = function () {
     isInCreationMode = true;
     toggleEditor(masterEditor, false);
     toggleEditor(masterEditor, true);
+
+    locations.selectedIndex = -1;
 }
 
 if (window.self != window.top) {
