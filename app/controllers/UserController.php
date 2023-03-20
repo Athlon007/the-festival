@@ -7,7 +7,7 @@ class UserController
     {
         try {
             session_start();
-            
+
             if (!isset($_SESSION['user'])) {
                 header("Location: /");
             }
@@ -19,31 +19,29 @@ class UserController
 
             $userService = new UserService();
             $users = $userService->getAllUsers();
-            require("../views/admin/manageUsers.php");
-        } catch (Exception $e) {
+            require("../views/admin/User management/manageUsers.php");
+        } catch (PDOException $e) {
             echo $e->getMessage();
         }
     }
 
     public function updateUser()
     {
-        try{
+        try {
             $userService = new UserService();
             $user = $userService->getUserById($_GET['id']);
             require("../views/admin/updateUser.php");
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             echo $e->getMessage();
         }
     }
 
     public function addUser()
     {
-        try{
+        try {
             $userService = new UserService();
             require("../views/admin/addUser.php");
-        }
-        catch(PDOException $e){
+        } catch (PDOException $e) {
             echo $e->getMessage();
         }
     }

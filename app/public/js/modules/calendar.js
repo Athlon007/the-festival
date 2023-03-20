@@ -110,8 +110,40 @@ function loadCalendar() {
 
     // Check what kind of calendar it is and load the events.
     if (calendarEl.dataset.calendarType === 'all-events') {
-        // TODO: Load events from the database.
+        loadAllEvents();
     } else if (calendarEl.dataset.calendarType === 'personal') {
         // TODO: Load events for the current user from the database.
+    }
+
+    function loadAllEvents() {
+        fetch('/api/events',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        ).then(response => response.json())
+            .then(data => {
+                for (let e of data) {
+                    let backgroundColor = "#e2e0da";
+                    let borderColor = "#412c0c";
+                    let url = "#";
+
+                    if (e.artist != null) {
+                        backgroundColor = "#d6e7ef";
+                        borderColor = "#005990";
+                        url = "/festival/jazz/event/" + e.id;
+                    } else if (e.name.includes("A Stroll Through History")) {
+                        backgroundColor = "#e2e0da";
+                        borderColor = "#412c0c";
+                        url = "/festival/history-stroll";
+                    }
+
+                    addEvent(e.name, new Date(e.startTime.date), new Date(e.endTime.date), url, backgroundColor, borderColor);
+                }
+
+            }
+            );
     }
 }
