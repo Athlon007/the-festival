@@ -24,12 +24,6 @@ let isInCreationMode = false;
 
 const msgBox = new MsgBox();
 
-const map = L.map('map').setView([52.3814425, 4.6360367], 13);
-L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
-
 let pin;
 
 
@@ -153,7 +147,6 @@ document.getElementById('delete').onclick = function () {
 
 document.getElementById('cancel').onclick = function () {
     toggleEditor(masterEditor, false);
-    clearPin();
 }
 
 function createNewOptionItem(element) {
@@ -189,8 +182,6 @@ function createNewOptionItem(element) {
                     lon.value = data.lon;
                     locationType.value = data.locationType;
                     capacity.value = data.capacity;
-
-                    putPin([data.lat, data.lon]);
                 } else {
                     msgBox.createToast('Something went wrong', data.error_message);
                 }
@@ -304,8 +295,6 @@ document.getElementById('new-page').onclick = function () {
     lon.value = '';
     capacity.value = '';
     btnSubmit.innerHTML = 'Create';
-
-    clearPin();
 }
 
 
@@ -361,12 +350,10 @@ function fetchGeocode() {
             if (data.message != null) {
                 lat.value = "";
                 lon.value = "";
-                clearPin();
             }
             else {
                 lat.value = data.lat;
                 lon.value = data.lon;
-                putPin([data.lat, data.lon])
             }
         });
 }
@@ -379,24 +366,6 @@ postal.onblur = function () {
     fetchAddress();
 }
 
-
-function putPin(location) {
-    map.invalidateSize()
-
-    // remove existing pin
-    if (pin != null) {
-        map.removeLayer(pin);
-    }
-    pin = L.marker(location).addTo(map);
-
-    map.setView(location, 15);
-}
-
-function clearPin() {
-    if (pin != null) {
-        map.removeLayer(pin);
-    }
-}
 
 if (window.self != window.top) {
     let container = document.getElementsByClassName('container')[0];

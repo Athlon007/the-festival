@@ -42,12 +42,12 @@
 
 
     <div class="content">
-        <div id="Venues" class="data">
-            <iframe id="iframe" src="/admin/locations" data-locations="1" style="width: 100%; height: 600px; border: none;"></iframe>
+        <div id="Venues" class="data" style="width:95%">
+            <iframe id="iframe" src="/admin/locations" data-locations="1" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
         </div>
 
         <div id="Artist" class="data">
-            <iframe id="iframe" src="/admin/artists" style="width: 100%; height: 600px; border: none;"></iframe>
+            <iframe id="iframe" src="/admin/artists" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
         </div>
 
         <div id="Event" class="data">
