@@ -1,32 +1,59 @@
 <?php
-
 $destinations = array(
     array(
-        'title' => 'St. Bavo Church',
-        'image' => 'stbavo.jpg',
-        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+        "name" => "Ellipse",
+        "image" => "ellipse.jpg",
+        "description" => "A beautiful and unique elliptical plaza located in the heart of the city.
+        A beautiful and unique elliptical plaza located in the heart of the city.
+        A beautiful and unique elliptical plaza located in the heart of the city.
+        A beautiful and unique elliptical plaza located in the heart of the city.
+        ",
+        "location" => "City Center"
     ),
     array(
-        'title' => 'Destination 1',
-        'image' => 'destination1.jpg',
-        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+        "name" => "St. Bavo Church",
+        "image" => "stbavo.jpg",
+        "description" => "A stunning Gothic-style church that dates back to the 14th century.",
+        "location" => "Old Town"
     ),
     array(
-        'title' => 'Destination 2',
-        'image' => 'destination2.jpg',
-        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+        "name" => "City Hall",
+        "image" => "cityhall.jpg",
+        "description" => "A historic government building that has served as the seat of local government for over a century.",
+        "location" => "City Center"
     ),
     array(
-        'title' => 'Destination 3',
-        'image' => 'destination3.jpg',
-        'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra urna sed dui hendrerit posuere.'
+        "name" => "Central Park",
+        "image" => "centralpark.jpg",
+        "description" => "A beautiful public park that offers a peaceful oasis in the midst of the bustling city.",
+        "location" => "City Center"
     ),
     array(
-        'title' => 'One drink per person',
-        'image' => 'onedrink.jpg',
-        'description' => '15 min. break at Jopenkerk'
+        "name" => "Museum of Fine Arts",
+        "image" => "museum.jpg",
+        "description" => "A world-renowned art museum featuring an impressive collection of paintings, sculptures, and other works of art.",
+        "location" => "Old Town"
+    ),
+    array(
+        "name" => "Opera House",
+        "image" => "opera.jpg",
+        "description" => "A magnificent theater that hosts world-class opera performances, ballets, and other cultural events.",
+        "location" => "City Center"
+    ),
+    array(
+        "name" => "Riverfront Promenade",
+        "image" => "riverfront.jpg",
+        "description" => "A scenic walkway that follows the river, offering stunning views of the city skyline and the water.",
+        "location" => "City Center"
+    ),
+    array(
+        "name" => "Historic District",
+        "image" => "historic.jpg",
+        "description" => "A charming neighborhood with cobblestone streets, historic homes, and quaint shops and restaurants.",
+        "location" => "Old Town"
     )
 );
+
 ?>
 
 <!doctype html>
@@ -126,7 +153,7 @@ $destinations = array(
 
         <div class="container ticket-container">
             <div class="row">
-                <div class="col-md-6">
+                <!-- <div class="col-md-6">
                     <div class="row mb-3">
                         <div class="col-md-6 dateOfTour" style="width: 50%; float:left;">
                             <label for="date" class="form-label">Date</label>
@@ -168,72 +195,94 @@ $destinations = array(
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary applyPreferencesButton">Apply preferences</button>
+                </div> -->
+                <div class="col-md-6">
+                    <div class="row mb-3">
+                        <div class="col-md-6 dateOfTour" style="width: 50%; float:left;">
+                            <label for="date" class="form-label">Date</label>
+                            <select class="form-select" id="date">
+                                <option selected>Choose Date</option>
+                                <?php
+                                foreach ($uniqueDates as $date) {
+                                    echo "<option value=\"$date\">$date</option>";
+                                }
+                                ?>
+
+                            </select>
+                        </div>
+                        <div class="col-md-6 timeOfTour" style="width: 50%; float:right;">
+                            <label for="time" class="form-label">Time</label>
+                            <select class="form-select" id="time">
+                                <option selected>Choose Time</option>
+                                <?php
+                                foreach ($uniqueTimes as $time) {
+                                    echo '<option value="' . $time . '">' . $time . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 languageOfTour" style="width: 50%; float:left;">
+                            <label for="language" class="form-label">Language</label>
+                            <select class="form-select" id="language">
+                                <option selected>Select language</option>
+                                <?php foreach ($languages as $language) { ?>
+                                    <option value="<?= $language ?>"><?= $language ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6 ticketOfTour" style="width: 50%; float:right;">
+                            <label for="ticket" class="form-label">Ticket</label>
+                            <select class="form-select" id="ticket">
+                                <option selected>Select ticket</option>
+                                <?php foreach ($uniquePrices as $uniquePrice) { ?>
+                                    <option value="<?= $ticket ?>"><?php if ($uniquePrice < 30){
+                                        echo "Single    :  € " . $uniquePrice;
+                                    } else {
+                                        echo "Family(4p): € " . $uniquePrice;
+                                    } ?></option>
+                                    } ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary applyPreferencesButton">Apply preferences</button>
                 </div>
                 <div class="col-md-6">
                     <div class="scrollable-tickets">
                         <?php
-                        // example array of tickets
-                        $tickets = array(
-                            array(
-                                "name" => "History Tour",
-                                "guide" => "John Doe",
-                                "language" => "English",
-                                "time" => "10:00",
-                                "spot" => "St. Bavo Church",
-                                "price" => 17.50
-                            ),
-                            array(
-                                "name" => "History Tour",
-                                "guide" => "Jane Smith",
-                                "language" => "English",
-                                "time" => "10:00",
-                                "spot" => "St.Bavo Church",
-                                "price" => 17.50
-                            ),
-                            array(
-                                "name" => "History Tour",
-                                "guide" => "Jane Smith",
-                                "language" => "English",
-                                "time" => "10:00",
-                                "spot" => "St.Bavo Church",
-                                "price" => 17.50
-                            ),
-                            array(
-                                "name" => "History Tour",
-                                "guide" => "Jane Smith",
-                                "language" => "English",
-                                "time" => "10:00",
-                                "spot" => "St.Bavo Church",
-                                "price" => 17.50
-                            )
-                        );
-                        foreach ($tickets as $ticket) { ?>
+                        foreach ($historyEvents as $historyEvent) { ?>
                             <div class="ticket">
                                 <div class="ticket-header">
                                     <h4>
-                                        <?php echo $ticket["name"]; ?>
+                                        <?= $historyEvent->getName() ?>
                                     </h4>
                                     <p>
                                         Guide:
-                                        <?php echo $ticket["guide"]; ?>
+                                        <?= $historyEvent->getGuide()->getFirstName(); ?>
+                                        <?= $historyEvent->getGuide()->getLastName(); ?>
                                     </p>
                                 </div>
                                 <div class="ticket-body">
                                     <div class="ticket-info">
+                                        <p><strong>Start Point:</strong>
+                                            <?= $historyEvent->getLocation()->getName(); ?>
+                                        </p>
                                         <p><strong>Language:</strong>
-                                            <?php echo $ticket["language"]; ?>
+                                            <?= $historyEvent->getGuide()->getLanguage(); ?>
                                         </p>
                                         <p><strong>Time:</strong>
-                                            <?php echo $ticket["time"]; ?>
+                                            <?= $historyEvent->getStartTime()->format('j F / H:i'); ?>
                                         </p>
                                         <p><strong>Spot:</strong>
-                                            <?php echo $ticket["spot"]; ?>
+                                            <?= $historyEvent->getLocation()->getCapacity(); ?> Available
                                         </p>
                                     </div>
                                     <div class="ticket-price">
                                         <p<strong>Price:</strong>
                                             €
-                                            <?php echo $ticket["price"]; ?>
+                                            <?= $historyEvent->getPrice(); ?>
                                             </p>
                                             <button class="btn btn-primary addToCartButton">Add to cart</button>
                                     </div>
@@ -251,15 +300,63 @@ $destinations = array(
 
             <div class="row">
                 <div class="col-8 st-bavo-church">
-                    1 of 2 
+                    1 of 2
+                    <div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="ellipse"></div>
+                            </div>
+                            <div class="col-8">
+                                <?php foreach ($locations as $location) {
+                                    if ($location->getLocationId() == 2) { ?>
+                                        <h3>
+                                            <?= $location->getName(); ?>
+                                        </h3>
+                                        <p>
+                                            <?= $location->getDescription(); ?>
+                                        </p>
+                                    <?php }
+                                } ?>
+                                <button class="learn-more-btn">Learn More</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-4 advertisement-drink">
-                    2 of 2
+                <div class="col-3">
+                    <div class="row">
+                        <div class="col-9 advertisement-drink">
+                        </div>
+                    </div>
+                    <p class="text-center">15 min. break at Jopenkerk</p>
                 </div>
             </div>
         </div>
 
+        <div class="container destinations-section">
+            <div class="row tour-destinations">
+                <?php foreach ($locations as $location) {
+                    if ($location->getLocationId() != 2) { ?>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="destination-box">
+                                <div class="destination-image"></div>
+                                <div class="destination-info">
+                                    <h3>
+                                        <?= $location->getName(); ?>
+                                    </h3>
+                                    <p>
+                                        <?= $location->getDescription(); ?>
+                                    </p>
+                                    <?php if ($location->getLocationId() == 6) { ?>
+                                        <a href="#" class="btn btn-primary destination-learn-more-button">Learn More</a>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php }
+                } ?>
+            </div>
+        </div>
 
 
 
@@ -273,14 +370,4 @@ $destinations = array(
             crossorigin="anonymous"></script>
 
         <script type="module" src="/js/foot.js"></script>
-
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper-core.min.js"
-            integrity="sha384-6JHuUaD+LX9EBy7v/klcnSyJZ5av5AGzxR5GzC5RSIhz1ibcsCq3X9lOESL9X+M/"
-            crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </body>
-
-    <style>
-
-    </style>

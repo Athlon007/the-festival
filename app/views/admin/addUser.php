@@ -19,7 +19,7 @@
     <script type="module" src="/js/nav.js"></script>
 
     <div class="container mt-2">
-        <h1>Register User/Admin</h1>
+        <h1>Register Employee/Admin</h1>
         <div class="form-group">
             <label for="firstName" style="margin-top:15px;">First Name *</label>
             <input type="text" class="form-control" name="firstName" id="firstName" placeholder="Enter a first name"

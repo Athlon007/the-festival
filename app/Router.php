@@ -77,6 +77,13 @@ class Router
             return;
         }
 
+        // if (str_starts_with($request, "/festival/history")) {
+        //     require_once("controllers/FestivalHistoryController.php");
+        //     $festivalHistoryController = new FestivalHistoryController();
+        //     $festivalHistoryController->loadHistoryStrollPage();
+        //     return;
+        // }
+
         if (str_starts_with($request, "/festival/jazz/")) {
             require_once("controllers/FestivalJazzController.php");
             $festivalJazzController = new FestivalJazzController();
@@ -154,8 +161,71 @@ class Router
                 $ticketController->generateAndSendTicket();
                 break;
             case "/festival/history-stroll":
-                require_once("views/festival/history-stroll.php");
+                require_once("controllers/FestivalHistoryController.php");
+                $festivalHistoryController = new FestivalHistoryController();
+                $festivalHistoryController->loadHistoryStrollPage();
                 break;
+            case "/manageRestaurants":
+                require_once("controllers/RestaurantController.php");
+                $restaurantController = new RestaurantController();
+                $restaurantController->manageRestaurants();
+                break;
+            case "/manageJazz":
+                require_once("controllers/JazzController.php");
+                $jazzController = new JazzController();
+                $jazzController->manageJazz();
+                break;
+                case "/addVenue":
+                    require_once("controllers/JazzController.php");
+                    $jazzController = new JazzController();
+                    $jazzController->addVenue();
+                    break;  
+                case "/updateVenue":
+                    require_once("controllers/JazzController.php");
+                    $jazzController = new JazzController();
+                    $jazzController->updateVenue();
+                    break;
+                case "/addArtist":
+                    require_once("controllers/JazzController.php");
+                    $jazzController = new JazzController();
+                    $jazzController->addArtist();
+                    break;
+                case "/updateArtist":
+                    require_once("controllers/JazzController.php");
+                    $jazzController = new JazzController();
+                    $jazzController->updateArtist();
+                    break;
+                case "/addEvent":
+                    require_once("controllers/JazzController.php");
+                    $jazzController = new JazzController();
+                    $jazzController->addEvent();
+                    break;
+                case "/updateEvent":
+                    require_once("controllers/JazzController.php");
+                    $jazzController = new JazzController();
+                    $jazzController->updateEvent();
+                    break;    
+            case "/manageHistory":
+                require_once("controllers/HistoryController.php");
+                $historyController = new HistoryController();
+                $historyController->manageHistory();
+                break;
+                case "/addLocation":
+                    require_once("controllers/HistoryController.php");
+                    $historyController = new HistoryController();
+                    $historyController->addLocation();
+                    break;
+                    case "/addTour":
+                        require_once("controllers/HistoryController.php");
+                        $historyController = new HistoryController();
+                        $historyController->addTour();
+                        break;   
+            case "/manageDance":
+                require_once("controllers/DanceController.php");
+                $danceController = new DanceController();
+                $danceController->manageDance();
+                break;
+    
             default:
                 $this->route404($message);
                 break;
