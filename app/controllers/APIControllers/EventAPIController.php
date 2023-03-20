@@ -120,4 +120,14 @@ class EventAPIController extends APIController
             $this->sendErrorMessage("Unhandled exception", 500);
         }
     }
+
+    public function handlePutRequest($uri)
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        try {
+        } catch (Throwable $e) {
+            $this->sendErrorMessage("Unhandled exception", 500);
+        }
+    }
 }
