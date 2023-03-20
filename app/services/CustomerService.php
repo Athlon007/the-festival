@@ -15,60 +15,92 @@ class CustomerService extends UserService{
     public function __construct(){
         $this->customerRepository = new CustomerRepository();
         $this->addressRepository = new AddressRepository();
+        $this->userRepository = new UserRepository();
     }
     
     public function registerCustomer($data)
     {
-        try{
-            //Set user type to customer
-            $data->userType = 3;
+       
+        //Sanitise data
+        $data->userType = 3;
+        $data = $this->sanitiseCustomerData($data);
 
-            //Sanitise data
-            $data = $this->sanitiseCustomerData($data);
+        //Create customer object
+        $customer = new Customer();
+        
+        //Convert data to appropriate datatypes
+        $dateOfBirth = new DateTime($data->dateOfBirth);
 
-            //Create customer object
-            $customer = new Customer();
-            
-            //Convert data to appropriate datatypes
-            $dateOfBirth = new DateTime($data->dateOfBirth);
-            $address = new Address();
-            $address->setStreetName($data->address->streetName);
-            $address->setHouseNumber($data->address->houseNumber);
-            $address->setPostalCode($data->address->postalCode);
-            $address->setCity($data->address->city);
-            $address->setCountry($data->address->country);
+        //Convert data to address
+        $streetname = $data->address->streetName;
+        $housenumber = $data->address->houseNumber;
+        $postalcode = $data->address->postalCode;
+        $city = $data->address->city;
+        $country = $data->address->country;
+        $address = new Address(-1, $streetname, $housenumber, $postalcode, $city, $country);
 
-            //Set customer properties
-            $customer->setEmail($data->email);
-            $customer->setFirstName($data->firstName);
-            $customer->setLastName($data->lastName);
-            $customer->setDateOfBirth($dateOfBirth);
-            $customer->setPhoneNumber($data->phoneNumber);
-            $customer->setAddress($address);
+        //Set customer properties
+        $customer->setEmail($data->email);
+        $customer->setFirstName($data->firstName);
+        $customer->setLastName($data->lastName);
+        $customer->setDateOfBirth($dateOfBirth);
+        $customer->setPhoneNumber($data->phoneNumber);
+        $customer->setAddress($address);
 
-            //Hash password
-            $hashedPassword = password_hash($data->password, PASSWORD_DEFAULT);
-            $customer->setHashPassword($hashedPassword);
+        //Hash password
+        $hashedPassword = password_hash($data->password, PASSWORD_DEFAULT);
+        $customer->setHashPassword($hashedPassword);
 
-            //Insert customer
-            $this->customerRepository->insertCustomer($customer);
-        }
-        catch(Exception $ex){
-            throw ($ex);
-        }
+        //Insert customer
+        $this->customerRepository->insertCustomer($customer);
+        
     }
 
     public function getCustomerByUser(User $user) : Customer
     {
-        try
+        $customer = $this->customerRepository->getCustomerByUser($user);
+        return $customer;
+    }
+
+    public function updateCustomer($customer, $data)
+    {
+        //Sanitise data
+        $data = $this->sanitiseCustomerData($data);
+
+        //If a new password is given
+        if (isset($data->password) && isset($data->confirmPassword))
         {
-            $customer = $this->customerRepository->getCustomerByUser($user);
-            return $customer;
+            $data->confirmPassword = htmlspecialchars($data->confirmPassword);
+            password_verify($data->confirmPassword, $customer->getHashPassword());
+            
+            //Check if confirmPassword matches the customer's current password
+            if (!password_verify($data->confirmPassword, $customer->getHashPassword()))
+                throw new IncorrectPasswordException();
+            
+            //Hash the new password and update
+            $customer->setHashPassword(password_hash($data->password, PASSWORD_DEFAULT));
         }
-        catch(Exception $ex)
+        //If the email has been updated, make sure it's not a duplicate, then update
+        if ($customer->getEmail() != $data->email)
         {
-            throw ($ex);
+            if (parent::emailAlreadyExists($data->email))
+                throw new EmailAlreadyExistsException();
+            
+            $customer->setEmail($data->email);
         }
+
+        //Update everything else
+        $customer->setFirstName($data->firstName);
+        $customer->setLastName($data->lastName);
+        $customer->setDateOfBirth(new DateTime($data->dateOfBirth));
+        $customer->setPhoneNumber($data->phoneNumber);
+        $customer->getAddress()->setStreetName($data->address->streetName);
+        $customer->getAddress()->setHouseNumber($data->address->houseNumber);
+        $customer->getAddress()->setPostalCode($data->address->postalCode);
+        $customer->getAddress()->setCity($data->address->city);
+        $customer->getAddress()->setCountry($data->address->country);
+
+        $this->customerRepository->updateCustomer($customer);
     }
 
     private function sanitiseCustomerData($data){
@@ -81,39 +113,10 @@ class CustomerService extends UserService{
         $data->address->postalCode = htmlspecialchars($data->address->postalCode);
         $data->address->city = htmlspecialchars($data->address->city);
         $data->address->country = htmlspecialchars($data->address->country);
-
+    
         return $data;
     }
-
-    public function updateCustomer($data)
-    {
-        //Sanitise data
-        $data = $this->sanitiseCustomerData($data);
-        //Create customer object
-        $customer = $this->createCustomerFromData($data);
-
-        $this->customerRepository->updateCustomer($customer);
-    }
-
-    public function createCustomerFromData($data){
-        $customer = new Customer();
-        
-        if (isset($data->id))
-        {
-            $customer->setUserId($data->id);
-        }
-
-        $customer->setEmail($data->email);
-        $customer->setHashPassword($data->password);
-        $customer->setFirstName($data->firstName);
-        $customer->setLastName($data->lastName);
-        $customer->setDateOfBirth($data->dateOfBirth);
-        $customer->setPhoneNumber($data->phoneNumber);
-        $customer->setAddress($data->address);
-        
-
-        return $customer;
-    }
 }
+
 
 ?>

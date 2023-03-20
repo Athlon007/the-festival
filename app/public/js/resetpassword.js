@@ -5,7 +5,7 @@ function resetPassword() {
         email: emailField.value
     }
     
-    fetch("/api/resetPassword", {
+    fetch("/api/user/resetPassword", {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data),

@@ -1,9 +1,8 @@
-import { loadImagePicker, unselectAllImages } from "./image_picker.js";
+import { ImagePicker } from "./image_picker.js";
 import { MsgBox } from "./modals.js";
 
 let editedPageId = -1;
 const title = document.getElementById('title');
-const images = document.getElementById('images');
 const pageHref = document.getElementById('page-href');
 const textPagesList = document.getElementById('text-pages-list');
 const masterEditor = document.getElementById('master-editor');
@@ -14,11 +13,19 @@ let isInNewPageMode = false;
 const btnOpen = document.getElementById('open');
 
 const msgBox = new MsgBox();
+const imgPicker = new ImagePicker();
 
 tinymce.init({
     selector: 'textarea',
-    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
-    toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | customAddButtonButton',
+    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+    toolbar: 'undo redo | blocks | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | customSeeSourceCode',
+    menu: {
+        custom: {
+            title: 'Modules',
+            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile | customJazzOptions customStrollOptions customYummyOptions '
+        }
+    },
+    menubar: 'file edit view insert format tools table custom',
     tinycomments_mode: 'embedded',
     tinycomments_author: 'Author name',
     table_default_attributes: {
@@ -26,31 +33,257 @@ tinymce.init({
     },
     content_css: [
         "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css",
-        "/css/main.css"
+        "/css/main.css",
+        "/css/editor.css"
     ],
-    setup: function (editor) {
-        editor.ui.registry.addButton('customAddButtonButton', {
-            text: 'Add Button',
-            onAction: function () {
-                //editor.insertContent('<button class="btn btn-primary" href="#">Button</button>');
-                let addButtonGui = msgBox.createDialogWithInputs('Add Button', [
-                    {
-                        label: 'Button Text',
-                        id: 'btn-text'
-                    },
-                    {
-                        label: 'Button Link',
-                        id: 'btn-link'
-                    }],
-                    function () {
-                        let btnText = document.getElementById('btn-text').value;
-                        let btnLink = document.getElementById('btn-link').value;
-                        editor.insertContent(`<a href="${btnLink}"><button class="btn btn-primary" href="#">${btnText}</button></a>`);
-                    },
-                    function () { });
-            }
-        });
-    },
+    setup: (editor) => {
+        try {
+            editor.ui.registry.addMenuItem('customAddButtonButton', {
+                text: 'Button',
+                onAction: () => {
+                    msgBox.createDialogWithInputs('Add Button', [
+                        {
+                            label: 'Button Text',
+                            id: 'btn-text'
+                        },
+                        {
+                            label: 'Button Link',
+                            id: 'btn-link'
+                        }],
+                        function () {
+                            let btnText = document.getElementById('btn-text').value;
+                            let btnLink = document.getElementById('btn-link').value;
+                            editor.insertContent(`<a href="${btnLink}"><button class="btn btn-primary" href="#">${btnText}</button></a>`);
+                        },
+                        function () { });
+                }
+            });
+            editor.ui.registry.addMenuItem('customInsertImageButton', {
+                text: 'Image',
+                onAction: () => {
+                    let rndInt = Math.floor(Math.random() * 100000000);
+                    msgBox.createDialogWithInputs('Insert Image From Library', [
+                        {
+                            label: 'Image Picker',
+                            id: 'image-picker-' + rndInt,
+                            type: 'image-picker'
+                        },
+                        {
+                            label: 'Image Width',
+                            id: 'image-width',
+                        },
+                        {
+                            label: 'Image Height',
+                            id: 'image-height',
+                        }],
+                        function () {
+                            let imagePicker = document.getElementById('image-picker-' + rndInt);
+                            let selectedImage;
+                            for (let label of imagePicker.getElementsByClassName('tile-picker')) {
+                                let input = label.getElementsByTagName('input')[0];
+                                if (input.checked) {
+                                    selectedImage = label.getElementsByTagName('img')[0].src;
+                                }
+                            }
+
+                            // remvoe the first part of the url before the /img
+                            selectedImage = selectedImage.replace(/.*\/img/, '/img');
+
+                            let imageWidth = document.getElementById('image-width').value;
+                            let imageHeight = document.getElementById('image-height').value;
+
+                            // if widtth and height are empty, set to auto
+                            if (imageWidth == '') {
+                                imageWidth = 'auto';
+                            }
+                            if (imageHeight == '') {
+                                imageHeight = 'auto';
+                            }
+
+                            editor.insertContent(`<img src="${selectedImage}" width="${imageWidth}" height="${imageHeight}">`);
+                        },
+                        function () { });
+                }
+            });
+            editor.ui.registry.addMenuItem('customInsertNavTile', {
+                text: 'Nav Tile',
+                onAction: () => {
+                    let rndInt = Math.floor(Math.random() * 100000000);
+                    msgBox.createDialogWithInputs('Create Nav Tile', [
+                        {
+                            label: 'Image Picker',
+                            id: 'image-picker-' + rndInt,
+                            type: 'image-picker'
+                        },
+                        {
+                            label: 'Tile Text',
+                            id: 'tile-text'
+                        },
+                        {
+                            label: 'Tile Link',
+                            id: 'tile-link'
+                        },
+                        {
+                            label: 'Description',
+                            id: 'tile-description'
+                        }
+                    ],
+                        () => {
+                            let imagePicker = document.getElementById('image-picker-' + rndInt);
+                            let selectedImage;
+                            for (let label of imagePicker.getElementsByClassName('tile-picker')) {
+                                let input = label.getElementsByTagName('input')[0];
+                                if (input.checked) {
+                                    selectedImage = label.getElementsByTagName('img')[0].src;
+                                }
+                            }
+
+                            // remvoe the first part of the url before the /img
+                            selectedImage = selectedImage.replace(/.*\/img/, '/img');
+
+                            let tileText = document.getElementById('tile-text').value;
+                            let tileLink = document.getElementById('tile-link').value;
+                            let tileDescription = document.getElementById('tile-description').value;
+
+                            // Now we build the tile.
+                            let a = document.createElement('a');
+                            a.href = tileLink;
+                            let div = document.createElement('div');
+                            div.classList.add('card', 'img-fluid', 'nav-tile');
+                            let divCarousel = document.createElement('div');
+                            divCarousel.classList.add('carousel-caption');
+                            let p = document.createElement('p');
+                            p.innerText = tileText;
+                            divCarousel.appendChild(p);
+                            div.appendChild(divCarousel);
+
+                            let img = document.createElement('img');
+                            img.src = selectedImage;
+                            img.classList.add('card-img-top');
+                            div.appendChild(img);
+
+                            let cardOverlay = document.createElement('div');
+                            cardOverlay.classList.add('card-img-overlay');
+                            let pOverlay = document.createElement('p');
+                            pOverlay.classList.add('card-text', 'w-65', 'inline-block');
+                            pOverlay.innerText = tileDescription;
+                            cardOverlay.appendChild(pOverlay);
+                            let btn = document.createElement('button');
+                            btn.classList.add('btn', 'btn-primary', 'float-end');
+                            btn.innerText = 'Learn More';
+                            cardOverlay.appendChild(btn);
+                            div.appendChild(cardOverlay);
+
+                            a.appendChild(div);
+
+                            let container = document.createElement('div');
+                            container.appendChild(a);
+
+                            console.log(a.outerHTML);
+
+                            editor.insertContent(container.outerHTML);
+                        });
+                }
+            });
+            editor.ui.registry.addMenuItem('customInsertMap', {
+                text: 'Map',
+                onAction: () => {
+                    editor.insertContent("<div id='mapContainer' class='row' data-mapkind='general'></div>");
+                }
+            });
+            editor.ui.registry.addMenuItem('customInsertCalendar', {
+                text: 'Calendar',
+                onAction: () => {
+                    editor.insertContent("<div id='calendar' class='row' data-calendar-type='all-events'></div>");
+                }
+            });
+            editor.ui.registry.addMenuItem('customInsertCountdown', {
+                text: 'Countdown',
+                onAction: () => {
+                    editor.insertContent("<p id='countdown'>00:00:00:00<br>days hours minutes seconds</p>");
+                }
+            });
+            editor.ui.registry.addMenuItem('customJazzOptions', {
+                text: 'Jazz Modules >',
+                type: 'nestedmenuitem',
+                getSubmenuItems: () => {
+                    return [
+                        {
+                            text: 'All Day Pass',
+                            type: 'menuitem',
+                            onAction: () => {
+                                // show dialog
+                                msgBox.createDialogWithInputs('Create All Day Pass', [
+                                    {
+                                        label: 'Pass Kind',
+                                        id: 'pass-kind',
+                                    }
+                                ],
+                                    () => {
+                                        let passKind = document.getElementById('pass-kind').value;
+                                        editor.insertContent(`<div id='allday-pass' data-kind='${passKind}'></div>`);
+                                    });
+                            }
+                        },
+                        {
+                            text: 'Events Viewer',
+                            type: 'menuitem',
+                            onAction: () => {
+                                editor.insertContent(`<div id='events' data-type='jazz'></div>`);
+                            }
+                        }
+                    ];
+                }
+            });
+            editor.ui.registry.addMenuItem('customStrollOptions', {
+                text: 'Stroll Modules >',
+                type: 'nestedmenuitem',
+                getSubmenuItems: () => {
+                    return [
+                        {
+                            text: 'Events Viewer',
+                            type: 'menuitem',
+                            onAction: () => {
+                                editor.insertContent(`<div id='events' data-type='stroll'></div>`);
+                            }
+                        }
+                    ];
+                }
+            });
+            editor.ui.registry.addMenuItem('customYummyOptions', {
+                text: 'Yummy Modules >',
+                type: 'nestedmenuitem',
+                getSubmenuItems: () => {
+                    return [
+                        {
+                            text: 'Events Viewer',
+                            type: 'menuitem',
+                            onAction: () => {
+                                editor.insertContent(`<div id='events' data-type='yummy'></div>`);
+                            }
+                        }
+                    ];
+                }
+            });
+            editor.ui.registry.addButton('customSeeSourceCode', {
+                text: 'Source Code',
+                onAction: () => {
+                    msgBox.createDialogWithInputs('Source Code', [
+                        {
+                            label: 'Source Code',
+                            id: 'source-code',
+                            type: 'textarea',
+                            content: tinyMCE.activeEditor.getContent()
+                        }
+                    ], () => {
+                        tinyMCE.activeEditor.setContent(document.getElementById('source-code').value);
+                    });
+                }
+            })
+        } catch (error) {
+            console.error(error);
+        }
+    }
 });
 
 function updateExistingPage(id, data) {
@@ -86,7 +319,6 @@ function createNewPage(data) {
         .then(response => response.json())
         .then(data => {
             if (!data.error_message) {
-                //loadTextPagesList();
                 let option = createNewOptionItem(data);
                 textPagesList.appendChild(option);
                 textPagesList.selectedIndex = textPagesList.length - 1;
@@ -98,6 +330,14 @@ function createNewPage(data) {
                 // exit the new page mode
                 isInNewPageMode = false;
                 btnSubmit.innerHTML = 'Save';
+
+                btnOpen.onclick = function () {
+                    let link = data.href;
+                    if (link == '') {
+                        link = "http://" + window.location.hostname;
+                    }
+                    window.open(link, '_blank');
+                };
             } else {
                 msgBox.createToast('Somethin went wrong', data.error_message);
             }
@@ -109,13 +349,8 @@ function createNewPage(data) {
 
 btnSubmit.onclick = function () {
     let titleValue = title.value;
-    let pickedImageIds = [];
-    let checkboxes = document.getElementsByName('image');
-    checkboxes.forEach(element => {
-        if (element.checked) {
-            pickedImageIds.push(element.value);
-        }
-    });
+    let pickedImageIds = imgPicker.getSelectedImages();
+    console.log(pickedImageIds);
     let content = tinymce.activeEditor.getContent();
 
     // to json
@@ -152,9 +387,9 @@ document.getElementById('delete').onclick = function () {
                 if (data.success_message) {
                     // remove the option from the list
                     let options = textPagesList.getElementsByTagName('option');
-                    for (let i = 0; i < options.length; i++) {
-                        if (options[i].value == editedPageId) {
-                            options[i].remove();
+                    for (let option of options) {
+                        if (option.value == editedPageId) {
+                            option.remove();
                             break;
                         }
                     }
@@ -199,15 +434,10 @@ function createNewOptionItem(element) {
 
                     pageHref.value = data.href;
 
-                    unselectAllImages();
+                    imgPicker.unselectAllImages();
                     // select images that are used by the page.
                     data.images.forEach(image => {
-                        let checkboxes = document.getElementsByName('image');
-                        checkboxes.forEach(img => {
-                            if (img.value == image.id) {
-                                img.checked = true;
-                            }
-                        });
+                        imgPicker.selectImage(image.id);
                     });
 
                     btnOpen.onclick = function () {
@@ -274,7 +504,7 @@ function loadTextPagesList() {
 
 loadTextPagesList();
 
-loadImagePicker(images);
+imgPicker.loadImagePicker(images, () => { }, () => { });
 
 function toggleEditor(element, isEnabled) {
     if (isEnabled) {
@@ -283,7 +513,7 @@ function toggleEditor(element, isEnabled) {
         element.classList.add('disabled-module');
         tinymce.activeEditor.setContent('');
         editedPageId = -1;
-        unselectAllImages();
+        imgPicker.unselectAllImages();
         textPagesList.selectedIndex = 0;
         title.value = '';
         pageHref.value = '';
@@ -295,7 +525,7 @@ document.getElementById('new-page').onclick = function () {
     toggleEditor(masterEditor, true);
     tinymce.activeEditor.setContent('');
     editedPageId = -1;
-    unselectAllImages();
+    imgPicker.unselectAllImages();
     textPagesList.selectedIndex = 0;
     title.value = '';
     pageHref.value = '';

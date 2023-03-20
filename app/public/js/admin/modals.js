@@ -1,3 +1,5 @@
+import { ImagePicker } from "./image_picker.js";
+
 export class MsgBox {
     /**
      * Creates a toast message. Disappears after 3 seconds.
@@ -47,7 +49,7 @@ export class MsgBox {
      * @param {*} yesCallback Callback for the yes button.
      * @param {*} noCallback Callback for the no button.
      */
-    createYesNoDialog(header, msg, yesCallback, noCallback) {
+    createYesNoDialog(header, msg, yesCallback, noCallback = () => { }) {
         // Create bootstrap modal
         let modal = document.createElement('div');
         modal.classList.add('modal');
@@ -118,7 +120,7 @@ export class MsgBox {
         noButton.focus();
     }
 
-    createDialogWithInputs(header, inputsArray, submitCallback, cancelCallback) {
+    createDialogWithInputs(header, inputsArray, submitCallback, cancelCallback = () => { }) {
         // Create bootstrap modal
         let modal = document.createElement('div');
         modal.classList.add('modal');
@@ -152,18 +154,44 @@ export class MsgBox {
 
         let modalBodyInputs = document.createElement('div');
 
-        for (let i = 0; i < inputsArray.length; i++) {
-            let label = document.createElement('label');
-            label.classList.add('form-label');
-            label.setAttribute('for', inputsArray[i].id);
-            label.innerHTML = inputsArray[i].label;
-            modalBodyInputs.appendChild(label);
+        for (let i of inputsArray) {
+            if (i.type == 'image-picker') {
+                let pickerContainer = document.createElement('div');
+                pickerContainer.setAttribute('id', i.id);
+                let picker = new ImagePicker();
+                picker.loadImagePicker(pickerContainer, () => { picker.unselectAllButOneNotInSelectedImages(); }, () => { });
+                modalBodyInputs.appendChild(pickerContainer);
+            } else if (i.type == 'textarea') {
+                let label = document.createElement('label');
+                label.classList.add('form-label');
+                label.setAttribute('for', i.id);
+                label.innerHTML = i.label;
+                modalBodyInputs.appendChild(label);
 
-            let input = document.createElement('input');
-            input.classList.add('form-control');
-            input.setAttribute('type', 'text');
-            input.setAttribute('id', inputsArray[i].id);
-            modalBodyInputs.appendChild(input);
+                let textarea = document.createElement('textarea');
+                textarea.classList.add('form-control');
+                textarea.setAttribute('id', i.id);
+                modalBodyInputs.appendChild(textarea);
+                textarea.style.height = '200px';
+                textarea.style.fontSize = '12px';
+                textarea.style.resize = 'both';
+                // set content of textarea
+                if (i.content) {
+                    textarea.innerHTML = i.content;
+                }
+            } else {
+                let label = document.createElement('label');
+                label.classList.add('form-label');
+                label.setAttribute('for', i.id);
+                label.innerHTML = i.label;
+                modalBodyInputs.appendChild(label);
+
+                let input = document.createElement('input');
+                input.classList.add('form-control');
+                input.setAttribute('type', 'text');
+                input.setAttribute('id', i.id);
+                modalBodyInputs.appendChild(input);
+            }
         }
         modalBody.appendChild(modalBodyInputs);
 

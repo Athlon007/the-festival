@@ -2,6 +2,7 @@
 require_once(__DIR__ . "/APIController.php");
 require_once("../services/UserService.php");
 require_once("../services/CustomerService.php");
+require_once("../models/Exceptions/MissingVariableException.php");
 
 class UserAPIController extends APIController
 {
@@ -13,11 +14,6 @@ class UserAPIController extends APIController
 
                 parent::handlePostRequest($uri);
                 $data = json_decode(file_get_contents("php://input"));
-
-                if (str_starts_with($uri, "/api/admin")) {
-                    $this->handleAdminPostRequest($uri, $data);
-                    return;
-                }
 
                 switch ($uri) {
                     case "/api/user/login":
@@ -34,6 +30,18 @@ class UserAPIController extends APIController
                         break;
                     case "/api/user/updatePassword":
                         $this->updateUserPassword($data);
+                        break;
+                    case "/api/user/addUser":
+                        $this->addUser($data);
+                        break; 
+                    case "/api/user/deleteUser":
+                        $this->deleteUser($data);
+                        break;
+                    case "/api/user/updateUser":
+                        $this->updateUser($data);
+                        break;
+                    case "/api/user/update-customer":
+                        $this->updateCustomer($data);
                         break;
                     default:
                         $this->sendErrorMessage("Invalid API Request");
@@ -63,13 +71,12 @@ class UserAPIController extends APIController
         try {
             $userService = new UserService();
 
-            if (!isset($data->email) || !isset($data->password)) {
-                throw new Exception("Email and password are required.");
+            if (!isset($data->email)) {
+                throw new MissingVariableException("Email is required");
             }
-
-            //Sanitise data
-            $email = htmlspecialchars($data->email);
-            $password = htmlspecialchars($data->password);
+            if (!isset($data->password)) {
+                throw new MissingVariableException("Password is required");
+            }
 
             //Fetch user (method throws error if user not found)
             $user = $userService->verifyUser($data);
@@ -89,6 +96,7 @@ class UserAPIController extends APIController
         try {
             session_start();
             session_destroy();
+            parent::sendSuccessMessage("Logout successful.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
@@ -103,7 +111,7 @@ class UserAPIController extends APIController
             if (!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password)
             || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse)){
                 
-                throw new Exception("Registration data incomplete.");
+                throw new MissingVariableException("Registration data incomplete.");
             }
 
             //Verify captcha
@@ -125,13 +133,14 @@ class UserAPIController extends APIController
         }
     }
 
-    // Vedat: I have added this function to send the reset token to the user (JS)
     private function resetPassword($data)
     {
         try {
             $userService = new UserService();
 
-            if ($data == null || !isset($data->email)) {
+            if (
+                $data == null || !isset($data->email) || empty($data->email)
+            ) {
                 throw new Exception("No data received.");
             }
 
@@ -150,118 +159,95 @@ class UserAPIController extends APIController
         }
     }
 
-    // Vedat: I have added this function to update the user's password (JS) TODO: most of this should be moved to service
     private function updateUserPassword($data)
     {
         try {
             $userService = new UserService();
-            $user = new User();
-            if (isset($_POST['submitPassword'])) {
-                $data->email = htmlspecialchars($_POST['email']);
-                $data->password = htmlspecialchars($_POST['password']);
-                $data->passwordConfirm = htmlspecialchars($_POST['passwordConfirm']);
-                $data->reset_token = htmlspecialchars($_POST['reset_token']);
 
-                // here check if the reset token is valid
-                $userService->checkResetToken($data->email, $data->reset_token);
-                if (empty($userService->checkResetToken($data->email, $data->reset_token))) {
-                    throw new Exception("Invalid reset token.");
-                }
-                $user->setEmail($data->email);
-                // hash the password
-                $hash_password = password_hash($data->password, PASSWORD_DEFAULT);
-                $user->setHashPassword($hash_password);
-                // here update the password in the database
-                $userService->updateUserPassword($user);
-            } else {
-                echo "Please enter your new password.";
+            if (
+                $data == null || !isset($data->email) || !isset($data->newPassword) ||
+                !isset($data->token) || !isset($data->confirmPassword) || empty($data->newPassword) ||
+                empty($data->confirmPassword)
+            ) {
+                throw new Exception("No data received.");
             }
-            parent::sendSuccessMessage("Password reset successful.");
+            $userService->updateUserPassword($data);
+            parent::sendSuccessMessage("Password updated.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
     }
 
-    // Vedat: I have added this function to get all users (JS)
-    private function getAllUsers()
+    private function addUser($data)
     {
         try {
             $userService = new UserService();
-            $users = $userService->getAllUsers();
-            return $users;
+
+            if (
+                $data == null || !isset($data->firstName) || !isset($data->lastName)
+                || !isset($data->email) || !isset($data->password) || empty($data->firstName) ||
+                empty($data->lastName) || empty($data->email) || empty($data->password)
+            ) {
+                throw new Exception("Please fill all the information.");
+            }
+            $userService->addUser($data);
+            parent::sendSuccessMessage("User added.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
         }
     }
 
-    private function fetchAddress($data)
+    private function deleteUser($data)
     {
-        //WIP, currently done through JS
-    }
+        try {
+            $userService = new UserService();
 
-    private function handleAdminPostRequest($uri, $data)
-    {
-        // TODO: Make sure that only logged-in user can use this API.
-        // if (!$this->isLoggedIn()) {
-        //     $this->sendErrorMessage("Access denied.");
-        //     return;
-        // }
+            if ($data == null || !isset($data->id)) {
+                throw new MissingVariableException("No data received.");
+            }
+            $data->id = htmlspecialchars($data->id);
 
-        require_once(__DIR__ . "/../services/ImageService.php");
-        $imageService = new ImageService();
-
-        if (str_starts_with($uri, "/api/admin/images/") && preg_match('/\d+$/', $uri)) {
-            // get the id from the uri
-            $id = substr($uri, strrpos($uri, '/') + 1);
-            $image = $imageService->getImageById($id);
-            echo json_encode($image);
-            return;
-        }
-
-        switch ($uri) {
-            case "/api/admin/text-pages":
-                require_once(__DIR__ . "/../services/PageService.php");
-                $pageService = new PageService();
-                $pages = $pageService->getAllTextPages();
-                echo json_encode($pages);
-                break;
-            case "/api/admin/text-pages/update":
-                require_once(__DIR__ . "/../services/PageService.php");
-                $pageService = new PageService();
-
-                if (!isset($data->id) || !isset($data->title) || !isset($data->content) || !isset($data->images)) {
-                    throw new Exception("Invalid data received.");
-                }
-
-                $pageService->updateTextPage($data->id, $data->title, $data->content, $data->images);
-
-                parent::sendSuccessMessage("Page updated successfully.");
-                break;
-            case "/api/admin/images":
-                if (isset($data->action)) {
-                    if ($data->action == "delete") {
-                        if (!isset($data->id)) {
-                            throw new Exception("Invalid data received.");
-                        }
-                        $imageService->removeImage($data->id);
-                        parent::sendSuccessMessage("Image deleted successfully.");
-                    } elseif ($data->action == "update") {
-                        if (!isset($data->id) || !isset($data->alt)) {
-                            throw new Exception("Invalid data received.");
-                        }
-                        $imageService->updateImage($data->id, $data->alt);
-                        parent::sendSuccessMessage("Image updated successfully.");
-                    } else {
-                        parent::sendErrorMessage("Invalid API Request");
-                    }
-                } else {
-                    $images = $imageService->getAll();
-                    echo json_encode($images);
-                }
-                break;
-            default:
-                parent::sendErrorMessage("Invalid API Request");
-                break;
+            $userService->deleteUser($data);
+            parent::sendSuccessMessage("User deleted.");
+        } catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
+
+    private function updateUser($data)
+    {
+        try {
+            $userService = new UserService();
+            if (
+                $data == null || !isset($data->id) || !isset($data->firstName)
+                || !isset($data->lastName) || !isset($data->email) || empty($data->firstName) ||
+                empty($data->lastName) || empty($data->email)
+            ) {
+                throw new Exception("No data received.");
+            }
+            $userService->updateUser($data);
+            parent::sendSuccessMessage("User updated.");
+        } catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
+        }
+    }
+
+    private function updateCustomer($data){
+        try {
+            $customerService = new CustomerService();
+
+            if (!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->dateOfBirth)
+                || !isset($data->phoneNumber) || !isset($data->address)){
+                throw new MissingVariableException("Not all data received.");
+            }
+            session_start();
+            $customer = $_SESSION['user'];
+            $customerService->updateCustomer($customer, $data);
+
+            parent::sendSuccessMessage("Your account was successfully updated.");
+        } catch (Exception $ex) {
+            parent::sendErrorMessage($ex->getMessage());
+        }
+    }
+
 }
