@@ -16,75 +16,45 @@
             <h1>Jazz Events</h1>
         </div>
         <div class="row">
-            <div class="col-2 card m-0">
+            <div class="col-6 card m-0">
                 <div class="card-body p-0 m-0 mt-1 mh-100">
-                    <button id="new-page" class="btn btn-success mb-1 w-100">Add Location</button>
+                    <button id="new-page" class="btn btn-success mb-1 w-100">New Event</button>
                     <select id="locations" class="form-select" size="25" aria-label="size 3 select example" data-live-search="true" style="overflow-y: scroll;">
                         <option data-tokens=""></option>
                     </select>
                 </div>
             </div>
-            <div id="master-editor" class="col-10 card p-0 disabled-module">
+            <div id="master-editor" class="col-6 card p-0 disabled-module">
                 <div class="card-body m-0">
                     <div class="row">
                         <div class="col-6">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="text" id="name-place" class="form-control" placeholder="Name">
+                            <label for="artist" class="form-label">Artist</label>
+                            <select id="artist" class="form-label d-block w-100">
+                                <option value="-1" disabled selected>-- Select Artist --</option>
+                            </select>
                         </div>
                         <div class="col-6">
-                            <label for="locationType" class="form-label">Location Type</label>
-                            <select id="locationType" class="form-label d-block w-100">
-                                <option value="-1" disabled selected>-- Select Type --</option>
-                                <option value="1">Jazz</option>
-                                <option value="2">Restaurant</option>
-                                <option value="3">History</option>
-                                <option value="99">Unknown</option>
+                            <label for="location" class="form-label">Location</label>
+                            <select id="location" class="form-label d-block w-100" required>
+                                <option value="-1" disabled selected>-- Select Location --</option>
                             </select>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-6">
-                            <label for="postal" class="form-label">Postal Code</label>
-                            <input type="text" id="postal" class="form-control mb-2" placeholder="2015 CE" required>
-                        </div>
-                        <div class="col-6">
-                            <label for="number" class="form-label">Building Number</label>
-                            <input type="text" id="number" class="form-control mb-2" placeholder="15" required>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <label for="street" class="form-label">Street Name</label>
-                            <input type="text" id="street" class="form-control mb-2" placeholder="Bijdroplaan">
-                        </div>
-                        <div class="col-6">
-                            <label for="city" class="form-label">City</label>
-                            <input type="text" id="city" class="form-control mb-2" placeholder="Haarlem">
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-12">
-                            <label for="country" class="form-label">Country</label>
-                            <input type="text" id="country" class="form-control mb-2" placeholder="Netherlands">
+                            <label for="price" class="form-label">Price &#40;&euro;&#41;</label>
+                            <input type="number" id="price" class="form-control mb-2" placeholder="15" required>
                         </div>
                     </div>
                     <div class="row">
+                        <h3>Time</h3>
                         <div class="col-6">
-                            <label for="lon" class="form-label">Longtitude</label>
-                            <input type="number" id="lon" class="form-control mb-2" placeholder="0" disabled>
+                            <label for="startTime" class="form-label">Start</label>
+                            <input type="datetime-local" id="startTime" class="form-control mb-2" required>
                         </div>
                         <div class="col-6">
-                            <label for="lat" class="form-label">Latitude</label>
-                            <input type="number" id="lat" class="form-control mb-2" placeholder="0" disabled>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div id="map" style="height:400px"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <label for="capacity" class="form-label">Capacity</label>
-                            <input type="number" id="capacity" class="form-control mb-2" placeholder="0"></input>
+                            <label for="endTime" class="form-label">End</label>
+                            <input type="datetime-local" id="endTime" class="form-control mb-2" required>
                         </div>
                     </div>
                     <div class="mt-1">

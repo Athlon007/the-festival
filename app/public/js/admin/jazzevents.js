@@ -1,23 +1,16 @@
-console.log('test');
-
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;
-let editedAddressId = -1;
+let editedEvent = null;
 const locations = document.getElementById('locations');
 const masterEditor = document.getElementById('master-editor');
 
 // Artist fields.
-const name = document.getElementById('name-place');
-const postal = document.getElementById('postal');
-const street = document.getElementById('street');
-const number = document.getElementById('number');
-const city = document.getElementById('city');
-const country = document.getElementById('country');
-const lat = document.getElementById('lat');
-const lon = document.getElementById('lon');
-const locationType = document.getElementById('locationType');
-const capacity = document.getElementById('capacity');
+const artist = document.getElementById('artist');
+const locationSelect = document.getElementById('location');
+const price = document.getElementById('price');
+const startTime = document.getElementById('startTime');
+const endTime = document.getElementById('endTime');
 
 const btnSubmit = document.getElementById('submit');
 let isInCreationMode = false;
@@ -64,7 +57,7 @@ function createNewEntry(data) {
                 locations.appendChild(option);
                 locations.selectedIndex = locations.length - 1;
                 editedId = data.id;
-                editedAddressId = data.address.addressId;
+                editedEvent = data;
                 isInCreationMode = false;
                 btnSubmit.innerHTML = 'Save';
                 msgBox.createToast('Success!', 'Location has been created');
@@ -116,7 +109,7 @@ document.getElementById('delete').onclick = function () {
         return;
     }
 
-    msgBox.createYesNoDialog('Delete page', 'Are you sure you want to delete this location? This is irreversible!', function () {
+    msgBox.createYesNoDialog('Delete page', 'Are you sure you want to delete this event? This is irreversible!', function () {
         // fetch with post
         fetch('/api/locations/' + editedId, {
             method: 'DELETE',
@@ -152,7 +145,36 @@ document.getElementById('cancel').onclick = function () {
 function createNewOptionItem(element) {
     // create option
     let option = document.createElement('option');
-    option.innerHTML = element.name;
+
+    let name = element.name;
+    let location = element.location.name;
+    let dispStartTime = element.startTime.date;
+    let dispEndTime = element.endTime.date;
+
+    // make sure that name always is 15 chars long
+    if (name.length > 15) {
+        name = name.substring(0, 15) + '...';
+    } else {
+        while (name.length < 15) {
+            name += '&nbsp;';
+        }
+    }
+
+    // make sure that location always is 15 chars long
+    if (location.length > 15) {
+        location = location.substring(0, 15) + '...';
+    } else {
+        while (location.length < 15) {
+            location += '&nbsp;';
+        }
+    }
+
+    // display startTime and endTime in a following pattern: dd/mm/yyyy hh:mm
+    dispStartTime = dispStartTime.substring(8, 10) + '/' + dispStartTime.substring(5, 7) + '/' + dispStartTime.substring(0, 4) + ' ' + dispStartTime.substring(11, 16);
+    dispEndTime = dispEndTime.substring(8, 10) + '/' + dispEndTime.substring(5, 7) + '/' + dispEndTime.substring(0, 4) + ' ' + dispEndTime.substring(11, 16);
+
+    option.innerHTML = name + ' | ' + location + ' | ' + dispStartTime + ' | ' + dispEndTime;
+
     option.value = element.id;
 
     // on click
@@ -161,7 +183,7 @@ function createNewOptionItem(element) {
         btnSubmit.innerHTML = 'Save';
         isInCreationMode = false;
         // Do the api call to get the page content.
-        fetch('/api/locations/' + element.id, {
+        fetch('/api/events/jazz/' + element.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -171,23 +193,45 @@ function createNewOptionItem(element) {
             .then(data => {
                 if (!data.error_message) {
                     editedId = data.id;
-                    editedAddressId = data.address.addressId;
-                    name.value = data.name;
-                    postal.value = data.address.postalCode;
-                    street.value = data.address.streetName;
-                    city.value = data.address.city;
-                    number.value = data.address.houseNumber;
-                    country.value = data.address.country;
-                    lat.value = data.lat;
-                    lon.value = data.lon;
-                    locationType.value = data.locationType;
-                    capacity.value = data.capacity;
+                    editedEvent = data;
+
+                    // select the artist option corresponding to id in the select
+                    let options = artist.getElementsByTagName('option');
+                    for (let option of options) {
+                        if (option.value == data.artist.id) {
+                            option.selected = true;
+                            break;
+                        }
+                    }
+
+                    // select the location option corresponding to id in the selec
+                    options = locationSelect.getElementsByTagName('option');
+                    for (let option of options) {
+                        if (option.value == data.location.id) {
+                            option.selected = true;
+                            break;
+                        }
+                    }
+
+
+                    price.value = data.price;
+
+                    let dateStart = new Date(data.startTime.date);
+                    dateStart.setHours(dateStart.getHours() + 2);
+                    dateStart = dateStart.toISOString().slice(0, 16);
+                    startTime.value = dateStart;
+
+                    let dateEnd = new Date(data.endTime.date);
+                    dateEnd.setHours(dateEnd.getHours() + 2);
+                    dateEnd = dateEnd.toISOString().slice(0, 16);
+                    endTime.value = dateEnd;
                 } else {
                     msgBox.createToast('Something went wrong', data.error_message);
                 }
             })
             .catch(error => {
                 msgBox.createToast('Something went wrong', error);
+                console.error('Error:', error);
             });
     }
 
@@ -203,24 +247,14 @@ function loadList() {
 
     // Add empty unselected option
     let option = document.createElement('option');
-    option.innerHTML = 'Select Location';
+    option.innerHTML = 'Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+        '| Location&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+        ' | START&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | END';
     option.value = -1;
     option.disabled = true;
     locations.appendChild(option);
 
-    let url = '/api/locations';
-    if (locations.dataset.locations != undefined) {
-        url += "/type/" + locations.dataset.locations;
-        // We can set locationTypes to locked.
-        locationType.disabled = true;
-        locationType.value = locations.dataset.locations;
-    } else if (window.frameElement != null && window.frameElement.getAttribute('data-locations') != undefined) {
-        url += "/type/" + window.frameElement.getAttribute('data-locations');
-        // We can set locationTypes to locked.
-        locationType.disabled = true;
-        locationType.value = window.frameElement.getAttribute('data-locations');
-    }
-
+    let url = '/api/events/jazz';
     // fetch with post
     fetch(url, {
         method: 'GET',
@@ -251,6 +285,62 @@ function loadList() {
                 }
             }
         });
+
+    // load artist list to artist select
+    artist.innerHTML = '';
+    let jazzSelectOption = document.createElement('option');
+    jazzSelectOption.innerHTML = '-- Select Artist -- ';
+    jazzSelectOption.value = -1;
+    jazzSelectOption.disabled = true;
+    artist.appendChild(jazzSelectOption);
+    fetch('/api/artists/jazz?sort=name', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            // check if data is array
+            if (Array.isArray(data)) {
+                data.forEach(element => {
+                    let option = document.createElement('option');
+                    option.innerHTML = element.name;
+                    option.value = element.id;
+                    artist.appendChild(option);
+                });
+            }
+        }
+        );
+    artist.selectedIndex = 0;
+
+    // and now, load jazz locations.
+    location.innerHTML = '';
+    let jazzLocationOption = document.createElement('option');
+    jazzLocationOption.innerHTML = '-- Select Location -- ';
+    jazzLocationOption.value = -1;
+    jazzLocationOption.disabled = true;
+    locationSelect.appendChild(jazzLocationOption);
+    fetch('/api/locations/type/1?sort=name', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            // check if data is array
+            if (Array.isArray(data)) {
+                data.forEach(element => {
+                    let option = document.createElement('option');
+                    option.innerHTML = element.name;
+                    option.value = element.id;
+                    locationSelect.appendChild(option);
+                });
+            }
+        }
+        );
+    location.selectedIndex = -1;
 }
 
 loadList();
@@ -262,16 +352,11 @@ function toggleEditor(element, isEnabled) {
         element.classList.add('disabled-module');
         editedId = -1;
         editedAddressId = -1;
-        name.value = '';
-        postal.value = '';
-        street.value = '';
-        city.value = '';
-        number.value = '';
-        country.value = '';
-        lat.value = '';
-        lon.value = '';
-        locationType.value = -1;
-        capacity.value = '';
+        artist.selectedIndex = 0;
+        locationSelect.selectedIndex = 0;
+        price.value = '';
+        startTime.value = '';
+        endTime.value = '';
 
         if (locations.dataset.locations != undefined) {
             locationType.value = locations.dataset.locations;
@@ -281,91 +366,9 @@ function toggleEditor(element, isEnabled) {
 
 document.getElementById('new-page').onclick = function () {
     isInCreationMode = true;
+    toggleEditor(masterEditor, false);
     toggleEditor(masterEditor, true);
-    editedId = -1;
-    editedAddressId = -1;
-    locations.selectedIndex = 0;
-    name.value = '';
-    postal.value = '';
-    street.value = '';
-    city.value = '';
-    number.value = '';
-    country.value = '';
-    lat.value = '';
-    lon.value = '';
-    capacity.value = '';
-    btnSubmit.innerHTML = 'Create';
 }
-
-
-function fetchAddress() {
-    let postalCode = postal.value.replace(" ", "");
-    let houseNumber = number.value;
-
-    if (postalCode.length < 6 || houseNumber.length < 1) {
-        return;
-    }
-
-    let sendData = {
-        postalCode: postalCode,
-        houseNumber: houseNumber
-    }
-
-    fetch("/api/address/fetch-address", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(sendData)
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message != null) {
-                street.value = "";
-                city.value = "";
-                country.value = "";
-            }
-            else {
-                street.value = data.street;
-                city.value = data.city;
-                country.value = "Netherlands";
-
-                fetchGeocode();
-            }
-        });
-}
-
-function fetchGeocode() {
-
-    fetch("/api/locations/geocode?street="
-        + street.value + "&number=" + number.value + "&postal=" + postal.value + "&city=" + city.value,
-        {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message != null) {
-                lat.value = "";
-                lon.value = "";
-            }
-            else {
-                lat.value = data.lat;
-                lon.value = data.lon;
-            }
-        });
-}
-
-// on postal unselected
-number.onblur = function () {
-    fetchAddress();
-}
-postal.onblur = function () {
-    fetchAddress();
-}
-
 
 if (window.self != window.top) {
     let container = document.getElementsByClassName('container')[0];

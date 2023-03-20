@@ -230,6 +230,8 @@ function loadList() {
         locationType.value = window.frameElement.getAttribute('data-locations');
     }
 
+    url += "?sort=name";
+
     // fetch with post
     fetch(url, {
         method: 'GET',

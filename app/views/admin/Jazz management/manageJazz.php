@@ -46,26 +46,12 @@
             <iframe id="iframe" src="/admin/locations" data-locations="1" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
         </div>
 
-        <div id="Artist" class="data">
+        <div id="Artist" class="data" style="width:95%">
             <iframe id="iframe" src="/admin/artists" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
         </div>
 
-        <div id="Event" class="data">
-            <table class="table">
-                <tr>
-                    <th>Artist</th>
-                    <th>Venue</th>
-                    <th>Price</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                </tr>
-            </table>
-            <!-- Add button -->
-            <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
-                <div class="col-12 text-right">
-                    <a href="/addEvent" class="btn btn-success btn-lg">Add Event</a>
-                </div>
-            </div>
+        <div id="Event" class="data" style="width:95%">
+            <iframe id="iframe" src="/admin/jazz-events" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
         </div>
 
     </div>
