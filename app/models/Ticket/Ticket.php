@@ -2,14 +2,10 @@
 
 class Ticket implements JsonSerializable
 {
-
     protected $tickedId;
     protected $qr_code;
     protected Event $event;
     protected Customer $customer;
-
-    protected $quantity;
-
     protected $ticket_type;
 
     public function jsonSerialize(): mixed
@@ -19,7 +15,6 @@ class Ticket implements JsonSerializable
             'qr_code_data' => $this->qr_code,
             'event' => $this->event,
             'customer' => $this->customer,
-            'quantity' => $this->quantity,
             'ticket_type' => $this->ticket_type
         ];
     }
@@ -58,15 +53,6 @@ class Ticket implements JsonSerializable
     public function setCustomer(Customer $customer): void
     {
         $this->customer = $customer;
-    }
-    public function getQuantity(): int
-    {
-        return $this->quantity;
-    }
-
-    public function setQuantity(int $quantity): void
-    {
-        $this->quantity = $quantity;
     }
 
     public function getTicketType(): string
