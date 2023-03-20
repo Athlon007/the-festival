@@ -31,6 +31,7 @@
 <div>
         <div>
             <table class="table">
+                <thead>
                 <tr>
                     <th>Name</th>
                     <th>Location</th>
@@ -38,6 +39,34 @@
                     <th>Duration of Sessions</th>
                     <th>Available seats</th>
                 </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($restaurants as $restaurant) { ?>
+                            <tr>
+                                <td data-th="Restaurant Name">
+                                    <?php echo $restaurant->getRestaurantName(); ?>
+                                </td>
+                                <td data-th="address Id">
+                                    <?php echo $restaurant->getAddressId(); ?>
+                                </td>
+                                <td data-th="Number of Sessions">
+                                    <?php echo $restaurant->getNumOfSessions(); ?>
+                                </td>
+                                <td data-th="Duration of Sessions">
+                                    <?php echo $restaurant->getDurationOfSessions(); ?>
+                                </td>
+                                <td>
+                                    <form action="deleteRestaurant" method="POST">
+                                        <button type="submit" name="delete_restaurant" value="<?= $user->getUserId(); ?>"
+                                            class="btn btn-danger"
+                                            onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
+                                        <a href="updateUser?id=<?php echo $user->getUserId() ?>"
+                                            class="btn btn-primary">Update</a>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                </tbody>
             </table>
             <!-- Add button -->
             <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
