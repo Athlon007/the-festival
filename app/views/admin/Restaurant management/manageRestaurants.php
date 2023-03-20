@@ -1,4 +1,4 @@
-<!doctype html>
+<doctype html>
 <html lang="en">
 
 
@@ -68,7 +68,6 @@
                         <?php } ?>
                 </tbody>
             </table>
-            <!-- Add button -->
             <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
                 <div class="col-12 text-right">
                     <a href="/addRestaurant" class="btn btn-success btn-lg">Add Restautrant</a>
