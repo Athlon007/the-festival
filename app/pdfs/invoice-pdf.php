@@ -1,3 +1,5 @@
+//Is ticket template for now, will change
+
 <div class="container">
     <h1>The Festival Ticket</h1>
 
@@ -20,7 +22,7 @@
     <div class="ticket-info">
         <label>Event Time:</label>
         <p>
-            <?= $ticket->getEvent()->getStartTime()->format('H:i') ?>
+            <?= $ticket->getEvent()->getStartTime()->format('H:i') ?> -
             <?= $ticket->getEvent()->getEndTime()->format('H:i') ?>
         </p>
     </div>
@@ -56,6 +58,7 @@
     <hr>
 </div>
 </div>
+
 
 
 <style>
