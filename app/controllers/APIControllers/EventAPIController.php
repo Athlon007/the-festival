@@ -85,36 +85,39 @@ class EventAPIController extends APIController
     {
         $data = json_decode(file_get_contents('php://input'), true);
 
-        if (str_starts_with($uri, '/api/events/jazz')) {
-            $artistId = basename($uri);
-            require_once(__DIR__ . '/../../services/JazzArtistService.php');
-            $artistService = new JazzArtistService();
-            $artist = $artistService->getById($artistId);
+        try {
+            if (str_starts_with($uri, '/api/events/jazz')) {
+                require_once(__DIR__ . '/../../services/JazzArtistService.php');
+                $artistService = new JazzArtistService();
+                $artist = $artistService->getById($data['artist']['artistId']);
 
-            require_once(__DIR__ . '/../../services/LocationService.php');
-            $locationService = new LocationService();
-            $location = $locationService->getById($data['location']['locationId']);
+                require_once(__DIR__ . '/../../services/LocationService.php');
+                $locationService = new LocationService();
+                $location = $locationService->getById($data['location']['locationId']);
 
-            $event = new MusicEvent(
-                null,
-                $data['name'],
-                new DateTime($data['startTime']),
-                new DateTime($data['endTime']),
-                $data['price'],
-                $artist,
-                $location
-            );
+                $event = new MusicEvent(
+                    null,
+                    $data['name'],
+                    new DateTime($data['startTime']),
+                    new DateTime($data['endTime']),
+                    $data['price'],
+                    $artist,
+                    $location
+                );
 
-            try {
-                $event = $this->service->addEvent($event);
+                try {
+                    $event = $this->service->addEvent($event);
 
-                echo json_encode($event);
-            } catch (Exception $e) {
-                $this->sendErrorMessage($e->getMessage());
+                    echo json_encode($event);
+                } catch (Exception $e) {
+                    $this->sendErrorMessage($e->getMessage());
+                }
+            } elseif (str_starts_with($uri, '/api/events/stroll')) {
+            } else {
+                $this->sendErrorMessage('Invalid request', 400);
             }
-        } elseif (str_starts_with($uri, '/api/events/stroll')) {
-        } else {
-            $this->sendErrorMessage('Invalid request', 400);
+        } catch (Throwable $e) {
+            $this->sendErrorMessage("Unhandled exception", 500);
         }
     }
 }

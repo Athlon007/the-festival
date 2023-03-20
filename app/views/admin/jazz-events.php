@@ -60,6 +60,7 @@
                     <div class="mt-1">
                         <button id="submit" class="btn btn-success">Save</button>
                         <button id="cancel" class="btn btn-secondary">Cancel</button>
+                        <button id="open" class="btn btn-primary">Open</button>
                         <button id="delete" class="btn btn-danger float-end">Delete</button>
                     </div>
                 </div>

@@ -96,7 +96,7 @@ class EventRepository extends Repository
         $stmt->bindParam(':startTime', $startToString, PDO::PARAM_STR);
         $endToString = $this->formatDateTimeToString($endTime);
         $stmt->bindParam(':endTime', $endToString, PDO::PARAM_STR);
-        $stmt->bindParam(':price', $price, PDO::PARAM_STR);
+        $stmt->bindValue(':price', $price);
         $stmt->execute();
 
         return $this->connection->lastInsertId();

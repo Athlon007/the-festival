@@ -4,6 +4,7 @@ let editedId = -1;
 let editedEvent = null;
 const locations = document.getElementById('locations');
 const masterEditor = document.getElementById('master-editor');
+const btnOpen = document.getElementById('open');
 
 // Artist fields.
 const artist = document.getElementById('artist');
@@ -17,11 +18,9 @@ let isInCreationMode = false;
 
 const msgBox = new MsgBox();
 
-let pin;
-
 
 function updateExistingEntry(id, data) {
-    fetch('/api/locations/' + id, {
+    fetch('/api/eventz/jazz' + id, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -43,7 +42,7 @@ function updateExistingEntry(id, data) {
 }
 
 function createNewEntry(data) {
-    fetch('/api/locations', {
+    fetch('/api/events/jazz', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -75,26 +74,26 @@ function createNewEntry(data) {
 }
 
 btnSubmit.onclick = function () {
+    let start = new Date(startTime.value);
+    start = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate() + ' ' + start.getHours() + ':' + start.getMinutes() + ':' + start.getSeconds();
+
+    let end = new Date(endTime.value);
+    end = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate() + ' ' + end.getHours() + ':' + end.getMinutes() + ':' + end.getSeconds();
+
     // to json
     let data = {
-        name: name.value,
-        locationType: locationType.value,
-        capacity: capacity.value,
-        lat: lat.value,
-        lon: lon.value,
-        address: {
-            addressId: editedAddressId,
-            postalCode: postal.value,
-            streetName: street.value,
-            houseNumber: number.value,
-            city: city.value,
-            country: country.value
+        id: 0,
+        name: artist.options[artist.selectedIndex].text,
+        startTime: start,
+        endTime: end,
+        price: price.value,
+        artist: {
+            artistId: artist.value
+        },
+        location: {
+            locationId: locationSelect.value
         }
     };
-
-    if (data.capacity === '') {
-        data.capacity = 0;
-    }
 
     if (isInCreationMode) {
         createNewEntry(data);
@@ -225,6 +224,11 @@ function createNewOptionItem(element) {
                     dateEnd.setHours(dateEnd.getHours() + 2);
                     dateEnd = dateEnd.toISOString().slice(0, 16);
                     endTime.value = dateEnd;
+
+                    btnOpen.onclick = function () {
+                        window.open('/festival/jazz/event/' + data.id, '_blank');
+                    }
+
                 } else {
                     msgBox.createToast('Something went wrong', data.error_message);
                 }
@@ -351,7 +355,7 @@ function toggleEditor(element, isEnabled) {
     } else {
         element.classList.add('disabled-module');
         editedId = -1;
-        editedAddressId = -1;
+        editedEvent = null;
         artist.selectedIndex = 0;
         locationSelect.selectedIndex = 0;
         price.value = '';
