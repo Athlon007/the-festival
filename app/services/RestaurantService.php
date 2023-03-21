@@ -15,13 +15,14 @@ class RestaurantService{
     public function insertRestaurant(Restaurant $restaurant): void
     {
         try {
-            $query = "INSERT INTO restaurants (name, addressId, numOfSessions, durationOfSessions) VALUES (:name, :addressId, :numOfSessions, :durationOfSessions)";
+            $query = "INSERT INTO restaurants (name, addressId, numOfSessions, durationOfSessions, description) VALUES (:name, :addressId, :numOfSessions, :durationOfSessions, :description)";
             $stmt = $this->connection->prepare($query);
 
             $stmt->bindValue(":name", $restaurant->getRestaurantName());
             $stmt->bindValue(":addressId", $restaurant->getAddressId());
             $stmt->bindValue(":numOfSessions", $restaurant->getNumOfSessions());
             $stmt->bindValue(":durationOfSessions", $restaurant->getDurationOfSessions());
+            $stmt->bindValue(":description", $restaurant->getDescription());
 
             $stmt->execute();
         }  
@@ -29,7 +30,7 @@ class RestaurantService{
             throw ($ex);
         }
     }
-    public function createNewRestaurant(string $name, int $addressId, int $numOfSessions, time $durationOfSessions): void
+    public function createNewRestaurant(string $name, int $addressId, int $numOfSessions, string $durationOfSessions, string $description): void
     {
         try {
             $restaurant = new Restaurant();
@@ -37,6 +38,7 @@ class RestaurantService{
             $restaurant->setAddressId($addressId);
             $restaurant->setNumOfSessions($numOfSessions);
             $restaurant->setDurationOfSessions($durationOfSessions);
+            $restaurant->setDescription($description);
 
             $this->repository->insertRestaurant($restaurant);
         } 

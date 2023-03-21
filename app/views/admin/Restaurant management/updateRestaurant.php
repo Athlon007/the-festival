@@ -19,28 +19,34 @@
     <script type="module" src="/js/nav.js"></script>
     <form action="updateUser" method="POST">
         <div class="form-group">
-            <label for="userID">Restaurant ID</label>
+            <label for="RestaurantId">Restaurant ID</label>
             <input type="text" class="form-control" id="userID" name="userID" value="<?php echo $restaurant->getRestaurantId(); ?>"
                 readonly>
         </div>
         <div class="form-group">
-            <label for="firstName">Restaurant Name</label>
-            <input type="text" class="form-control" id="firstName" name="firstName"
+            <label for="name">Restaurant Name</label>
+            <input type="text" class="form-control" id="name" name="name"
                 value="<?php echo $restaurant->getRestaurantName(); ?>" autocomplete="off">
         </div>
         <div class="form-group">
-            <label for="lastName">Address</label>
-            <input type="text" class="form-control" id="lastName" name="lastName"
+            <label for="description">Restaurant Description</label>
+            <input type="text" class="form-control" id="description" name="description"
+                value="<?php echo $restaurant->getDescription(); ?>" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label for="addressId">Address</label>
+            <input type="text" class="form-control" id="addressId" name="addressId"
                 value="<?php echo $restaurant->getAddressId(); ?>" autocomplete="off">
         </div>
         <div class="form-group">
-            <label for="username">Number of Sessions</label>
-            <input type="number" class="form-control" id="username" name="username"
+            <label for="amount">Number of Sessions</label>
+            <input type="number" class="form-control" id="amount" name="amount"
                 value="<?php echo $restaurant->getNumOfSessions(); ?>" autocomplete="off">
         </div>
         <div class="form-group">
-            <label for="username">Duration of the Sessions</label>
-            <input type="time" class="form-control" id="username" name="username"
+            <label for="duration">Duration of the Sessions</label>
+            <input type="time" class="form-control" id="duration" name="duration"
                 value="<?php echo $restaurant->getDurationOfSessions(); ?>" autocomplete="off">
         </div>
 

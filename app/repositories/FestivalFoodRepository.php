@@ -7,10 +7,10 @@ class FestivalFoodRepository extends Repository
     public function getAllRestaurants()
     {
         try {
-            $query = "SELECT * FROM ";
+            $query = "SELECT * FROM restaurants ";
             $stmt = $this->connection->prepare($query);
             $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_CLASS, 'FestivalFood');
+            //$stmt->setFetchMode(PDO::FETCH_CLASS, 'FestivalFood');
 
             $result = $stmt->fetchAll();
 

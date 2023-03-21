@@ -1,13 +1,21 @@
 <?php
 
+/**
+ * Summary of Restaurant
+ */
 class Restaurant implements JsonSerializable{
 
 protected int $restaurantId;
 protected String $restaurantName;
 protected int $addressId;
 protected int $numOfSessions;
-protected time $durationOfSessions;
+protected string $durationOfSessions;
+protected string $description;
 
+/**
+ * Summary of jsonSerialize
+ * @return mixed
+ */
 public function jsonSerialize() : mixed
 {
     return [
@@ -85,7 +93,7 @@ public function jsonSerialize() : mixed
 	/**
 	 * @return time
 	 */
-	public function getDurationOfSessions(): time {
+	public function getDurationOfSessions(): string {
 		return $this->durationOfSessions;
 	}
 	
@@ -95,6 +103,22 @@ public function jsonSerialize() : mixed
 	 */
 	public function setDurationOfSessions(time $durationOfSessions): self {
 		$this->durationOfSessions = $durationOfSessions;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription(): string {
+		return $this->description;
+	}
+	
+	/**
+	 * @param string $description 
+	 * @return self
+	 */
+	public function setDescription(string $description): self {
+		$this->description = $description;
 		return $this;
 	}
 }
