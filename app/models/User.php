@@ -9,6 +9,8 @@ class User implements JsonSerializable
     protected string $hashPassword;
     protected int $userType;
 
+    protected DateTime $registrationDate;
+
     public function jsonSerialize() : mixed
     {
         return [
@@ -17,7 +19,8 @@ class User implements JsonSerializable
             'firstName' => $this->firstName,
             'lastName' => $this->lastName,
             'hashPassword' => $this->hashPassword,
-            'userType' => $this->userType
+            'userType' => $this->userType,
+            'registrationDate' => $this->registrationDate->format('Y-m-d')
         ];
     }
     public function getUserId() : int
@@ -99,10 +102,22 @@ class User implements JsonSerializable
         $this->userType = $userType;
     }
 
+    public function getRegistrationDate() : DateTime
+    {
+        return $this->registrationDate;
+    }
+
+    public function setRegistrationDate(DateTime $date) : void
+    {
+        $this->registrationDate = $date;
+    }
+
     public function isAdmin() : bool
     {
         return $this->userType == 1;
     }
+
+    
 }
 
 ?>

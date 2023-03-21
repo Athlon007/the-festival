@@ -19,7 +19,6 @@
     <script type="module" src="/js/nav.js"></script>
 
 
-    <!-- <form action="updateUser" method="POST"> -->
     <div class="form-group">
         <label for="userID">User ID</label>
         <input type="text" style="background-color:gray" class="form-control" id="userID" name="userID"
@@ -50,10 +49,15 @@
         </select>
     </div>
 
+    <div class="form-group">
+        <label for="userID">Registration Date</label>
+        <input type="text" style="background-color:gray" class="form-control" id="registrationDate" name="registrationDate"
+            value="<?php echo $user->getRegistrationDate()->format('d-m-Y'); ?>" readonly>
+    </div>
+
 
     <button id="updateUserButton" type="button" class="btn btn-primary"
         onclick="updateUser('<?= $user->getUserId(); ?>')">Update</button>
-    <!-- </form> -->
 
     <script src="../js/admin/manageUser.js"></script>
 
