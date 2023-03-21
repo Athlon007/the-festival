@@ -5,8 +5,10 @@ class Order implements JsonSerializable
     private int $orderId;
     private array $tickets;
     private Customer $customer;
-    private ?DateTime $orderDate;
+    private DateTime $orderDate;
     private bool $isPaid;
+    private float $totalBasePrice;
+    private float $totalVat;
     private float $totalPrice;
    
     public function jsonSerialize(){
