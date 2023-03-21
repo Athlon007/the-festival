@@ -37,7 +37,7 @@ class AddressRepository extends Repository
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if (is_bool($result))
+            if (!$result)
                 throw new AddressNotFoundException();
             else
                 $streetName = $result['streetName'];

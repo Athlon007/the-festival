@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * This class is the controller for the Order API.
+ * @author Joshua
+ */
 class OrderAPIController extends APIController
 {
     private $orderService;
