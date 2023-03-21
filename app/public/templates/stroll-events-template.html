@@ -1,8 +1,8 @@
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 my-auto">
             <div class="row mb-3">
-                <div class="col-md-6 dateOfTour" style="width: 50%; float:left;">
+                <div class="col-md-6 dateOfTour" style="width: 50%; float:left; align-items: center;">
                     <label for="date" class="form-label">Date</label>
                     <select class="form-select" id="date">
                         <option selected="">Choose Date</option>
@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-6 languageOfTour" style="width: 50%; float:left;">
+                <div class="col-md-6" style="width: 50%; float:left;">
                     <label for="language" class="form-label">Language</label>
                     <select class="form-select" id="language">
                         <option selected="">Select language</option>
@@ -32,16 +32,14 @@
                     <select class="form-select" id="ticket">
                         <option selected="">Select ticket</option>
                         <option value="single">Single : € 17.50</option>
-                        } ?&gt;
                         <option value="family">Family(4p): € 60.00</option>
-                        } ?&gt;
                     </select>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary applyPreferencesButton">Apply preferences</button>
         </div>
         <div class="col-md-6">
-            <div class="scrollable-tickets" id="events-container">
+            <div class="overflow-auto px-2" id="events-container" style="max-height: 600px;">
             </div>
         </div>
     </div>
