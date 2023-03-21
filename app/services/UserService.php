@@ -51,7 +51,7 @@ class UserService
         }
     }
 
-    public function createNewUser(string $email, string $firstName, string $lastName, string $password, int $usertype): void
+    public function createNewUser(string $email, string $firstName, string $lastName, string $password, int $usertype, DateTime $registrationDate): void
     {
         try {
             //Create user object
@@ -60,6 +60,7 @@ class UserService
             $user->setFirstName($firstName);
             $user->setLastName($lastName);
             $user->setUserType($usertype);
+            $user->setRegistrationDate($registrationDate);
 
             //Hash password
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -227,27 +228,6 @@ class UserService
     {
         try {
             return $this->repository->getAllUsers();
-        } catch (Exception $ex) {
-            throw ($ex);
-        }
-    }
-
-    public function addUser($data) : void{
-        try {
-            $user = new User();
-            $user->setFirstName(htmlspecialchars($data->firstName));
-            $user->setLastName(htmlspecialchars($data->lastName));
-            $user->setEmail(htmlspecialchars($data->email));
-            $password = htmlspecialchars($data->password);
-            $user->setHashPassword(password_hash($password, PASSWORD_DEFAULT));
-
-            if (htmlspecialchars($data->role == "admin")) {
-                $user->setUserType(1);
-            } else {
-                $user->setUserType(2);
-            }
-
-            $this->repository->addUser($user);
         } catch (Exception $ex) {
             throw ($ex);
         }

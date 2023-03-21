@@ -73,6 +73,9 @@
                                         <?php
                                     } ?>
                                 </td>
+                                <td data-th="RegistrationDate">
+                                    <?= $user->getRegistrationDate()->format('d-m-Y'); ?>
+                                </td>
                                 <td>
                                     <div class="form-group">
                                         <button type="submit" name="delete_user" id="deleteUserButton"
