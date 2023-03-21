@@ -5,8 +5,8 @@ class Ticket implements JsonSerializable
     protected $tickedId;
     protected $qr_code;
     protected Event $event;
-    protected Customer $customer;
     protected $ticket_type;
+    protected Order $order;
 
     public function jsonSerialize(): mixed
     {
@@ -14,8 +14,8 @@ class Ticket implements JsonSerializable
             'ticketId' => $this->tickedId,
             'qr_code_data' => $this->qr_code,
             'event' => $this->event,
-            'customer' => $this->customer,
-            'ticket_type' => $this->ticket_type
+            'ticket_type' => $this->ticket_type,
+            'order' => $this->order
         ];
     }
 
@@ -43,16 +43,6 @@ class Ticket implements JsonSerializable
     public function setEvent(Event $event): void
     {
         $this->event = $event;
-    }
-
-    public function getCustomer(): Customer
-    {
-        return $this->customer;
-    }
-
-    public function setCustomer(Customer $customer): void
-    {
-        $this->customer = $customer;
     }
 
     public function getTicketType(): string

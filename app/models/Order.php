@@ -2,6 +2,7 @@
 
 class Order implements JsonSerializable
 {
+    private int $orderId;
     private array $tickets;
     private Customer $customer;
     private ?DateTime $orderDate;
@@ -10,6 +11,7 @@ class Order implements JsonSerializable
    
     public function jsonSerialize(){
     return [
+        'orderId' => $this->orderId,
         'tickets' => $this->tickets,
         'customer' => $this->customer,
         'orderDate' => $this->orderDate,
@@ -17,11 +19,20 @@ class Order implements JsonSerializable
     ];
     }
 
-    public function __construct($customer){
+    public function __construct(){
         $this->tickets = [];	
-        $this->customer = $customer;
         $this->orderDate = new DateTime();
         $this->isPaid = false;
+    }
+
+    public function getOrderId(): int
+    {
+        return $this->orderId;
+    }
+
+    public function setOrderId(int $orderId): void
+    {
+        $this->orderId = $orderId;
     }
 
     public function getTickets(): array

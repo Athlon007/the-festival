@@ -1,7 +1,11 @@
 <?php
 class OrderController
 {
-    public function showCart(){
+    public function showOrderCart(){
+        session_start();
+        if(!isset($_SESSION['order'])){
+            $_SESSION['order'] = new Order();
+        }
         
     }
 

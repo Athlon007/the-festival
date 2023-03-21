@@ -170,4 +170,14 @@ class TicketService
         }
     }
 
+    public function addTicketToOrder($orderId, $ticketId)
+    {
+        return $this->repository->addTicketToOrder($orderId, $ticketId);
+    }
+
+    public function removeTicketFromOrder($orderId, $ticketId)
+    {
+        return $this->repository->removeTicketFromOrder($orderId, $ticketId);
+    }
+
 }

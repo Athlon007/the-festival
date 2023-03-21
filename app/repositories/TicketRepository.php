@@ -66,4 +66,12 @@ class TicketRepository extends Repository
         }
     }
 
+    public function addTicketToOrder(Ticket $ticket){
+
+    }
+
+    public function removeTicketFromOrder($orderId, $ticketId){
+
+    }
+
 }
