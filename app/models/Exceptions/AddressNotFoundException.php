@@ -2,6 +2,7 @@
 
 /**
  * Thrown when requested addressId was not found in the database.
+ * @author Joshua
  */
 class AddressNotFoundException extends Exception
 {
