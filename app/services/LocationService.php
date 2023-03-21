@@ -16,9 +16,9 @@ class LocationService
         $this->addressService = new AddressService();
     }
 
-    public function getAll(): array
+    public function getAll($sort = null): array
     {
-        return $this->repo->getAll();
+        return $this->repo->getAll($sort);
     }
 
     public function getById($id): Location
@@ -26,9 +26,9 @@ class LocationService
         return $this->repo->getById($id);
     }
 
-    public function getLocationsByType(int $type): array
+    public function getLocationsByType(int $type, $sort = null): array
     {
-        return $this->repo->getLocationsByType($type);
+        return $this->repo->getLocationsByType($type, $sort);
     }
 
     public function insertLocation($name, $streetName, $houseNumber, $postalCode, $city, $country, $locationType, $lon, $lat, $capacity): Location

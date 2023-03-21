@@ -3,6 +3,7 @@
 require_once(__DIR__ . "/../models/Event.php");
 require_once(__DIR__ . "/../models/Music/MusicEvent.php");
 require_once(__DIR__ . "/../repositories/EventRepository.php");
+require_once(__DIR__ . "/../models/Exceptions/InvalidVariableException.php");
 
 class EventService
 {
@@ -50,6 +51,13 @@ class EventService
 
     public function addEvent($event): Event
     {
+        $event->setName(htmlspecialchars($event->getName()));
+        $event->setPrice(htmlspecialchars($event->getPrice()));
+
+        if ($event->getStartTime() > $event->getEndTime()) {
+            throw new InvalidVariableException("Start time cannot be after end time");
+        }
+
         $id = $this->repo->createEvent(
             $event->getName(),
             $event->getStartTime(),
@@ -67,5 +75,40 @@ class EventService
         }
 
         return $this->repo->getJazzEventById($id);
+    }
+
+    public function editEvent($event): Event
+    {
+        $event->setName(htmlspecialchars($event->getName()));
+        $event->setPrice(htmlspecialchars($event->getPrice()));
+
+        if ($event->getStartTime() > $event->getEndTime()) {
+            throw new InvalidVariableException("Start time cannot be after end time");
+        }
+
+        $this->repo->updateEvent(
+            $event->getId(),
+            $event->getName(),
+            $event->getStartTime(),
+            $event->getEndTime(),
+            $event->getPrice()
+        );
+
+        // if event is type of jazzevent
+        if ($event instanceof MusicEvent) {
+            $this->repo->updateJazzEvent(
+                $event->getId(),
+                $event->getArtist()->getId(),
+                $event->getLocation()->getLocationId()
+            );
+        }
+
+        return $this->repo->getEventById($event->getId());
+    }
+
+    public function deleteEvent($id)
+    {
+        $id = htmlspecialchars($id);
+        $this->repo->deleteById($id);
     }
 }

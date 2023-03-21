@@ -31,9 +31,14 @@ class LocationRepository extends Repository
         return $output;
     }
 
-    public function getAll()
+    public function getAll($sort = null)
     {
         $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat, description FROM `Locations`";
+        if ($sort == "name") {
+            $sql .= " ORDER BY name";
+        } else if ($sort == "capacity") {
+            $sql .= " ORDER BY capacity";
+        }
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
@@ -60,9 +65,14 @@ class LocationRepository extends Repository
         return empty($locations) ? null : $locations[0];
     }
 
-    public function getLocationsByType($type)
+    public function getLocationsByType($type, $sort = null)
     {
         $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat FROM Locations WHERE locationType = :type";
+        if ($sort == "name") {
+            $sql .= " ORDER BY name";
+        } else if ($sort == "capacity") {
+            $sql .= " ORDER BY capacity";
+        }
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":type", $type, PDO::PARAM_INT);
         $stmt->execute();

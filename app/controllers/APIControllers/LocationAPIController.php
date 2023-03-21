@@ -43,8 +43,13 @@ class LocationAPIController extends APIController
             return;
         }
 
+        $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
+
         if (str_starts_with($uri, "/api/locations/type/")) {
-            echo json_encode($this->locationService->getLocationsByType(basename($uri)));
+            $base = basename($uri);
+            // remove stuf after ?
+            $base = explode("?", $base)[0];
+            echo json_encode($this->locationService->getLocationsByType($base, $sort));
             return;
         }
 
@@ -53,7 +58,7 @@ class LocationAPIController extends APIController
             return;
         }
 
-        echo json_encode($this->locationService->getAll());
+        echo json_encode($this->locationService->getAll($sort));
     }
 
     public function handlePostRequest($uri)
