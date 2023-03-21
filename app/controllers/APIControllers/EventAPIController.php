@@ -61,7 +61,7 @@ class EventAPIController extends APIController
 
                 echo json_encode($this->service->getJazzEvents($sort, $filters));
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
-                require_once(__DIR__ . "/../services/FestivalHistoryService.php");
+                require_once(__DIR__ . "/../../services/FestivalHistoryService.php");
                 $strollService = new FestivalHistoryService();
 
                 if (is_numeric(basename($uri))) {
@@ -86,7 +86,7 @@ class EventAPIController extends APIController
                     $filters['ticket_type'] = $_GET['ticket_type'];
                 }
 
-                echo json_encode($strollService->getAllHistoryEvents()));
+                echo json_encode($strollService->getAllHistoryEvents());
             } else {
                 if (is_numeric(basename($uri))) {
                     $id = basename($uri);
@@ -104,7 +104,7 @@ class EventAPIController extends APIController
         } catch (TypeError $e) {
             $this->sendErrorMessage("Event not found", 404);
         } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled exception", 500);
+            $this->sendErrorMessage("Unhandled exception: " . $e->getMessage(), 500);
         }
     }
 

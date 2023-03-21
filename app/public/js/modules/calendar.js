@@ -5,6 +5,7 @@ let fcScript = document.createElement('script');
 fcScript.src = 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js';
 fcScript.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(fcScript);
+let calendar = null;
 
 // Wait for FullCalendar to be defined 5 times every 1 second.
 let calendarLoadRetries = 0;
@@ -26,7 +27,7 @@ let calLoadInterval = setInterval(() => {
 
 function loadCalendar() {
     var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+    calendar = new FullCalendar.Calendar(calendarEl, {
         themeSystem: 'bootstrap5',
         initialView: 'timeGridWeek4Days',
         selectable: true,
@@ -68,8 +69,12 @@ function loadCalendar() {
                     calendar.scrollToTime('10:00:00');
                 }
             }
+        },
+        eventContent: function (info) {
+            return { html: "<center>" + info.event.title + "</center>" };
         }
     });
+
     calendar.render();
 
     // wait for calendar to be rendered
@@ -113,6 +118,8 @@ function loadCalendar() {
         loadAllEvents();
     } else if (calendarEl.dataset.calendarType === 'personal') {
         // TODO: Load events for the current user from the database.
+    } else if (calendarEl.dataset.calendarType === 'stroll') {
+        loadStrollEvents();
     }
 
     function loadAllEvents() {
@@ -141,6 +148,30 @@ function loadCalendar() {
                     }
 
                     addEvent(e.name, new Date(e.startTime.date), new Date(e.endTime.date), url, backgroundColor, borderColor);
+                }
+
+            }
+            );
+    }
+
+    function loadStrollEvents() {
+        fetch('/api/events/stroll',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        ).then(response => response.json())
+            .then(data => {
+                for (let e of data) {
+                    const backgroundColor = "#e2e0da";
+                    const borderColor = "#412c0c";
+                    const url = "#";
+
+                    let text = "<center>" + e.guide.language + "<br>" + e.guide.guideName + "  " + e.guide.lastName + "</center>";
+
+                    addEvent(text, new Date(e.startTime.date), new Date(e.endTime.date), url, backgroundColor, borderColor);
                 }
 
             }
