@@ -116,6 +116,9 @@ class Router
             case "/admin/artists":
                 require("views/admin/artists.php");
                 break;
+            case "/admin/jazz-events":
+                require("views/admin/jazz-events.php");
+                break;
             case "/admin/images":
                 require("views/admin/images.php");
                 break;
@@ -175,51 +178,51 @@ class Router
                 $jazzController = new JazzController();
                 $jazzController->manageJazz();
                 break;
-                case "/addVenue":
-                    require_once("controllers/JazzController.php");
-                    $jazzController = new JazzController();
-                    $jazzController->addVenue();
-                    break;  
-                case "/updateVenue":
-                    require_once("controllers/JazzController.php");
-                    $jazzController = new JazzController();
-                    $jazzController->updateVenue();
-                    break;
-                case "/addArtist":
-                    require_once("controllers/JazzController.php");
-                    $jazzController = new JazzController();
-                    $jazzController->addArtist();
-                    break;
-                case "/updateArtist":
-                    require_once("controllers/JazzController.php");
-                    $jazzController = new JazzController();
-                    $jazzController->updateArtist();
-                    break;
-                case "/addEvent":
-                    require_once("controllers/JazzController.php");
-                    $jazzController = new JazzController();
-                    $jazzController->addEvent();
-                    break;
-                case "/updateEvent":
-                    require_once("controllers/JazzController.php");
-                    $jazzController = new JazzController();
-                    $jazzController->updateEvent();
-                    break;    
+            case "/addVenue":
+                require_once("controllers/JazzController.php");
+                $jazzController = new JazzController();
+                $jazzController->addVenue();
+                break;
+            case "/updateVenue":
+                require_once("controllers/JazzController.php");
+                $jazzController = new JazzController();
+                $jazzController->updateVenue();
+                break;
+            case "/addArtist":
+                require_once("controllers/JazzController.php");
+                $jazzController = new JazzController();
+                $jazzController->addArtist();
+                break;
+            case "/updateArtist":
+                require_once("controllers/JazzController.php");
+                $jazzController = new JazzController();
+                $jazzController->updateArtist();
+                break;
+            case "/addEvent":
+                require_once("controllers/JazzController.php");
+                $jazzController = new JazzController();
+                $jazzController->addEvent();
+                break;
+            case "/updateEvent":
+                require_once("controllers/JazzController.php");
+                $jazzController = new JazzController();
+                $jazzController->updateEvent();
+                break;
             case "/manageHistory":
                 require_once("controllers/HistoryController.php");
                 $historyController = new HistoryController();
                 $historyController->manageHistory();
                 break;
-                case "/addLocation":
-                    require_once("controllers/HistoryController.php");
-                    $historyController = new HistoryController();
-                    $historyController->addLocation();
-                    break;
-                    case "/addTour":
-                        require_once("controllers/HistoryController.php");
-                        $historyController = new HistoryController();
-                        $historyController->addTour();
-                        break;   
+            case "/addLocation":
+                require_once("controllers/HistoryController.php");
+                $historyController = new HistoryController();
+                $historyController->addLocation();
+                break;
+            case "/addTour":
+                require_once("controllers/HistoryController.php");
+                $historyController = new HistoryController();
+                $historyController->addTour();
+                break;
             case "/manageDance":
                 require_once("controllers/DanceController.php");
                 $danceController = new DanceController();

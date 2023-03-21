@@ -19,10 +19,11 @@ class LocationRepository extends Repository
             $lon = $row["lon"];
             $lat = $row["lat"];
             $capacity = $row["capacity"];
+            $description = isset($row["description"]) ? $row["description"] : null;
 
             $address = $addressRepository->getAddressById($addressId);
 
-            $location = new Location($locationId, $name, $address, $locationType, $lon, $lat, $capacity);
+            $location = new Location($locationId, $name, $address, $locationType, $lon, $lat, $capacity, $description);
 
             array_push($output, $location);
         }
@@ -30,15 +31,29 @@ class LocationRepository extends Repository
         return $output;
     }
 
-    public function getAll()
+    public function getAll($sort = null)
     {
-        $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat FROM `Locations`";
+        $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat, description FROM `Locations`";
+        if ($sort == "name") {
+            $sql .= " ORDER BY name";
+        } else if ($sort == "capacity") {
+            $sql .= " ORDER BY capacity";
+        }
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
         return $this->buildLocations($result);
     }
 
+    // Location type of history is 3
+    public function getAllHistoryLocations()
+    {
+        $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat, description FROM `Locations` WHERE locationType = 3";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        return $this->buildLocations($result);
+    }
     public function getById($id)
     {
         $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat FROM Locations WHERE locationId = :id";
@@ -50,9 +65,14 @@ class LocationRepository extends Repository
         return empty($locations) ? null : $locations[0];
     }
 
-    public function getLocationsByType($type)
+    public function getLocationsByType($type, $sort = null)
     {
         $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat FROM Locations WHERE locationType = :type";
+        if ($sort == "name") {
+            $sql .= " ORDER BY name";
+        } else if ($sort == "capacity") {
+            $sql .= " ORDER BY capacity";
+        }
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":type", $type, PDO::PARAM_INT);
         $stmt->execute();

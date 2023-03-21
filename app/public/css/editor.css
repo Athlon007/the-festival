@@ -181,3 +181,8 @@ h2 {
 h1 {
     text-shadow: none;
 }
+
+#locations>option {
+    font-family: monospace;
+    font-size: 12px;
+}
