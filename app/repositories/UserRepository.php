@@ -187,13 +187,13 @@ class UserRepository extends Repository
             $stmt = $this->connection->prepare($query);
             $stmt->bindValue(':id', $id);
             $stmt->execute();
-        
+
             $result = $stmt->fetch();
 
             if (is_bool($result))
-                return null;
-            else
-                return $result;
+                throw new UserNotFoundException("User ID not found");
+
+            return $this->buildUser($result);
         } catch (Exception $ex) {
             throw ($ex);
         }

@@ -40,6 +40,7 @@
                             <th>Last Name</th>
                             <th>Email</th>
                             <th>Role</th>
+                            <th>Registration Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -73,7 +74,7 @@
                                         <?php
                                     } ?>
                                 </td>
-                                <td data-th="RegistrationDate">
+                                <td data-th="Registration Date">
                                     <?= $user->getRegistrationDate()->format('d-m-Y'); ?>
                                 </td>
                                 <td>
