@@ -8,7 +8,7 @@ class RestaurantRepository extends Repository
     public function getAllRestaurants()
     {
         try {
-            $query = "Select * from ";
+            $query = "SELECT * FROM restaurants";
             $stmt = $this->connection->prepare($query);
             $stmt->execute();
             $stmt->setFetchMode(PDO::FETCH_CLASS, 'Restaurant');
@@ -25,6 +25,19 @@ class RestaurantRepository extends Repository
             throw ($ex);
         }
     }
+
+    public function deleteRestaurant($id)
+    {
+        try {
+            $stmt = $this->connection->prepare("DELETE FROM restaurants WHERE restaurantId = :id");
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+        }
+        catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
+
 
 
 

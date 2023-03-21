@@ -228,7 +228,11 @@ class Router
                 $danceController = new DanceController();
                 $danceController->manageDance();
                 break;
-
+            case "/foodfestival":
+                require_once("controllers/FestivalFoodController.php");
+                $festivalFoodController = new FestivalFoodController();
+                $festivalFoodController->loadFoodFestivalPage();
+                break;
             default:
                 $this->route404($message);
                 break;
