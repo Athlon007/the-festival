@@ -12,7 +12,7 @@
 
 <body>
     <!-- success modal -->
-    <div class=" container">
+    <div class="container">
         <div class="row">
             <h1>Artists</h1>
         </div>
