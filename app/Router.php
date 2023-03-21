@@ -146,6 +146,9 @@ class Router
                 $userController = new UserController();
                 $userController->manageUsers();
                 break;
+            case "/manageImages":
+                require("views/admin/manageImages.php");
+                return;
             case "/addUser":
                 require_once("controllers/UserController.php");
                 $userController = new UserController();
