@@ -316,9 +316,9 @@ hr {
   height: 570px;
 }
 
-.destination-info{
+.destination-info {
   margin-top: 10px;
-  color:rgba(62, 45, 18, 1);
+  color: rgba(62, 45, 18, 1);
   border-radius: 10px !important;
   border-color: #534741;
 }
@@ -343,6 +343,7 @@ hr {
 .destination-learn-more-button:hover {
   background-color: rgb(190, 165, 125) !important;
 }
+
 
 body {
   background-color: rgba(62, 45, 18, 100%) !important;
