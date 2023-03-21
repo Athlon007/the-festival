@@ -194,7 +194,18 @@ tinymce.init({
             editor.ui.registry.addMenuItem('customInsertCalendar', {
                 text: 'Calendar',
                 onAction: () => {
-                    editor.insertContent("<div id='calendar' class='row' data-calendar-type='all-events'></div>");
+                    msgBox.createDialogWithInputs('Create Calendar', [
+                        {
+                            label: 'Calendar Type (all-events/stroll)',
+                            id: 'calendar-type',
+                        }]
+                        , () => {
+                            let calendarType = document.getElementById('calendar-type').value;
+                            if (calendarType == '') {
+                                calendarType = 'all-events';
+                            }
+                            editor.insertContent(`<div id='calendar' class='row' data-calendar-type='${calendarType}'></div>`);
+                        });
                 }
             });
             editor.ui.registry.addMenuItem('customInsertCountdown', {
