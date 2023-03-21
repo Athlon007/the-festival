@@ -13,16 +13,14 @@ class UserRepository extends Repository
 
             $stmt->bindValue(":userId", $userId);
             $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_CLASS, 'User');
 
             $result = $stmt->fetch();
 
             if (is_bool($result))
                 throw new UserNotFoundException("User ID not found");
-            else
-                return $result;
-        } 
-        catch (Exception $ex) {
+
+            return $this->buildUser($result);
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -35,16 +33,14 @@ class UserRepository extends Repository
 
             $stmt->bindValue(":email", $email);
             $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_CLASS, 'User');
 
             $result = $stmt->fetch();
 
             if (is_bool($result))
-                return null;
-            else
-                return $result;
-        } 
-        catch (Exception $ex) {
+                throw new UserNotFoundException("User email not found");
+
+            return $this->buildUser($result);
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -52,7 +48,7 @@ class UserRepository extends Repository
     public function insertUser(User $user): void
     {
         try {
-            $query = "INSERT INTO users (email, firstName, lastName, hashPassword, userType) VALUES (:email, :firstName, :lastName, :hashPassword, :userType)";
+            $query = "INSERT INTO users (email, firstName, lastName, hashPassword, userType, registrationDate) VALUES (:email, :firstName, :lastName, :hashPassword, :userType, NOW())";
             $stmt = $this->connection->prepare($query);
 
             $stmt->bindValue(":email", $user->getEmail());
@@ -62,8 +58,7 @@ class UserRepository extends Repository
             $stmt->bindValue(":userType", $user->getUserType());
 
             $stmt->execute();
-        }  
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -76,8 +71,7 @@ class UserRepository extends Repository
             $stmt->bindValue(":email", $email);
             $stmt->bindValue(":reset_token", $reset_token);
             $stmt->execute();
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -91,8 +85,7 @@ class UserRepository extends Repository
                 ':hashPassword' => $user->getHashPassword()
             ];
             $stmt->execute($data);
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -113,39 +106,56 @@ class UserRepository extends Repository
             } else {
                 return $result;
             }
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
     // get all users from database
-    public function getAllUsers()
+    public function getAllUsers(): array
     {
         try {
             $query = "SELECT * FROM users";
             $stmt = $this->connection->prepare($query);
             $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_CLASS, 'User');
 
             $result = $stmt->fetchAll();
 
             if (is_bool($result))
-                return null;
-            else
-                return $result;
-        } 
-        catch (Exception $ex) {
+                throw new UserNotFoundException("User ID not found");
+
+            $users = array();
+
+            foreach ($result as $row) {
+                $user = $this->buildUser($row);
+                $users[] = $user;
+            }
+
+            return $users;
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
-    // add new user or admin to database
+    private function buildUser($row): User
+    {
+        $user = new User();
+        $user->setUserId($row['userId']);
+        $user->setEmail($row['email']);
+        $user->setFirstName($row['firstName']);
+        $user->setLastName($row['lastName']);
+        $user->setHashPassword($row['hashPassword']);
+        $user->setUserType($row['userType']);
+        $user->setRegistrationDate(new DateTime($row['registrationDate']));
 
+        return $user;
+    }
+
+    // add new user or admin to database
     public function addUser(User $user)
     {
         try {
-            $stmt = $this->connection->prepare("INSERT INTO users (email, firstName, lastName, hashPassword, userType) VALUES (:email, :firstName, :lastName, :hashPassword, :userType)");
+            $stmt = $this->connection->prepare("INSERT INTO users (email, firstName, lastName, hashPassword, userType, registrationDate) VALUES (:email, :firstName, :lastName, :hashPassword, :userType, NOW())");
             $data = [
                 ':email' => $user->getEmail(),
                 ':firstName' => $user->getFirstName(),
@@ -154,8 +164,7 @@ class UserRepository extends Repository
                 ':userType' => $user->getUserType()
             ];
             $stmt->execute($data);
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -166,8 +175,7 @@ class UserRepository extends Repository
             $stmt = $this->connection->prepare("DELETE FROM users WHERE userId = :id");
             $stmt->bindValue(':id', $id);
             $stmt->execute();
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -179,16 +187,14 @@ class UserRepository extends Repository
             $stmt = $this->connection->prepare($query);
             $stmt->bindValue(':id', $id);
             $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_CLASS, 'User');
 
             $result = $stmt->fetch();
 
             if (is_bool($result))
-                return null;
-            else
-                return $result;
-        } 
-        catch (Exception $ex) {
+                throw new UserNotFoundException("User ID not found");
+
+            return $this->buildUser($result);
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
@@ -205,26 +211,26 @@ class UserRepository extends Repository
                 ':userType' => $user->getUserType()
             ];
             $stmt->execute($data);
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
-    public function emailAlreadyExists($email){
-        try{
+    public function emailAlreadyExists($email)
+    {
+        try {
             $stmt = $this->connection->prepare("SELECT * FROM users WHERE email = :email");
             $stmt->bindValue(':email', $email);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if(empty($result)){
+            if (empty($result)) {
                 return false;
-            }else{
+            } else {
                 return true;
             }
-        }catch(Exception $ex){
-            throw($ex);
+        } catch (Exception $ex) {
+            throw ($ex);
         }
     }
 }
