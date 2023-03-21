@@ -12,38 +12,6 @@ require_once("LocationRepository.php");
 
 class FestivalHistoryRepository extends Repository
 {
-    // public function getAllHistoryEvents()
-    // {
-    //     try {
-    //         $query = "select e.eventId as eventId, e.name as name, e.startTime as startTime, e.endTime as endTime, e.price as price, h.guideId as guideId, h.locationId as locationId
-    //         from historyevents h 
-    //         join events e on e.eventId = h.eventId";
-
-    //         $stmt = $this->connection->prepare($query);
-    //         $stmt->execute();
-
-    //         // fetch result as an HistoryEvent object
-    //         $stmt->setFetchMode(PDO::FETCH_CLASS, 'HistoryEvent');
-    //         $historyEvents = $stmt->fetchAll();
-
-
-    //         if (is_bool($result))
-    //             throw new Exception("No history events found");
-
-
-    //         $guide = $this->getGuideByID($result['guideId']);
-    //         $locationRep = new LocationRepository();
-    //         $location = $locationRep->getById($result['locationId']);
-    //         $startTime = new DateTime($result['startTime']);
-    //         $endTime = new DateTime($result['endTime']);
-
-    //         $historyEvents = new HistoryEvent($result['eventId'], $result['name'], $startTime, $endTime, $result['price'], $guide, $location);
-
-    //         return $historyEvents;
-    //     } catch (Exception $ex) {
-    //         throw ($ex);
-    //     }
-    // }
 
     public function getAllHistoryEvents()
     {

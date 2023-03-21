@@ -258,9 +258,64 @@
             </div>
         </div>
 
+        <div class="calendar">
+            <div class="month">
+                <div class="prev">&#10094;</div>
+                <div class="next">&#10095;</div>
+                <div class="month-name"></div>
+            </div>
+            <div class="weekdays">
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+            </div>
+            <div class="days">
+                <?php
+                // Set the month and year
+                $month = 7; // July
+                $year = 2023;
+                // Get the number of days in the month
+                // $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                $daysInMonth = 31;
+                // Get the first day of the month
+                $firstDay = new DateTime("$year-$month-01");
+                $firstDayOfWeek = (int) $firstDay->format('w'); // 0 = Sun, 1 = Mon, etc.
+                // Output empty day cells for days before the first day of the month
+                for ($i = 0; $i < $firstDayOfWeek; $i++) {
+                    echo '<div class="day empty"></div>';
+                }
+                // Loop through each day of the month
+                for ($i = 1; $i <= $daysInMonth; $i++) {
+                    // Get the date for this day of the month
+                    $date = new DateTime("$year-$month-$i");
+                    // Output the day cell with the date
+                    echo '<div class="day" data-date="' . $date->format('Y-m-d') . '">' . $i . '</div>';
+                    // Loop through each event for this date and output it
+                    foreach ($historyEvents as $event) {
+                        // Check if the event matches this date
+                        if ($event->getStartTime()->format('Y-m-d') === $date->format('Y-m-d')) {
+                            // Output the event name
+                            echo '<div class="event">' . $event->getName() . '</div>';
+                        }
+                    }
+                }
+                // Output empty day cells for days after the last day of the month
+                $lastDayOfWeek = (int) $date->format('w'); // 0 = Sun, 1 = Mon, etc.
+                for ($i = $lastDayOfWeek + 1; $i <= 6; $i++) {
+                    echo '<div class="day empty"></div>';
+                }
+                ?>
+            </div>
+        </div>
+
+
+
+
         <script src="../js/festivalhistory.js"></script>
-
-
 
         <footer class="foot row bottom">
         </footer>

@@ -2,7 +2,7 @@
  const applyButton = document.querySelector('.applyPreferencesButton');
 
  // add a click event listener to the button
- applyButton.addEventListener('click', function () {
+ applyButton.addEventListener('click', function() {
      // get the selected preferences
      const date = document.getElementById('date').value;
      const time = document.getElementById('time').value;
@@ -16,11 +16,11 @@
      const tickets = document.querySelectorAll('.ticket');
 
      // loop through each ticket
-     tickets.forEach(function (ticket) {
+     tickets.forEach(function(ticket) {
          // get the ticket's properties
          const ticketDate = ticket.querySelector('.ticket-info > p:nth-child(3)').textContent.trim();
-         const ticketTime = ticket.querySelector('.ticket-info > p:nth-child(4)').textContent.trim();
-         const ticketLanguage = ticket.querySelector('.ticket-info > p:nth-child(2)').textContent.trim().replace('Language: ', '');
+         const ticketTime = ticket.querySelector('.ticket-info > p:nth-child(3)').textContent.trim();
+         const ticketLanguage = ticket.querySelector('.ticket-info > p:nth-child(2)').textContent.trim();
          const ticketPrice = ticket.querySelector('.ticket-price > p').textContent.trim();
          const ticketNumericPrice = ticketPrice.match(/\d+/)[0];
 
@@ -31,11 +31,12 @@
          const priceMatch = selectedPrice === ticketNumericPrice;
 
          // if the ticket matches, display it. Otherwise, hide it.
-         if (languageMatch) {
+         if (priceMatch) {
              ticket.style.display = 'block';
          } else {
              ticket.style.display = 'none';
          }
-         console.log(ticketLanguage);
+         //TODO: finish the logic to display the tickets that match the selected preferences
+         console.log(ticketTime);
      });
  });
