@@ -22,39 +22,17 @@
     <br>
     <nav class="nav nav-pills flex-column flex-sm-row">
         <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/manageTextPages">Text Pages</a>
-        <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/manageImages">Images</a>
+        <a class="flex-sm-fill text-sm-center nav-link active" aria-current="page" href="/manageImages">Images</a>
         <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/../manageUsers">Users</a>
-        <a class="flex-sm-fill text-sm-center nav-link active" href="/../manageJazz">Jazz</a>
+        <a class="flex-sm-fill text-sm-center nav-link " href="/../manageJazz">Jazz</a>
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageRestaurants">Restaurants</a>
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageDJs">Dance</a>
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageHistory">History</a>
     </nav>
 
-    <h1 class="text-center mt-3">Manage Jazz</h1>
-    <br>
-    <h3>What do you want to manage:</h3>
-    <div class="menu">
-        <select id="name" class="form-select" aria-label="Default select example" onchange="changeContent()">
-            <option selected><i>--Select a section--</i></option>
-            <option value="Venues">Venues</option>
-            <option value="Artist">Artist</option>
-            <option value="Event">Event</option>
-        </select>
-    </div>
-
-
+    <h1 class="text-center mt-3">Manage Images</h1>
     <div class="content">
-        <div id="Venues" class="data" style="width:95%">
-            <iframe id="iframe" src="/admin/locations" data-locations="1" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
-        </div>
-
-        <div id="Artist" class="data" style="width:95%">
-            <iframe id="iframe" src="/admin/artists" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
-        </div>
-
-        <div id="Event" class="data" style="width:95%">
-            <iframe id="iframe" src="/admin/jazz-events" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
-        </div>
+        <iframe id="iframe" src="/admin/images" data-locations="1" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
 
     </div>
     <br>
@@ -64,14 +42,4 @@
     <script type="application/javascript" src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <script type="module" src="/js/admin/locations.js"></script>
     <script type="module" src="/js/foot.js"></script>
-    <script>
-        $(document).ready(function() {
-            $("#name").on("change", function() {
-                    //alert($(this).val());
-                    $(".data").hide();
-                    $("#" + $(this).val()).fadeIn(700);
-                })
-                .change();
-        });
-    </script>
 </body>

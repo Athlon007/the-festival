@@ -18,7 +18,7 @@
         echo "<div class='alert alert-success' role='alert'>Image uploaded successfully!</div>";
     }
     ?>
-    <div class="container">
+    <div class="container" style="">
         <div class="row">
             <h1>Images</h1>
         </div>
