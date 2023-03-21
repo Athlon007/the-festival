@@ -163,7 +163,6 @@ class EventsList {
     }
 
     clearEvents() {
-        super.clearEvents();
         this.eventsContainer.innerHTML = '';
     }
 }
@@ -175,13 +174,22 @@ class StrollEventList extends EventsList {
     }
 
     async init(container) {
-        super.init(container);
 
+        let temp = null;
+        // load template from /templates/stroll-events-template.html
+        response = await fetch('/templates/stroll-events-template.html')
+            .then((response) => response.text())
+            .then((data) => {
+                container.innerHTML = data;
+                this.eventsContainer = document.getElementById('events-container');
+
+                this.getData();
+            });
     }
 
     async getData() {
         // if sort by is set
-        let url = '/api/events/jazz';
+        let url = '/api/events/stroll';
         let args = '';
 
         function addArg(arg) {
@@ -233,72 +241,6 @@ class StrollEventList extends EventsList {
 
     addEvent(event) {
         super.addEvent(event);
-
-        let eventContainer = document.createElement('div');
-        eventContainer.classList.add('row', 'card');
-        eventContainer.id = 'event-' + event.id;
-
-        let rowTitle = document.createElement('div');
-        rowTitle.classList.add('row');
-        let title = document.createElement('h2');
-        title.innerText = event.name;
-        rowTitle.appendChild(title);
-
-        let rowDetails = document.createElement('div');
-        rowDetails.classList.add('row');
-
-        rowDetails.appendChild(this.createDetailBox('Location', event.location.name));
-
-        const startTime = new Date(event.startTime.date);
-        const endTime = new Date(event.endTime.date);
-        const startHour = startTime.getHours();
-        const endHour = endTime.getHours();
-        const startMinutes = startTime.getMinutes();
-        const endMinutes = endTime.getMinutes();
-        const startMinutesString = startMinutes < 10 ? '0' + startMinutes : startMinutes;
-        const endMinutesString = endMinutes < 10 ? '0' + endMinutes : endMinutes;
-        const displayTime = `${startTime.toDateString()}<br> ${startHour}:${startMinutesString} - ${endHour}:${endMinutesString}`;
-        rowDetails.appendChild(this.createDetailBox('Time', displayTime));
-
-        rowDetails.appendChild(this.createDetailBox('Seats', event.location.capacity));
-        rowDetails.appendChild(this.createDetailBox('Price', event.price));
-
-        // buttons row
-        let rowButtons = document.createElement('div');
-        rowButtons.classList.add('row', 'justify-content-end', 'py-2', 'gx-2', 'px-0');
-        // amount input
-        let amountInput = document.createElement('input');
-        amountInput.type = 'number';
-        amountInput.classList.add('form-control');
-        amountInput.value = 1;
-        amountInput.min = 1;
-        amountInput.max = 10;
-        amountInput.style.width = '4.5em';
-        amountInput.style.marginRight = '0.5em';
-        // buy button
-        let buyButton = document.createElement('button');
-        buyButton.classList.add('btn', 'btn-primary', 'col-3');
-        buyButton.innerText = 'Add ticket to cart';
-        buyButton.addEventListener('click', () => {
-            let amount = amountInput.value;
-            this.addEventToCard(event.id, amount);
-        });
-        let buttonDetailsA = document.createElement('a');
-        buttonDetailsA.href = `/festival/jazz/event/${event.id}`;
-        buttonDetailsA.classList.add('col-3');
-        let buttonDetails = document.createElement('button');
-        buttonDetails.classList.add('btn', 'btn-secondary', 'w-100');
-        buttonDetails.innerText = 'About event';
-        buttonDetailsA.appendChild(buttonDetails);
-        rowButtons.appendChild(amountInput);
-        rowButtons.appendChild(buyButton);
-        rowButtons.appendChild(buttonDetailsA);
-
-        eventContainer.appendChild(rowTitle);
-        eventContainer.appendChild(rowDetails);
-        eventContainer.appendChild(rowButtons);
-
-        this.eventsContainer.appendChild(eventContainer);
     }
 
     createDetailBox(name, value) {
