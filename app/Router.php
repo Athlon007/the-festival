@@ -149,6 +149,9 @@ class Router
             case "/manageImages":
                 require("views/admin/manageImages.php");
                 return;
+            case "/manageTextPages":
+                require("views/admin/manageTextPages.php");
+                return;
             case "/addUser":
                 require_once("controllers/UserController.php");
                 $userController = new UserController();
