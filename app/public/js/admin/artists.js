@@ -1,3 +1,9 @@
+// If page is not in iframe, redirect to '/manage'.
+if (window.frameElement == null) {
+    window.location.href = '/manageJazz';
+}
+
+
 import { ImagePicker } from "./image_picker.js";
 import { MsgBox } from "./modals.js";
 
@@ -196,7 +202,13 @@ function createNewOptionItem(element) {
                     });
 
                     btnOpen.onclick = function () {
-                        let link = 'http://' + window.location.hostname + '/festival/jazz/artist/' + data.id;
+                        let link = 'http://' + window.location.hostname;
+                        if (kind.value == 1) {
+                            link += '/festival/jazz/artist/' + data.id;
+                        } else if (kind.value == 2) {
+                            link += '/festival/dance/artist/' + data.id;
+                        }
+
                         if (link == '') {
                             link = "http://" + window.location.hostname;
                         }

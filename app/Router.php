@@ -150,6 +150,7 @@ class Router
                 require("views/admin/manageImages.php");
                 return;
             case "/manageTextPages":
+            case "/manage":
                 require("views/admin/manageTextPages.php");
                 return;
             case "/addUser":

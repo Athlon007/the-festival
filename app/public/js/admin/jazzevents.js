@@ -1,3 +1,7 @@
+if (window.frameElement == null) {
+    window.location.href = '/manageJazz';
+}
+
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;

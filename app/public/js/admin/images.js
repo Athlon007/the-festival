@@ -1,3 +1,7 @@
+if (window.frameElement == null) {
+    window.location.href = '/manageImages';
+}
+
 import { ImagePicker } from "./image_picker.js";
 import { MsgBox } from "./modals.js";
 

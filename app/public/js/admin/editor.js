@@ -1,3 +1,7 @@
+if (window.frameElement == null) {
+    window.location.href = '/manageTextPages';
+}
+
 import { ImagePicker } from "./image_picker.js";
 import { MsgBox } from "./modals.js";
 
