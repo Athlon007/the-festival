@@ -152,6 +152,12 @@ class EventRepository extends Repository
                     case 'hide_no_seats':
                         // TODO: Hide events with no seats.
                         break;
+                    case 'day':
+                        $sql .= " DAY(e.startTime) = :$key ";
+                        break;
+                    case 'location':
+                        $sql .= " je.locationId = :$key";
+                        break;
                     default:
                         // no filtering by default
                         $i++;
