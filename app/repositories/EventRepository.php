@@ -135,6 +135,10 @@ class EventRepository extends Repository
             // if only filter is artist_kind, skip
             $sql .= " WHERE ";
             $i = 0;
+            if (isset($filters['artist_kind'])) {
+                $i++;
+            }
+
             foreach ($filters as $key => $filter) {
                 switch ($key) {
                     case 'price_from':
@@ -155,8 +159,11 @@ class EventRepository extends Repository
                     case 'day':
                         $sql .= " DAY(e.startTime) = :$key ";
                         break;
+                    case 'date':
+                        $sql .= " DATE(e.startTime) = :$key ";
+                        break;
                     case 'location':
-                        $sql .= " je.locationId = :$key";
+                        $sql .= " je.locationId = :$key ";
                         break;
                     default:
                         // no filtering by default
