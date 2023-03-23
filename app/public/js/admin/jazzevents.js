@@ -21,8 +21,15 @@ const msgBox = new MsgBox();
 const maxNameLength = 12;
 const maxLocationLength = 15;
 
+let baseURL = '/api/events/';
+if (window.frameElement != null && window.frameElement.getAttribute('data-kind') != undefined) {
+    baseURL += window.frameElement.getAttribute('data-kind');
+} else {
+    baseURL += "jazz";
+}
+
 function updateExistingEntry(id, data) {
-    fetch('/api/events/jazz/' + id, {
+    fetch(baseURL + "/" + id, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -63,7 +70,7 @@ function updateExistingEntry(id, data) {
 }
 
 function createNewEntry(data) {
-    fetch('/api/events/jazz', {
+    fetch(baseURL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -208,7 +215,7 @@ function createNewOptionItem(element) {
         btnSubmit.innerHTML = 'Save';
         isInCreationMode = false;
         // Do the api call to get the page content.
-        fetch('/api/events/jazz/' + element.id, {
+        fetch(baseURL + "/" + element.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -285,7 +292,7 @@ function loadList() {
     option.disabled = true;
     locations.appendChild(option);
 
-    let url = '/api/events/jazz?sort=time';
+    let url = baseURL + '?sort=time';
     // fetch with post
     fetch(url, {
         method: 'GET',
@@ -324,7 +331,15 @@ function loadList() {
     jazzSelectOption.value = -1;
     jazzSelectOption.disabled = true;
     artist.appendChild(jazzSelectOption);
-    fetch('/api/artists/jazz?sort=name', {
+
+    let uri = '/api/artists?sort=name';
+    if (baseURL.endsWith('dance')) {
+        uri += '&kind=2';
+    } else {
+        uri += '&kind=1';
+    }
+
+    fetch(uri, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -345,9 +360,18 @@ function loadList() {
         );
     artist.selectedIndex = 0;
 
+    let locationURI = '/api/locations/type/';
+    if (baseURL.endsWith('dance')) {
+        locationURI += '4';
+    } else {
+        locationURI += '1';
+    }
+
+    locationURI += '?sort=name';
+
     // and now, load jazz locations.
     location.innerHTML = '';
-    fetch('/api/locations/type/1?sort=name', {
+    fetch(locationURI, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'

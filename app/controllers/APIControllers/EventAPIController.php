@@ -113,7 +113,7 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
-            if (str_starts_with($uri, '/api/events/jazz')) {
+            if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 require_once(__DIR__ . '/../../services/JazzArtistService.php');
                 $artistService = new JazzArtistService();
                 $artist = $artistService->getById($data['artist']['artistId']);
@@ -157,7 +157,7 @@ class EventAPIController extends APIController
         try {
             $editedEventId = basename($uri);
 
-            if (str_starts_with($uri, '/api/events/jazz')) {
+            if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 require_once(__DIR__ . '/../../services/JazzArtistService.php');
                 $artistService = new JazzArtistService();
                 $artist = $artistService->getById($data['artist']['artistId']);

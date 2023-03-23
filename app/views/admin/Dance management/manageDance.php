@@ -53,7 +53,7 @@
         </div>
 
         <div id="Event" class="data" style="width:95%">
-            <iframe id="iframe" src="/admin/jazz-events" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
+            <iframe id="iframe" src="/admin/jazz-events" data-kind="dance" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
         </div>
 
     </div>
