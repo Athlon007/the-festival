@@ -26,6 +26,13 @@ const msgBox = new MsgBox();
 const imgPicker = new ImagePicker();
 
 
+// If window frame has a data-locations attribute, then we lock the location type.
+let bindedKind = -1;
+if (window.frameElement != null && window.frameElement.getAttribute('data-kind') != undefined) {
+    kind.disabled = true;
+    bindedKind = window.frameElement.getAttribute('data-kind');
+}
+
 function updateExistingArtist(id, data) {
     fetch('/api/artists/' + id, {
         method: 'PUT',
@@ -221,8 +228,14 @@ function loadArtistsList() {
     option.disabled = true;
     artists.appendChild(option);
 
+    let url = '/api/artists?sort=name';
+
+    if (bindedKind != -1) {
+        url += '&kind=' + bindedKind;
+    }
+
     // fetch with post
-    fetch('/api/artists?sort=name', {
+    fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -292,6 +305,8 @@ document.getElementById('new-page').onclick = function () {
     albums.value = '';
     kind.value = -1;
     btnSubmit.innerHTML = 'Create';
+
+    kind.value = bindedKind;
 }
 
 // load artist kidns

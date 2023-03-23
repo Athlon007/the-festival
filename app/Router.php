@@ -230,10 +230,9 @@ class Router
                 $historyController->addTour();
                 break;
             case "/manageDance":
-                require_once("controllers/DanceController.php");
-                $danceController = new DanceController();
-                $danceController->manageDance();
-                break;
+            case "/manageDJs":
+                require("views/admin/Dance management/manageDance.php");
+                return;
             case "/foodfestival":
                 require_once("controllers/FestivalFoodController.php");
                 $festivalFoodController = new FestivalFoodController();
