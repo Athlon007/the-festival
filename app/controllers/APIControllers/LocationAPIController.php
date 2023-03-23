@@ -43,6 +43,11 @@ class LocationAPIController extends APIController
             return;
         }
 
+        if (str_starts_with($uri, "/api/locations/types")) {
+            $this->getLocationTypes();
+            return;
+        }
+
         $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
 
         if (str_starts_with($uri, "/api/locations/type/")) {
@@ -233,5 +238,19 @@ class LocationAPIController extends APIController
 
         $this->locationService->deleteLocation(basename($uri));
         $this->sendSuccessMessage("Location deleted");
+    }
+
+    private function getLocationTypes()
+    {
+        $locationTypes = Location::$LOCATION_TYPE_NAMES;
+        // split the key and value
+        $locationTypes = array_map(function ($key, $value) {
+            return [
+                "id" => $key,
+                "name" => $value
+            ];
+        }, array_keys($locationTypes), $locationTypes);
+
+        echo json_encode($locationTypes);
     }
 }

@@ -1,5 +1,3 @@
-console.log('test');
-
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;
@@ -202,6 +200,41 @@ function createNewOptionItem(element) {
 
     return option;
 }
+
+function loadLocationTypes() {
+    locationType.innerHTML = '';
+
+    // Obligatory "-- Select a type --" option
+    let option = document.createElement('option');
+    option.innerHTML = '-- Select a type --';
+    option.value = -1;
+    locationType.appendChild(option);
+
+    fetch('/api/locations/types', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.error_message) {
+                for (let type of data) {
+                    let option = document.createElement('option');
+                    option.innerHTML = type.name;
+                    option.value = type.id;
+                    locationType.appendChild(option);
+                }
+            } else {
+                msgBox.createToast('Something went wrong', data.error_message);
+            }
+        })
+        .catch(error => {
+            msgBox.createToast('Something went wrong', error);
+        });
+}
+
+loadLocationTypes();
 
 // Load text pages from '/api/admin/text-pages'
 function loadList() {
