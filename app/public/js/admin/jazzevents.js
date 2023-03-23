@@ -200,9 +200,14 @@ function createNewOptionItem(element) {
     if (location.length > maxLocationLength) {
         location = location.substring(0, maxLocationLength) + '...';
     } else {
-        while (location.length < maxLocationLength) {
+        let spacesAdded = 0;
+        let spacesToAdd = maxLocationLength - location.length;
+        while (spacesAdded < spacesToAdd + 3) {
             location += '&nbsp;';
+            spacesAdded++;
         }
+
+        console.log(location);
     }
 
     // display startTime and endTime in a following pattern: dd/mm/yyyy hh:mm
