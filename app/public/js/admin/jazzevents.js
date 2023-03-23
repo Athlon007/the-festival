@@ -259,7 +259,12 @@ function createNewOptionItem(element) {
                     endTime.value = dateEnd;
 
                     btnOpen.onclick = function () {
-                        window.open('/festival/jazz/event/' + data.id, '_blank');
+                        if (baseURL.endsWith('dance')) {
+                            window.open('/festival/dance/event/' + data.id, '_blank');
+                        } else {
+                            window.open('/festival/jazz/event/' + data.id, '_blank');
+                        }
+
                     }
 
                 } else {
