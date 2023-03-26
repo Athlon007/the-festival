@@ -67,17 +67,15 @@ class Location implements JsonSerializable
 
     public function getLocationTypeAsString()
     {
-        switch ($this->locationType) {
-            case 1:
-                return "Jazz";
-            case 2:
-                return "Restaurant";
-            case 3:
-                return "History";
-            default:
-                return "Unknown";
-        }
+        return self::$LOCATION_TYPE_NAMES[$this->getLocationType()];
     }
+
+    public static $LOCATION_TYPE_NAMES = [
+        1 => "Jazz",
+        2 => "Restaurant",
+        3 => "History",
+        4 => "DANCE!"
+    ];
 
     public function setLon($lon)
     {

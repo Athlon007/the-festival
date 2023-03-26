@@ -1,5 +1,3 @@
-console.log('test');
-
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;
@@ -31,6 +29,13 @@ L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
 }).addTo(map);
 
 let pin;
+
+// If window frame has a data-locations attribute, then we lock the location type.
+let bindedLocationTypeId = -1;
+if (window.frameElement != null && window.frameElement.getAttribute('data-locations') != undefined) {
+    locationType.disabled = true;
+    bindedLocationTypeId = window.frameElement.getAttribute('data-locations');
+}
 
 
 function updateExistingEntry(id, data) {
@@ -203,6 +208,46 @@ function createNewOptionItem(element) {
     return option;
 }
 
+function loadLocationTypes() {
+    locationType.innerHTML = '';
+
+    // Obligatory "-- Select a type --" option
+    let option = document.createElement('option');
+    option.innerHTML = '-- Select a type --';
+    option.value = -1;
+    locationType.appendChild(option);
+
+    fetch('/api/locations/types', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.error_message) {
+                for (let type of data) {
+                    let option = document.createElement('option');
+                    option.innerHTML = type.name;
+                    option.value = type.id;
+                    locationType.appendChild(option);
+
+                }
+
+                if (bindedLocationTypeId > -1) {
+                    locationType.value = bindedLocationTypeId;
+                }
+            } else {
+                msgBox.createToast('Something went wrong', data.error_message);
+            }
+        })
+        .catch(error => {
+            msgBox.createToast('Something went wrong', error);
+        });
+}
+
+loadLocationTypes();
+
 // Load text pages from '/api/admin/text-pages'
 function loadList() {
     let lastSelectedId = locations.value;
@@ -218,16 +263,8 @@ function loadList() {
     locations.appendChild(option);
 
     let url = '/api/locations';
-    if (locations.dataset.locations != undefined) {
-        url += "/type/" + locations.dataset.locations;
-        // We can set locationTypes to locked.
-        locationType.disabled = true;
-        locationType.value = locations.dataset.locations;
-    } else if (window.frameElement != null && window.frameElement.getAttribute('data-locations') != undefined) {
+    if (window.frameElement != null && window.frameElement.getAttribute('data-locations') != undefined) {
         url += "/type/" + window.frameElement.getAttribute('data-locations');
-        // We can set locationTypes to locked.
-        locationType.disabled = true;
-        locationType.value = window.frameElement.getAttribute('data-locations');
     }
 
     url += "?sort=name";
@@ -306,6 +343,8 @@ document.getElementById('new-page').onclick = function () {
     lon.value = '';
     capacity.value = '';
     btnSubmit.innerHTML = 'Create';
+
+    locationType.selectedIndex = bindedLocationTypeId;
 
     clearPin();
 }

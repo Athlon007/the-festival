@@ -33,6 +33,10 @@ class EventAPIController extends APIController
             $filters['price_to'] = $_GET['price_to'];
         }
 
+        if (isset($_GET['day'])) {
+            $filters['day'] = $_GET['day'];
+        }
+
         try {
             if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 if (isset($_GET['artist'])) {
@@ -85,7 +89,6 @@ class EventAPIController extends APIController
                 if (isset($_GET['ticket_type'])) {
                     $filters['ticket_type'] = $_GET['ticket_type'];
                 }
-
                 echo json_encode($strollService->getAllHistoryEvents());
             } else {
                 if (is_numeric(basename($uri))) {
@@ -113,7 +116,7 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
-            if (str_starts_with($uri, '/api/events/jazz')) {
+            if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 require_once(__DIR__ . '/../../services/JazzArtistService.php');
                 $artistService = new JazzArtistService();
                 $artist = $artistService->getById($data['artist']['artistId']);
@@ -157,7 +160,7 @@ class EventAPIController extends APIController
         try {
             $editedEventId = basename($uri);
 
-            if (str_starts_with($uri, '/api/events/jazz')) {
+            if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 require_once(__DIR__ . '/../../services/JazzArtistService.php');
                 $artistService = new JazzArtistService();
                 $artist = $artistService->getById($data['artist']['artistId']);

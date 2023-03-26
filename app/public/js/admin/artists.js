@@ -1,3 +1,9 @@
+// If page is not in iframe, redirect to '/manage'.
+if (window.frameElement == null) {
+    window.location.href = '/manageJazz';
+}
+
+
 import { ImagePicker } from "./image_picker.js";
 import { MsgBox } from "./modals.js";
 
@@ -25,6 +31,13 @@ const btnOpen = document.getElementById('open');
 const msgBox = new MsgBox();
 const imgPicker = new ImagePicker();
 
+
+// If window frame has a data-locations attribute, then we lock the location type.
+let bindedKind = -1;
+if (window.frameElement != null && window.frameElement.getAttribute('data-kind') != undefined) {
+    kind.disabled = true;
+    bindedKind = window.frameElement.getAttribute('data-kind');
+}
 
 function updateExistingArtist(id, data) {
     fetch('/api/artists/' + id, {
@@ -189,7 +202,13 @@ function createNewOptionItem(element) {
                     });
 
                     btnOpen.onclick = function () {
-                        let link = 'http://' + window.location.hostname + '/festival/jazz/artist/' + data.id;
+                        let link = 'http://' + window.location.hostname;
+                        if (kind.value == 1) {
+                            link += '/festival/jazz/artist/' + data.id;
+                        } else if (kind.value == 2) {
+                            link += '/festival/dance/artist/' + data.id;
+                        }
+
                         if (link == '') {
                             link = "http://" + window.location.hostname;
                         }
@@ -221,8 +240,14 @@ function loadArtistsList() {
     option.disabled = true;
     artists.appendChild(option);
 
+    let url = '/api/artists?sort=name';
+
+    if (bindedKind != -1) {
+        url += '&kind=' + bindedKind;
+    }
+
     // fetch with post
-    fetch('/api/artists?sort=name', {
+    fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -292,6 +317,8 @@ document.getElementById('new-page').onclick = function () {
     albums.value = '';
     kind.value = -1;
     btnSubmit.innerHTML = 'Create';
+
+    kind.value = bindedKind;
 }
 
 // load artist kidns

@@ -26,8 +26,12 @@ class JazzArtistAPIController extends APIController
         }
 
         $sort = $_GET["sort"] ?? "name";
+        $filters = [];
+        if (isset($_GET["kind"])) {
+            $filters["kind"] = $_GET["kind"];
+        }
 
-        echo json_encode($this->service->getAll($sort));
+        echo json_encode($this->service->getAll($sort, $filters));
     }
 
     public function handlePostRequest($uri)

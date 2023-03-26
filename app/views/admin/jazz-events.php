@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Visit Haarlem Admin - Jazz Events</title>
+    <title>Visit Haarlem Admin - Jazz & Music Events</title>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/icons.css">
     <link rel="stylesheet" href="/css/editor.css">
@@ -12,9 +12,6 @@
 <body>
     <!-- success modal -->
     <div class="container">
-        <div class="row">
-            <h1>Jazz Events</h1>
-        </div>
         <div class="row">
             <div class="col-6 card m-0">
                 <div class="card-body p-0 m-0 mt-1 mh-100">

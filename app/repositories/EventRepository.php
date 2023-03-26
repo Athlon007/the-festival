@@ -135,9 +135,11 @@ class EventRepository extends Repository
             // if only filter is artist_kind, skip
             $sql .= " WHERE ";
             $i = 0;
-            foreach ($filters as $filter) {
-                $key = array_keys($filters, $filter)[0];
+            if (isset($filters['artist_kind'])) {
+                $i++;
+            }
 
+            foreach ($filters as $key => $filter) {
                 switch ($key) {
                     case 'price_from':
                         $sql .= " e.price >= :$key ";
@@ -153,6 +155,15 @@ class EventRepository extends Repository
                         break;
                     case 'hide_no_seats':
                         // TODO: Hide events with no seats.
+                        break;
+                    case 'day':
+                        $sql .= " DAY(e.startTime) = :$key ";
+                        break;
+                    case 'date':
+                        $sql .= " DATE(e.startTime) = :$key ";
+                        break;
+                    case 'location':
+                        $sql .= " je.locationId = :$key ";
                         break;
                     default:
                         // no filtering by default
@@ -185,9 +196,7 @@ class EventRepository extends Repository
         $stmt = $this->connection->prepare($sql);
 
         if (!(count($filters) === 1 && isset($filters['artist_kind']))) {
-            foreach ($filters as $filter) {
-                $key = array_keys($filters, $filter)[0];
-
+            foreach ($filters as $key => $filter) {
                 if ($key == 'artist_kind') {
                     continue;
                 }
