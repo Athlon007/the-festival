@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../repositories/TicketRepository.php';
 require_once __DIR__ . '/../models/Ticket/Ticket.php';
 require_once(__DIR__ . '/../models/Exceptions/TicketNotFoundException.php');
+require_once(__DIR__ . '/../services/PDFService.php');
 
 require_once(__DIR__ . '../../vendor/autoload.php');
 use Dompdf\Dompdf;
@@ -54,32 +55,18 @@ class TicketService
 
     public function generatePDFTicket($ticket,$qrCodeImage): Dompdf
     {
-      // buffer the following html with PHP so we can pass it to the PDF generator
-      ob_start();
-        $dompdf = new Dompdf([
-            "chroot" => __DIR__,
-            "isRemoteEnabled" => true,
-            "isHtml5ParserEnabled" => true,
-            "isPhpEnabled" => true,
-            "isJavascriptEnabled" => true,
-            "isFontSubsettingEnabled" => true,
-            "isImageSubsettingEnabled" => true,
-        ]);
-
+        $pdfService = new PDFService();  
+      
+        // buffer the following html with PHP so we can pass it to the PDF generator
+        ob_start();
         $html = require_once(__DIR__ . '/../pdfs/generateTicketPDF.php');
-
         // retrieve the HTML generated in our buffer and delete the buffer
         $html = ob_get_clean();
 
-        $dompdf->loadHtml($html);
+        $title = "The Festival Ticket";
+        $filename = "ticket.pdf";
 
-        $dompdf->setPaper('A4', 'portrait');
-
-        $dompdf->render();
-        $dompdf->addInfo('Title', 'The Festival Ticket');
-
-        $dompdf->stream("ticket.pdf", array("Attachment" => false));
-        return $dompdf;
+        return $pdfService->generatePDF($html, $title, $filename);
     }
 
 
