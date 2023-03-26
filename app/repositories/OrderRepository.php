@@ -10,7 +10,7 @@ class OrderRepository extends Repository{
     public function getOrderById($id) : Order
     {
        try {
-            $query ="SELECT * FROM orders WHERE id = :id";
+            $query ="SELECT * FROM orders WHERE orderId = :id";
             $stmt = $this->connection->prepare($query);
             $stmt->bindValue(":id", $id);
             $stmt->execute();
@@ -18,7 +18,19 @@ class OrderRepository extends Repository{
             if (!$result)
                 throw new OrderNotFoundException();
             else
-                buildOrder($result);
+                $order = buildOrder($result);
+            
+            $query = "SELECT * FROM tickets WHERE orderId = :id";
+            $stmt = $this->connection->prepare($query);
+            $stmt->bindValue(":id", $id);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (!$result)
+                throw new OrderNotFoundException();
+            else
+                $order->setTickets($result);
+            
+            
         } catch (Exception $e) {
             throw new Exception("Order not found");
         }
