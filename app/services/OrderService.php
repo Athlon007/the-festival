@@ -26,7 +26,7 @@ class OrderService{
 
     public function generateInvoice($orderId)
     {
-
+        
     }
 
 }

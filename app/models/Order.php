@@ -47,15 +47,15 @@ class Order implements JsonSerializable
         $this->tickets = $tickets;
     }
 
-    public function addTicket(Ticket $ticket): void
+    public function addTicket(int $ticket): void
     {
         $this->tickets[] = $ticket;
     }
 
-    public function removeTicket(Ticket $ticket): void
+    public function removeTicket(int $ticket): void
     {
         $this->tickets = array_filter($this->tickets, function ($t) use ($ticket) {
-            return $t->getTicketId() !== $ticket->getTicketId();
+            return $t !== $ticket;
         });
     }
 

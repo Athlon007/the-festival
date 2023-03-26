@@ -4,8 +4,7 @@ require_once(__DIR__ . "/../repositories/Repository.php");
 class OrderRepository extends Repository{
 
     private function buildOrder($result){
-        $result 
-
+        
     }
 
     public function getOrderById($id) : Order
@@ -19,7 +18,7 @@ class OrderRepository extends Repository{
             if (!$result)
                 throw new OrderNotFoundException();
             else
-                uildOrder($result);
+                buildOrder($result);
         } catch (Exception $e) {
             throw new Exception("Order not found");
         }
