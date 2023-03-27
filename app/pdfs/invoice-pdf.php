@@ -1,7 +1,7 @@
-<div class="container">
-    <h1>The Festival Ticket</h1>
+//Is ticket template for now, will change
 
-    <p class="ticket-information">* Please have ready on your device to present for scanning.</p>
+<div class="container">
+    <h3>Invoice number: <?php ?></h3>
 
     <div class="ticket-info">
         <label>Event Name:</label>
@@ -56,6 +56,7 @@
     <hr>
 </div>
 </div>
+
 
 
 <style>
