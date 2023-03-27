@@ -11,7 +11,8 @@ class HistoryTicket extends Ticket implements JsonSerializable
             'qr_code_data' => $this->qr_code,
             'event' => $this->event,
             'customer' => $this->customer,
-            'quantity' => $this->quantity,
+            'is_scanned' => $this->isScanned,
+            'order_id' => $this->orderId,
             'ticket_type' => $this->ticket_type,
             'guide' => $this->guide
         ];

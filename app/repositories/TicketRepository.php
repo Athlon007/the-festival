@@ -18,12 +18,12 @@ class TicketRepository extends Repository
     {
         try {
             $query = "select u.firstName , u.lastName as surname , u.email , t.qr_code, e.name as EventName ,
-            e.startTime , e.endTime , e.price * t.quantity as Price, g.name , g.lastName , g.`language`
-                        FROM Tickets t
-                        INNER JOIN Events e ON t.eventId = e.eventId
-                        LEFT JOIN StrollHistoryTicket sht ON t.ticketId = sht.ticketId
+            e.startTime , e.endTime , e.price as Price, g.name , g.lastName , g.`language`
+            from tickets t 
+                        inner join events e on t.eventId = e.eventId 
+                        left join strollhistoryticket sht on t.ticketId = sht.ticketId 
                         LEFT JOIN Guides g ON sht.guideId = g.guideId
-                        LEFT JOIN Customers c ON t.userId = c.userId
+                        LEFT JOIN Customers c ON t.customerId  = c.userId
                         LEFT JOIN Users u ON c.userId = u.userId
                         LEFT JOIN Addresses a ON c.addressId = a.addressId
                         WHERE t.ticketId = :ticketID";
