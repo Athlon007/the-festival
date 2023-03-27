@@ -41,9 +41,17 @@ class OrderRepository extends Repository{
         
     }
 
-    public function getUnpaidOrder($customerId) : ?Order
+    public function getUnpaidOrder($customerId) : Order
     {
-        
+        try{
+            
+        } 
+        catch(OrderNotFoundException $e){
+
+        } 
+        catch(Exception $e){
+
+        }
     }
 }
 ?>

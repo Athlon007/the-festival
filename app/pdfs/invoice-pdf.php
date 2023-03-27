@@ -3,8 +3,6 @@
 <div class="container">
     <h3>Invoice number: <?php ?></h3>
 
-    <p class="ticket-information">* Please have ready on your device to present for scanning.</p>
-
     <div class="ticket-info">
         <label>Event Name:</label>
         <p>
