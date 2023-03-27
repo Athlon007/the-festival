@@ -96,7 +96,7 @@ class EventRepository extends Repository
         $stmt->bindParam(':startTime', $startToString, PDO::PARAM_STR);
         $endToString = $this->formatDateTimeToString($endTime);
         $stmt->bindParam(':endTime', $endToString, PDO::PARAM_STR);
-        $stmt->bindParam(':price', $price, PDO::PARAM_STR);
+        $stmt->bindValue(':price', $price);
         $stmt->execute();
 
         return $this->connection->lastInsertId();
@@ -106,11 +106,11 @@ class EventRepository extends Repository
     {
         $sql = "UPDATE Events SET name = :name, startTime = :startTime, endTime = :endTime, price = :price WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':startTime', $startTime);
-        $stmt->bindParam(':endTime', $endTime);
-        $stmt->bindParam(':price', $price);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+        $stmt->bindParam(':startTime', $this->formatDateTimeToString($startTime), PDO::PARAM_STR);
+        $stmt->bindParam(':endTime', $this->formatDateTimeToString($endTime), PDO::PARAM_STR);
+        $stmt->bindValue(':price', $price);
         $stmt->execute();
     }
 
@@ -135,9 +135,11 @@ class EventRepository extends Repository
             // if only filter is artist_kind, skip
             $sql .= " WHERE ";
             $i = 0;
-            foreach ($filters as $filter) {
-                $key = array_keys($filters, $filter)[0];
+            if (isset($filters['artist_kind'])) {
+                $i++;
+            }
 
+            foreach ($filters as $key => $filter) {
                 switch ($key) {
                     case 'price_from':
                         $sql .= " e.price >= :$key ";
@@ -153,6 +155,15 @@ class EventRepository extends Repository
                         break;
                     case 'hide_no_seats':
                         // TODO: Hide events with no seats.
+                        break;
+                    case 'day':
+                        $sql .= " DAY(e.startTime) = :$key ";
+                        break;
+                    case 'date':
+                        $sql .= " DATE(e.startTime) = :$key ";
+                        break;
+                    case 'location':
+                        $sql .= " je.locationId = :$key ";
                         break;
                     default:
                         // no filtering by default
@@ -185,9 +196,7 @@ class EventRepository extends Repository
         $stmt = $this->connection->prepare($sql);
 
         if (!(count($filters) === 1 && isset($filters['artist_kind']))) {
-            foreach ($filters as $filter) {
-                $key = array_keys($filters, $filter)[0];
-
+            foreach ($filters as $key => $filter) {
                 if ($key == 'artist_kind') {
                     continue;
                 }

@@ -18,10 +18,7 @@
         echo "<div class='alert alert-success' role='alert'>Image uploaded successfully!</div>";
     }
     ?>
-    <div class="container">
-        <div class="row">
-            <h1>Images</h1>
-        </div>
+    <div class="container" style="">
         <div class="row mb-1">
             <form method="POST" action="/uploader/upload-image" class="col-12 card p-2" enctype="multipart/form-data">
                 <div class="form-group p-2">

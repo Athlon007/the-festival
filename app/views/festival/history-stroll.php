@@ -1,61 +1,3 @@
-<?php
-$destinations = array(
-    array(
-        "name" => "Ellipse",
-        "image" => "ellipse.jpg",
-        "description" => "A beautiful and unique elliptical plaza located in the heart of the city.
-        A beautiful and unique elliptical plaza located in the heart of the city.
-        A beautiful and unique elliptical plaza located in the heart of the city.
-        A beautiful and unique elliptical plaza located in the heart of the city.
-        ",
-        "location" => "City Center"
-    ),
-    array(
-        "name" => "St. Bavo Church",
-        "image" => "stbavo.jpg",
-        "description" => "A stunning Gothic-style church that dates back to the 14th century.",
-        "location" => "Old Town"
-    ),
-    array(
-        "name" => "City Hall",
-        "image" => "cityhall.jpg",
-        "description" => "A historic government building that has served as the seat of local government for over a century.",
-        "location" => "City Center"
-    ),
-    array(
-        "name" => "Central Park",
-        "image" => "centralpark.jpg",
-        "description" => "A beautiful public park that offers a peaceful oasis in the midst of the bustling city.",
-        "location" => "City Center"
-    ),
-    array(
-        "name" => "Museum of Fine Arts",
-        "image" => "museum.jpg",
-        "description" => "A world-renowned art museum featuring an impressive collection of paintings, sculptures, and other works of art.",
-        "location" => "Old Town"
-    ),
-    array(
-        "name" => "Opera House",
-        "image" => "opera.jpg",
-        "description" => "A magnificent theater that hosts world-class opera performances, ballets, and other cultural events.",
-        "location" => "City Center"
-    ),
-    array(
-        "name" => "Riverfront Promenade",
-        "image" => "riverfront.jpg",
-        "description" => "A scenic walkway that follows the river, offering stunning views of the city skyline and the water.",
-        "location" => "City Center"
-    ),
-    array(
-        "name" => "Historic District",
-        "image" => "historic.jpg",
-        "description" => "A charming neighborhood with cobblestone streets, historic homes, and quaint shops and restaurants.",
-        "location" => "Old Town"
-    )
-);
-
-?>
-
 <!doctype html>
 <html lang="en">
 
@@ -153,49 +95,6 @@ $destinations = array(
 
         <div class="container ticket-container">
             <div class="row">
-                <!-- <div class="col-md-6">
-                    <div class="row mb-3">
-                        <div class="col-md-6 dateOfTour" style="width: 50%; float:left;">
-                            <label for="date" class="form-label">Date</label>
-                            <select class="form-select" id="date">
-                                <option selected>Choose Date</option>
-                                <option value="27">Thu 27/07/2023</option>
-                                <option value="28">Fri 28/07/2023</option>
-                                <option value="29">Sat 29/07/2023</option>
-                                <option value="30">Sun 30/07/2023</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 timeOfTour" style="width: 50%; float:right;">
-                            <label for="time" class="form-label">Time</label>
-                            <select class="form-select" id="time">
-                                <option selected>Choose Time</option>
-                                <option value="10">10:00</option>
-                                <option value="13">13:00</option>
-                                <option value="16">16:00</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6 languageOfTour" style="width: 50%; float:left;">
-                            <label for="language" class="form-label">Language</label>
-                            <select class="form-select" id="language">
-                                <option selected>Select language</option>
-                                <option value="english">English</option>
-                                <option value="chinese">Chinese</option>
-                                <option value="dutch">Dutch</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 ticketOfTour" style="width: 50%; float:right;">
-                            <label for="ticket" class="form-label">Ticket</label>
-                            <select class="form-select" id="ticket">
-                                <option selected>Select ticket</option>
-                                <option value="adult">Single € 17.50</option>
-                                <option value="child">Family € 60.00</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary applyPreferencesButton">Apply preferences</button>
-                </div> -->
                 <div class="col-md-6">
                     <div class="row mb-3">
                         <div class="col-md-6 dateOfTour" style="width: 50%; float:left;">
@@ -207,7 +106,6 @@ $destinations = array(
                                     echo "<option value=\"$date\">$date</option>";
                                 }
                                 ?>
-
                             </select>
                         </div>
                         <div class="col-md-6 timeOfTour" style="width: 50%; float:right;">
@@ -237,17 +135,18 @@ $destinations = array(
                             <select class="form-select" id="ticket">
                                 <option selected>Select ticket</option>
                                 <?php foreach ($uniquePrices as $uniquePrice) { ?>
-                                    <option value="<?= $ticket ?>"><?php if ($uniquePrice < 30){
-                                        echo "Single    :  € " . $uniquePrice;
-                                    } else {
-                                        echo "Family(4p): € " . $uniquePrice;
-                                    } ?></option>
-                                    } ?></option>
+                                    <option value="<?= $uniquePrice ?>">
+                                        <?php if ($uniquePrice < 30) {
+                                            echo "Single    :  € " . $uniquePrice;
+                                        } else {
+                                            echo "Family(4p): € " . $uniquePrice;
+                                        } ?>
+                                    </option>
                                 <?php } ?>
                             </select>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary applyPreferencesButton">Apply preferences</button>
+                    <button class="btn btn-primary applyPreferencesButton">Apply preferences</button>
                 </div>
                 <div class="col-md-6">
                     <div class="scrollable-tickets">
@@ -280,11 +179,12 @@ $destinations = array(
                                         </p>
                                     </div>
                                     <div class="ticket-price">
-                                        <p<strong>Price:</strong>
+                                        <p><strong>Price:</strong>
                                             €
                                             <?= $historyEvent->getPrice(); ?>
-                                            </p>
-                                            <button class="btn btn-primary addToCartButton">Add to cart</button>
+                                        </p>
+                                        <button class="btn btn-primary addToCartButton">Add to
+                                            cart</button>
                                     </div>
                                 </div>
                             </div>
@@ -358,8 +258,7 @@ $destinations = array(
             </div>
         </div>
 
-
-
+        <script src="../js/festivalhistory.js"></script>
 
         <footer class="foot row bottom">
         </footer>
@@ -370,4 +269,5 @@ $destinations = array(
             crossorigin="anonymous"></script>
 
         <script type="module" src="/js/foot.js"></script>
+
     </body>

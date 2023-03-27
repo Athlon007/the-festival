@@ -49,6 +49,7 @@
                             <th>Last Name</th>
                             <th>Email</th>
                             <th>Role</th>
+                            <th>Registration Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,6 +82,9 @@
                                         Customer
                                         <?php
                                     } ?>
+                                </td>
+                                <td data-th="Registration Date">
+                                    <?= $user->getRegistrationDate()->format('d-m-Y'); ?>
                                 </td>
                                 <td>
                                     <div class="form-group">

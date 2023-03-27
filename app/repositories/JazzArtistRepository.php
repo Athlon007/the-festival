@@ -70,10 +70,22 @@ class JazzArtistRepository extends Repository
     /**
      * Returns all artists.
      */
-    public function getAll($sort): array
+    public function getAll($sort, $filters): array
     {
         $sql = "SELECT artistId, name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, recentAlbums, artistKindId "
             . "FROM JazzArtists";
+
+
+        // foreach with key and value
+        foreach ($filters as $key => $value) {
+            switch ($key) {
+                case "kind":
+                    $sql .= " WHERE artistKindId = :$key ";
+                    break;
+                default:
+                    break;
+            }
+        }
 
         switch ($sort) {
             case "name":
@@ -88,6 +100,12 @@ class JazzArtistRepository extends Repository
         }
 
         $statement = $this->connection->prepare($sql);
+
+        foreach ($filters as $key => $value) {
+            $pdoType = is_numeric($value) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            $statement->bindValue(":" . $key, $value, $pdoType);
+        }
+
         $statement->execute();
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         return $this->buildJazzArtist($result);

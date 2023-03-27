@@ -8,15 +8,11 @@
     <link rel="stylesheet" href="/css/editor.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
-    </script>
 </head>
 
 <body>
     <!-- success modal -->
-    <div class=" container">
-        <div class="row">
-            <h1>Locations</h1>
-        </div>
+    <div class="container">
         <div class="row">
             <div class="col-2 card m-0">
                 <div class="card-body p-0 m-0 mt-1 mh-100">
@@ -31,7 +27,7 @@
                     <div class="row">
                         <div class="col-6">
                             <label for="name" class="form-label">Name</label>
-                            <input type="text" id="name" class="form-control" placeholder="Name">
+                            <input type="text" id="name-place" class="form-control" placeholder="Name">
                         </div>
                         <div class="col-6">
                             <label for="locationType" class="form-label">Location Type</label>

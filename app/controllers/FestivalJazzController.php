@@ -33,6 +33,12 @@ class FestivalJazzController
             return;
         }
 
+        $afterThat = $eventService->getJazzEvents("", [
+            "day" => $event->getStartTime()->format('d'),
+            "time_from" => $event->getEndTime()->format('H:i'),
+            "location" => $event->getLocation()->getLocationId()
+        ]);
+
         require(__DIR__ . self::JAZZ_EVENT_PAGE);
     }
 }
