@@ -1,5 +1,7 @@
 <?php
 
+use DateTime;
+
 class Event implements JsonSerializable
 {
     private $id;

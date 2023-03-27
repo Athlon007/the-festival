@@ -10,9 +10,6 @@ class Ticket implements JsonSerializable
     protected $basePrice;
     protected $fullPrice;
 
-    protected int $orderId;
-    //TODO: Order id must be an object of Order class
-
     public function jsonSerialize(): mixed
     {
         return [
@@ -20,7 +17,6 @@ class Ticket implements JsonSerializable
             'qr_code_data' => $this->qr_code,
             'event' => $this->event,
             'is_scanned' => $this->isScanned,
-            'order_id' => $this->orderId,
             'ticket_type' => $this->ticket_type
         ];
     }
@@ -68,21 +64,5 @@ class Ticket implements JsonSerializable
     public function setIsScanned(bool $isScanned): void
     {
         $this->isScanned = $isScanned;
-    }
-
-    public function getOrderId(): int
-    {
-        return $this->orderId;
-    }
-
-    public function setOrderId(int $orderId): void
-    {
-        $this->orderId = $orderId;
-    }
-
-
-    public function getTicketType(): string
-    {
-        return $this->basePrice + ($this->basePrice * $this->event->getVat());
     }
 }
