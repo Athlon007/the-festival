@@ -2,18 +2,13 @@
 
 class HistoryTicket extends Ticket implements JsonSerializable
 {
-    protected Guide $guide;
+    private Guide $guide;
 
     public function jsonSerialize(): mixed
     {
-        return [
-            'ticketId' => $this->tickedId,
-            'qr_code_data' => $this->qr_code,
-            'event' => $this->event,
-            'is_scanned' => $this->isScanned,
-            'ticket_type' => $this->ticket_type,
+        return (parent::jsonSerialize() +  [
             'guide' => $this->guide
-        ];
+        ]);
     }
 
     public function getGuide(): Guide
