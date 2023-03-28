@@ -100,7 +100,7 @@ class TicketService
       $name = $order->getCustomer()->getFullName();
 
       ob_start();
-      require_once(__DIR__ . '/../views/ticket/generateEmailBody.php');
+      require_once(__DIR__ . '/../emails/ticket-email.php');
       $mail->Body = ob_get_clean();
 
       $mail->addAddress('turkvedat0911@gmail.com', $name);
