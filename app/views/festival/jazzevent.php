@@ -61,7 +61,7 @@
                 </div>
                 <div class="col-4">
                     <h2>Price</h2>
-                    <p class="price text-start">&euro; <?= $event->getPrice() ?></p>
+                    <p class="price text-start">&euro; <?= $cartItem->getTicketType()->getPrice() ?></p>
                 </div>
             </div>
         </div>
@@ -74,28 +74,28 @@
                     <? foreach ($afterThat as $after) { ?>
                         <div class="card py-2 col-11">
                             <div class="row">
-                                <h2><?= $after->getName() ?></h2>
+                                <h2><?= $after->getEvent()->getName() ?></h2>
                             </div>
                             <div class="row">
                                 <div class="col-3">
                                     <h4>Location</h4>
-                                    <p><?= $after->getLocation()->getName() ?></p>
+                                    <p><?= $after->getEvent()->getLocation()->getName() ?></p>
                                 </div>
                                 <div class="col-3">
                                     <h4>Time</h4>
-                                    <p><?= $after->getStartTime()->format("l, F jS") ?><br><?= $after->getStartTime()->format("H:i") ?>-<?= $after->getEndTime()->format("H:i") ?></p>
+                                    <p><?= $after->getEvent()->getStartTime()->format("l, F jS") ?><br><?= $after->getEvent()->getStartTime()->format("H:i") ?>-<?= $after->getEvent()->getEndTime()->format("H:i") ?></p>
                                 </div>
                                 <div class="col-3">
                                     <h4>Seats</h4>
-                                    <p><?= $after->getLocation()->getCapacity() ?></p>
+                                    <p><?= $after->getEvent()->getLocation()->getCapacity() ?></p>
                                 </div>
                                 <div class="col-3">
                                     <h4>Price</h4>
-                                    <p class="price text-start">&euro; <?= $after->getPrice() ?></p>
+                                    <p class="price text-start">&euro; <?= $after->getTicketType()->getPrice() ?></p>
                                 </div>
                             </div>
                             <div class="row flex-row-reverse">
-                                <a class="col-3" href="/festival/jazz/event/<?= $after->getId() ?>">
+                                <a class="col-3" href="/festival/jazz/event/<?= $after->getEvent()->getId() ?>">
                                     <button class="btn btn-primary w-100">About event</button>
                                 </a>
                             </div>
