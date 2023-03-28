@@ -8,15 +8,14 @@ class MusicEvent extends Event implements JsonSerializable
     private Artist $artist;
     private Location $location;
 
-    public function __construct($id, $name, DateTime $startTime, DateTime $endTime, $price, Artist $artist, Location $location)
+    public function __construct($id, $name, DateTime $startTime, DateTime $endTime, Artist $artist, Location $location)
     {
         $this->setId($id);
         $this->setName($name);
         $this->setStartTime($startTime);
         $this->setEndTime($endTime);
-        $this->setPrice($price);
-        $this->artist = $artist;
-        $this->location = $location;
+        $this->setArtist($artist);
+        $this->setLocation($location);
     }
 
     public function getArtist(): Artist

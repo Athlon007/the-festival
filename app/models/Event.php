@@ -7,8 +7,8 @@ class Event implements JsonSerializable
     private DateTime $startTime;
     private DateTime $endTime;
     private $vat;
-    private int $availableTickets;
-    
+    private int $availableTickets = 0;
+
     public function jsonSerialize(): mixed
     {
         return [
@@ -60,7 +60,7 @@ class Event implements JsonSerializable
     {
         $this->endTime = $value;
     }
-    
+
     public function getVat()
     {
         return $this->vat;
