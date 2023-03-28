@@ -79,7 +79,7 @@ class TicketService
     }
   }
 
-  public function sendTicketByEmail(Dompdf $dompdf, Ticket $ticket)
+  public function sendTicketByEmail(Dompdf $dompdf, Ticket $ticket, Order $order)
   {
     try {
       $pdfContents = $dompdf->output();
@@ -96,8 +96,8 @@ class TicketService
       $mail->Password = 'zznalnrljktsitri';
       $mail->Subject = 'Your Ticket for the Event: ' . $ticket->getEvent()->getName();
 
-      $recipentEmail = $ticket->getCustomer()->getEmail();
-      $name = $ticket->getCustomer()->getFirstName() . ' ' . $ticket->getCustomer()->getLastName();
+      $recipentEmail = $order->getCustomer()->getEmail();
+      $name = $order->getCustomer()->getFullName();
 
       ob_start();
       require_once(__DIR__ . '/../views/ticket/generateEmailBody.php');

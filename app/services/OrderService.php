@@ -1,4 +1,12 @@
 <?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+require_once(__DIR__ . '/../repositories/OrderRepository.php');
+require_once(__DIR__ . '/../models/Order.php');
+
 class OrderService{
     private $repository;
 
@@ -22,12 +30,14 @@ class OrderService{
         return $this->repository->getUnpaidOrder($customerId);
     }
 
-    
-
-    public function generateInvoice($orderId)
+    public function generateInvoice($order)
     {
         
     }
 
+    public function sendTicketsByEmail($order)
+    {
+
+    }
 }
 ?>

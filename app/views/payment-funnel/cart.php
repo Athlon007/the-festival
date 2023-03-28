@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="/css/icons.css">
 </head>
 
-<body onload="">
+<body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <script type="module" src="/js/nav.js"></script>
 

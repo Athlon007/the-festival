@@ -108,8 +108,8 @@ class EventRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
-        $stmt->bindParam(':startTime', $this->formatDateTimeToString($startTime), PDO::PARAM_STR);
-        $stmt->bindParam(':endTime', $this->formatDateTimeToString($endTime), PDO::PARAM_STR);
+        $stmt->bindParam(':startTime', $startTime->format('Y-m-d H:i:s'), PDO::PARAM_STR);
+        $stmt->bindParam(':endTime', $endTime->format('Y-m-d H:i:s'), PDO::PARAM_STR);
         $stmt->bindValue(':price', $price);
         $stmt->execute();
     }

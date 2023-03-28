@@ -8,7 +8,8 @@ class Order implements JsonSerializable
     private DateTime $orderDate;
     private bool $isPaid;
     private float $totalBasePrice;
-    private float $totalVat;
+    private float $totalVat9;
+    private float $totalVat21;
     private float $totalPrice;
    
     public function jsonSerialize(){
