@@ -105,7 +105,8 @@ class EventAPIController extends APIController
                     return;
                 }
 
-                echo json_encode($this->service->getAllEvents());
+                $cartItemService = new CartItemService();
+                echo json_encode($cartItemService->getAll());
             }
         } catch (TypeError $e) {
             $this->sendErrorMessage("Event not found", 404);
