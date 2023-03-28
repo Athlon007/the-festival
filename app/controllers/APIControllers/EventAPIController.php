@@ -3,6 +3,7 @@
 require_once(__DIR__ . '/../../models/Event.php');
 require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
+require_once(__DIR__ . '/../../services/CartItemService.php');
 require_once("APIController.php");
 
 class EventAPIController extends APIController
@@ -63,7 +64,9 @@ class EventAPIController extends APIController
                     $filters['artist_kind'] = 'dance';
                 }
 
-                echo json_encode($this->service->getJazzEvents($sort, $filters));
+                $cartItemService = new CartItemService();
+
+                echo json_encode($cartItemService->getAllJazz($sort, $filters));
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
                 require_once(__DIR__ . "/../../services/FestivalHistoryService.php");
                 $strollService = new FestivalHistoryService();
@@ -130,7 +133,6 @@ class EventAPIController extends APIController
                     $data['name'],
                     new DateTime($data['startTime']),
                     new DateTime($data['endTime']),
-                    $data['price'],
                     $artist,
                     $location
                 );
@@ -174,7 +176,6 @@ class EventAPIController extends APIController
                     $data['name'],
                     new DateTime($data['startTime']),
                     new DateTime($data['endTime']),
-                    $data['price'],
                     $artist,
                     $location
                 );

@@ -320,16 +320,16 @@ class JazzEventList extends EventsList {
         let rowTitle = document.createElement('div');
         rowTitle.classList.add('row');
         let title = document.createElement('h2');
-        title.innerText = event.name;
+        title.innerText = event.event.name;
         rowTitle.appendChild(title);
 
         let rowDetails = document.createElement('div');
         rowDetails.classList.add('row');
 
-        rowDetails.appendChild(this.createDetailBox('Location', event.location.name));
+        rowDetails.appendChild(this.createDetailBox('Location', event.event.location.name));
 
-        const startTime = new Date(event.startTime.date);
-        const endTime = new Date(event.endTime.date);
+        const startTime = new Date(event.event.startTime.date);
+        const endTime = new Date(event.event.endTime.date);
         const startHour = startTime.getHours();
         const endHour = endTime.getHours();
         const startMinutes = startTime.getMinutes();
@@ -339,8 +339,8 @@ class JazzEventList extends EventsList {
         const displayTime = `${startTime.toDateString()}<br> ${startHour}:${startMinutesString} - ${endHour}:${endMinutesString}`;
         rowDetails.appendChild(this.createDetailBox('Time', displayTime));
 
-        rowDetails.appendChild(this.createDetailBox('Seats', event.location.capacity));
-        rowDetails.appendChild(this.createDetailBox('Price', event.price));
+        rowDetails.appendChild(this.createDetailBox('Seats', event.event.location.capacity));
+        rowDetails.appendChild(this.createDetailBox('Price', event.ticketType.price));
 
         // buttons row
         let rowButtons = document.createElement('div');
@@ -363,7 +363,7 @@ class JazzEventList extends EventsList {
             this.addEventToCard(event.id, amount);
         });
         let buttonDetailsA = document.createElement('a');
-        buttonDetailsA.href = `/festival/jazz/event/${event.id}`;
+        buttonDetailsA.href = `/festival/jazz/event/${event.event.id}`;
         buttonDetailsA.classList.add('col-3');
         let buttonDetails = document.createElement('button');
         buttonDetails.classList.add('btn', 'btn-secondary', 'w-100');
