@@ -1,5 +1,6 @@
 <?php
-class EventType{
+class EventType implements JsonSerializable 
+{
     private $id;
     private $name;
     private $vat;
