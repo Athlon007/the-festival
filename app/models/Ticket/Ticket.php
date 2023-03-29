@@ -2,17 +2,13 @@
 
 class Ticket implements JsonSerializable
 {
-
     protected $tickedId;
     protected $qr_code;
     protected Event $event;
-    protected Customer $customer;
-
     protected bool $isScanned = false;
-    protected $ticket_type;
-
-    protected int $orderId;
-    //TODO: Order id must be an object of Order class
+    protected $basePrice;
+    protected $vat;
+    protected $fullPrice;
 
     public function jsonSerialize(): mixed
     {
@@ -20,13 +16,12 @@ class Ticket implements JsonSerializable
             'ticketId' => $this->tickedId,
             'qr_code_data' => $this->qr_code,
             'event' => $this->event,
-            'customer' => $this->customer,
             'is_scanned' => $this->isScanned,
-            'order_id' => $this->orderId,
-            'ticket_type' => $this->ticket_type
+            'base_price' => $this->basePrice,
+            'vat' => $this->vat,
+            'full_price' => $this->fullPrice,
         ];
     }
-
 
     public function getTicketId(): int
     {
@@ -53,16 +48,6 @@ class Ticket implements JsonSerializable
         $this->event = $event;
     }
 
-    public function getCustomer(): Customer
-    {
-        return $this->customer;
-    }
-
-    public function setCustomer(Customer $customer): void
-    {
-        $this->customer = $customer;
-    }
-
     public function isScanned(): bool
     {
         return $this->isScanned;
@@ -71,26 +56,5 @@ class Ticket implements JsonSerializable
     public function setIsScanned(bool $isScanned): void
     {
         $this->isScanned = $isScanned;
-    }
-
-    public function getOrderId(): int
-    {
-        return $this->orderId;
-    }
-
-    public function setOrderId(int $orderId): void
-    {
-        $this->orderId = $orderId;
-    }
-
-
-    public function getTicketType(): string
-    {
-        return $this->ticket_type;
-    }
-
-    public function setTicketType(string $ticket_type): void
-    {
-        $this->ticket_type = $ticket_type;
     }
 }

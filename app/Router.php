@@ -146,6 +146,13 @@ class Router
                 $userController = new UserController();
                 $userController->manageUsers();
                 break;
+            case "/manageImages":
+                require("views/admin/manageImages.php");
+                return;
+            case "/manageTextPages":
+            case "/manage":
+                require("views/admin/manageTextPages.php");
+                return;
             case "/addUser":
                 require_once("controllers/UserController.php");
                 $userController = new UserController();
@@ -224,10 +231,9 @@ class Router
                 $historyController->addTour();
                 break;
             case "/manageDance":
-                require_once("controllers/DanceController.php");
-                $danceController = new DanceController();
-                $danceController->manageDance();
-                break;
+            case "/manageDJs":
+                require("views/admin/Dance management/manageDance.php");
+                return;
             case "/foodfestival":
                 require_once("controllers/FestivalFoodController.php");
                 $festivalFoodController = new FestivalFoodController();

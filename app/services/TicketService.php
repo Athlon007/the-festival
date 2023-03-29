@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../repositories/TicketRepository.php';
 require_once __DIR__ . '/../models/Ticket/Ticket.php';
 require_once(__DIR__ . '/../models/Exceptions/TicketNotFoundException.php');
+require_once(__DIR__ . '/../services/PDFService.php');
 
 require_once(__DIR__ . '../../vendor/autoload.php');
 use Dompdf\Dompdf;
@@ -52,38 +53,21 @@ class TicketService
     return $qrCodeImage;
   }
 
-
-  public function generatePDFTicket($ticket, $qrCodeImage): Dompdf
+  public function generatePDFTicket($ticket,$qrCodeImage): Dompdf
   {
-    // buffer the following html with PHP so we can pass it to the PDF generator
-    ob_start();
-    $dompdf = new Dompdf([
-      "chroot" => __DIR__,
-      "isRemoteEnabled" => true,
-      "isHtml5ParserEnabled" => true,
-      "isPhpEnabled" => true,
-      "isJavascriptEnabled" => true,
-      "isFontSubsettingEnabled" => true,
-      "isImageSubsettingEnabled" => true,
-    ]);
+      $pdfService = new PDFService();  
 
-    $html = require_once(__DIR__ . '/../views/ticket/generateTicketPDF.php');
+      // buffer the following html with PHP so we can pass it to the PDF generator
+      ob_start();
+      $html = require_once(__DIR__ . '/../pdfs/generateTicketPDF.php');
+      // retrieve the HTML generated in our buffer and delete the buffer
+      $html = ob_get_clean();
 
-    // retrieve the HTML generated in our buffer and delete the buffer
-    $html = ob_get_clean();
+      $title = "The Festival Ticket";
+      $filename = "ticket.pdf";
 
-    $dompdf->loadHtml($html);
-
-    $dompdf->setPaper('A4', 'portrait');
-
-    $dompdf->render();
-    $dompdf->addInfo('Title', 'The Festival Ticket');
-
-    $dompdf->stream("ticket.pdf", array("Attachment" => false));
-    return $dompdf;
+      return $pdfService->generatePDF($html, $title, $filename);
   }
-
-
 
   public function getTicketByID($ticketID): Ticket
   {
@@ -95,7 +79,7 @@ class TicketService
     }
   }
 
-  public function sendTicketByEmail(Dompdf $dompdf, Ticket $ticket)
+  public function sendTicketByEmail(Dompdf $dompdf, Ticket $ticket, Order $order)
   {
     try {
       $pdfContents = $dompdf->output();
@@ -112,8 +96,8 @@ class TicketService
       $mail->Password = 'zznalnrljktsitri';
       $mail->Subject = 'Your Ticket for the Event: ' . $ticket->getEvent()->getName();
 
-      $recipentEmail = $ticket->getCustomer()->getEmail();
-      $name = $ticket->getCustomer()->getFirstName() . ' ' . $ticket->getCustomer()->getLastName();
+      $recipentEmail = $order->getCustomer()->getEmail();
+      $name = $order->getCustomer()->getFullName();
 
       ob_start();
       require_once(__DIR__ . '/../views/ticket/generateEmailBody.php');
@@ -130,6 +114,16 @@ class TicketService
     } catch (Exception $ex) {
       throw ($ex);
     }
+  }
+
+  public function addTicketToOrder($orderId, $ticketId)
+  {
+      return $this->repository->addTicketToOrder($orderId, $ticketId);
+  }
+
+  public function removeTicketFromOrder($orderId, $ticketId)
+  {
+      return $this->repository->removeTicketFromOrder($orderId, $ticketId);
   }
 
 }

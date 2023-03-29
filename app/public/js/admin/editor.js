@@ -1,3 +1,7 @@
+if (window.frameElement == null) {
+    window.location.href = '/manageTextPages';
+}
+
 import { ImagePicker } from "./image_picker.js";
 import { MsgBox } from "./modals.js";
 
@@ -541,4 +545,16 @@ document.getElementById('new-page').onclick = function () {
     title.value = '';
     pageHref.value = '';
     btnSubmit.innerHTML = 'Create';
+}
+
+if (window.self != window.top) {
+    let container = document.getElementsByClassName('container')[0];
+    // 1em margin on left and right
+    container.style.marginLeft = '1em';
+    container.style.marginRight = '1em';
+
+    container.style.padding = '0';
+    container.style.width = '90%';
+    // disable max-width
+    container.style.maxWidth = 'none';
 }

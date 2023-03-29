@@ -44,7 +44,6 @@ class TicketRepository extends Repository
             $event->setName($result['EventName']);
             $event->setStartTime(new DateTime($result['startTime']));
             $event->setEndTime(new DateTime($result['endTime']));
-            $event->setPrice($result['Price']);
             $ticket->setEvent($event);
 
             $guide = new Guide();
@@ -53,17 +52,19 @@ class TicketRepository extends Repository
             $guide->setLanguage($result['language']);
             $ticket->setGuide($guide);
 
-            $customer = new Customer();
-            $customer->setFirstName($result['firstName']);
-            $customer->setLastName($result['surname']);
-            $customer->setEmail($result['email']);
-            $ticket->setCustomer($customer);
-
             return $ticket;
 
         } catch (Exception $ex) {
             throw ($ex);
         }
+    }
+
+    public function addTicketToOrder($orderId, $ticket){
+
+    }
+
+    public function removeTicketFromOrder($orderId, $ticket){
+
     }
 
 }

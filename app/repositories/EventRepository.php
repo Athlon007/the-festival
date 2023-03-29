@@ -20,7 +20,6 @@ class EventRepository extends Repository
                 $eventEntry->setName($event['name']);
                 $eventEntry->setStartTime(new DateTime($event['startTime']));
                 $eventEntry->setEndTime(new DateTime($event['endTime']));
-                $eventEntry->setPrice($event['price']);
                 array_push($events, $eventEntry);
             }
         }
@@ -38,7 +37,6 @@ class EventRepository extends Repository
                 $event['name'],
                 new DateTime($event['startTime']),
                 new DateTime($event['endTime']),
-                $event['price'],
                 $artistRepo->getById($event['artistId']),
                 $locationRepo->getById($event['locationId'])
             );
@@ -68,11 +66,16 @@ class EventRepository extends Repository
 
     public function getEventById($id)
     {
-        $sql = "SELECT eventId, name, startTime, endTime, price FROM Events WHERE eventId = :id";
+        $sql = "SELECT eventId, name, startTime, endTime FROM Events WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(['id' => $id]);
         $arr = $stmt->fetchAll();
-        return $this->buildEvent($arr)[0];
+        $output = $this->buildEvent($arr);
+
+        if (count($output) === 0) {
+            return null;
+        }
+        return $output[0];
     }
 
     public function deleteById($id)
@@ -108,8 +111,8 @@ class EventRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
-        $stmt->bindParam(':startTime', $this->formatDateTimeToString($startTime), PDO::PARAM_STR);
-        $stmt->bindParam(':endTime', $this->formatDateTimeToString($endTime), PDO::PARAM_STR);
+        $stmt->bindParam(':startTime', $startTime->format('Y-m-d H:i:s'), PDO::PARAM_STR);
+        $stmt->bindParam(':endTime', $endTime->format('Y-m-d H:i:s'), PDO::PARAM_STR);
         $stmt->bindValue(':price', $price);
         $stmt->execute();
     }
@@ -126,24 +129,28 @@ class EventRepository extends Repository
 
     public function getAllJazzEvents($sort, array $filters)
     {
-        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.price "
-            . "FROM JazzEvents je "
-            . "JOIN Events e ON e.eventId = je.eventId";
+        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, t.ticketTypePrice " .
+            "FROM JazzEvents je " .
+            "JOIN Events e ON e.eventId = je.eventId " .
+            "JOIN cartitems c on e.eventId = c.eventId " .
+            "join tickettypes t on c.ticketTypeId = t.ticketTypeId ";
 
 
         if (!empty($filters) && !(count($filters) === 1 && isset($filters['artist_kind']))) {
             // if only filter is artist_kind, skip
             $sql .= " WHERE ";
             $i = 0;
-            foreach ($filters as $filter) {
-                $key = array_keys($filters, $filter)[0];
+            if (isset($filters['artist_kind'])) {
+                $i++;
+            }
 
+            foreach ($filters as $key => $filter) {
                 switch ($key) {
                     case 'price_from':
-                        $sql .= " e.price >= :$key ";
+                        $sql .= " t.ticketTypePrice >= :$key ";
                         break;
                     case 'price_to':
-                        $sql .= " e.price <= :$key ";
+                        $sql .= " t.ticketTypePrice <= :$key ";
                         break;
                     case 'time_from':
                         $sql .= " HOUR(e.startTime) >= :$key ";
@@ -153,6 +160,15 @@ class EventRepository extends Repository
                         break;
                     case 'hide_no_seats':
                         // TODO: Hide events with no seats.
+                        break;
+                    case 'day':
+                        $sql .= " DAY(e.startTime) = :$key ";
+                        break;
+                    case 'date':
+                        $sql .= " DATE(e.startTime) = :$key ";
+                        break;
+                    case 'location':
+                        $sql .= " je.locationId = :$key ";
                         break;
                     default:
                         // no filtering by default
@@ -172,10 +188,10 @@ class EventRepository extends Repository
                 $sql .= " ORDER BY e.startTime DESC";
                 break;
             case "price":
-                $sql .= " ORDER BY e.price";
+                $sql .= " ORDER BY t.ticketTypePrice";
                 break;
             case "price_desc":
-                $sql .= " ORDER BY e.price DESC";
+                $sql .= " ORDER BY t.ticketTypePrice DESC";
                 break;
             default:
                 $sql .= " ORDER BY e.startTime";
@@ -185,9 +201,7 @@ class EventRepository extends Repository
         $stmt = $this->connection->prepare($sql);
 
         if (!(count($filters) === 1 && isset($filters['artist_kind']))) {
-            foreach ($filters as $filter) {
-                $key = array_keys($filters, $filter)[0];
-
+            foreach ($filters as $key => $filter) {
                 if ($key == 'artist_kind') {
                     continue;
                 }
@@ -207,7 +221,7 @@ class EventRepository extends Repository
 
     public function getJazzEventById($id)
     {
-        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.price "
+        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime "
             . "FROM JazzEvents je "
             . "JOIN Events e ON e.eventId = je.eventId "
             . "WHERE je.eventId = :id";

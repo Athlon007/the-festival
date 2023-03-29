@@ -89,10 +89,10 @@ class JazzEventList extends EventsList {
         });
 
         let sortOptions = [
-            { value: 'time-asc', text: 'Time ascending' },
-            { value: 'time-desc', text: 'Time descending' },
-            { value: 'price-asc', text: 'Price ascending' },
-            { value: 'price-desc', text: 'Price descending' }
+            { value: 'time', text: 'Time ascending' },
+            { value: 'time_desc', text: 'Time descending' },
+            { value: 'price', text: 'Price ascending' },
+            { value: 'price_desc', text: 'Price descending' }
         ];
         for (let option of sortOptions) {
             let sortOption = document.createElement('option');
@@ -129,6 +129,50 @@ class JazzEventList extends EventsList {
             this.timeEnd = e.target.value;
             this.loadEvents();
         });
+
+        // Day Filter
+        // add radio buttons for each day between 27th of July to 30th of July
+        let dayFilter = document.createElement('div');
+        dayFilter.classList.add('row');
+        let dayHeader = document.createElement('h2');
+        dayHeader.innerText = 'Day';
+        let days = document.createElement('div');
+        days.classList.add('d-block');
+
+        for (let i = 27; i <= 30; i++) {
+            let day = document.createElement('div');
+            day.classList.add('form-check');
+
+            let dayInput = document.createElement('input');
+            dayInput.classList.add('form-check-input');
+            dayInput.type = 'radio';
+            dayInput.name = 'day';
+            dayInput.value = i;
+            dayInput.id = 'day-' + i;
+            let dayLabel = document.createElement('label');
+            dayLabel.classList.add('form-check-label');
+            dayLabel.innerText = i + ' July 2023';
+            dayLabel.htmlFor = 'day-' + i;
+
+            day.appendChild(dayInput);
+            day.appendChild(dayLabel);
+            days.appendChild(day);
+
+            // allow unselecting the day
+            dayInput.addEventListener('click', (e) => {
+                if (e.target.checked && this.day === e.target.value) {
+                    document.querySelector('input[name="day"]:checked').checked = false;
+                    this.day = null
+                } else {
+                    this.day = e.target.value;
+                }
+                this.loadEvents();
+            });
+        }
+
+        dayFilter.appendChild(dayHeader);
+        dayFilter.appendChild(days);
+        this.sortingContainer.appendChild(dayFilter);
 
         // add hours from 0 to 23
         for (let i = 0; i < 24; i++) {
@@ -224,6 +268,7 @@ class JazzEventList extends EventsList {
 
         if (this.sortMethod) {
             addArg(`sort=${this.sortMethod}`);
+            console.log(this.sortMethod);
         }
 
         // if time_start is set
@@ -247,15 +292,19 @@ class JazzEventList extends EventsList {
             addArg(`hide_without_seats`);
         }
 
+        if (this.day) {
+            addArg(`day=${this.day}`);
+        }
+
         let response = await fetch(url + args);
         let data = await response.json();
         return data;
     }
 
     async loadEvents() {
-        this.clearEvents();
         let data = await this.getData();
 
+        this.clearEvents();
         for (let event of data) {
             this.addEvent(event);
         }
@@ -271,16 +320,16 @@ class JazzEventList extends EventsList {
         let rowTitle = document.createElement('div');
         rowTitle.classList.add('row');
         let title = document.createElement('h2');
-        title.innerText = event.name;
+        title.innerText = event.event.name;
         rowTitle.appendChild(title);
 
         let rowDetails = document.createElement('div');
         rowDetails.classList.add('row');
 
-        rowDetails.appendChild(this.createDetailBox('Location', event.location.name));
+        rowDetails.appendChild(this.createDetailBox('Location', event.event.location.name));
 
-        const startTime = new Date(event.startTime.date);
-        const endTime = new Date(event.endTime.date);
+        const startTime = new Date(event.event.startTime.date);
+        const endTime = new Date(event.event.endTime.date);
         const startHour = startTime.getHours();
         const endHour = endTime.getHours();
         const startMinutes = startTime.getMinutes();
@@ -290,8 +339,8 @@ class JazzEventList extends EventsList {
         const displayTime = `${startTime.toDateString()}<br> ${startHour}:${startMinutesString} - ${endHour}:${endMinutesString}`;
         rowDetails.appendChild(this.createDetailBox('Time', displayTime));
 
-        rowDetails.appendChild(this.createDetailBox('Seats', event.location.capacity));
-        rowDetails.appendChild(this.createDetailBox('Price', event.price));
+        rowDetails.appendChild(this.createDetailBox('Seats', event.event.location.capacity));
+        rowDetails.appendChild(this.createDetailBox('Price', event.ticketType.price));
 
         // buttons row
         let rowButtons = document.createElement('div');
@@ -314,7 +363,7 @@ class JazzEventList extends EventsList {
             this.addEventToCard(event.id, amount);
         });
         let buttonDetailsA = document.createElement('a');
-        buttonDetailsA.href = `/festival/jazz/event/${event.id}`;
+        buttonDetailsA.href = `/festival/jazz/event/${event.event.id}`;
         buttonDetailsA.classList.add('col-3');
         let buttonDetails = document.createElement('button');
         buttonDetails.classList.add('btn', 'btn-secondary', 'w-100');
@@ -420,15 +469,6 @@ class StrollEventList extends EventsList {
         let response = await fetch(url + args);
         let data = await response.json();
         return data;
-    }
-
-    async loadEvents() {
-        this.clearEvents();
-        let data = await this.getData();
-
-        for (let event of data) {
-            this.addEvent(event);
-        }
     }
 
     addEvent(event) {

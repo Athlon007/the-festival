@@ -22,16 +22,24 @@ class FestivalJazzController
 
     public function loadEventPage($uri)
     {
-        require_once(__DIR__ . "/../services/EventService.php");
+        require_once(__DIR__ . "/../services/CartItemService.php");
 
-        $eventService = new EventService();
-        $event = $eventService->getEventById(basename($uri));
+        $eventService = new CartItemService();
+        $cartItem = $eventService->getByEventId(basename($uri));
+        $event = $cartItem->getEvent();
 
         // if event is of jazzevent type
         if (!($event instanceof MusicEvent)) {
             // redirect to 404
             return;
         }
+
+
+        $afterThat = $eventService->getAllJazz("", [
+            "day" => $event->getStartTime()->format('d'),
+            "time_from" => $event->getEndTime()->format('H:i'),
+            "location" => $event->getLocation()->getLocationId()
+        ]);
 
         require(__DIR__ . self::JAZZ_EVENT_PAGE);
     }

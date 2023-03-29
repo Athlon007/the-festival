@@ -14,9 +14,6 @@
     <!-- success modal -->
     <div class="container">
         <div class="row">
-            <h1>Artists</h1>
-        </div>
-        <div class="row">
             <div class="col-2 card m-0">
                 <div class="card-body p-0 m-0 mt-1 mh-100">
                     <button id="new-page" class="btn btn-success mb-1 w-100">Add Artist</button>

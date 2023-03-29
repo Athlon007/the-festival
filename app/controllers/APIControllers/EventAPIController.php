@@ -3,6 +3,7 @@
 require_once(__DIR__ . '/../../models/Event.php');
 require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
+require_once(__DIR__ . '/../../services/CartItemService.php');
 require_once("APIController.php");
 
 class EventAPIController extends APIController
@@ -33,6 +34,10 @@ class EventAPIController extends APIController
             $filters['price_to'] = $_GET['price_to'];
         }
 
+        if (isset($_GET['day'])) {
+            $filters['day'] = $_GET['day'];
+        }
+
         try {
             if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 if (isset($_GET['artist'])) {
@@ -59,7 +64,9 @@ class EventAPIController extends APIController
                     $filters['artist_kind'] = 'dance';
                 }
 
-                echo json_encode($this->service->getJazzEvents($sort, $filters));
+                $cartItemService = new CartItemService();
+
+                echo json_encode($cartItemService->getAllJazz($sort, $filters));
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
                 require_once(__DIR__ . "/../../services/FestivalHistoryService.php");
                 $strollService = new FestivalHistoryService();
@@ -85,7 +92,6 @@ class EventAPIController extends APIController
                 if (isset($_GET['ticket_type'])) {
                     $filters['ticket_type'] = $_GET['ticket_type'];
                 }
-
                 echo json_encode($strollService->getAllHistoryEvents());
             } else {
                 if (is_numeric(basename($uri))) {
@@ -99,7 +105,8 @@ class EventAPIController extends APIController
                     return;
                 }
 
-                echo json_encode($this->service->getAllEvents());
+                $cartItemService = new CartItemService();
+                echo json_encode($cartItemService->getAll());
             }
         } catch (TypeError $e) {
             $this->sendErrorMessage("Event not found", 404);
@@ -113,7 +120,7 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
-            if (str_starts_with($uri, '/api/events/jazz')) {
+            if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 require_once(__DIR__ . '/../../services/JazzArtistService.php');
                 $artistService = new JazzArtistService();
                 $artist = $artistService->getById($data['artist']['artistId']);
@@ -127,7 +134,6 @@ class EventAPIController extends APIController
                     $data['name'],
                     new DateTime($data['startTime']),
                     new DateTime($data['endTime']),
-                    $data['price'],
                     $artist,
                     $location
                 );
@@ -157,7 +163,7 @@ class EventAPIController extends APIController
         try {
             $editedEventId = basename($uri);
 
-            if (str_starts_with($uri, '/api/events/jazz')) {
+            if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 require_once(__DIR__ . '/../../services/JazzArtistService.php');
                 $artistService = new JazzArtistService();
                 $artist = $artistService->getById($data['artist']['artistId']);
@@ -171,7 +177,6 @@ class EventAPIController extends APIController
                     $data['name'],
                     new DateTime($data['startTime']),
                     new DateTime($data['endTime']),
-                    $data['price'],
                     $artist,
                     $location
                 );

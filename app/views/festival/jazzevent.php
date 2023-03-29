@@ -29,7 +29,7 @@
         </div>
     <? } ?>
     <div class="container">
-        <div class="row col-12 py-1 justify-content-center ">
+        <div class="row col-12 py-1 justify-content-center">
             <input type="number" class="form-control" style="width:4em" id="ticketAmount" name="ticketAmount" min="1" max="10" value="1">
             <button class="btn btn-primary px-2 mx-1 w-auto">Add ticket to cart</button>
         </div>
@@ -50,15 +50,61 @@
             <div class="row mx-auto">
                 <div class="col-8">
                     <h2>Where</h2>
-                    <div id="mapContainer" style="height:300px" data-mapkind="event" data-lon="<?= $event->getLocation()->getLon() ?>" data-lat="<?= $event->getLocation()->getLat() ?>" data-name="<?= $event->getLocation()->getName() ?>" data-street="<?= $event->getLocation()->getAddress()->getStreetName() ?>"></div>
+                    <div class="row">
+                        <div id="mapContainer" class="col-8" style="height:300px" data-mapkind="event" data-lon="<?= $event->getLocation()->getLon() ?>" data-lat="<?= $event->getLocation()->getLat() ?>" data-name="<?= $event->getLocation()->getName() ?>" data-street="<?= $event->getLocation()->getAddress()->getStreetName() ?>"></div>
+                        <div class="col-4">
+                            <strong><?= $event->getLocation()->getName() ?></strong>
+                            <p class="my-0"><?= $event->getLocation()->getAddress()->getStreetName() ?> <?= $event->getLocation()->getAddress()->getHouseNumber() ?></p>
+                            <p class="my-0"><?= $event->getLocation()->getAddress()->getPostalCode() ?> <?= $event->getLocation()->getAddress()->getCity() ?></p>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-4">
                     <h2>Price</h2>
-                    <p class="price text-start">&euro; <?= $event->getPrice() ?></p>
+                    <p class="price text-start">&euro; <?= $cartItem->getTicketType()->getPrice() ?></p>
                 </div>
             </div>
         </div>
     </div>
+    <? if (!empty($afterThat)) { ?>
+        <div class="container">
+            <div class="card row col-10 mx-auto">
+                <h2>After that</h2>
+                <div class="row justify-content-center py-2">
+                    <? foreach ($afterThat as $after) { ?>
+                        <div class="card py-2 col-11">
+                            <div class="row">
+                                <h2><?= $after->getEvent()->getName() ?></h2>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <h4>Location</h4>
+                                    <p><?= $after->getEvent()->getLocation()->getName() ?></p>
+                                </div>
+                                <div class="col-3">
+                                    <h4>Time</h4>
+                                    <p><?= $after->getEvent()->getStartTime()->format("l, F jS") ?><br><?= $after->getEvent()->getStartTime()->format("H:i") ?>-<?= $after->getEvent()->getEndTime()->format("H:i") ?></p>
+                                </div>
+                                <div class="col-3">
+                                    <h4>Seats</h4>
+                                    <p><?= $after->getEvent()->getLocation()->getCapacity() ?></p>
+                                </div>
+                                <div class="col-3">
+                                    <h4>Price</h4>
+                                    <p class="price text-start">&euro; <?= $after->getTicketType()->getPrice() ?></p>
+                                </div>
+                            </div>
+                            <div class="row flex-row-reverse">
+                                <a class="col-3" href="/festival/jazz/event/<?= $after->getEvent()->getId() ?>">
+                                    <button class="btn btn-primary w-100">About event</button>
+                                </a>
+                            </div>
+                        </div>
+                    <? } ?>
+                </div>
+            </div>
+        </div>
+    <? } ?>
     <footer class="foot row bottom"></footer>
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>

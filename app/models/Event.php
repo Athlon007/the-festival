@@ -6,17 +6,20 @@ class Event implements JsonSerializable
     private $name;
     private DateTime $startTime;
     private DateTime $endTime;
-    private $price;
+    private $vat;
+    private int $availableTickets = 0;
 
-    // public function __construct($id, $name, DateTime $startTime, DateTime $endTime, $price)
-    // {
-    //     $this->id = $id;
-    //     $this->name = $name;
-    //     $this->startTime = $startTime;
-    //     $this->endTime = $endTime;
-    //     $this->price = $price;
-    // }
-
+    public function jsonSerialize(): mixed
+    {
+        return [
+            "id" => $this->getId(),
+            "name" => $this->getName(),
+            "startTime" => $this->getStartTime(),
+            "endTime" => $this->getEndTime(),
+            "vat" => $this->getVat(),
+            "availableTickets" => $this->getAvailableTickets(),
+        ];
+    }
 
     public function setId($value)
     {
@@ -58,24 +61,23 @@ class Event implements JsonSerializable
         $this->endTime = $value;
     }
 
-    public function getPrice()
+    public function getVat()
     {
-        return $this->price;
+        return $this->vat;
     }
 
-    public function setPrice($value)
+    public function setVat($value)
     {
-        $this->price = $value;
+        $this->vat = $value;
     }
 
-    public function jsonSerialize(): mixed
+    public function getAvailableTickets()
     {
-        return [
-            "id" => $this->getId(),
-            "name" => $this->getName(),
-            "startTime" => $this->getStartTime(),
-            "endTime" => $this->getEndTime(),
-            "price" => $this->getPrice(),
-        ];
+        return $this->availableTickets;
+    }
+
+    public function setAvailableTickets($value)
+    {
+        $this->availableTickets = $value;
     }
 }
