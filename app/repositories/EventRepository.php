@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . "/../models/Event.php");
+require_once(__DIR__ . "/../models/History/HistoryEvent.php");
 require_once(__DIR__ . "/../models/Music/MusicEvent.php");
 require_once("Repository.php");
 require_once("LocationRepository.php");
@@ -14,6 +15,9 @@ class EventRepository extends Repository
         foreach ($arr as $event) {
             if ($this->isInJazzEvents($event['eventId'])) {
                 $events[] = $this->getJazzEventById($event['eventId']);
+            }
+            if ($this->isInHistoryEvents($event['eventId'])) {
+                $events[] = $this->getHistoryEventById($event['eventId']);
             } else {
                 $eventEntry = new Event();
                 $eventEntry->setId($event['eventId']);
@@ -127,6 +131,16 @@ class EventRepository extends Repository
         return count($arr) > 0;
     }
 
+    // HISTORY
+    public function isInHistoryEvents($id)
+    {
+        $sql = "SELECT eventId FROM historyevents WHERE eventId = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        $arr = $stmt->fetchAll();
+        return count($arr) > 0;
+    }
+
     public function getAllJazzEvents($sort, array $filters)
     {
         $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, t.ticketTypePrice " .
@@ -230,6 +244,59 @@ class EventRepository extends Repository
         $stmt->execute();
         $arr = $stmt->fetchAll();
         return $this->buildJazzEvent($arr)[0];
+    }
+
+    // Get History Event by ID
+    public function getHistoryEventById($id)
+    {
+        try {
+            $locationRep = new LocationRepository();
+
+            $sql = "SELECT he.eventId as eventId, he.locationId as locationId, e.name as name,
+             e.startTime as startTime, e.endTime as endTime, g.guideId as guideId, e.availableTickets as availableTickets
+            FROM historyEvents he
+            JOIN Events e ON e.eventId = he.eventId 
+            join guides g on g.guideId = he.guideId 
+            where he.eventId  = :id";
+
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetch();
+
+
+            $guide = $this->getGuideByID($result['guideId']);
+            $location = $locationRep->getById($result['locationId']);
+            $startTime = new DateTime($result['startTime']);
+            $endTime = new DateTime($result['endTime']);
+            
+            $historyEvent = new HistoryEvent($result['eventId'], $result['name'], $result['availableTickets'], $startTime, $endTime, $guide, $location);
+            return $historyEvent;
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
+
+    public function getGuideByID($id)
+    {
+        try {
+            $query = "SELECT g.guideId, g.name as firstName, g.lastName , g.`language` , g.description  FROM guides g where guideId = :id";
+
+            $stmt = $this->connection->prepare($query);
+            $stmt->bindValue(":id", $id);
+            $stmt->execute();
+
+            // fetch result as an object
+            $stmt->setFetchMode(PDO::FETCH_CLASS, 'Guide');
+            $guide = $stmt->fetch();
+
+            if (!$guide) {
+                throw new Exception("No guide found");
+            }
+            return $guide;
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
     }
 
     public function createJazzEvent($eventId, $artistId, $locationId): int

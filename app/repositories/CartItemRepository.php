@@ -32,6 +32,25 @@ class CartItemRepository extends Repository
         return $this->buildCartItems($result);
     }
 
+    public function getAllHistory()
+    {
+        try {
+            $sql = "select c.cartItemId, e.eventId, t.ticketTypeId, h.locationId
+            from cartitems c 
+            join tickettypes t ON t.ticketTypeId = c.ticketTypeId
+            join events e  on e.eventId = c.eventId 
+            join historyevents h on h.eventId  = e.eventId ";
+
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+
+            return $this->buildCartItems($result);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
     public function getAllJazz($sort = null, $filters = [])
     {
         $sql = "select c.cartItemId, e.eventId, t.ticketTypeId, je.locationId " .
