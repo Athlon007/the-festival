@@ -483,11 +483,11 @@ class StrollEventList extends EventsList {
         ticketContainer.appendChild(ticketHeader);
         //h4
         let ticketTitle = document.createElement('h4');
-        ticketTitle.innerText = event.name;
+        ticketTitle.innerText = event.event.name;
         ticketHeader.appendChild(ticketTitle);
         //p
         let ticketPrice = document.createElement('p');
-        ticketPrice.innerText = "Guide: " + event.guide.guideName + " " + event.guide.lastName;
+        ticketPrice.innerText = "Guide: " + event.event.guide.guideName + " " + event.event.guide.lastName;
         ticketHeader.appendChild(ticketPrice);
 
         let ticketBody = document.createElement('div');
@@ -498,15 +498,15 @@ class StrollEventList extends EventsList {
         ticketBody.appendChild(ticketInfo);
         // p1
         let ticketInfoP1 = document.createElement('p');
-        ticketInfoP1.innerHTML = "<strong>Star Point:</strong> " + event.location.name;
+        ticketInfoP1.innerHTML = "<strong>Star Point:</strong> " + event.event.location.name;
         ticketInfo.appendChild(ticketInfoP1);
         // p2
         let ticketInfoP2 = document.createElement('p');
-        ticketInfoP2.innerHTML = "<strong>Language:</strong> " + event.guide.language;
+        ticketInfoP2.innerHTML = "<strong>Language:</strong> " + event.event.guide.language;
         ticketInfo.appendChild(ticketInfoP2);
         // p3
         let ticketInfoP3 = document.createElement('p');
-        ticketInfoP3.innerHTML = "<strong>Time:</strong> " + event.startTime.date;
+        ticketInfoP3.innerHTML = "<strong>Time:</strong> " + event.event.startTime.date;
         ticketInfo.appendChild(ticketInfoP3);
         // p4
         let ticketInfoP4 = document.createElement('p');
@@ -516,7 +516,7 @@ class StrollEventList extends EventsList {
 
         let ticketPriceDiv = document.createElement('div');
         let ticketPriceP = document.createElement('p');
-        ticketPriceP.innerHTML = "<strong>Price:</strong> €" + event.price;
+        ticketPriceP.innerHTML = "<strong>Price:</strong> €" + event.ticketType.price;
         ticketPriceDiv.appendChild(ticketPriceP);
         //button
         let ticketButton = document.createElement('button');

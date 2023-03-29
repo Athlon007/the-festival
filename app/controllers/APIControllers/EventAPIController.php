@@ -5,6 +5,8 @@ require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
 require_once(__DIR__ . '/../../services/CartItemService.php');
 require_once("APIController.php");
+require_once(__DIR__ . '/../../models/Types/TicketType.php');
+require_once(__DIR__ . '/../../models/CartItem.php');
 
 class EventAPIController extends APIController
 {
@@ -106,6 +108,15 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
+            $ticketType = new TicketType(
+                $data['ticketType']['ticketTypeId'],
+                $data['ticketType']['name'],
+                $data['ticketType']['price'],
+                $data['ticketType']['maxTickets'],
+            );
+
+            $event = null;
+
             if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 require_once(__DIR__ . '/../../services/JazzArtistService.php');
                 $artistService = new JazzArtistService();
@@ -123,18 +134,17 @@ class EventAPIController extends APIController
                     $artist,
                     $location
                 );
-
-                try {
-                    $event = $this->service->addEvent($event);
-
-                    echo json_encode($event);
-                } catch (Exception $e) {
-                    $this->sendErrorMessage($e->getMessage());
-                }
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
             } else {
                 $this->sendErrorMessage('Invalid request', 400);
+                return;
             }
+
+            $cartItem = new CartItem(0, $event, $ticketType);
+            $cartItemService = new CartItemService();
+            $cartItem = $cartItemService->add($cartItem);
+
+            echo json_encode($cartItem);
         } catch (InvalidVariableException $e) {
             $this->sendErrorMessage($e->getMessage(), 400);
         } catch (Throwable $e) {
@@ -147,7 +157,15 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
-            $editedEventId = basename($uri);
+            $editedCartItemID = basename($uri);
+            $ticketType = new TicketType(
+                $data['ticketType']['ticketTypeId'],
+                $data['ticketType']['name'],
+                $data['ticketType']['price'],
+                $data['ticketType']['maxTickets'],
+            );
+
+            $event = null;
 
             if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 require_once(__DIR__ . '/../../services/JazzArtistService.php');
@@ -166,13 +184,17 @@ class EventAPIController extends APIController
                     $artist,
                     $location
                 );
-
-                $event = $this->service->editEvent($event);
-                echo json_encode($event);
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
             } else {
                 $this->sendErrorMessage('Invalid request', 400);
+                return;
             }
+
+            $cartItem = new CartItem($editedCartItemID, $event, $ticketType);
+            $cartItemService = new CartItemService();
+            $cartItem = $cartItemService->updateCartItem($cartItem);
+
+            echo json_encode($cartItem);
         } catch (InvalidVariableException $e) {
             $this->sendErrorMessage($e->getMessage(), 400);
         } catch (Throwable $e) {
@@ -183,11 +205,14 @@ class EventAPIController extends APIController
     public function handleDeleteRequest($uri)
     {
         try {
-            $deletedEventId = basename($uri);
+            $deletedCartItemId = basename($uri);
+            $cartItemService = new CartItemService();
+            $ci = $cartItemService->getById($deletedCartItemId);
+            $cartItemService->deleteCartItem($ci);
 
-            $this->service->deleteEvent($deletedEventId);
+            $eventId = $ci->getEvent()->getId();
 
-            $this->sendSuccessMessage("Event with id $deletedEventId deleted", 200);
+            $this->sendSuccessMessage("Cart Item with id $deletedCartItemId and event id $eventId deleted", 200);
         } catch (Throwable $e) {
             $this->sendErrorMessage("Unhandled exception", 500);
         }

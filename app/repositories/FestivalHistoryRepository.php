@@ -17,7 +17,7 @@ class FestivalHistoryRepository extends Repository
     {
         try {
             $query = "SELECT e.eventId AS eventId, e.name AS name, e.startTime AS startTime, e.endTime AS endTime, e.price AS price, h.guideId AS guideId, h.locationId AS locationId
-        FROM historyevents h 
+        FROM historyevents h
         JOIN events e ON e.eventId = h.eventId";
 
             $stmt = $this->connection->prepare($query);
@@ -94,5 +94,4 @@ class FestivalHistoryRepository extends Repository
             throw ($ex);
         }
     }
-
 }

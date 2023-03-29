@@ -1,11 +1,10 @@
 if (window.frameElement == null) {
-    window.location.href = '/manageJazz';
+    //window.location.href = '/manageJazz';
 }
 
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;
-let editedEvent = null;
 const locations = document.getElementById('locations');
 const masterEditor = document.getElementById('master-editor');
 const btnOpen = document.getElementById('open');
@@ -13,7 +12,7 @@ const btnOpen = document.getElementById('open');
 // Artist fields.
 const artist = document.getElementById('artist');
 const locationSelect = document.getElementById('location');
-const price = document.getElementById('price');
+const ticketType = document.getElementById('ticketType');
 const startTime = document.getElementById('startTime');
 const endTime = document.getElementById('endTime');
 
@@ -25,7 +24,7 @@ const msgBox = new MsgBox();
 const maxNameLength = 12;
 const maxLocationLength = 15;
 
-let baseURL = '/api/tickettypes/';
+let baseURL = '/api/events/';
 if (window.frameElement != null && window.frameElement.getAttribute('data-kind') != undefined) {
     baseURL += window.frameElement.getAttribute('data-kind');
 } else {
@@ -106,24 +105,24 @@ function createNewEntry(data) {
 }
 
 btnSubmit.onclick = function () {
-    let start = new Date(startTime.value);
-    start = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate() + ' ' + start.getHours() + ':' + start.getMinutes() + ':' + start.getSeconds();
-
-    let end = new Date(endTime.value);
-    end = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate() + ' ' + end.getHours() + ':' + end.getMinutes() + ':' + end.getSeconds();
 
     // to json
     let data = {
         id: 0,
-        name: artist.options[artist.selectedIndex].text,
-        startTime: start,
-        endTime: end,
-        price: price.value,
-        artist: {
-            artistId: artist.value
+        event: {
+            id: 0,
+            name: artist.options[artist.selectedIndex].text,
+            startTime: start,
+            endTime: end,
+            artist: {
+                artistId: artist.value
+            },
+            location: {
+                locationId: locationSelect.value
+            }
         },
-        location: {
-            locationId: locationSelect.value
+        ticketType: {
+            id: ticketType.value,
         }
     };
 
@@ -206,8 +205,6 @@ function createNewOptionItem(element) {
             location += '&nbsp;';
             spacesAdded++;
         }
-
-        console.log(location);
     }
 
     // display startTime and endTime in a following pattern: dd/mm/yyyy hh:mm
@@ -233,8 +230,7 @@ function createNewOptionItem(element) {
             .then(response => response.json())
             .then(data => {
                 if (!data.error_message) {
-                    console.log(data);
-                    editedId = data.event.id;
+                    editedId = data.id;
                     editedEvent = data;
 
                     // select the artist option corresponding to id in the select
@@ -256,7 +252,7 @@ function createNewOptionItem(element) {
                     }
 
 
-                    price.value = data.ticketType.price;
+                    ticketType.value = data.ticketType.id;
 
                     let dateStart = new Date(data.event.startTime.date);
                     dateStart.setHours(dateStart.getHours() + 2);
@@ -290,7 +286,6 @@ function createNewOptionItem(element) {
     return option;
 }
 
-// Load text pages from '/api/admin/text-pages'
 function loadList() {
     let lastSelectedId = locations.value;
 
@@ -406,6 +401,28 @@ function loadList() {
         }
         );
     location.selectedIndex = -1;
+
+    // Load ticket types.
+    fetch('/api/tickettypes', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            // check if data is array
+            if (Array.isArray(data)) {
+                data.forEach(element => {
+                    let option = document.createElement('option');
+                    option.innerHTML = element.name + ' - ' + element.price + '€';
+                    option.value = element.id;
+                    ticketType.appendChild(option);
+                });
+            }
+        }
+        );
+    ticketType.selectedIndex = 0;
 }
 
 loadList();
