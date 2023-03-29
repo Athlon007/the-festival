@@ -47,6 +47,7 @@ class FestivalHistoryRepository extends Repository
     }
 
 
+    // TODO: remove this method
     public function getGuideByID($id)
     {
         try {

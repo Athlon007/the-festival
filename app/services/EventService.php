@@ -26,6 +26,11 @@ class EventService
             return $this->repo->getJazzEventById($id);
         }
 
+        // if is history event
+        if ($this->repo->isInHistoryEvents($id)) {
+            return $this->repo->getHistoryEventById($id);
+        }
+
         return $this->repo->getEventById($id);
     }
 

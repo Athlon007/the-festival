@@ -18,6 +18,10 @@ class CartItemService
         return $this->cartItemRepository->getAll();
     }
 
+    public function getAllHistory(){
+        return $this->cartItemRepository->getAllHistory();
+    }
+
     public function getAllJazz($sort = null, $filters = []): array
     {
         return $this->cartItemRepository->getAllJazz($sort, $filters);
