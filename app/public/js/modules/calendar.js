@@ -169,9 +169,9 @@ function loadCalendar() {
                     const borderColor = "#412c0c";
                     const url = "#";
 
-                    let text = "<center>" + e.guide.language + "<br>" + e.guide.guideName + "  " + e.guide.lastName + "</center>";
+                    let text = "<center>" + e.event.guide.language + "<br>" + e.event.guide.guideName + "  " + e.event.guide.lastName + "</center>";
 
-                    addEvent(text, new Date(e.startTime.date), new Date(e.endTime.date), url, backgroundColor, borderColor);
+                    addEvent(text, new Date(e.event.startTime.date), new Date(e.event.endTime.date), url, backgroundColor, borderColor);
                 }
 
             }

@@ -5,7 +5,7 @@ if (window.frameElement == null) {
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;
-let editedEvent = null;
+let editedEventId = -1;
 const locations = document.getElementById('locations');
 const masterEditor = document.getElementById('master-editor');
 const btnOpen = document.getElementById('open');
@@ -13,7 +13,7 @@ const btnOpen = document.getElementById('open');
 // Artist fields.
 const artist = document.getElementById('artist');
 const locationSelect = document.getElementById('location');
-const price = document.getElementById('price');
+const ticketType = document.getElementById('ticketType');
 const startTime = document.getElementById('startTime');
 const endTime = document.getElementById('endTime');
 
@@ -25,7 +25,7 @@ const msgBox = new MsgBox();
 const maxNameLength = 12;
 const maxLocationLength = 15;
 
-let baseURL = '/api/tickettypes/';
+let baseURL = '/api/events/';
 if (window.frameElement != null && window.frameElement.getAttribute('data-kind') != undefined) {
     baseURL += window.frameElement.getAttribute('data-kind');
 } else {
@@ -43,27 +43,8 @@ function updateExistingEntry(id, data) {
         .then(response => response.json())
         .then(data => {
             if (!data.error_message) {
-
-                // update the option in the list
-                let options = locations.getElementsByTagName('option');
-                for (let option of options) {
-                    if (option.value == editedId) {
-                        // remove the option from the list
-                        option.remove();
-                        break;
-                    }
-                }
-
-                // create new option
-                let option = createNewOptionItem(data);
-                locations.appendChild(option);
-                locations.selectedIndex = locations.length - 1;
-                editedId = data.id;
-                editedEvent = data;
-                isInCreationMode = false;
-                btnSubmit.innerHTML = 'Save';
-
-                msgBox.createToast('Success!', 'Location has been updated');
+                loadList();
+                msgBox.createToast('Success!', 'Event has been updated');
             } else {
                 msgBox.createToast('Something went wrong', data.error_message);
             }
@@ -83,22 +64,7 @@ function createNewEntry(data) {
     })
         .then(response => response.json())
         .then(data => {
-            if (!data.error_message) {
-                let option = createNewOptionItem(data);
-                locations.appendChild(option);
-                locations.selectedIndex = locations.length - 1;
-                editedId = data.id;
-                editedEvent = data;
-                isInCreationMode = false;
-                btnSubmit.innerHTML = 'Save';
-                msgBox.createToast('Success!', 'Location has been created');
-
-                // exit the new page mode
-                isInCreationMode = false;
-                btnSubmit.innerHTML = 'Save';
-            } else {
-                msgBox.createToast('Something went wrong', data.error_message);
-            }
+            loadList();
         })
         .catch(error => {
             msgBox.createToast('Something went wrong', error);
@@ -115,15 +81,20 @@ btnSubmit.onclick = function () {
     // to json
     let data = {
         id: 0,
-        name: artist.options[artist.selectedIndex].text,
-        startTime: start,
-        endTime: end,
-        price: price.value,
-        artist: {
-            artistId: artist.value
+        event: {
+            id: editedEventId,
+            name: artist.options[artist.selectedIndex].text,
+            startTime: start,
+            endTime: end,
+            artist: {
+                id: artist.value
+            },
+            location: {
+                id: locationSelect.value
+            }
         },
-        location: {
-            locationId: locationSelect.value
+        ticketType: {
+            id: ticketType.value,
         }
     };
 
@@ -206,8 +177,6 @@ function createNewOptionItem(element) {
             location += '&nbsp;';
             spacesAdded++;
         }
-
-        console.log(location);
     }
 
     // display startTime and endTime in a following pattern: dd/mm/yyyy hh:mm
@@ -233,9 +202,8 @@ function createNewOptionItem(element) {
             .then(response => response.json())
             .then(data => {
                 if (!data.error_message) {
-                    console.log(data);
-                    editedId = data.event.id;
-                    editedEvent = data;
+                    editedId = data.id;
+                    editedEventId = data.event.id;
 
                     // select the artist option corresponding to id in the select
                     let options = artist.getElementsByTagName('option');
@@ -256,7 +224,7 @@ function createNewOptionItem(element) {
                     }
 
 
-                    price.value = data.ticketType.price;
+                    ticketType.value = data.ticketType.id;
 
                     let dateStart = new Date(data.event.startTime.date);
                     dateStart.setHours(dateStart.getHours() + 2);
@@ -290,7 +258,6 @@ function createNewOptionItem(element) {
     return option;
 }
 
-// Load text pages from '/api/admin/text-pages'
 function loadList() {
     let lastSelectedId = locations.value;
 
@@ -406,6 +373,28 @@ function loadList() {
         }
         );
     location.selectedIndex = -1;
+
+    // Load ticket types.
+    fetch('/api/tickettypes', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            // check if data is array
+            if (Array.isArray(data)) {
+                data.forEach(element => {
+                    let option = document.createElement('option');
+                    option.innerHTML = element.name + ' - ' + element.price + '€';
+                    option.value = element.id;
+                    ticketType.appendChild(option);
+                });
+            }
+        }
+        );
+    ticketType.selectedIndex = 0;
 }
 
 loadList();
@@ -416,10 +405,9 @@ function toggleEditor(element, isEnabled) {
     } else {
         element.classList.add('disabled-module');
         editedId = -1;
-        editedEvent = null;
         artist.selectedIndex = 0;
         locationSelect.selectedIndex = 0;
-        price.value = '';
+        ticketType.selectedIndex = 0;
         startTime.value = '';
         endTime.value = '';
 

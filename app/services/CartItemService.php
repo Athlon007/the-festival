@@ -1,6 +1,8 @@
 <?php
 
 require_once(__DIR__ . "/../repositories/CartItemRepository.php");
+require_once("EventService.php");
+require_once("TicketTypeService.php");
 
 class CartItemService
 {
@@ -14,6 +16,11 @@ class CartItemService
     public function getAll(): array
     {
         return $this->cartItemRepository->getAll();
+    }
+
+    public function getAllHistory()
+    {
+        return $this->cartItemRepository->getAllHistory();
     }
 
     public function getAllJazz($sort = null, $filters = []): array
@@ -35,30 +42,38 @@ class CartItemService
         return $item;
     }
 
-    public function add(CartItem $cartItem): void
+    public function add(CartItem $cartItem): CartItem
     {
-        $eventId = htmlspecialchars($cartItem->getEvent()->getId());
-        $ticketTypeId = htmlspecialchars($cartItem->getTicketType()->getId());
+        $eventService = new EventService();
+        $ticketTypeService = new TicketTypeService();
 
-        $this->cartItemRepository->createCartItem($eventId, $ticketTypeId);
+        $ticketType = $ticketTypeService->getById($cartItem->getTicketType()->getId());
+        $event = $eventService->addEvent($cartItem->getEvent());
 
-        // TODO
+        $id = $this->cartItemRepository->createCartItem($event->getId(), $ticketType->getId());
+        return $this->getById($id);
     }
 
-    public function updateCartItem(CartItem $cartItem): void
+    public function updateCartItem(CartItem $cartItem): CartItem
     {
         $id = htmlspecialchars($cartItem->getId());
         $eventId = htmlspecialchars($cartItem->getEvent()->getId());
         $ticketTypeId = htmlspecialchars($cartItem->getTicketType()->getId());
 
+        $eventService = new EventService();
+        $eventService->editEvent($cartItem->getEvent());
+
         $this->cartItemRepository->updateCartItem($id, $eventId, $ticketTypeId);
 
-        // TODO
+        return $this->getById($id);
     }
 
-    public function deleteCartItem(int $id): void
+    public function deleteCartItem(CartItem $cartItem): void
     {
-        $id = htmlspecialchars($id);
+        $eventService = new EventService();
+        $eventService->deleteEvent($cartItem->getEvent());
+
+        $id = htmlspecialchars($cartItem->getId());
         $this->cartItemRepository->deleteCartItem($id);
     }
 }

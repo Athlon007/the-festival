@@ -1,9 +1,10 @@
 //Is ticket template for now, will change
 
 <div class="container">
-    <h3>Invoice number: <?php ?></h3>
+<h2>Invoice</h2>
+<h3>Invoice number: <?php $order->getOrderId() ?></h3>
 
-    <div class="ticket-info">
+    <div class="company-address">
         <label>Event Name:</label>
         <p>
             <?= $ticket->getEvent()->getName() ?>
@@ -20,7 +21,7 @@
     <div class="ticket-info">
         <label>Event Time:</label>
         <p>
-            <?= $ticket->getEvent()->getStartTime()->format('H:i') ?> -
+            <?= $ticket->getEvent()->getStartTime()->format('H:i') ?>
             <?= $ticket->getEvent()->getEndTime()->format('H:i') ?>
         </p>
     </div>

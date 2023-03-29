@@ -245,7 +245,7 @@ class UserService
     public function getUserById($id): User
     {
         try {
-            return $this->repository->getUserById($id);
+            return $this->repository->getById($id);
         } catch (Exception $ex) {
             throw ($ex);
         }
@@ -257,7 +257,7 @@ class UserService
             //Sanitise user data
             $data = $this->sanitiseUserData($data);
 
-            $user = $this->repository->getUserById($data->id);
+            $user = $this->repository->getById($data->id);
             $user->setFirstName(htmlspecialchars($data->firstName));
             $user->setLastName(htmlspecialchars($data->lastName));
             $user->setEmail(htmlspecialchars($data->email));

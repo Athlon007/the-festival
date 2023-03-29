@@ -3,7 +3,7 @@
 require_once(__DIR__ . '/../models/User.php');
 require_once(__DIR__ . '/../models/Address.php');
 
-class Customer extends User{
+class Customer extends User implements JsonSerializable{
     private DateTime $dateOfBirth;
     private string $phoneNumber;
     private Address $address;

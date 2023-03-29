@@ -17,18 +17,18 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <script type="module" src="/js/nav.js"></script>
 
-    <!-- Account management container -->
+    <!-- Container -->
     <section class="h-100 h-custom">
         <div class="container py-5 h-100">   
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
-                    <h2 class="m-5">Manage your Account</h2>
+                    <h2 class="m-5">Shopping Cart</h2>
 
                     <!--Pop-up message-->
                     <div id="popup">
                     </div>
                     
-                    <!-- Account management form -->
+                    <!-- Cart -->
                     <div class="card card-registration card-registration-2" style="border-radius: 15px;">
                         <div class="card-body p-0">
                             <div class="row g-0">

@@ -151,37 +151,37 @@
                 <div class="col-md-6">
                     <div class="scrollable-tickets">
                         <?php
-                        foreach ($historyEvents as $historyEvent) { ?>
+                        foreach ($historyCartItems as $historyCart) { ?>
                             <div class="ticket">
                                 <div class="ticket-header">
                                     <h4>
-                                        <?= $historyEvent->getName() ?>
+                                        <?= $historyCart->getEvent()->getName(); ?>
                                     </h4>
                                     <p>
                                         Guide:
-                                        <?= $historyEvent->getGuide()->getFirstName(); ?>
-                                        <?= $historyEvent->getGuide()->getLastName(); ?>
+                                        <?= $historyCart->getEvent()->getGuide()->getFirstName(); ?>
+                                        <?= $historyCart->getEvent()->getGuide()->getLastName(); ?>
                                     </p>
                                 </div>
                                 <div class="ticket-body">
                                     <div class="ticket-info">
                                         <p><strong>Start Point:</strong>
-                                            <?= $historyEvent->getLocation()->getName(); ?>
+                                            <?= $historyCart->getEvent()->getLocation()->getName(); ?>
                                         </p>
                                         <p><strong>Language:</strong>
-                                            <?= $historyEvent->getGuide()->getLanguage(); ?>
+                                            <?= $historyCart->getEvent()->getGuide()->getLanguage(); ?>
                                         </p>
                                         <p><strong>Time:</strong>
-                                            <?= $historyEvent->getStartTime()->format('j F / H:i'); ?>
+                                            <?= $historyCart->getEvent()->getStartTime()->format('j F / H:i'); ?>
                                         </p>
                                         <p><strong>Spot:</strong>
-                                            <?= $historyEvent->getLocation()->getCapacity(); ?> Available
+                                            <?= $historyCart->getEvent()->getAvailableTickets(); ?> Available
                                         </p>
                                     </div>
                                     <div class="ticket-price">
                                         <p><strong>Price:</strong>
                                             €
-                                            <?= $historyEvent->getPrice(); ?>
+                                            <?= $historyCart->getTicketType()->getPrice();?>
                                         </p>
                                         <button class="btn btn-primary addToCartButton">Add to
                                             cart</button>

@@ -100,7 +100,7 @@ class TicketService
       $name = $order->getCustomer()->getFullName();
 
       ob_start();
-      require_once(__DIR__ . '/../views/ticket/generateEmailBody.php');
+      require_once(__DIR__ . '/../emails/ticket-email.php');
       $mail->Body = ob_get_clean();
 
       $mail->addAddress('turkvedat0911@gmail.com', $name);
@@ -116,14 +116,18 @@ class TicketService
     }
   }
 
+  //TODO: check if obsolete before handing in
   public function addTicketToOrder($orderId, $ticketId)
   {
-      return $this->repository->addTicketToOrder($orderId, $ticketId);
+      
+    return $this->repository->addTicketToOrder($orderId, $ticketId);
   }
 
+  //TODO: check if obsolete before handing in
   public function removeTicketFromOrder($orderId, $ticketId)
   {
-      return $this->repository->removeTicketFromOrder($orderId, $ticketId);
+        
+    return $this->repository->removeTicketFromOrder($orderId, $ticketId);
   }
 
 }

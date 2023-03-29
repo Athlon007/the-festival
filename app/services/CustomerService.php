@@ -7,27 +7,22 @@ require_once(__DIR__ . '/../models/Customer.php');
 require_once(__DIR__ . '/../models/User.php');
 
 class CustomerService extends UserService{
-
-    private $addressRepository;
     protected $customerRepository;
-    protected $userRepository;
 
     public function __construct(){
         $this->customerRepository = new CustomerRepository();
-        $this->addressRepository = new AddressRepository();
-        $this->userRepository = new UserRepository();
     }
-    
+
     public function registerCustomer($data)
     {
-       
+
         //Sanitise data
         $data->userType = 3;
         $data = $this->sanitiseCustomerData($data);
 
         //Create customer object
         $customer = new Customer();
-        
+
         //Convert data to appropriate datatypes
         $dateOfBirth = new DateTime($data->dateOfBirth);
 
@@ -53,7 +48,7 @@ class CustomerService extends UserService{
 
         //Insert customer
         $this->customerRepository->insertCustomer($customer);
-        
+
     }
 
     public function getCustomerByUser(User $user) : Customer
@@ -72,11 +67,11 @@ class CustomerService extends UserService{
         {
             $data->confirmPassword = htmlspecialchars($data->confirmPassword);
             password_verify($data->confirmPassword, $customer->getHashPassword());
-            
+
             //Check if confirmPassword matches the customer's current password
             if (!password_verify($data->confirmPassword, $customer->getHashPassword()))
                 throw new IncorrectPasswordException();
-            
+
             //Hash the new password and update
             $customer->setHashPassword(password_hash($data->password, PASSWORD_DEFAULT));
         }
@@ -85,7 +80,7 @@ class CustomerService extends UserService{
         {
             if (parent::emailAlreadyExists($data->email))
                 throw new EmailAlreadyExistsException();
-            
+
             $customer->setEmail($data->email);
         }
 
@@ -113,10 +108,7 @@ class CustomerService extends UserService{
         $data->address->postalCode = htmlspecialchars($data->address->postalCode);
         $data->address->city = htmlspecialchars($data->address->city);
         $data->address->country = htmlspecialchars($data->address->country);
-    
+
         return $data;
     }
 }
-
-
-?>
