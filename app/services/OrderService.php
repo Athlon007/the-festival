@@ -101,7 +101,7 @@ class OrderService
         return $_SESSION[OrderService::CART_ARRAY];
     }
 
-    public function countItemInCart(CartItem $cartItem): int
+    private function countItemInCart(CartItem $cartItem): int
     {
         // If session is not initialized anyway, we can't remove anything.
         if (session_status() == PHP_SESSION_NONE) {
@@ -123,6 +123,24 @@ class OrderService
 
         // return the array.
         return $count;
+    }
+
+    public function getCartCount(): int
+    {
+        // If session is not initialized anyway, we can't remove anything.
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+
+
+        // check if array of cart item arrays is initialized.
+        if (!isset($_SESSION[OrderService::CART_ARRAY])) {
+            return 0;
+        }
+
+        // return the array.
+        return count($_SESSION[OrderService::CART_ARRAY]);
     }
 
     public function getCart(): array
