@@ -1,40 +1,49 @@
 <?php
-class EventType{
+class EventType implements JsonSerializable
+{
     private $id;
     private $name;
     private $vat;
 
-    public function __construct($id, $name, $vat){
+    public function __construct($id, $name, $vat)
+    {
         $this->id = $id;
         $this->name = $name;
         $this->vat = $vat;
     }
 
-    public function getId(){
+    public function getId()
+    {
         return $this->id;
     }
 
-    public function setId($value){
+    public function setId($value)
+    {
         $this->id = $value;
     }
 
-    public function getName(){
+    public function getName()
+    {
         return $this->name;
     }
 
-    public function setName($value){
+    public function setName($value)
+    {
         $this->name = $value;
     }
 
-    public function setVat($value){
+    public function setVat($value)
+    {
         $this->vat = $value;
     }
 
-    public function getVat(){
+    public function getVat()
+    {
         return $this->vat;
     }
 
-    public function jsonSerialize(){
+    public function jsonSerialize()
+    {
         return [
             "id" => $this->getId(),
             "name" => $this->getName(),
