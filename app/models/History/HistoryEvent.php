@@ -9,7 +9,7 @@ class HistoryEvent extends Event implements JsonSerializable
     private Guide $guide;
     private Location $location;
 
-    public function __construct($id, $name, $availableTickets, DateTime $startTime, DateTime $endTime, Guide $guide, Location $location)
+    public function __construct($id, $name, $availableTickets, DateTime $startTime, DateTime $endTime, Guide $guide, Location $location, EventType $eventType)
     {
         $this->setId($id);
         $this->setName($name);
@@ -18,6 +18,7 @@ class HistoryEvent extends Event implements JsonSerializable
         $this->setEndTime($endTime);
         $this->guide = $guide;
         $this->location = $location;
+        $this->setEventType($eventType);
     }
 
     public function getGuide(): Guide
@@ -47,6 +48,4 @@ class HistoryEvent extends Event implements JsonSerializable
             'location' => $this->getLocation()
         ]);
     }
-
-
 }

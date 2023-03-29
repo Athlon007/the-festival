@@ -4,6 +4,7 @@ require_once(__DIR__ . '/../../models/Event.php');
 require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
 require_once(__DIR__ . '/../../services/CartItemService.php');
+require_once(__DIR__ . '/../../services/EventTypeService.php');
 require_once("APIController.php");
 require_once(__DIR__ . '/../../models/Types/TicketType.php');
 require_once(__DIR__ . '/../../models/CartItem.php');
@@ -99,9 +100,9 @@ class EventAPIController extends APIController
                 echo json_encode($cartItemService->getAll());
             }
         } catch (TypeError $e) {
-            $this->sendErrorMessage("Event not found", 404);
+            $this->sendErrorMessage("Event not found. " . $e->getMessage(), 404);
         } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled exception: " . $e->getMessage(), 500);
+            $this->sendErrorMessage("Unhandled exception: " . $e->getMessage() . "\r\n" . $e->getTraceAsString(), 500);
         }
     }
 
@@ -134,7 +135,8 @@ class EventAPIController extends APIController
                     new DateTime($data['event']['startTime']),
                     new DateTime($data['event']['endTime']),
                     $artist,
-                    $location
+                    $location,
+                    new EventType(1, 'Jazz', 0.21)
                 );
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
             } else {
@@ -184,7 +186,8 @@ class EventAPIController extends APIController
                     new DateTime($data['event']['startTime']),
                     new DateTime($data['event']['endTime']),
                     $artist,
-                    $location
+                    $location,
+                    new EventType(1, 'Jazz', 0.21)
                 );
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
             } else {

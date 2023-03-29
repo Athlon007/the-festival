@@ -35,8 +35,8 @@ class EventTypeRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        $result = $stmt->fetch();
-        $arr = $this->build([$result])[0];
+        $result = $stmt->fetchAll();
+        $arr = $this->build($result);
         if (empty($arr)) {
             return null;
         }

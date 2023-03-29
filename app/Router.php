@@ -23,7 +23,7 @@ class Router
         try {
             //Start or continue session and create cart if it doesn't exist
             session_start();
-            if(!isset($_SESSION['cart'])){
+            if (!isset($_SESSION['cart'])) {
                 $_SESSION['cart'] = array();
             }
 
@@ -307,6 +307,9 @@ class Router
         } elseif (str_starts_with($request, "/api/tickettypes")) {
             require_once("controllers/APIControllers/TicketTypesAPIController.php");
             $controller = new TicketTypesAPIController();
+        } elseif (str_starts_with($request, "/api/cart")) {
+            require_once("controllers/APIControllers/CartAPIController.php");
+            $controller = new CartAPIController();
         } else {
             http_response_code(400);
             // send json

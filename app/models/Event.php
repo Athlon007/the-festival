@@ -18,9 +18,10 @@ class Event implements JsonSerializable
             "endTime" => $this->getEndTime(),
             "vat" => $this->getVat(),
             "availableTickets" => $this->getAvailableTickets(),
+            "eventType" => $this->getEventType()
         ];
     }
-    
+
     public function getId()
     {
         return $this->id;
@@ -74,5 +75,15 @@ class Event implements JsonSerializable
     public function setAvailableTickets($value)
     {
         $this->availableTickets = $value;
+    }
+
+    public function getEventType(): EventType
+    {
+        return $this->eventType;
+    }
+
+    public function setEventType(EventType $value)
+    {
+        $this->eventType = $value;
     }
 }

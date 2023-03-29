@@ -4,14 +4,17 @@ require_once(__DIR__ . "/../models/Event.php");
 require_once(__DIR__ . "/../models/Music/MusicEvent.php");
 require_once(__DIR__ . "/../repositories/EventRepository.php");
 require_once(__DIR__ . "/../models/Exceptions/InvalidVariableException.php");
+require_once('EventTypeService.php');
 
 class EventService
 {
     private $repo;
+    private $eventTypeService;
 
     public function __construct()
     {
         $this->repo = new EventRepository();
+        $this->eventTypeService = new EventTypeService();
     }
 
     public function getAllEvents()
@@ -62,10 +65,14 @@ class EventService
             throw new InvalidVariableException("Start time cannot be after end time");
         }
 
+        // get id of event type
+        $eventTypeId = $event->getEventType()->getId();
+
         $id = $this->repo->createEvent(
             $event->getName(),
             $event->getStartTime(),
-            $event->getEndTime()
+            $event->getEndTime(),
+            $eventTypeId
         );
 
         // if event is type of jazzevent
@@ -88,11 +95,14 @@ class EventService
             throw new InvalidVariableException("Start time cannot be after end time");
         }
 
+        $eventTypeId = $event->getEventType()->getId();
+
         $this->repo->updateEvent(
             $event->getId(),
             $event->getName(),
             $event->getStartTime(),
-            $event->getEndTime()
+            $event->getEndTime(),
+            $eventTypeId
         );
 
         // if event is type of jazzevent
