@@ -244,7 +244,7 @@ function toggleEditor(element, isEnabled) {
 
         name.value = '';
         price.value = '';
-        nOfPeople.value = '';
+        nrOfPeople.value = '';
     }
 }
 
