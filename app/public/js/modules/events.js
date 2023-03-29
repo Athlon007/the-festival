@@ -461,11 +461,6 @@ class StrollEventList extends EventsList {
             addArg(`price_to=${this.priceTo}`);
         }
 
-        // if hide_without_seats is set
-        if (this.hideWithoutSeats) {
-            addArg(`hide_without_seats`);
-        }
-
         let response = await fetch(url + args);
         let data = await response.json();
         return data;

@@ -57,12 +57,14 @@ class EventAPIController extends APIController
 
                 echo json_encode($cartItemService->getAllJazz($sort, $filters));
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
-                require_once(__DIR__ . "/../../services/FestivalHistoryService.php");
-                $strollService = new FestivalHistoryService();
+                //require_once(__DIR__ . "/../../services/FestivalHistoryService.php");
+                //$strollService = new FestivalHistoryService();
+
+                $cartItemService = new CartItemService();
 
                 if (is_numeric(basename($uri))) {
                     $id = basename($uri);
-                    echo json_encode($event);
+                    echo json_encode($cartItemService->getById($id));
                     return;
                 }
 
@@ -81,7 +83,7 @@ class EventAPIController extends APIController
                 if (isset($_GET['ticket_type'])) {
                     $filters['ticket_type'] = $_GET['ticket_type'];
                 }
-                echo json_encode($strollService->getAllHistoryEvents());
+                echo json_encode($cartItemService->getAllHistory($sort, $filters));
             } else {
                 if (is_numeric(basename($uri))) {
                     $id = basename($uri);

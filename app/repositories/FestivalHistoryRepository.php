@@ -16,7 +16,7 @@ class FestivalHistoryRepository extends Repository
     public function getAllHistoryEvents()
     {
         try {
-            $query = "SELECT e.eventId AS eventId, e.name AS name, e.startTime AS startTime, e.endTime AS endTime, e.price AS price, h.guideId AS guideId, h.locationId AS locationId
+            $query = "SELECT e.eventId AS eventId, e.name AS name, e.startTime AS startTime, e.endTime AS endTime, h.guideId AS guideId, h.locationId AS locationId
         FROM historyevents h
         JOIN events e ON e.eventId = h.eventId";
 
@@ -32,7 +32,7 @@ class FestivalHistoryRepository extends Repository
                 $startTime = new DateTime($result['startTime']);
                 $endTime = new DateTime($result['endTime']);
 
-                $historyEvent = new HistoryEvent($result['eventId'], $result['name'], $startTime, $endTime, $result['price'], $guide, $location);
+                $historyEvent = new HistoryEvent($result['eventId'], $result['name'], 0, $startTime, $endTime, $guide, $location);
                 $historyEvents[] = $historyEvent;
             }
 
