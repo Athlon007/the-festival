@@ -61,22 +61,23 @@ class EventRepository extends Repository
 
     public function getAll()
     {
-        $sql = "SELECT eventId, name, startTime, endTime, price FROM Events";
+        $sql = "SELECT eventId, name, startTime, endTime FROM Events";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $arr = $stmt->fetchAll();
         return $this->buildEvent($arr);
     }
 
-    public function getEventById($id)
+    public function getEventById($id): ?Event
     {
         $sql = "SELECT eventId, name, startTime, endTime FROM Events WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute(['id' => $id]);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
         $arr = $stmt->fetchAll();
         $output = $this->buildEvent($arr);
 
-        if (count($output) === 0) {
+        if (empty($output)) {
             return null;
         }
         return $output[0];
@@ -94,30 +95,28 @@ class EventRepository extends Repository
         return $dateTime->format('Y-m-d H:i:s');
     }
 
-    public function createEvent($name, DateTime $startTime, DateTime $endTime, $price): int
+    public function createEvent($name, DateTime $startTime, DateTime $endTime): int
     {
-        $sql = "INSERT INTO Events (name, startTime, endTime, price) VALUES (:name, :startTime, :endTime, :price)";
+        $sql = "INSERT INTO Events (name, startTime, endTime) VALUES (:name, :startTime, :endTime)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
         $startToString = $this->formatDateTimeToString($startTime);
         $stmt->bindParam(':startTime', $startToString, PDO::PARAM_STR);
         $endToString = $this->formatDateTimeToString($endTime);
         $stmt->bindParam(':endTime', $endToString, PDO::PARAM_STR);
-        $stmt->bindValue(':price', $price);
         $stmt->execute();
 
         return $this->connection->lastInsertId();
     }
 
-    public function updateEvent($id, $name, $startTime, $endTime, $price)
+    public function updateEvent($id, $name, $startTime, $endTime)
     {
-        $sql = "UPDATE Events SET name = :name, startTime = :startTime, endTime = :endTime, price = :price WHERE eventId = :id";
+        $sql = "UPDATE Events SET name = :name, startTime = :startTime, endTime = :endTime WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
         $stmt->bindParam(':startTime', $startTime->format('Y-m-d H:i:s'), PDO::PARAM_STR);
         $stmt->bindParam(':endTime', $endTime->format('Y-m-d H:i:s'), PDO::PARAM_STR);
-        $stmt->bindValue(':price', $price);
         $stmt->execute();
     }
 
@@ -255,8 +254,8 @@ class EventRepository extends Repository
             $sql = "SELECT he.eventId as eventId, he.locationId as locationId, e.name as name,
              e.startTime as startTime, e.endTime as endTime, g.guideId as guideId, e.availableTickets as availableTickets
             FROM historyEvents he
-            JOIN Events e ON e.eventId = he.eventId 
-            join guides g on g.guideId = he.guideId 
+            JOIN Events e ON e.eventId = he.eventId
+            join guides g on g.guideId = he.guideId
             where he.eventId  = :id";
 
             $stmt = $this->connection->prepare($sql);
@@ -269,7 +268,7 @@ class EventRepository extends Repository
             $location = $locationRep->getById($result['locationId']);
             $startTime = new DateTime($result['startTime']);
             $endTime = new DateTime($result['endTime']);
-            
+
             $historyEvent = new HistoryEvent($result['eventId'], $result['name'], $result['availableTickets'], $startTime, $endTime, $guide, $location);
             return $historyEvent;
         } catch (Exception $ex) {

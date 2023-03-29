@@ -18,7 +18,8 @@ class CartItemService
         return $this->cartItemRepository->getAll();
     }
 
-    public function getAllHistory(){
+    public function getAllHistory()
+    {
         return $this->cartItemRepository->getAllHistory();
     }
 
@@ -53,7 +54,7 @@ class CartItemService
         return $this->getById($id);
     }
 
-    public function updateCartItem(CartItem $cartItem): void
+    public function updateCartItem(CartItem $cartItem): CartItem
     {
         $id = htmlspecialchars($cartItem->getId());
         $eventId = htmlspecialchars($cartItem->getEvent()->getId());
@@ -63,6 +64,8 @@ class CartItemService
         $eventService->editEvent($cartItem->getEvent());
 
         $this->cartItemRepository->updateCartItem($id, $eventId, $ticketTypeId);
+
+        return $this->getById($id);
     }
 
     public function deleteCartItem(CartItem $cartItem): void

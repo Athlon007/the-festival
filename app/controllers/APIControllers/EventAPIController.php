@@ -111,7 +111,7 @@ class EventAPIController extends APIController
 
         try {
             $ticketType = new TicketType(
-                $data['ticketType']['ticketTypeId'],
+                $data['ticketType']['id'],
                 $data['ticketType']['name'],
                 $data['ticketType']['price'],
                 $data['ticketType']['maxTickets'],
@@ -122,17 +122,17 @@ class EventAPIController extends APIController
             if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 require_once(__DIR__ . '/../../services/JazzArtistService.php');
                 $artistService = new JazzArtistService();
-                $artist = $artistService->getById($data['artist']['artistId']);
+                $artist = $artistService->getById($data['event']['artist']['id']);
 
                 require_once(__DIR__ . '/../../services/LocationService.php');
                 $locationService = new LocationService();
-                $location = $locationService->getById($data['location']['locationId']);
+                $location = $locationService->getById($data['event']['location']['id']);
 
                 $event = new MusicEvent(
-                    null,
-                    $data['name'],
-                    new DateTime($data['startTime']),
-                    new DateTime($data['endTime']),
+                    $data['event']['id'],
+                    $data['event']['name'],
+                    new DateTime($data['event']['startTime']),
+                    new DateTime($data['event']['endTime']),
                     $artist,
                     $location
                 );
@@ -161,7 +161,7 @@ class EventAPIController extends APIController
         try {
             $editedCartItemID = basename($uri);
             $ticketType = new TicketType(
-                $data['ticketType']['ticketTypeId'],
+                $data['ticketType']['id'],
                 $data['ticketType']['name'],
                 $data['ticketType']['price'],
                 $data['ticketType']['maxTickets'],
@@ -172,17 +172,17 @@ class EventAPIController extends APIController
             if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 require_once(__DIR__ . '/../../services/JazzArtistService.php');
                 $artistService = new JazzArtistService();
-                $artist = $artistService->getById($data['artist']['artistId']);
+                $artist = $artistService->getById($data['event']['artist']['id']);
 
                 require_once(__DIR__ . '/../../services/LocationService.php');
                 $locationService = new LocationService();
-                $location = $locationService->getById($data['location']['locationId']);
+                $location = $locationService->getById($data['event']['location']['id']);
 
                 $event = new MusicEvent(
-                    $editedEventId,
-                    $data['name'],
-                    new DateTime($data['startTime']),
-                    new DateTime($data['endTime']),
+                    $data['event']['id'],
+                    $data['event']['name'],
+                    new DateTime($data['event']['startTime']),
+                    new DateTime($data['event']['endTime']),
                     $artist,
                     $location
                 );
@@ -193,6 +193,7 @@ class EventAPIController extends APIController
             }
 
             $cartItem = new CartItem($editedCartItemID, $event, $ticketType);
+
             $cartItemService = new CartItemService();
             $cartItem = $cartItemService->updateCartItem($cartItem);
 
@@ -200,7 +201,7 @@ class EventAPIController extends APIController
         } catch (InvalidVariableException $e) {
             $this->sendErrorMessage($e->getMessage(), 400);
         } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled Exception", 500);
+            $this->sendErrorMessage("Unhandled Exception. " . $e->getMessage(), 500);
         }
     }
 

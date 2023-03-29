@@ -57,7 +57,6 @@ class EventService
     public function addEvent($event): Event
     {
         $event->setName(htmlspecialchars($event->getName()));
-        $event->setPrice(htmlspecialchars($event->getPrice()));
 
         if ($event->getStartTime() > $event->getEndTime()) {
             throw new InvalidVariableException("Start time cannot be after end time");
@@ -66,8 +65,7 @@ class EventService
         $id = $this->repo->createEvent(
             $event->getName(),
             $event->getStartTime(),
-            $event->getEndTime(),
-            $event->getPrice()
+            $event->getEndTime()
         );
 
         // if event is type of jazzevent
@@ -85,7 +83,6 @@ class EventService
     public function editEvent($event): Event
     {
         $event->setName(htmlspecialchars($event->getName()));
-        $event->setPrice(htmlspecialchars($event->getPrice()));
 
         if ($event->getStartTime() > $event->getEndTime()) {
             throw new InvalidVariableException("Start time cannot be after end time");
@@ -95,8 +92,7 @@ class EventService
             $event->getId(),
             $event->getName(),
             $event->getStartTime(),
-            $event->getEndTime(),
-            $event->getPrice()
+            $event->getEndTime()
         );
 
         // if event is type of jazzevent

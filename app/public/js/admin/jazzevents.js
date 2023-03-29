@@ -1,10 +1,11 @@
 if (window.frameElement == null) {
-    //window.location.href = '/manageJazz';
+    window.location.href = '/manageJazz';
 }
 
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;
+let editedEventId = -1;
 const locations = document.getElementById('locations');
 const masterEditor = document.getElementById('master-editor');
 const btnOpen = document.getElementById('open');
@@ -42,27 +43,8 @@ function updateExistingEntry(id, data) {
         .then(response => response.json())
         .then(data => {
             if (!data.error_message) {
-
-                // update the option in the list
-                let options = locations.getElementsByTagName('option');
-                for (let option of options) {
-                    if (option.value == editedId) {
-                        // remove the option from the list
-                        option.remove();
-                        break;
-                    }
-                }
-
-                // create new option
-                let option = createNewOptionItem(data);
-                locations.appendChild(option);
-                locations.selectedIndex = locations.length - 1;
-                editedId = data.id;
-                editedEvent = data;
-                isInCreationMode = false;
-                btnSubmit.innerHTML = 'Save';
-
-                msgBox.createToast('Success!', 'Location has been updated');
+                loadList();
+                msgBox.createToast('Success!', 'Event has been updated');
             } else {
                 msgBox.createToast('Something went wrong', data.error_message);
             }
@@ -82,22 +64,7 @@ function createNewEntry(data) {
     })
         .then(response => response.json())
         .then(data => {
-            if (!data.error_message) {
-                let option = createNewOptionItem(data);
-                locations.appendChild(option);
-                locations.selectedIndex = locations.length - 1;
-                editedId = data.id;
-                editedEvent = data;
-                isInCreationMode = false;
-                btnSubmit.innerHTML = 'Save';
-                msgBox.createToast('Success!', 'Location has been created');
-
-                // exit the new page mode
-                isInCreationMode = false;
-                btnSubmit.innerHTML = 'Save';
-            } else {
-                msgBox.createToast('Something went wrong', data.error_message);
-            }
+            loadList();
         })
         .catch(error => {
             msgBox.createToast('Something went wrong', error);
@@ -105,20 +72,25 @@ function createNewEntry(data) {
 }
 
 btnSubmit.onclick = function () {
+    let start = new Date(startTime.value);
+    start = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate() + ' ' + start.getHours() + ':' + start.getMinutes() + ':' + start.getSeconds();
+
+    let end = new Date(endTime.value);
+    end = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate() + ' ' + end.getHours() + ':' + end.getMinutes() + ':' + end.getSeconds();
 
     // to json
     let data = {
         id: 0,
         event: {
-            id: 0,
+            id: editedEventId,
             name: artist.options[artist.selectedIndex].text,
             startTime: start,
             endTime: end,
             artist: {
-                artistId: artist.value
+                id: artist.value
             },
             location: {
-                locationId: locationSelect.value
+                id: locationSelect.value
             }
         },
         ticketType: {
@@ -231,7 +203,7 @@ function createNewOptionItem(element) {
             .then(data => {
                 if (!data.error_message) {
                     editedId = data.id;
-                    editedEvent = data;
+                    editedEventId = data.event.id;
 
                     // select the artist option corresponding to id in the select
                     let options = artist.getElementsByTagName('option');
@@ -433,10 +405,9 @@ function toggleEditor(element, isEnabled) {
     } else {
         element.classList.add('disabled-module');
         editedId = -1;
-        editedEvent = null;
         artist.selectedIndex = 0;
         locationSelect.selectedIndex = 0;
-        price.value = '';
+        ticketType.selectedIndex = 0;
         startTime.value = '';
         endTime.value = '';
 

@@ -61,7 +61,7 @@
                 </div>
                 <div class="col-4">
                     <h2>Price</h2>
-                    <p class="price text-start">&euro; <?= $cartItem->getTicketType()->getPrice() ?></p>
+                    <p class="price text-start"><?= $cartItem->getTicketType()->getPrice() == 0 ? "Free" : "&euro; " . $cartItem->getTicketType()->getPrice() ?></p>
                 </div>
             </div>
         </div>
