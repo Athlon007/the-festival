@@ -6,11 +6,11 @@ class Order implements JsonSerializable
     private array $tickets;
     private Customer $customer;
     private DateTime $orderDate;
-    private bool $isPaid;
-    private float $totalBasePrice;
-    private float $totalVat9;
-    private float $totalVat21;
-    private float $totalPrice;
+    private bool $isPaid = false;
+    private $totalBasePrice;
+    private $totalVat9;
+    private $totalVat21;
+    private $totalFullPrice;
    
     public function jsonSerialize(){
     return [
@@ -18,13 +18,17 @@ class Order implements JsonSerializable
         'tickets' => $this->tickets,
         'customer' => $this->customer,
         'orderDate' => $this->orderDate,
-        'isPaid' => $this->isPaid
+        'isPaid' => $this->isPaid,
+        'totalBasePrice' => $this->totalBasePrice,
+        'totalVat9' => $this->totalVat9,
+        'totalVat21' => $this->totalVat21,
+        'totalFullPrice' => $this->totalFullPrice,
     ];
     }
 
     public function __construct(){
-        $this->tickets = [];	
-        $this->orderDate = new DateTime();
+        $this->tickets = [];
+        $this->orderDate = new DateTime("now");
         $this->isPaid = false;
     }
 
@@ -70,17 +74,17 @@ class Order implements JsonSerializable
         $this->customer = $customer;
     }
 
-    public function getOrderDate(): ?DateTime
+    public function getOrderDate(): DateTime
     {
         return $this->orderDate;
     }
 
-    public function setOrderDate(?DateTime $orderDate): void
+    public function setOrderDate(DateTime $orderDate): void
     {
         $this->orderDate = $orderDate;
     }
 
-    public function isPaid(): bool
+    public function getIsPaid(): bool
     {
         return $this->isPaid;
     }
@@ -90,11 +94,19 @@ class Order implements JsonSerializable
         $this->isPaid = $isPaid;
     }
 
+    public function getTotalBasePrice(){
+        $totalBasePrice = 0;
+        foreach ($this->tickets as $ticket) {
+            $totalBasePrice += $ticket->getBasePrice();
+        }
+        return $totalBasePrice;
+    }
+
     public function getTotalPrice(): float
     {
         $totalPrice = 0;
         foreach ($this->tickets as $ticket) {
-            $totalPrice += $ticket->getPrice();
+            $totalPrice += $ticket->getFullPrice();
         }
         return $totalPrice;
     }

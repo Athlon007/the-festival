@@ -6,13 +6,19 @@ use PHPMailer\PHPMailer\Exception;
 
 require_once(__DIR__ . '/../repositories/OrderRepository.php');
 require_once(__DIR__ . '/../models/Order.php');
+require_once(__DIR__ . '/../models/Exceptions/OrderNotFoundException.php');
+require_once(__DIR__ . '/../repositories/CartItemRepository.php');
 
 class OrderService{
-    private $repository;
+    private $orderRepository;
+    private $cartItemRepository;
+    private $ticketRepository;
 
     public function __construct()
     {
-        $this->repository = new OrderRepository();
+        $this->orderRepository = new OrderRepository();
+        $this->cartItemRepository = new CartItemRepository();
+        $this->ticketRepository = new TicketRepository();
     }
 
     public function getOrderById($id)
@@ -30,12 +36,24 @@ class OrderService{
         return $this->repository->getUnpaidOrder($customerId);
     }
 
+    public function createOrder($customer, $cartItemIds)
+    {
+        $order = new Order();
+        $order->setCustomer($customer);
+        foreach($cartItemIds as $cartItemId){
+            $cartItem = $this->cartItemRepository->getCartItemById($cartItemId);
+            $ticket = $cartItem->getTicket();
+            $tickets[] = $ticket;
+        }
+        
+    }
+
     public function generateInvoice($order)
     {
         
     }
 
-    public function sendTicketsByEmail($order)
+    public function sendInvoiceAndTicketsByEmail($order)
     {
 
     }

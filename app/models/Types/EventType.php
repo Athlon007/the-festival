@@ -11,7 +11,7 @@ class EventType implements JsonSerializable
         $this->name = $name;
         $this->vat = $vat;
     }
-
+xw
     public function getId()
     {
         return $this->id;
