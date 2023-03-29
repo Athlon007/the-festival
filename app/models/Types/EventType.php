@@ -11,7 +11,7 @@ class EventType implements JsonSerializable
         $this->name = $name;
         $this->vat = $vat;
     }
-xw
+
     public function getId()
     {
         return $this->id;
@@ -42,7 +42,7 @@ xw
         return $this->vat;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             "id" => $this->getId(),
