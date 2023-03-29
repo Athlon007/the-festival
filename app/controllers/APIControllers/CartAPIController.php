@@ -21,6 +21,11 @@ class CartAPIController extends APIController
 
     protected function handleGetRequest($uri)
     {
+        if (basename($uri) == 'count') {
+            echo json_encode(["count" => $this->orderService->getCartCount()]);
+            return;
+        }
+
         $cart = $this->orderService->getCart();
         echo json_encode($cart);
     }
