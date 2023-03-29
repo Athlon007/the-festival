@@ -13,51 +13,35 @@
     <!-- success modal -->
     <div class="container">
         <div class="row">
-            <div class="col-6 card m-0">
+            <div class="col-3 card m-0">
                 <div class="card-body p-0 m-0 mt-1 mh-100">
-                    <button id="new-page" class="btn btn-success mb-1 w-100">New Event</button>
+                    <button id="new-page" class="btn btn-success mb-1 w-100">New Ticket Type</button>
                     <select id="locations" class="form-select" size="25" aria-label="size 3 select example" data-live-search="true" style="overflow-y: scroll;">
                         <option data-tokens=""></option>
                     </select>
                 </div>
             </div>
-            <div id="master-editor" class="col-6 card p-0 disabled-module">
+            <div id="master-editor" class="col-9 card p-0 disabled-module">
                 <div class="card-body m-0">
                     <div class="row">
                         <div class="col-6">
-                            <label for="artist" class="form-label">Artist</label>
-                            <select id="artist" class="form-label d-block w-100">
-                                <option value="-1" disabled selected>-- Select Artist --</option>
-                            </select>
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" id="name" class="form-control mb-2" placeholder="Name" required>
                         </div>
                         <div class="col-6">
-                            <label for="location" class="form-label">Location</label>
-                            <select id="location" class="form-label d-block w-100" required>
-                                <option value="-1" disabled selected>-- Select Location --</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <label for="price" class="form-label">Price &#40;&euro;&#41;</label>
+                            <label for="price" class="form-label">Price</label>
                             <input type="number" id="price" class="form-control mb-2" placeholder="15" required>
                         </div>
                     </div>
                     <div class="row">
-                        <h3>Time</h3>
-                        <div class="col-6">
-                            <label for="startTime" class="form-label">Start</label>
-                            <input type="datetime-local" id="startTime" class="form-control mb-2" required>
-                        </div>
-                        <div class="col-6">
-                            <label for="endTime" class="form-label">End</label>
-                            <input type="datetime-local" id="endTime" class="form-control mb-2" required>
+                        <div class="col-12">
+                            <label for="nOfPeople" class="form-label">Number of People</label>
+                            <input type="number" id="nrOfPeople" class="form-control mb-2" placeholder="1" required>
                         </div>
                     </div>
                     <div class="mt-1">
                         <button id="submit" class="btn btn-success">Save</button>
                         <button id="cancel" class="btn btn-secondary">Cancel</button>
-                        <button id="open" class="btn btn-primary">Open</button>
                         <button id="delete" class="btn btn-danger float-end">Delete</button>
                     </div>
                 </div>

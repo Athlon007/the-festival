@@ -1,36 +1,24 @@
 if (window.frameElement == null) {
-    //window.location.href = '/manageJazz';
+    window.location.href = '/manageTicketTypes';
 }
 
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;
-let editedEvent = null;
 const locations = document.getElementById('locations');
 const masterEditor = document.getElementById('master-editor');
-const btnOpen = document.getElementById('open');
 
 // Artist fields.
-const artist = document.getElementById('artist');
-const locationSelect = document.getElementById('location');
+const name = document.getElementById('name');
 const price = document.getElementById('price');
-const startTime = document.getElementById('startTime');
-const endTime = document.getElementById('endTime');
+const nrOfPeople = document.getElementById('nrOfPeople');
 
 const btnSubmit = document.getElementById('submit');
 let isInCreationMode = false;
 
 const msgBox = new MsgBox();
 
-const maxNameLength = 12;
-const maxLocationLength = 15;
-
-let baseURL = '/api/events/';
-if (window.frameElement != null && window.frameElement.getAttribute('data-kind') != undefined) {
-    baseURL += window.frameElement.getAttribute('data-kind');
-} else {
-    baseURL += "jazz";
-}
+let baseURL = '/api/tickettypes/';
 
 function updateExistingEntry(id, data) {
     fetch(baseURL + "/" + id, {
@@ -59,11 +47,10 @@ function updateExistingEntry(id, data) {
                 locations.appendChild(option);
                 locations.selectedIndex = locations.length - 1;
                 editedId = data.id;
-                editedEvent = data;
                 isInCreationMode = false;
                 btnSubmit.innerHTML = 'Save';
 
-                msgBox.createToast('Success!', 'Location has been updated');
+                msgBox.createToast('Success!', 'Ticket Type has been updated');
             } else {
                 msgBox.createToast('Something went wrong', data.error_message);
             }
@@ -88,10 +75,9 @@ function createNewEntry(data) {
                 locations.appendChild(option);
                 locations.selectedIndex = locations.length - 1;
                 editedId = data.id;
-                editedEvent = data;
                 isInCreationMode = false;
                 btnSubmit.innerHTML = 'Save';
-                msgBox.createToast('Success!', 'Location has been created');
+                msgBox.createToast('Success!', 'Ticket Type has been created');
 
                 // exit the new page mode
                 isInCreationMode = false;
@@ -106,25 +92,12 @@ function createNewEntry(data) {
 }
 
 btnSubmit.onclick = function () {
-    let start = new Date(startTime.value);
-    start = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate() + ' ' + start.getHours() + ':' + start.getMinutes() + ':' + start.getSeconds();
-
-    let end = new Date(endTime.value);
-    end = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate() + ' ' + end.getHours() + ':' + end.getMinutes() + ':' + end.getSeconds();
-
     // to json
     let data = {
         id: 0,
-        name: artist.options[artist.selectedIndex].text,
-        startTime: start,
-        endTime: end,
+        name: name.value,
         price: price.value,
-        artist: {
-            artistId: artist.value
-        },
-        location: {
-            locationId: locationSelect.value
-        }
+        nrOfPeople: nrOfPeople.value,
     };
 
     if (isInCreationMode) {
@@ -176,47 +149,8 @@ document.getElementById('cancel').onclick = function () {
 function createNewOptionItem(element) {
     // create option
     let option = document.createElement('option');
-
-    let name = element.event.name;
-    let location = element.event.location.name;
-    let dispStartTime = element.event.startTime.date;
-    let dispEndTime = element.event.endTime.date;
-
-    // make sure that name always is 15 chars long
-    if (name.length > maxNameLength) {
-        name = name.substring(0, maxNameLength) + '...';
-    } else {
-        let spacesAdded = 0;
-        let spacesToAdd = maxNameLength - name.length;
-        while (spacesAdded < spacesToAdd) {
-            name += '&nbsp;';
-            spacesAdded++;
-        }
-
-        console.log(name);
-    }
-
-    // make sure that location always is 15 chars long
-    if (location.length > maxLocationLength) {
-        location = location.substring(0, maxLocationLength) + '...';
-    } else {
-        let spacesAdded = 0;
-        let spacesToAdd = maxLocationLength - location.length;
-        while (spacesAdded < spacesToAdd + 3) {
-            location += '&nbsp;';
-            spacesAdded++;
-        }
-
-        console.log(location);
-    }
-
-    // display startTime and endTime in a following pattern: dd/mm/yyyy hh:mm
-    dispStartTime = dispStartTime.substring(8, 10) + '/' + dispStartTime.substring(5, 7) + '/' + dispStartTime.substring(0, 4) + ' ' + dispStartTime.substring(11, 16);
-    dispEndTime = dispEndTime.substring(8, 10) + '/' + dispEndTime.substring(5, 7) + '/' + dispEndTime.substring(0, 4) + ' ' + dispEndTime.substring(11, 16);
-
-    option.innerHTML = name + ' | ' + location + ' | ' + dispStartTime + ' | ' + dispEndTime;
-
-    option.value = element.event.id;
+    option.innerHTML = element.name;
+    option.value = element.id;
 
     // on click
     option.onclick = function () {
@@ -224,7 +158,7 @@ function createNewOptionItem(element) {
         btnSubmit.innerHTML = 'Save';
         isInCreationMode = false;
         // Do the api call to get the page content.
-        fetch(baseURL + "/" + element.event.id, {
+        fetch(baseURL + "/" + element.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -233,49 +167,11 @@ function createNewOptionItem(element) {
             .then(response => response.json())
             .then(data => {
                 if (!data.error_message) {
-                    console.log(data);
-                    editedId = data.event.id;
-                    editedEvent = data;
+                    editedId = data.id;
 
-                    // select the artist option corresponding to id in the select
-                    let options = artist.getElementsByTagName('option');
-                    for (let option of options) {
-                        if (option.value == data.event.artist.id) {
-                            option.selected = true;
-                            break;
-                        }
-                    }
-
-                    // select the location option corresponding to id in the selec
-                    options = locationSelect.getElementsByTagName('option');
-                    for (let option of options) {
-                        if (option.value == data.event.location.id) {
-                            option.selected = true;
-                            break;
-                        }
-                    }
-
-
-                    price.value = data.ticketType.price;
-
-                    let dateStart = new Date(data.event.startTime.date);
-                    dateStart.setHours(dateStart.getHours() + 2);
-                    dateStart = dateStart.toISOString().slice(0, 16);
-                    startTime.value = dateStart;
-
-                    let dateEnd = new Date(data.event.endTime.date);
-                    dateEnd.setHours(dateEnd.getHours() + 2);
-                    dateEnd = dateEnd.toISOString().slice(0, 16);
-                    endTime.value = dateEnd;
-
-                    btnOpen.onclick = function () {
-                        if (baseURL.endsWith('dance')) {
-                            window.open('/festival/dance/event/' + data.event.id, '_blank');
-                        } else {
-                            window.open('/festival/jazz/event/' + data.event.id, '_blank');
-                        }
-
-                    }
+                    name.value = data.name;
+                    price.value = data.price;
+                    nrOfPeople.value = data.nrOfPeople;
 
                 } else {
                     msgBox.createToast('Something went wrong', data.event.error_message);
@@ -299,17 +195,14 @@ function loadList() {
 
     // Add empty unselected option
     let option = document.createElement('option');
-    let head = 'Name' + ('&nbsp;').repeat(maxNameLength - 3) +
-        '| Location' + ('&nbsp;').repeat(maxLocationLength - 5) +
-        ' | START' + ('&nbsp;').repeat(12) + '| END';
+    let head = '=== Select a ticket type ===';
     option.innerHTML = head;
     option.value = -1;
     option.disabled = true;
     locations.appendChild(option);
 
-    let url = baseURL + '?sort=time';
     // fetch with post
-    fetch(url, {
+    fetch('/api/tickettypes', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -338,74 +231,6 @@ function loadList() {
                 }
             }
         });
-
-    // load artist list to artist select
-    artist.innerHTML = '';
-    let jazzSelectOption = document.createElement('option');
-    jazzSelectOption.innerHTML = '-- Select Artist -- ';
-    jazzSelectOption.value = -1;
-    jazzSelectOption.disabled = true;
-    artist.appendChild(jazzSelectOption);
-
-    let uri = '/api/artists?sort=name';
-    if (baseURL.endsWith('dance')) {
-        uri += '&kind=2';
-    } else {
-        uri += '&kind=1';
-    }
-
-    fetch(uri, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then(response => response.json())
-        .then(data => {
-            // check if data is array
-            if (Array.isArray(data)) {
-                data.forEach(element => {
-                    let option = document.createElement('option');
-                    option.innerHTML = element.name;
-                    option.value = element.id;
-                    artist.appendChild(option);
-                });
-            }
-        }
-        );
-    artist.selectedIndex = 0;
-
-    let locationURI = '/api/locations/type/';
-    if (baseURL.endsWith('dance')) {
-        locationURI += '4';
-    } else {
-        locationURI += '1';
-    }
-
-    locationURI += '?sort=name';
-
-    // and now, load jazz locations.
-    location.innerHTML = '';
-    fetch(locationURI, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then(response => response.json())
-        .then(data => {
-            // check if data is array
-            if (Array.isArray(data)) {
-                data.forEach(element => {
-                    let option = document.createElement('option');
-                    option.innerHTML = element.name;
-                    option.value = element.id;
-                    locationSelect.appendChild(option);
-                });
-            }
-        }
-        );
-    location.selectedIndex = -1;
 }
 
 loadList();
@@ -416,16 +241,10 @@ function toggleEditor(element, isEnabled) {
     } else {
         element.classList.add('disabled-module');
         editedId = -1;
-        editedEvent = null;
-        artist.selectedIndex = 0;
-        locationSelect.selectedIndex = 0;
-        price.value = '';
-        startTime.value = '';
-        endTime.value = '';
 
-        if (locations.dataset.locations != undefined) {
-            locationType.value = locations.dataset.locations;
-        }
+        name.value = '';
+        price.value = '';
+        nOfPeople.value = '';
     }
 }
 
