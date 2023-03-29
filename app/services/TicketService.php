@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../repositories/TicketRepository.php';
 require_once __DIR__ . '/../models/Ticket/Ticket.php';
+require_once(__DIR__ . '/../models/CartItem.php');
 require_once(__DIR__ . '/../models/Exceptions/TicketNotFoundException.php');
 require_once(__DIR__ . '/../services/PDFService.php');
 
@@ -114,6 +115,10 @@ class TicketService
     } catch (Exception $ex) {
       throw ($ex);
     }
+  }
+
+  public function createTicketFromCartItem(CartItem $cartItem){
+
   }
 
   //TODO: check if obsolete before handing in

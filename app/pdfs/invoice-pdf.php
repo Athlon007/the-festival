@@ -4,12 +4,52 @@
 <h2>Invoice</h2>
 <h3>Invoice number: <?php $order->getOrderId() ?></h3>
 
-    <div class="company-address">
-        <label>Event Name:</label>
+    <div class="billing-address">
+        <label>Billing address:</label>
         <p>
-            <?= $ticket->getEvent()->getName() ?>
+            <?php $order->getCustomer()->getAddress()->getAddressLine1() ?><br>
+            <?php $order->getCustomer()->getAddress()->getAddressLine2() ?><br>
+            <?php $order->getCustomer()->getAddress()->getCountry() ?>
         </p>
     </div>
+
+    <table border="1" cellpadding="1">
+        <tbody>
+            <?php foreach($order->getTickets() as $ticket){ ?>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+
+
+            } 
+            
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </tbody>
+    </table>
 
     <div class="ticket-info">
         <label>Event Date:</label>
