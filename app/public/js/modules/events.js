@@ -419,6 +419,24 @@ class StrollEventList extends EventsList {
                 container.innerHTML = data;
                 this.eventsContainer = document.getElementById('events-container');
 
+                document.getElementById('date').addEventListener('change', (event) => {
+                    this.date = event.target.value;
+                });
+                document.getElementById('time').addEventListener('change', (event) => {
+                    this.time = event.target.value;
+                });
+                document.getElementById('language').addEventListener('change', (event) => {
+                    this.language = event.target.value;
+                });
+                // ticket
+                document.getElementById('ticket').addEventListener('change', (event) => {
+                    this.ticket = event.target.value;
+                });
+
+                document.getElementById('apply-btn').addEventListener('click', () => {
+                    this.loadEvents();
+                });
+
                 this.loadEvents();
             });
     }
@@ -446,19 +464,19 @@ class StrollEventList extends EventsList {
         }
 
         // if time_start is set
-        if (this.timeStart) {
-            addArg(`time_from=${this.timeStart}`);
+        if (this.date) {
+            addArg(`date=${this.date}`);
         }
-        if (this.timeEnd) {
-            addArg(`time_to=${this.timeEnd}`);
+        if (this.time) {
+            addArg(`time=${this.time}`);
         }
 
         // if price_from is set
-        if (this.priceFrom) {
-            addArg(`price_from=${this.priceFrom}`);
+        if (this.language) {
+            addArg(`language=${this.language}`);
         }
-        if (this.priceTo) {
-            addArg(`price_to=${this.priceTo}`);
+        if (this.ticket) {
+            addArg(`ticket=${this.ticket}`);
         }
 
         let response = await fetch(url + args);
@@ -470,11 +488,11 @@ class StrollEventList extends EventsList {
         super.addEvent(event);
 
         let ticketContainer = document.createElement('div');
-        ticketContainer.classList.add('card', 'w-100', 'm-2', 'py-1', 'justify-content-around');
+        ticketContainer.classList.add('row', 'w-100', 'm-2', 'py-1', 'justify-content-around', 'border', 'border-1', 'border-dark', 'rounded-3');
         ticketContainer.id = 'event-' + event.id;
 
         let ticketHeader = document.createElement('div');
-        ticketHeader.classList.add('col-6');
+        ticketHeader.classList.add('col-6', 'my-auto');
         ticketContainer.appendChild(ticketHeader);
         //h4
         let ticketTitle = document.createElement('h4');
@@ -490,6 +508,7 @@ class StrollEventList extends EventsList {
         ticketBody.classList.add('col-6');
         // info div
         let ticketInfo = document.createElement('div');
+        ticketInfo.classList.add('align-middle');
         ticketBody.appendChild(ticketInfo);
         // p1
         let ticketInfoP1 = document.createElement('p');
@@ -509,13 +528,13 @@ class StrollEventList extends EventsList {
         ticketInfo.appendChild(ticketInfoP4);
         ticketContainer.appendChild(ticketBody);
 
-        let ticketPriceDiv = document.createElement('div');
+        let ticketPriceDiv = document.createElement('div', 'w-100');
         let ticketPriceP = document.createElement('p');
         ticketPriceP.innerHTML = "<strong>Price:</strong> €" + event.ticketType.price;
         ticketPriceDiv.appendChild(ticketPriceP);
         //button
         let ticketButton = document.createElement('button');
-        ticketButton.classList.add('btn', 'btn-primary', 'addToCartButton');
+        ticketButton.classList.add('btn', 'btn-primary', 'w-100');
         ticketButton.innerText = "Add to cart";
         ticketButton.addEventListener('click', () => {
             this.addToCart(event);
