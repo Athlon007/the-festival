@@ -18,25 +18,12 @@ class EventAPIController extends APIController
     public function handleGetRequest($uri)
     {
         $sort = $_GET['sort'] ?? 'time';
-        $filters = [];
+        $filters = $_GET['filters'] ?? [];
+        // htmlspecialchars all the things
+        $sort = htmlspecialchars($sort);
+        $filters = array_map('htmlspecialchars', $filters);
 
-        if (isset($_GET['time_from'])) {
-            $filters['time_from'] = $_GET['time_from'];
-        }
-        if (isset($_GET['time_to'])) {
-            $filters['time_to'] = $_GET['time_to'];
-        }
-
-        if (isset($_GET['price_from'])) {
-            $filters['price_from'] = $_GET['price_from'];
-        }
-        if (isset($_GET['price_to'])) {
-            $filters['price_to'] = $_GET['price_to'];
-        }
-
-        if (isset($_GET['day'])) {
-            $filters['day'] = $_GET['day'];
-        }
+        $cartItemService = new CartItemService();
 
         try {
             if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
@@ -48,7 +35,7 @@ class EventAPIController extends APIController
 
                 if (is_numeric(basename($uri))) {
                     $id = basename($uri);
-                    $event = $this->service->getJazzEventById($id);
+                    $event = $cartItemService->getByEventId($id);
                     echo json_encode($event);
                     return;
                 }
@@ -96,7 +83,7 @@ class EventAPIController extends APIController
             } else {
                 if (is_numeric(basename($uri))) {
                     $id = basename($uri);
-                    $event = $this->service->getEventById($id);
+                    $event = $cartItemService->getByEventId($id);
                     if ($event == null) {
                         $this->sendErrorMessage("Event with id $id not found", 404);
                         return;
@@ -105,7 +92,6 @@ class EventAPIController extends APIController
                     return;
                 }
 
-                $cartItemService = new CartItemService();
                 echo json_encode($cartItemService->getAll());
             }
         } catch (TypeError $e) {

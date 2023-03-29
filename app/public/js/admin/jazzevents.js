@@ -25,7 +25,7 @@ const msgBox = new MsgBox();
 const maxNameLength = 12;
 const maxLocationLength = 15;
 
-let baseURL = '/api/events/';
+let baseURL = '/api/tickettypes/';
 if (window.frameElement != null && window.frameElement.getAttribute('data-kind') != undefined) {
     baseURL += window.frameElement.getAttribute('data-kind');
 } else {
@@ -177,10 +177,10 @@ function createNewOptionItem(element) {
     // create option
     let option = document.createElement('option');
 
-    let name = element.name;
-    let location = element.location.name;
-    let dispStartTime = element.startTime.date;
-    let dispEndTime = element.endTime.date;
+    let name = element.event.name;
+    let location = element.event.location.name;
+    let dispStartTime = element.event.startTime.date;
+    let dispEndTime = element.event.endTime.date;
 
     // make sure that name always is 15 chars long
     if (name.length > maxNameLength) {
@@ -216,7 +216,7 @@ function createNewOptionItem(element) {
 
     option.innerHTML = name + ' | ' + location + ' | ' + dispStartTime + ' | ' + dispEndTime;
 
-    option.value = element.id;
+    option.value = element.event.id;
 
     // on click
     option.onclick = function () {
@@ -224,7 +224,7 @@ function createNewOptionItem(element) {
         btnSubmit.innerHTML = 'Save';
         isInCreationMode = false;
         // Do the api call to get the page content.
-        fetch(baseURL + "/" + element.id, {
+        fetch(baseURL + "/" + element.event.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -233,13 +233,14 @@ function createNewOptionItem(element) {
             .then(response => response.json())
             .then(data => {
                 if (!data.error_message) {
-                    editedId = data.id;
+                    console.log(data);
+                    editedId = data.event.id;
                     editedEvent = data;
 
                     // select the artist option corresponding to id in the select
                     let options = artist.getElementsByTagName('option');
                     for (let option of options) {
-                        if (option.value == data.artist.id) {
+                        if (option.value == data.event.artist.id) {
                             option.selected = true;
                             break;
                         }
@@ -248,36 +249,36 @@ function createNewOptionItem(element) {
                     // select the location option corresponding to id in the selec
                     options = locationSelect.getElementsByTagName('option');
                     for (let option of options) {
-                        if (option.value == data.location.id) {
+                        if (option.value == data.event.location.id) {
                             option.selected = true;
                             break;
                         }
                     }
 
 
-                    price.value = data.price;
+                    price.value = data.ticketType.price;
 
-                    let dateStart = new Date(data.startTime.date);
+                    let dateStart = new Date(data.event.startTime.date);
                     dateStart.setHours(dateStart.getHours() + 2);
                     dateStart = dateStart.toISOString().slice(0, 16);
                     startTime.value = dateStart;
 
-                    let dateEnd = new Date(data.endTime.date);
+                    let dateEnd = new Date(data.event.endTime.date);
                     dateEnd.setHours(dateEnd.getHours() + 2);
                     dateEnd = dateEnd.toISOString().slice(0, 16);
                     endTime.value = dateEnd;
 
                     btnOpen.onclick = function () {
                         if (baseURL.endsWith('dance')) {
-                            window.open('/festival/dance/event/' + data.id, '_blank');
+                            window.open('/festival/dance/event/' + data.event.id, '_blank');
                         } else {
-                            window.open('/festival/jazz/event/' + data.id, '_blank');
+                            window.open('/festival/jazz/event/' + data.event.id, '_blank');
                         }
 
                     }
 
                 } else {
-                    msgBox.createToast('Something went wrong', data.error_message);
+                    msgBox.createToast('Something went wrong', data.event.error_message);
                 }
             })
             .catch(error => {
