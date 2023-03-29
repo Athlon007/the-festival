@@ -2,6 +2,7 @@
 class OrderController
 {
     public function showShoppingCart(){
+        session_start();
         if(!isset($_SESSION['cart']) || count($_SESSION['cart']) == 0){
             $_SESSION['cart'] = array();
         }
@@ -16,6 +17,7 @@ class OrderController
         
     }
 
+    //Create order after completing payment or selecting "pay later"
     public function createOrder(){
         try{
             if(!isset($_SESSION['cart']) || count($_SESSION['cart']) == 0){

@@ -39,7 +39,6 @@
         <strong> Order Number: <?= $order->getOrderId() ?> </strong>
     </p>
         
-    </ul>
     <p>If there are any questions, there is no way to reach out to us.</p>
     <p>Kind regards,</p>
     <p>The Festival Team</p>
