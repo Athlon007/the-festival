@@ -1,5 +1,5 @@
 if (window.frameElement == null) {
-    window.location.href = '/manageJazz';
+    //window.location.href = '/manageJazz';
 }
 
 import { MsgBox } from "./modals.js";
@@ -25,7 +25,7 @@ const msgBox = new MsgBox();
 const maxNameLength = 12;
 const maxLocationLength = 15;
 
-let baseURL = '/api/tickettypes/';
+let baseURL = '/api/events/';
 if (window.frameElement != null && window.frameElement.getAttribute('data-kind') != undefined) {
     baseURL += window.frameElement.getAttribute('data-kind');
 } else {
