@@ -1,12 +1,12 @@
 <?php
-
+require(__dir__ . "/../models/Types/EventType.php");
 class Event implements JsonSerializable
 {
     private $id;
     private $name;
     private DateTime $startTime;
     private DateTime $endTime;
-    private $vat;
+    private EventType $eventType;
     private int $availableTickets = 0;
 
     public function jsonSerialize(): mixed
@@ -20,15 +20,15 @@ class Event implements JsonSerializable
             "availableTickets" => $this->getAvailableTickets(),
         ];
     }
+    
+    public function getId()
+    {
+        return $this->id;
+    }
 
     public function setId($value)
     {
         $this->id = $value;
-    }
-
-    public function getId()
-    {
-        return $this->id;
     }
 
     public function getName()
@@ -63,12 +63,7 @@ class Event implements JsonSerializable
 
     public function getVat()
     {
-        return $this->vat;
-    }
-
-    public function setVat($value)
-    {
-        $this->vat = $value;
+        return $this->eventType->getVat();
     }
 
     public function getAvailableTickets()
