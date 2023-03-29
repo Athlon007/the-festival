@@ -332,7 +332,7 @@ class EventRepository extends Repository
 
     public function getJazzEventsForArtist($artistId)
     {
-        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime "
+        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.festivalEventType "
             . "FROM JazzEvents je "
             . "JOIN Events e ON e.eventId = je.eventId "
             . "WHERE artistId = :artistId";
