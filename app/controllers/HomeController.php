@@ -21,6 +21,7 @@ class HomeController
         }
         else {
             $user = $_SESSION['user'];
+
             if ($user->getUserType() == 3)
             {
                 require(__dir__ . self::CUSTOMER_ACCOUNT_PAGE);

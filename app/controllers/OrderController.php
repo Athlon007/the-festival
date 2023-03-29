@@ -1,8 +1,7 @@
 <?php
 class OrderController
 {
-    public function showOrderCart(){
-        session_start();
+    public function showShoppingCart(){
         if(!isset($_SESSION['cart']) || count($_SESSION['cart']) == 0){
             $_SESSION['cart'] = array();
         }
@@ -18,8 +17,6 @@ class OrderController
     }
 
     public function createOrder(){
-        session_start();
-        
         try{
             if(!isset($_SESSION['cart']) || count($_SESSION['cart']) == 0){
                 throw new Exception("Cart is empty");

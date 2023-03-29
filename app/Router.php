@@ -166,6 +166,12 @@ class Router
                 break;
             case "/konradstestpage":
                 require_once("views/konrads-test-page.php");
+                break;
+            case "/shopping-cart":
+                require_once("controllers/OrderController.php");
+                $orderController = new OrderController();
+                $orderController->showShoppingCart();
+                break;
             case "/buyTicket":
                 require_once("controllers/TicketController.php");
                 $ticketController = new TicketController();
