@@ -30,6 +30,12 @@ class OrderService{
         return $this->repository->getUnpaidOrder($customerId);
     }
 
+    public function createOrder($customerId, $cartItems)
+    {
+        $order = new Order();
+        
+    }
+
     public function generateInvoice($order)
     {
         

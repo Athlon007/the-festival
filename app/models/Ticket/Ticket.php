@@ -28,6 +28,11 @@ class Ticket implements JsonSerializable
         return $this->tickedId;
     }
 
+    public function setTicketId(int $ticketId): void
+    {
+        $this->tickedId = $ticketId;
+    }
+
     public function getQrCodeData(): string
     {
         return $this->qr_code;
@@ -56,5 +61,35 @@ class Ticket implements JsonSerializable
     public function setIsScanned(bool $isScanned): void
     {
         $this->isScanned = $isScanned;
+    }
+
+    public function getBasePrice(): float
+    {
+        return $this->basePrice;
+    }
+
+    public function setBasePrice(float $basePrice): void
+    {
+        $this->basePrice = $basePrice;
+    }
+
+    public function getVat(): float
+    {
+        return $this->vat;
+    }
+
+    public function setVat(float $vat): void
+    {
+        $this->vat = $vat;
+    }
+
+    public function getFullPrice(): float
+    {
+        return $this->fullPrice;
+    }
+
+    public function setFullPrice(float $fullPrice): void
+    {
+        $this->fullPrice = $fullPrice;
     }
 }

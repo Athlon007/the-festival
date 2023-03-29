@@ -3,10 +3,10 @@ class OrderController
 {
     public function showOrderCart(){
         session_start();
-        if(!isset($_SESSION['cart'])){
+        if(!isset($_SESSION['cart']) || count($_SESSION['cart']) == 0){
             $_SESSION['cart'] = array();
         }
-        require('app/views/order/cart.php');
+        require('app/views/payment-funnel/cart.php');
     }
 
     public function showOrderHistory(){
@@ -16,4 +16,28 @@ class OrderController
     public function generateInvoice(){
         
     }
+
+    public function createOrder(){
+        session_start();
+        
+        try{
+            if(!isset($_SESSION['cart']) || count($_SESSION['cart']) == 0){
+                throw new Exception("Cart is empty");
+            }
+            if(!isset($_SESSION['user'])){
+                throw new Exception("User is not logged in");
+            }
+
+            $orderService = new OrderService();
+            $order = $orderService->createOrder($_SESSION['user']->getCustomerId(), $_SESSION['cart']);
+        }
+        catch(Exception $e){
+            echo $e->getMessage();
+            return;
+        }
+        
+
+    }
+
+    
 }

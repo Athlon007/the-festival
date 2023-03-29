@@ -21,6 +21,12 @@ class Router
         $pageService = new PageService();
 
         try {
+            //Start or continue session and create cart if it doesn't exist
+            session_start();
+            if(!isset($_SESSION['cart'])){
+                $_SESSION['cart'] = array();
+            }
+
             // First we try to load the page from database.
             $page = $pageService->getPageByHref($request);
             // If page is type of TextPage

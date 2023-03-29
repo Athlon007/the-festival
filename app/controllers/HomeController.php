@@ -14,8 +14,7 @@ class HomeController
     }
 
     public function account() : void
-    {
-        session_start();
+    {   
         //Load login screen if user is not logged in, else load account management screen
         if (!isset($_SESSION['user'])) {
             require(__dir__ . self::LOGIN_PAGE);

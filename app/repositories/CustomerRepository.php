@@ -26,7 +26,7 @@ class CustomerRepository extends Repository{
             $stmt->execute();
             $result = $stmt->fetchAll();
 
-            if (is_bool($result)){
+            if (!$result){
                 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
                 throw new UserNotFoundException("User ID not found");
             }

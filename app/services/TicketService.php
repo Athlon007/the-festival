@@ -116,14 +116,18 @@ class TicketService
     }
   }
 
+  //TODO: check if obsolete before handing in
   public function addTicketToOrder($orderId, $ticketId)
   {
-      return $this->repository->addTicketToOrder($orderId, $ticketId);
+      
+    return $this->repository->addTicketToOrder($orderId, $ticketId);
   }
 
+  //TODO: check if obsolete before handing in
   public function removeTicketFromOrder($orderId, $ticketId)
   {
-      return $this->repository->removeTicketFromOrder($orderId, $ticketId);
+        
+    return $this->repository->removeTicketFromOrder($orderId, $ticketId);
   }
 
 }
