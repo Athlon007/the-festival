@@ -26,9 +26,15 @@ class OrderController
             if(!isset($_SESSION['user'])){
                 throw new Exception("User is not logged in");
             }
+            
+            $customer = $_SESSION['user'];
+            if($customer->getUserType() != 3){
+                throw new Exception("Only customers can place orders");
+            }
 
+            $cartItemIds = $_SESSION['cart'];
             $orderService = new OrderService();
-            $order = $orderService->createOrder($_SESSION['user']->getCustomerId(), $_SESSION['cart']);
+            $order = $orderService->createOrder($customer, $cartItemIds);
         }
         catch(Exception $e){
             echo $e->getMessage();
