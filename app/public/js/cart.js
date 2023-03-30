@@ -79,6 +79,9 @@
     }
 
     Cart.Clear = function () {
+        this.count = 0;
+        document.getElementById('shopping-circle').classList.add('d-none');
+
         const url = apiUrl + '/clear';
         new Promise((resolve, reject) => {
             fetch(url, {
