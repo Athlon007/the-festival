@@ -29,6 +29,13 @@ class EventAPIController extends APIController
         $cartItemService = new CartItemService();
 
         try {
+            if (str_starts_with($uri, '/api/events/dates')) {
+                $eventService = new EventService();
+                $dates = $eventService->getFestivalDates();
+                echo json_encode($dates);
+                return;
+            }
+
             if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 if (isset($_GET['artist'])) {
                     $artistId = $_GET['artist'];

@@ -122,4 +122,9 @@ class EventService
         $id = htmlspecialchars($id);
         $this->repo->deleteById($id);
     }
+
+    public function getFestivalDates()
+    {
+        return $this->repo->getFestivalDates();
+    }
 }
