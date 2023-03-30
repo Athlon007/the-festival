@@ -66,13 +66,17 @@ class EventService
         }
 
         // get id of event type
-        $eventTypeId = $event->getEventType()->getId();
+        $eventTypeId = null;
+        if ($event->getEventType() !== null) {
+            $eventTypeId = $event->getEventType()->getId();
+        }
 
         $id = $this->repo->createEvent(
             $event->getName(),
             $event->getStartTime(),
             $event->getEndTime(),
-            $eventTypeId
+            $eventTypeId,
+            $event->getAvailableTickets()
         );
 
         // if event is type of jazzevent

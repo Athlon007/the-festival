@@ -7,7 +7,7 @@ class Event implements JsonSerializable
     private DateTime $startTime;
     private DateTime $endTime;
     private ?EventType $eventType;
-    private int $availableTickets = 0;
+    private ?int $availableTickets;
 
     public function jsonSerialize(): mixed
     {
@@ -16,11 +16,14 @@ class Event implements JsonSerializable
             "name" => $this->getName(),
             "startTime" => $this->getStartTime(),
             "endTime" => $this->getEndTime(),
-            "vat" => $this->getVat(),
-            "availableTickets" => $this->getAvailableTickets(),
+            "vat" => $this->getVat()
         ];
 
-        if ($this->eventType != null) {
+        if (isset($this->availableTickets) && $this->availableTickets != null && $this->availableTickets) {
+            $obj["availableTickets"] = $this->availableTickets;
+        }
+
+        if (isset($this->eventType) && $this->eventType != null && $this->eventType) {
             $obj["eventType"] = $this->eventType;
         }
 

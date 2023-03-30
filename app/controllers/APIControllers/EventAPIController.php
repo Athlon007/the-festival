@@ -94,6 +94,9 @@ class EventAPIController extends APIController
                     $filters['ticket_type'] = $_GET['ticket_type'];
                 }
                 echo json_encode($cartItemService->getAllHistory($sort, $filters));
+            } elseif (str_starts_with($uri, '/api/events/passes')) {
+                $cartItemService = new CartItemService();
+                echo json_encode($cartItemService->getAllPasses());
             } else {
                 if (is_numeric(basename($uri))) {
                     $id = basename($uri);
@@ -120,7 +123,7 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
-            $ticketType = new TicketType(
+            $ticketType =  new TicketType(
                 $data['ticketType']['id'],
                 $data['ticketType']['name'],
                 $data['ticketType']['price'],
@@ -138,6 +141,11 @@ class EventAPIController extends APIController
                 $locationService = new LocationService();
                 $location = $locationService->getById($data['event']['location']['id']);
 
+                $availableSeats = null;
+                if (isset($data['event']['availableSeats'])) {
+                    $availableSeats = $data['event']['availableSeats'];
+                }
+
                 $event = new MusicEvent(
                     $data['event']['id'],
                     $data['event']['name'],
@@ -145,12 +153,33 @@ class EventAPIController extends APIController
                     new DateTime($data['event']['endTime']),
                     $artist,
                     $location,
-                    new EventType(1, 'Jazz', 0.21)
+                    new EventType(1, 'Jazz', 0.21),
+                    $availableSeats,
                 );
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
             } else {
-                $this->sendErrorMessage('Invalid request', 400);
-                return;
+                // if availableTickets is not set, it is a pass.
+                if (isset($data['event']['availableTickets'])) {
+                    $this->sendErrorMessage('Invalid request', 400);
+                    return;
+                }
+
+                $event = new Event();
+                $event->setId($data['event']['id']);
+                $event->setName($data['event']['name']);
+                $event->setStartTime(new DateTime($data['event']['startTime']));
+                $event->setEndTime(new DateTime($data['event']['endTime']));
+
+                $eventType = null;
+                if (isset($data['event']['eventType'])) {
+                    $eventType = new EventType(
+                        $data['event']['eventType']['id'],
+                        $data['event']['eventType']['name'],
+                        $data['event']['eventType']['vat']
+                    );
+                }
+
+                $event->setEventType($eventType);
             }
 
             $cartItem = new CartItem(0, $event, $ticketType);
@@ -171,12 +200,15 @@ class EventAPIController extends APIController
 
         try {
             $editedCartItemID = basename($uri);
-            $ticketType = new TicketType(
-                $data['ticketType']['id'],
-                $data['ticketType']['name'],
-                $data['ticketType']['price'],
-                $data['ticketType']['maxTickets'],
-            );
+            $ticketType = null;
+            if (isset($data['ticketType'])) {
+                $ticketType = new TicketType(
+                    $data['ticketType']['id'],
+                    $data['ticketType']['name'],
+                    $data['ticketType']['price'],
+                    $data['ticketType']['maxTickets'],
+                );
+            }
 
             $event = null;
 
@@ -189,6 +221,11 @@ class EventAPIController extends APIController
                 $locationService = new LocationService();
                 $location = $locationService->getById($data['event']['location']['id']);
 
+                $availableSeats = null;
+                if (isset($data['event']['availableSeats'])) {
+                    $availableSeats = $data['event']['availableSeats'];
+                }
+
                 $event = new MusicEvent(
                     $data['event']['id'],
                     $data['event']['name'],
@@ -196,12 +233,33 @@ class EventAPIController extends APIController
                     new DateTime($data['event']['endTime']),
                     $artist,
                     $location,
-                    new EventType(1, 'Jazz', 0.21)
+                    new EventType(1, 'Jazz', 0.21),
+                    $availableSeats
                 );
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
             } else {
-                $this->sendErrorMessage('Invalid request', 400);
-                return;
+                // if availableTickets is not set, it is a pass.
+                if (isset($data['event']['availableTickets'])) {
+                    $this->sendErrorMessage('Invalid request', 400);
+                    return;
+                }
+
+                $event = new Event();
+                $event->setId($data['event']['id']);
+                $event->setName($data['event']['name']);
+                $event->setStartTime(new DateTime($data['event']['startTime']));
+                $event->setEndTime(new DateTime($data['event']['endTime']));
+
+                $eventType = null;
+                if (isset($data['event']['eventType'])) {
+                    $eventType = new EventType(
+                        $data['event']['eventType']['id'],
+                        $data['event']['eventType']['name'],
+                        $data['event']['eventType']['vat']
+                    );
+                }
+
+                $event->setEventType($eventType);
             }
 
             $cartItem = new CartItem($editedCartItemID, $event, $ticketType);

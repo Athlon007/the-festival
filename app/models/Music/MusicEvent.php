@@ -9,7 +9,7 @@ class MusicEvent extends Event implements JsonSerializable
     private Artist $artist;
     private Location $location;
 
-    public function __construct($id, $name, DateTime $startTime, DateTime $endTime, Artist $artist, Location $location, EventType $eventType)
+    public function __construct($id, $name, DateTime $startTime, DateTime $endTime, Artist $artist, Location $location, EventType $eventType, $availableTickets = null)
     {
         $this->setId($id);
         $this->setName($name);
@@ -18,6 +18,7 @@ class MusicEvent extends Event implements JsonSerializable
         $this->setArtist($artist);
         $this->setLocation($location);
         $this->setEventType($eventType);
+        $this->setAvailableTickets($availableTickets);
     }
 
     public function getArtist(): Artist

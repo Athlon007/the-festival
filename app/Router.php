@@ -134,6 +134,9 @@ class Router
             case "/admin/tickettypes":
                 require("views/admin/tickettypes.php");
                 break;
+            case "/admin/passes":
+                require("views/admin/passes.php");
+                break;
             case "/home/login":
             case "/home/account":
                 require_once("controllers/HomeController.php");
