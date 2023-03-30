@@ -147,6 +147,24 @@ function createIcon(href, alt, iconClass) {
 
     collapseLi.appendChild(collapseA);
 
+    if (alt == 'Shopping cart') {
+        // Create a circle with the number of items in the cart
+        let cartCircle = document.createElement('div');
+        cartCircle.classList.add('shopping-circle', 'd-none');
+        cartCircle.id = 'shopping-circle';
+
+        let cartCircleText = document.createElement('p');
+        cartCircleText.classList.add('shopping-circle-text');
+        cartCircleText.textContent = '0';
+        cartCircleText.id = 'shopping-circle-text';
+
+        cartCircle.appendChild(cartCircleText);
+
+        collapseA.appendChild(cartCircle);
+
+        Cart.UpdateCounter();
+    }
+
     return collapseLi;
 }
 

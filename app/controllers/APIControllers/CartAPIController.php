@@ -24,6 +24,11 @@ class CartAPIController extends APIController
         if (basename($uri) == 'count') {
             echo json_encode(["count" => $this->orderService->getCartCount()]);
             return;
+        } elseif (is_numeric(basename($uri))) {
+            $cartItem = $this->ciService->getById(basename($uri));
+            $count = $this->orderService->countItemInCart($cartItem);
+            echo json_encode(["count" => $count]);
+            return;
         }
 
         $cart = $this->orderService->getCart();
@@ -52,6 +57,12 @@ class CartAPIController extends APIController
 
     protected function handleDeleteRequest($uri)
     {
+        if (basename($uri) == 'clear') {
+            $this->orderService->clearCart();
+            echo json_encode(["count" => 0]);
+            return;
+        }
+
         $ciID = basename($uri);
         try {
             $cartItem = $this->ciService->getById($ciID);

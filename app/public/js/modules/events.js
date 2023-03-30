@@ -63,7 +63,8 @@ class EventsList {
         container.appendChild(eventsMain);
     }
 
-    addEventToCard(event, amount) {
+    addToCart(event) {
+        Cart.Add(event);
     }
 }
 
@@ -346,6 +347,7 @@ class JazzEventList extends EventsList {
         let rowButtons = document.createElement('div');
         rowButtons.classList.add('row', 'justify-content-end', 'py-2', 'gx-2', 'px-0');
         // amount input
+        /*
         let amountInput = document.createElement('input');
         amountInput.type = 'number';
         amountInput.classList.add('form-control');
@@ -354,13 +356,13 @@ class JazzEventList extends EventsList {
         amountInput.max = 10;
         amountInput.style.width = '4.5em';
         amountInput.style.marginRight = '0.5em';
+        */
         // buy button
         let buyButton = document.createElement('button');
         buyButton.classList.add('btn', 'btn-primary', 'col-3');
         buyButton.innerText = 'Add ticket to cart';
         buyButton.addEventListener('click', () => {
-            let amount = amountInput.value;
-            this.addEventToCard(event.id, amount);
+            this.addToCart(event.id);
         });
         let buttonDetailsA = document.createElement('a');
         buttonDetailsA.href = `/festival/jazz/event/${event.event.id}`;
@@ -369,7 +371,7 @@ class JazzEventList extends EventsList {
         buttonDetails.classList.add('btn', 'btn-secondary', 'w-100');
         buttonDetails.innerText = 'About event';
         buttonDetailsA.appendChild(buttonDetails);
-        rowButtons.appendChild(amountInput);
+        //rowButtons.appendChild(amountInput);
         rowButtons.appendChild(buyButton);
         rowButtons.appendChild(buttonDetailsA);
 
