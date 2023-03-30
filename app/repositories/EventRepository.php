@@ -17,8 +17,7 @@ class EventRepository extends Repository
         foreach ($arr as $event) {
             if ($this->isInJazzEvents($event['eventId'])) {
                 $events[] = $this->getJazzEventById($event['eventId']);
-            }
-            if ($this->isInHistoryEvents($event['eventId'])) {
+            } elseif ($this->isInHistoryEvents($event['eventId'])) {
                 $events[] = $this->getHistoryEventById($event['eventId']);
             } else {
                 $eventEntry = new Event();
@@ -26,7 +25,10 @@ class EventRepository extends Repository
                 $eventEntry->setName($event['name']);
                 $eventEntry->setStartTime(new DateTime($event['startTime']));
                 $eventEntry->setEndTime(new DateTime($event['endTime']));
-                $eventEntry->setEventType($eventTypeRepo->getById($event['festivalEventType']));
+                // if festivalEventType is not null
+                if ($event['festivalEventType'] !== null) {
+                    $eventEntry->setEventType($eventTypeRepo->getById($event['festivalEventType']));
+                }
                 array_push($events, $eventEntry);
             }
         }
@@ -100,8 +102,11 @@ class EventRepository extends Repository
         return $dateTime->format('Y-m-d H:i:s');
     }
 
-    public function createEvent($name, DateTime $startTime, DateTime $endTime, $eventTypeId): int
+    public function createEvent($name, DateTime $startTime, DateTime $endTime, ?int $eventTypeId): int
     {
+        if ($eventTypeId === null) {
+            $eventTypeId = 'NULL';
+        }
         $sql = "INSERT INTO Events (name, startTime, endTime, festivalEventType) VALUES (:name, :startTime, :endTime, :eventTypeId)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
@@ -115,8 +120,12 @@ class EventRepository extends Repository
         return $this->connection->lastInsertId();
     }
 
-    public function updateEvent($id, $name, $startTime, $endTime, $eventTypeId)
+    public function updateEvent($id, $name, $startTime, $endTime, ?int $eventTypeId)
     {
+        if ($eventTypeId === null) {
+            $eventTypeId = 'NULL';
+        }
+
         $sql = "UPDATE Events SET name = :name, startTime = :startTime, endTime = :endTime, festivalEventType = :eventTypeId WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -349,5 +358,59 @@ class EventRepository extends Repository
         $stmt->execute();
         $arr = $stmt->fetchAll();
         return array_map(fn ($date) => $date['date'], $arr);
+    }
+
+    // PASS
+    private function buildPass($arr): array
+    {
+        $output = [];
+        $eventTypeRepo = new EventTypeRepository();
+
+
+        foreach ($arr as $item) {
+            // if festivalEventType is not null
+            $eventType = null;
+            if ($item['festivalEventType']) {
+                $eventType = $eventTypeRepo->getById($item['festivalEventType']);
+            }
+            $pass = new Pass($item['passId'], $item["name"], $item['startTime'], $eventType, $item['oneDayPass']);
+            $output[] = $pass;
+        }
+
+        return $output;
+    }
+
+    public function getPassById($id)
+    {
+        $sql = "SELECT p.passId, p.oneDayPass, e.name, e.startTime, e.festivalEventType "
+            . "FROM Passes p "
+            . "JOIN Events e ON e.eventId = p.passId "
+            . "WHERE p.passId = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $arr = $stmt->fetchAll();
+        return $this->buildPass($arr)[0];
+    }
+
+    public function getAllPasses($filters = [])
+    {
+        $sql = "SELECT p.passId, p.oneDayPass, e.name, e.startTime, e.festivalEventType "
+            . "FROM Passes p "
+            . "JOIN Events e ON e.eventId = p.passId ";
+
+        foreach ($filters as $key => $value) {
+            $sql .= " WHERE $key = :$key ";
+        }
+
+        $stmt = $this->connection->prepare($sql);
+
+        foreach ($filters as $key => $value) {
+            $stmt->bindParam(":$value", $value);
+        }
+
+        $stmt->execute();
+        $arr = $stmt->fetchAll();
+        return $this->buildPass($arr);
     }
 }

@@ -64,9 +64,21 @@ function loadCalendar() {
             backToEvent: {
                 text: 'back to event',
                 click: function () {
-                    calendar.changeView($(window).width() < 960 ? 'timeGridDay' : 'timeGridWeek4Days');
-                    calendar.gotoDate(getStartDate());
-                    calendar.scrollToTime('10:00:00');
+                    fetch('/api/events/dates',
+                        {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }
+                    ).then(response => response.json())
+                        .then(data => {
+                            // get first object and convert to date
+                            const firstDate = data[0] + " 10:00:00";
+                            calendar.changeView($(window).width() < 960 ? 'timeGridDay' : 'timeGridWeek4Days');
+                            calendar.gotoDate(firstDate);
+                            calendar.scrollToTime('10:00:00');
+                        })
                 }
             }
         },
@@ -147,7 +159,20 @@ function loadCalendar() {
                         url = "/festival/history-stroll";
                     }
 
-                    addEvent(e.event.name, new Date(e.event.startTime.date), new Date(e.event.endTime.date), url, backgroundColor, borderColor);
+                    const startTime = new Date(e.event.startTime.date);
+                    const endTime = new Date(e.event.endTime.date);
+
+                    // Don't add events shorter than 30 minutes.
+                    if (endTime - startTime < 30 * 60 * 1000) {
+                        continue;
+                    }
+
+                    // Don't add events longer than 8 hours.
+                    if (endTime - startTime > 8 * 60 * 60 * 1000) {
+                        continue;
+                    }
+
+                    addEvent(e.event.name, startTime, endTime, url, backgroundColor, borderColor);
                 }
 
             }
