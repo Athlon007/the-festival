@@ -291,6 +291,23 @@ h2 {
     margin-top: 1em
 }
 
+.shopping-circle {
+    position: absolute;
+    border-radius: 100%;
+    transform: translateY(12px);
+    background-color: #fff;
+    width: 1em;
+    height: 1em;
+}
+
+.shopping-circle>p {
+    transform: translate(35%, 10%);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    color: #000;
+    margin: auto;
+}
+
 @media (min-width: 960px) {
     .lang-picker {
         padding-left: 0.5rem;
