@@ -36,9 +36,9 @@ class CartItemRepository extends Repository
     {
         try {
             $sql = "select c.cartItemId, e.eventId, t.ticketTypeId, h.locationId
-            from cartitems c 
+            from cartitems c
             join tickettypes t ON t.ticketTypeId = c.ticketTypeId
-            join events e  on e.eventId = c.eventId 
+            join events e  on e.eventId = c.eventId
             join historyevents h on h.eventId  = e.eventId ";
 
             $stmt = $this->connection->prepare($sql);
@@ -92,6 +92,9 @@ class CartItemRepository extends Repository
                         break;
                     case 'location':
                         $sql .= " je.locationId = :$key ";
+                        break;
+                    case 'artist':
+                        $sql .= " je.artistId = :$key ";
                         break;
                     default:
                         // no filtering by default

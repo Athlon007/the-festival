@@ -5,7 +5,7 @@
 
     Cart.Add = function (itemID) {
         this.count++;
-        ocument.getElementById('shopping-circle').classList.remove('d-none');
+        document.getElementById('shopping-circle').classList.remove('d-none');
         document.getElementById('shopping-circle-text').innerHTML = this.count;
 
         const url = apiUrl + '/' + itemID;
@@ -34,7 +34,7 @@
         this.count--;
         if (this.count < 0) {
             this.count = 0;
-            ocument.getElementById('shopping-circle').classList.add('d-none');
+            document.getElementById('shopping-circle').classList.add('d-none');
         }
         document.getElementById('shopping-circle-text').innerHTML = this.count;
 

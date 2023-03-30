@@ -340,8 +340,12 @@ class JazzEventList extends EventsList {
         const displayTime = `${startTime.toDateString()}<br> ${startHour}:${startMinutesString} - ${endHour}:${endMinutesString}`;
         rowDetails.appendChild(this.createDetailBox('Time', displayTime));
 
-        rowDetails.appendChild(this.createDetailBox('Seats', event.event.location.capacity));
-        rowDetails.appendChild(this.createDetailBox('Price', event.ticketType.price));
+        if (event.ticketType.price > 0) {
+            rowDetails.appendChild(this.createDetailBox('Seats', event.event.location.capacity));
+        }
+        let price = this.createDetailBox('Price', event.ticketType.price == 0 ? "FREE" : "€ " + event.ticketType.price)
+        price.classList.add('price');
+        rowDetails.appendChild(price);
 
         // buttons row
         let rowButtons = document.createElement('div');
@@ -360,7 +364,7 @@ class JazzEventList extends EventsList {
         // buy button
         let buyButton = document.createElement('button');
         buyButton.classList.add('btn', 'btn-primary', 'col-3');
-        buyButton.innerText = 'Add ticket to cart';
+        buyButton.innerText = event.ticketType.price == 0 ? 'Book a ticket' : 'Add ticket to cart';
         buyButton.addEventListener('click', () => {
             this.addToCart(event.id);
         });
