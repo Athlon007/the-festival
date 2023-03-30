@@ -21,7 +21,9 @@ class EventAPIController extends APIController
     public function handleGetRequest($uri)
     {
         $sort = $_GET['sort'] ?? 'time';
-        $filters = $_GET['filters'] ?? [];
+        $filters = isset($_GET) ? $_GET : [];
+        // remove the 'sort' from filters
+        unset($filters['sort']);
         // htmlspecialchars all the things
         $sort = htmlspecialchars($sort);
         $filters = array_map('htmlspecialchars', $filters);
@@ -29,6 +31,13 @@ class EventAPIController extends APIController
         $cartItemService = new CartItemService();
 
         try {
+            if (str_starts_with($uri, '/api/events/dates')) {
+                $eventService = new EventService();
+                $dates = $eventService->getFestivalDates();
+                echo json_encode($dates);
+                return;
+            }
+
             if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 if (isset($_GET['artist'])) {
                     $artistId = $_GET['artist'];

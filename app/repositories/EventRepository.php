@@ -341,4 +341,13 @@ class EventRepository extends Repository
         $arr = $stmt->fetchAll();
         return $this->buildJazzEvent($arr);
     }
+
+    public function getFestivalDates(): array
+    {
+        $sql = "SELECT DISTINCT DATE(startTime) as date FROM Events ORDER BY date";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        $arr = $stmt->fetchAll();
+        return array_map(fn ($date) => $date['date'], $arr);
+    }
 }
