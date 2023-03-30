@@ -140,7 +140,27 @@ class JazzEventList extends EventsList {
         let days = document.createElement('div');
         days.classList.add('d-block');
 
-        for (let i = 27; i <= 30; i++) {
+        let dates = await fetch('/api/events/dates').then((res) => res.json());
+
+        // create array of dates also in between the first and last date
+        let firstDate = new Date(dates[0]);
+        let lastDate = new Date(dates[dates.length - 1]);
+
+        while (firstDate <= lastDate) {
+            let date = firstDate.toISOString().split('T')[0];
+            if (!dates.includes(date)) {
+                dates.push(date);
+            }
+            firstDate.setDate(firstDate.getDate() + 1);
+        }
+
+
+        // convert them to date objects
+        dates = dates.map((date) => new Date(date));
+        // sort
+        dates.sort((a, b) => a - b);
+
+        for (let date of dates) {
             let day = document.createElement('div');
             day.classList.add('form-check');
 
@@ -148,12 +168,12 @@ class JazzEventList extends EventsList {
             dayInput.classList.add('form-check-input');
             dayInput.type = 'radio';
             dayInput.name = 'day';
-            dayInput.value = i;
-            dayInput.id = 'day-' + i;
+            dayInput.value = date.toISOString().split('T')[0].split('-')[2];
+            dayInput.id = 'day-' + dayInput.value;
             let dayLabel = document.createElement('label');
             dayLabel.classList.add('form-check-label');
-            dayLabel.innerText = i + ' July 2023';
-            dayLabel.htmlFor = 'day-' + i;
+            dayLabel.innerText = date.toDateString();
+            dayLabel.htmlFor = 'day-' + dayInput.value;
 
             day.appendChild(dayInput);
             day.appendChild(dayLabel);
@@ -161,11 +181,12 @@ class JazzEventList extends EventsList {
 
             // allow unselecting the day
             dayInput.addEventListener('click', (e) => {
+                let d = date.toISOString().split('T')[0].split('-')[2];
                 if (e.target.checked && this.day === e.target.value) {
                     document.querySelector('input[name="day"]:checked').checked = false;
                     this.day = null
                 } else {
-                    this.day = e.target.value;
+                    this.day = d;
                 }
                 this.loadEvents();
             });

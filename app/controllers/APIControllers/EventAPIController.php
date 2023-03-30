@@ -21,7 +21,9 @@ class EventAPIController extends APIController
     public function handleGetRequest($uri)
     {
         $sort = $_GET['sort'] ?? 'time';
-        $filters = $_GET['filters'] ?? [];
+        $filters = isset($_GET) ? $_GET : [];
+        // remove the 'sort' from filters
+        unset($filters['sort']);
         // htmlspecialchars all the things
         $sort = htmlspecialchars($sort);
         $filters = array_map('htmlspecialchars', $filters);
