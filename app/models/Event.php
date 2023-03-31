@@ -77,6 +77,9 @@ class Event implements JsonSerializable
 
     public function getAvailableTickets()
     {
+        if (!isset($this->availableTickets) || $this->availableTickets == null || !$this->availableTickets) {
+            return null;
+        }
         return $this->availableTickets;
     }
 

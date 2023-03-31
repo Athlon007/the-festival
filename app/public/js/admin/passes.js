@@ -1,10 +1,11 @@
 if (window.frameElement == null) {
-    //window.location.href = '/manageTicketTypes';
+    window.location.href = '/manageTicketTypes';
 }
 
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;
+let editedEventId = -1;
 const locations = document.getElementById('locations');
 const masterEditor = document.getElementById('master-editor');
 
@@ -44,14 +45,13 @@ function updateExistingEntry(id, data) {
                 }
 
                 // create new option
-                let option = createNewOptionItem(data);
-                locations.appendChild(option);
+                locations.appendChild(createNewOptionItem(data));
                 locations.selectedIndex = locations.length - 1;
                 editedId = data.id;
                 isInCreationMode = false;
                 btnSubmit.innerHTML = 'Save';
 
-                msgBox.createToast('Success!', 'Ticket Type has been updated');
+                msgBox.createToast('Success!', 'Pass has been updated');
             } else {
                 msgBox.createToast('Something went wrong', data.error_message);
             }
@@ -72,13 +72,11 @@ function createNewEntry(data) {
         .then(response => response.json())
         .then(data => {
             if (!data.error_message) {
-                let option = createNewOptionItem(data);
-                locations.appendChild(option);
+                locations.appendChild(createNewOptionItem(data));
                 locations.selectedIndex = locations.length - 1;
                 editedId = data.id;
-                isInCreationMode = false;
-                btnSubmit.innerHTML = 'Save';
-                msgBox.createToast('Success!', 'Ticket Type has been created');
+
+                msgBox.createToast('Success!', 'Pass has been created');
 
                 // exit the new page mode
                 isInCreationMode = false;
@@ -93,13 +91,26 @@ function createNewEntry(data) {
 }
 
 btnSubmit.onclick = function () {
+    let d = new Date(date.value);
+    d = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+
     // to json
     let data = {
         id: 0,
-        name: name.value,
-        price: price.value,
-        nrOfPeople: nrOfPeople.value,
+        event: {
+            id: editedEventId,
+            name: name.value,
+            startTime: d,
+            endTime: d,
+            eventType: {
+                id: festivalEventType.value,
+            }
+        },
+        ticketType: {
+            id: ticketType.value,
+        }
     };
+
 
     if (isInCreationMode) {
         createNewEntry(data);
@@ -150,8 +161,8 @@ document.getElementById('cancel').onclick = function () {
 function createNewOptionItem(element) {
     // create option
     let option = document.createElement('option');
-    option.innerHTML = element.name;
-    option.value = element.id;
+    option.innerHTML = element.event.name;
+    option.value = element.event.id;
 
     // on click
     option.onclick = function () {
@@ -169,10 +180,22 @@ function createNewOptionItem(element) {
             .then(data => {
                 if (!data.error_message) {
                     editedId = data.id;
+                    editedEventId = data.event.id;
 
-                    name.value = data.name;
-                    price.value = data.price;
-                    nrOfPeople.value = data.nrOfPeople;
+                    name.value = data.event.name;
+                    let dispTime = element.event.startTime.date;
+                    // convert string to date (yyyy/mm/dd hh:mm:ss)
+                    let ffs = dispTime.split(/[- :]/);
+                    dispTime = new Date(ffs[0], ffs[1] - 1, ffs[2], ffs[3], ffs[4], ffs[5]);
+                    date.valueAsDate = dispTime;
+
+                    if (data.event.eventType) {
+                        festivalEventType.value = data.event.eventType.id;
+                    } else {
+                        festivalEventType.value = 0;
+                    }
+
+                    ticketType.value = data.ticketType.id;
 
                 } else {
                     msgBox.createToast('Something went wrong', data.event.error_message);
@@ -232,6 +255,48 @@ function loadList() {
                 }
             }
         });
+
+    fetch('/api/eventtypes', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            // check if data is array
+            if (Array.isArray(data)) {
+                data.forEach(element => {
+                    let option = document.createElement('option');
+                    option.innerHTML = element.name;
+                    option.value = element.id;
+
+                    // append option
+                    festivalEventType.appendChild(option);
+                });
+            }
+        });
+
+    fetch('/api/tickettypes', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            // check if data is array
+            if (Array.isArray(data)) {
+                data.forEach(element => {
+                    let option = document.createElement('option');
+                    option.innerHTML = element.name;
+                    option.value = element.id;
+
+                    // append option
+                    ticketType.appendChild(option);
+                });
+            }
+        });
 }
 
 loadList();
@@ -244,8 +309,9 @@ function toggleEditor(element, isEnabled) {
         editedId = -1;
 
         name.value = '';
-        price.value = '';
-        nrOfPeople.value = '';
+        date.value = '';
+        festivalEventType.selectedIndex = -1;
+        ticketType.selectedIndex = -1;
     }
 }
 

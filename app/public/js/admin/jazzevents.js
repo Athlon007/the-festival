@@ -91,6 +91,9 @@ btnSubmit.onclick = function () {
             },
             location: {
                 id: locationSelect.value
+            },
+            eventType: {
+                id: 1
             }
         },
         ticketType: {

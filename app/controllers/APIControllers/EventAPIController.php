@@ -5,6 +5,7 @@ require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
 require_once(__DIR__ . '/../../services/CartItemService.php');
 require_once(__DIR__ . '/../../services/EventTypeService.php');
+require_once(__DIR__ . '/../../services/TicketTypeService.php');
 require_once("APIController.php");
 require_once(__DIR__ . '/../../models/Types/TicketType.php');
 require_once(__DIR__ . '/../../models/CartItem.php');
@@ -12,10 +13,14 @@ require_once(__DIR__ . '/../../models/CartItem.php');
 class EventAPIController extends APIController
 {
     private $service;
+    private $ticketTypeService;
+    private $eventTypeService;
 
     public function __construct()
     {
         $this->service = new EventService();
+        $this->ticketTypeService = new TicketTypeService();
+        $this->eventTypeService = new EventTypeService();
     }
 
     public function handleGetRequest($uri)
@@ -96,6 +101,10 @@ class EventAPIController extends APIController
                 echo json_encode($cartItemService->getAllHistory($sort, $filters));
             } elseif (str_starts_with($uri, '/api/events/passes')) {
                 $cartItemService = new CartItemService();
+                if (is_numeric(basename($uri))) {
+                    echo json_encode($cartItemService->getById(basename($uri)));
+                    return;
+                }
                 echo json_encode($cartItemService->getAllPasses());
             } else {
                 if (is_numeric(basename($uri))) {
@@ -123,12 +132,7 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
-            $ticketType =  new TicketType(
-                $data['ticketType']['id'],
-                $data['ticketType']['name'],
-                $data['ticketType']['price'],
-                $data['ticketType']['maxTickets'],
-            );
+            $ticketType = $this->ticketTypeService->getById($data['ticketType']['id']);
 
             $event = null;
 
@@ -172,11 +176,7 @@ class EventAPIController extends APIController
 
                 $eventType = null;
                 if (isset($data['event']['eventType'])) {
-                    $eventType = new EventType(
-                        $data['event']['eventType']['id'],
-                        $data['event']['eventType']['name'],
-                        $data['event']['eventType']['vat']
-                    );
+                    $eventType = $this->eventTypeService->getById($data['event']['eventType']['id']);
                 }
 
                 $event->setEventType($eventType);
@@ -190,7 +190,7 @@ class EventAPIController extends APIController
         } catch (InvalidVariableException $e) {
             $this->sendErrorMessage($e->getMessage(), 400);
         } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled exception", 500);
+            $this->sendErrorMessage("Unhandled exception. " . $e->getMessage() . "\r\n\r\n" . $e->getTraceAsString(), 500);
         }
     }
 
@@ -200,15 +200,7 @@ class EventAPIController extends APIController
 
         try {
             $editedCartItemID = basename($uri);
-            $ticketType = null;
-            if (isset($data['ticketType'])) {
-                $ticketType = new TicketType(
-                    $data['ticketType']['id'],
-                    $data['ticketType']['name'],
-                    $data['ticketType']['price'],
-                    $data['ticketType']['maxTickets'],
-                );
-            }
+            $ticketType = $this->ticketTypeService->getById($data['ticketType']['id']);
 
             $event = null;
 

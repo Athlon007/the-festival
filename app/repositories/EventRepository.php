@@ -372,7 +372,7 @@ class EventRepository extends Repository
         // passes don't have availableTickets
         $sql = "SELECT e.eventId, e.name, e.startTime, e.endTime, e.festivalEventType
             FROM Events e
-            WHERE e.availableTickets IS NULL";
+            WHERE e.availableTickets = 0";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $arr = $stmt->fetchAll();

@@ -23,16 +23,17 @@
         <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/manageTextPages">Text Pages</a>
         <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/manageImages">Images</a>
         <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/../manageUsers">Users</a>
-        <a class="flex-sm-fill text-sm-center nav-link " href="/../manageJazz">Jazz</a>
+        <a class="flex-sm-fill text-sm-center nav-link" href="/../manageJazz">Jazz</a>
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageRestaurants">Restaurants</a>
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageDJs">Dance</a>
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageHistory">History</a>
-        <a class="flex-sm-fill text-sm-center nav-link active" href="/manageTicketTypes">Ticket Types</a>
+        <a class="flex-sm-fill text-sm-center nav-link" href="/manageTicketTypes">Ticket Types</a>
+        <a class="flex-sm-fill text-sm-center nav-link active" href="/managePasses">Passes</a>
     </nav>
 
-    <h1 class="text-center mt-3">Manage Ticket Types</h1>
+    <h1 class="text-center mt-3">Manage Passes</h1>
     <div class="content">
-        <iframe id="iframe" src="/admin/tickettypes" data-locations="1" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
+        <iframe id="iframe" src="/admin/passes" data-locations="1" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
 
     </div>
     <br>

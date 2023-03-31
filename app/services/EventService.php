@@ -65,8 +65,6 @@ class EventService
             throw new InvalidVariableException("Start time cannot be after end time");
         }
 
-        // get id of event type
-        $eventTypeId = null;
         if ($event->getEventType() !== null) {
             $eventTypeId = $event->getEventType()->getId();
         }
@@ -86,9 +84,11 @@ class EventService
                 $event->getArtist()->getId(),
                 $event->getLocation()->getLocationId()
             );
+
+            return $this->repo->getJazzEventById($id);
         }
 
-        return $this->repo->getJazzEventById($id);
+        return $this->repo->getEventById($id);
     }
 
     public function editEvent($event): Event
