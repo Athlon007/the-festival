@@ -105,7 +105,7 @@ class EventAPIController extends APIController
                     echo json_encode($cartItemService->getById(basename($uri)));
                     return;
                 }
-                echo json_encode($cartItemService->getAllPasses());
+                echo json_encode($cartItemService->getAllPasses($filters));
             } else {
                 if (is_numeric(basename($uri))) {
                     $id = basename($uri);
