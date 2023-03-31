@@ -18,6 +18,11 @@ class CartItemService
         return $this->cartItemRepository->getAll();
     }
 
+    public function getAllPasses(): array
+    {
+        return $this->cartItemRepository->getAllPasses();
+    }
+
     public function getAllHistory()
     {
         return $this->cartItemRepository->getAllHistory();

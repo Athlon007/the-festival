@@ -32,6 +32,18 @@ class CartItemRepository extends Repository
         return $this->buildCartItems($result);
     }
 
+    public function getAllPasses()
+    {
+        // availableTickets is null if it's a pass
+        $sql = "SELECT c.cartItemId, c.eventId, c.ticketTypeId FROM cartitems c
+        JOIN events e ON e.eventId = c.eventId
+        WHERE e.availableTickets = 0";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        return $this->buildCartItems($result);
+    }
+
     public function getAllHistory()
     {
         try {

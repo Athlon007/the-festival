@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#fffbfa">
     <meta name="robots" content="noindex, nofollow">
-    <title>Visit Haarlem - Manage Users</title>
+    <title>Visit Haarlem - Manage Passes</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/icons.css">
@@ -21,19 +21,19 @@
     <br>
     <nav class="nav nav-pills flex-column flex-sm-row">
         <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/manageTextPages">Text Pages</a>
-        <a class="flex-sm-fill text-sm-center nav-link active" aria-current="page" href="/manageImages">Images</a>
+        <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/manageImages">Images</a>
         <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/../manageUsers">Users</a>
-        <a class="flex-sm-fill text-sm-center nav-link " href="/../manageJazz">Jazz</a>
+        <a class="flex-sm-fill text-sm-center nav-link" href="/../manageJazz">Jazz</a>
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageRestaurants">Restaurants</a>
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageDJs">Dance</a>
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageHistory">History</a>
         <a class="flex-sm-fill text-sm-center nav-link" href="/manageTicketTypes">Ticket Types</a>
-        <a class="flex-sm-fill text-sm-center nav-link" href="/managePasses">Passes</a>
+        <a class="flex-sm-fill text-sm-center nav-link active" href="/managePasses">Passes</a>
     </nav>
 
-    <h1 class="text-center mt-3">Manage Images</h1>
+    <h1 class="text-center mt-3">Manage Passes</h1>
     <div class="content">
-        <iframe id="iframe" src="/admin/images" data-locations="1" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
+        <iframe id="iframe" src="/admin/passes" data-locations="1" style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
 
     </div>
     <br>

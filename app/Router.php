@@ -134,6 +134,9 @@ class Router
             case "/admin/tickettypes":
                 require("views/admin/tickettypes.php");
                 break;
+            case "/admin/passes":
+                require("views/admin/passes.php");
+                break;
             case "/home/login":
             case "/home/account":
                 require_once("controllers/HomeController.php");
@@ -164,6 +167,9 @@ class Router
                 return;
             case "/manageTicketTypes":
                 require("views/admin/manageTicketTypes.php");
+                return;
+            case "/managePasses":
+                require("views/admin/managePasses.php");
                 return;
             case "/addUser":
                 require_once("controllers/UserController.php");
@@ -310,6 +316,9 @@ class Router
         } elseif (str_starts_with($request, "/api/cart")) {
             require_once("controllers/APIControllers/CartAPIController.php");
             $controller = new CartAPIController();
+        } elseif (str_starts_with($request, "/api/eventtypes")) {
+            require_once("controllers/APIControllers/EventTypeAPIController.php");
+            $controller = new EventTypeAPIController();
         } else {
             http_response_code(400);
             // send json

@@ -28,7 +28,8 @@
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageRestaurants">Restaurants</a>
         <a class="flex-sm-fill text-sm-center nav-link active" href="/../manageDJs">Dance</a>
         <a class="flex-sm-fill text-sm-center nav-link" href="/../manageHistory">History</a>
-        <a class="flex-sm-fill text-sm-center nav-link" href="/manageTicketTypes">Ticket Types</a>w
+        <a class="flex-sm-fill text-sm-center nav-link" href="/manageTicketTypes">Ticket Types</a>
+        <a class="flex-sm-fill text-sm-center nav-link" href="/managePasses">Passes</a>
     </nav>
 
     <h1 class="text-center mt-3">Manage Dance</h1>
