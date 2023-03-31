@@ -10,8 +10,9 @@ const masterEditor = document.getElementById('master-editor');
 
 // Artist fields.
 const name = document.getElementById('name');
-const price = document.getElementById('price');
-const nrOfPeople = document.getElementById('nrOfPeople');
+const date = document.getElementById('date');
+const festivalEventType = document.getElementById('festival-event-type');
+const ticketType = document.getElementById('ticket-type');
 
 const btnSubmit = document.getElementById('submit');
 let isInCreationMode = false;

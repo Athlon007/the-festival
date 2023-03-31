@@ -313,6 +313,9 @@ class Router
         } elseif (str_starts_with($request, "/api/cart")) {
             require_once("controllers/APIControllers/CartAPIController.php");
             $controller = new CartAPIController();
+        } elseif (str_starts_with($request, "/api/eventtypes")) {
+            require_once("controllers/APIControllers/EventTypeAPIController.php");
+            $controller = new EventTypeAPIController();
         } else {
             http_response_code(400);
             // send json
