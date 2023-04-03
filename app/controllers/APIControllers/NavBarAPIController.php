@@ -31,6 +31,11 @@ class NavBarAPIController extends APIController
 
     public function handlePostRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         // Make sure that only localhost can use this API.
         if (!parent::isLocalApiRequest()) {
             parent::sendErrorMessage("Access denied.");
