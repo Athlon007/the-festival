@@ -4,57 +4,14 @@ if (window.frameElement == null) {
 
 import { MsgBox } from "./modals.js";
 
-let editedId = -1;
-let editedEventId = -1;
-
 // Artist fields.
 const navs = document.getElementById('navs');
 
 const btnSubmit = document.getElementById('submit');
-let isInCreationMode = false;
 
 const msgBox = new MsgBox();
 
 let baseURL = '/api/nav';
-
-function updateExistingEntry(id, data) {
-    fetch(baseURL + "/" + id, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.error_message) {
-
-                // update the option in the list
-                let options = locations.getElementsByTagName('option');
-                for (let option of options) {
-                    if (option.value == editedId) {
-                        // remove the option from the list
-                        option.remove();
-                        break;
-                    }
-                }
-
-                // create new option
-                locations.appendChild(createNewOptionItem(data));
-                locations.selectedIndex = locations.length - 1;
-                editedId = data.id;
-                isInCreationMode = false;
-                btnSubmit.innerHTML = 'Save';
-
-                msgBox.createToast('Success!', 'Pass has been updated');
-            } else {
-                msgBox.createToast('Something went wrong', data.error_message);
-            }
-        })
-        .catch(error => {
-            msgBox.createToast('Something went wrong', error);
-        });
-}
 
 function createNewEntry(data) {
     fetch(baseURL, {
@@ -67,15 +24,7 @@ function createNewEntry(data) {
         .then(response => response.json())
         .then(data => {
             if (!data.error_message) {
-                locations.appendChild(createNewOptionItem(data));
-                locations.selectedIndex = locations.length - 1;
-                editedId = data.id;
-
-                msgBox.createToast('Success!', 'Pass has been created');
-
-                // exit the new page mode
-                isInCreationMode = false;
-                btnSubmit.innerHTML = 'Save';
+                loadList();
             } else {
                 msgBox.createToast('Something went wrong', data.error_message);
             }
@@ -86,32 +35,40 @@ function createNewEntry(data) {
 }
 
 btnSubmit.onclick = function () {
-    let d = new Date(date.value);
-    d = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+    // get all the options that are the first child of the nav
+    let options = navs.getElementsByTagName('li');
+    let data = [];
 
-    // to json
-    let data = {
-        id: 0,
-        event: {
-            id: editedEventId,
-            name: name.value,
-            startTime: d,
-            endTime: d,
-            eventType: {
-                id: festivalEventType.value,
-            }
-        },
-        ticketType: {
-            id: ticketType.value,
+    for (let option of options) {
+        // if is not a child of navs, skip it.
+        if (option.parentElement.id != 'navs') {
+            continue;
         }
-    };
 
+        let e = {
+            id: option.id,
+            page: {
+                id: option.dataset.pageId
+            },
+            children: []
+        }
 
-    if (isInCreationMode) {
-        createNewEntry(data);
-    } else {
-        updateExistingEntry(editedId, data);
+        // check if there are children
+        let children = option.getElementsByTagName('li');
+        for (let child of children) {
+            e.children.push({
+                id: child.id,
+                page: {
+                    id: child.dataset.pageId
+                },
+                children: []
+            });
+        }
+
+        data.push(e);
     }
+
+    createNewEntry(data);
 }
 
 document.getElementById('cancel').onclick = function () {
@@ -242,6 +199,10 @@ function createNewPagesItem(element) {
 
 
 async function loadList() {
+    const pages = document.getElementById('pages');
+    navs.innerHTML = '';
+    pages.innerHTML = '';
+
     // fetch with post
     await fetch(baseURL, {
         method: 'GET',
@@ -272,7 +233,7 @@ async function loadList() {
         .then(response => response.json())
         .then(data => {
             // check if data is array
-            const pages = document.getElementById('pages');
+
             if (Array.isArray(data)) {
                 data.forEach(element => {
                     // Do not add, if already in the list of navs.

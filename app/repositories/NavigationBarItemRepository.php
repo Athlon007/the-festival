@@ -102,7 +102,7 @@ class NavigationBarItemRepository extends Repository
         $sql = "UPDATE NavigationBarItems SET parentNavId = :parentId WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":parentId", $parentId, PDO::PARAM_INT);
-        $stmt->bindParam(":id", $pageId, PDO::PARAM_INT);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
     }
 }

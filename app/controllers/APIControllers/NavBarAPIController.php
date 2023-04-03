@@ -43,21 +43,21 @@ class NavBarAPIController extends APIController
         $input = json_decode(file_get_contents("php://input"), true);
 
         $navBarItemsArray = array();
+        $index = 0;
         foreach ($input as $i) {
+            $index++;
             $page = $pageService->getPageById($i["page"]["id"]);
             $children = array();
+            $childIndex = (int)((string)$index . '00');
             foreach ($i["children"] as $child) {
+                $childIndex++;
                 $childPage = $pageService->getPageById($child["page"]["id"]);
-                $children[] = new NavigationBarItem($child["id"], $childPage, array(), $child["order"]);
+                $children[] = new NavigationBarItem(0, $childPage, array(), $childIndex);
             }
-            $navBarItemsArray[] = new NavigationBarItem($i["id"], $page, $children, $i["order"]);
+            $navBarItemsArray[] = new NavigationBarItem(0, $page, $children, $index);
         }
 
-        echo json_encode($navBarItemsArray);
-        return;
-
-
-        $output = $this->navService->setNavbars($input);
+        $output = $this->navService->setNavbars($navBarItemsArray);
         echo json_encode($output);
     }
 }
