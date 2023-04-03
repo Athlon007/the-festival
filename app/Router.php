@@ -174,6 +174,9 @@ class Router
             case "/managePasses":
                 require("views/admin/managePasses.php");
                 return;
+            case "/manageNavBar":
+                require("views/admin/manageNavBar.php");
+                return;
             case "/addUser":
                 require_once("controllers/UserController.php");
                 $userController = new UserController();

@@ -1,5 +1,5 @@
 if (window.frameElement == null) {
-    //window.location.href = '/manageTicketTypes';
+    window.location.href = '/manageTicketTypes';
 }
 
 import { MsgBox } from "./modals.js";
