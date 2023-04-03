@@ -82,7 +82,7 @@ class UserAPIController extends APIController
 
             //Store user in session
             session_start();
-            $_SESSION["user"] = $user;
+            $_SESSION["user"] = serialize($user);
 
             parent::sendSuccessMessage("Login successful.");
         } catch (Exception $ex) {
@@ -246,7 +246,7 @@ class UserAPIController extends APIController
                 throw new MissingVariableException("Not all data received.");
             }
             session_start();
-            $customer = $_SESSION['user'];
+            $customer = unserialize($_SESSION['user']);
             $customerService->updateCustomer($customer, $data);
 
             parent::sendSuccessMessage("Your account was successfully updated.");

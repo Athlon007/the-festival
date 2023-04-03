@@ -12,7 +12,7 @@ class UserController
                 header("Location: /");
             }
 
-            $user = $_SESSION['user'];
+            $user = unserialize($_SESSION['user']);
             if ($user->getUserTypeAsString() != "Admin") {
                 header("Location: /");
             }
