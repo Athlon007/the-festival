@@ -76,11 +76,16 @@ class PageService
             throw new PageNotFoundException("Page with ID '$id' was not found.");
         }
 
+        /*
         // Check if file exists
-        $location = $page->getLocation();
-        if (!file_exists($page->getLocation())) {
-            throw new FileDoesNotExistException("File at '$location' was not found.");
+        if (!($page instanceof TextPage)) {
+            // Check if file exists
+            $location = "../" .  $page->getLocation();
+            if (!file_exists($location)) {
+                throw new FileDoesNotExistException("File at '$location' was not found.");
+            }
         }
+        */
 
         return $page;
     }
@@ -113,7 +118,7 @@ class PageService
     {
         $id = htmlspecialchars($id);
         $page = $this->repo->getTextPageById($id);
-        
+
         if ($page == null) {
             throw new PageNotFoundException("Page with ID '$id' was not found.");
         }

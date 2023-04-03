@@ -18,9 +18,9 @@ class CartItemService
         return $this->cartItemRepository->getAll();
     }
 
-    public function getAllPasses(): array
+    public function getAllPasses($filters = []): array
     {
-        return $this->cartItemRepository->getAllPasses();
+        return $this->cartItemRepository->getAllPasses($filters);
     }
 
     public function getAllHistory()
