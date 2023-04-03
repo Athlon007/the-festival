@@ -9,7 +9,7 @@
         document.getElementById('shopping-circle-text').innerHTML = this.count;
 
         const url = apiUrl + '/' + itemID;
-        new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             fetch(url, {
                 method: 'POST',
                 headers: {
@@ -28,8 +28,6 @@
         });
     };
 
-
-
     Cart.Remove = function (itemID) {
         this.count--;
         if (this.count < 0) {
@@ -39,7 +37,7 @@
         document.getElementById('shopping-circle-text').innerHTML = this.count;
 
         const url = apiUrl + '/' + itemID;
-        new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             fetch(url, {
                 method: 'DELETE',
                 headers: {
@@ -83,7 +81,7 @@
         document.getElementById('shopping-circle').classList.add('d-none');
 
         const url = apiUrl + '/clear';
-        new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             fetch(url, {
                 method: 'DELETE',
                 headers: {

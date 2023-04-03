@@ -308,6 +308,12 @@ h2 {
     margin: auto;
 }
 
+.disabled {
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.5;
+}
+
 @media (min-width: 960px) {
     .lang-picker {
         padding-left: 0.5rem;

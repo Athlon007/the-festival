@@ -160,6 +160,11 @@ class Router
                 $ticketController = new TicketController();
                 $ticketController->buyTicket();
                 break;
+            case "/buyPass":
+            case "/buy-pass":
+            case "/buypass":
+                require_once("views/buy-pass.php");
+                break;
             case "/generateTicket":
                 require_once("controllers/TicketController.php");
                 $ticketController = new TicketController();
