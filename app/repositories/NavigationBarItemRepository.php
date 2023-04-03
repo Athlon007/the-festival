@@ -73,4 +73,36 @@ class NavigationBarItemRepository extends Repository
         $output = $this->navBarItemBuilder($stmt->fetchAll());
         return $output[0];
     }
+
+    public function clear()
+    {
+        $sql = "DELETE FROM NavigationBarItems";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+
+        // We can also reset the auto increment value to 1.
+        $sql = "ALTER TABLE NavigationBarItems AUTO_INCREMENT = 1";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+    }
+
+    public function insert($pageId, $order): int
+    {
+        $sql = "INSERT INTO NavigationBarItems (pageId, `order`) VALUES (:pageId, :order)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":pageId", $pageId, PDO::PARAM_INT);
+        $stmt->bindParam(":order", $order, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $this->connection->lastInsertId();
+    }
+
+    public function setParent($id, $parentId)
+    {
+        $sql = "UPDATE NavigationBarItems SET parentNavId = :parentId WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":parentId", $parentId, PDO::PARAM_INT);
+        $stmt->bindParam(":id", $pageId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
 }

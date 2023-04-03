@@ -1,29 +1,63 @@
 <?php
 require_once(__DIR__ . "/APIController.php");
+require_once("../services/NavigationBarItemService.php");
 
 class NavBarAPIController extends APIController
 {
+    private $navService;
+
+    public function __construct()
+    {
+        $this->navService = new NavigationBarItemService();
+    }
 
     public function handleGetRequest($uri)
     {
-        switch ($uri) {
-            case "/api/nav":
-                // Make sure that only localhost can use this API.
-                if (!parent::isLocalApiRequest()) {
-                    parent::sendErrorMessage("Access denied.");
-                    return;
-                }
-
-                require_once("../services/NavigationBarItemService.php");
-                $navService = new NavigationBarItemService();
-                $output = $navService->getAll();
-
-                header('Content-Type: application/json');
-                echo json_encode($output);
-                break;
-            default:
-                parent::sendErrorMessage("Invalid API Request");
-                break;
+        // Make sure that only localhost can use this API.
+        if (!parent::isLocalApiRequest()) {
+            parent::sendErrorMessage("Access denied.");
+            return;
         }
+
+        if (is_numeric(basename($uri))) {
+            $output = $this->navService->getNavBarItemById(basename($uri));
+            echo json_encode($output);
+            return;
+        }
+
+        $output = $this->navService->getAll();
+        echo json_encode($output);
+    }
+
+    public function handlePostRequest($uri)
+    {
+        // Make sure that only localhost can use this API.
+        if (!parent::isLocalApiRequest()) {
+            parent::sendErrorMessage("Access denied.");
+            return;
+        }
+
+        require_once(__DIR__ . '/../../services/PageService.php');
+        $pageService = new PageService();
+
+        $input = json_decode(file_get_contents("php://input"), true);
+
+        $navBarItemsArray = array();
+        foreach ($input as $i) {
+            $page = $pageService->getPageById($i["page"]["id"]);
+            $children = array();
+            foreach ($i["children"] as $child) {
+                $childPage = $pageService->getPageById($child["page"]["id"]);
+                $children[] = new NavigationBarItem($child["id"], $childPage, array(), $child["order"]);
+            }
+            $navBarItemsArray[] = new NavigationBarItem($i["id"], $page, $children, $i["order"]);
+        }
+
+        echo json_encode($navBarItemsArray);
+        return;
+
+
+        $output = $this->navService->setNavbars($input);
+        echo json_encode($output);
     }
 }

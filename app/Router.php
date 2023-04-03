@@ -137,6 +137,9 @@ class Router
             case "/admin/passes":
                 require("views/admin/passes.php");
                 break;
+            case "/admin/nav":
+                require("views/admin/nav.php");
+                break;
             case "/home/login":
             case "/home/account":
                 require_once("controllers/HomeController.php");
@@ -319,6 +322,9 @@ class Router
         } elseif (str_starts_with($request, "/api/eventtypes")) {
             require_once("controllers/APIControllers/EventTypeAPIController.php");
             $controller = new EventTypeAPIController();
+        } elseif (str_starts_with($request, "/api/pages")) {
+            require_once("controllers/APIControllers/PagesAPIController.php");
+            $controller = new PagesAPIController();
         } else {
             http_response_code(400);
             // send json
