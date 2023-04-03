@@ -18,6 +18,11 @@ class AddressAPIController extends APIController
 
     protected function handlePostRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         if (str_starts_with($uri, "/api/address/fetch-address")) {
             $data = json_decode(file_get_contents("php://input"));
             $this->fetchAddress($data);
@@ -132,6 +137,11 @@ class AddressAPIController extends APIController
 
     protected function handleDeleteRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         if (!is_numeric(basename($uri))) {
             $this->sendErrorMessage("Invalid API Request. You can only delete specific addresses.", 400);
             return;

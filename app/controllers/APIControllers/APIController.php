@@ -72,4 +72,30 @@ class APIController
         //require_once(__DIR__ . "/../Config.php");
         //return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
     }
+
+    final protected function isLoggedIn()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION["user"])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    final protected function isLoggedInAsAdmin()
+    {
+        if ($this->isLoggedIn()) {
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            return unserialize($_SESSION["user"])->getUserType() == "1";
+        }
+
+        return false;
+    }
 }

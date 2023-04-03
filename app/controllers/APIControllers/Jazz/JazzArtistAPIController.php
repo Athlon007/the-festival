@@ -36,6 +36,11 @@ class JazzArtistAPIController extends APIController
 
     public function handlePostRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         $json = file_get_contents('php://input');
 
         $data = json_decode($json);
@@ -92,6 +97,11 @@ class JazzArtistAPIController extends APIController
 
     public function handleDeleteRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         if (is_numeric(basename($uri))) {
             $this->service->deleteById(basename($uri));
             $this->sendSuccessMessage("Artist deleted");
@@ -103,6 +113,11 @@ class JazzArtistAPIController extends APIController
 
     public function handlePutRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         if (!is_numeric(basename($uri))) {
             $this->sendErrorMessage("Invalid URI");
             return;

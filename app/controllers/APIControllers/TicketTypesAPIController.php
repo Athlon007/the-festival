@@ -26,6 +26,11 @@ class TicketTypesAPIController extends APIController
 
     public function handlePostRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         $data = json_decode(file_get_contents('php://input'), true);
         $ticketType = new TicketType(0, $data['name'], $data['price'], $data['nrOfPeople']);
         $ticketType = $this->ttService->create($ticketType);
@@ -34,6 +39,10 @@ class TicketTypesAPIController extends APIController
 
     public function handlePutRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
         $data = json_decode(file_get_contents('php://input'), true);
         $ticketType = new TicketType(basename($uri), $data['name'], $data['price'], $data['nrOfPeople']);
         $ticketType = $this->ttService->update($ticketType);
@@ -42,6 +51,10 @@ class TicketTypesAPIController extends APIController
 
     public function handleDeleteRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
         $this->ttService->delete(basename($uri));
         $this->sendSuccessMessage('Ticket Type Removed.');
     }

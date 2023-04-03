@@ -129,6 +129,11 @@ class EventAPIController extends APIController
 
     public function handlePostRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
@@ -196,6 +201,11 @@ class EventAPIController extends APIController
 
     public function handlePutRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
@@ -269,6 +279,11 @@ class EventAPIController extends APIController
 
     public function handleDeleteRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         try {
             $deletedCartItemId = basename($uri);
             $cartItemService = new CartItemService();

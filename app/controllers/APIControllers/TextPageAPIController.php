@@ -34,6 +34,11 @@ class TextPageAPIController extends APIController
 
     public function handlePutRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         $data = json_decode(file_get_contents("php://input"));
         if ($data == null) {
             $this->sendErrorMessage("No data received.");
@@ -59,6 +64,11 @@ class TextPageAPIController extends APIController
 
     public function handlePostRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         $data = json_decode(file_get_contents("php://input"));
         if ($data == null) {
             $this->sendErrorMessage("No data received.");
@@ -81,6 +91,11 @@ class TextPageAPIController extends APIController
 
     public function handleDeleteRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         if (str_starts_with($uri, "/api/textpages") && is_numeric(basename($uri))) {
             $this->service->delete(basename($uri));
             $this->sendSuccessMessage("Page deleted successfully.");
