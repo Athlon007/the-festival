@@ -31,7 +31,7 @@ class OrderController
                 throw new Exception("User is not logged in");
             }
 
-            $customer = $_SESSION['user'];
+            $customer = unserialize($_SESSION['user']);
             if ($customer->getUserType() != 3) {
                 throw new Exception("Only customers can place orders");
             }

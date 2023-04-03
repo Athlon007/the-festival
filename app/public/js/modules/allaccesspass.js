@@ -117,10 +117,12 @@ class AllAccessPass {
                 ],
                 passes: [
                     {
+                        id: 7,
                         name: 'One-day pass',
                         price: 35
                     },
                     {
+                        id: 8,
                         name: 'All-Day Pass',
                         price: 80
                     }
@@ -151,7 +153,12 @@ class AllAccessPass {
     }
 
     addPassToCart(pass) {
-        // TODO: Add pass to cart.
-        console.log('Added pass to cart: ' + pass.name + ' for € ' + pass.price + '.')
+        // redirect to /buyPass
+        let kindId = -1;
+        if (this.container.dataset.kind == 'jazz') {
+            kindId = 1;
+        }
+
+        window.location.href = '/buyPass?event_type=' + kindId;
     }
 }

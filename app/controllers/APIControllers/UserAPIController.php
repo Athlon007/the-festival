@@ -33,7 +33,7 @@ class UserAPIController extends APIController
                         break;
                     case "/api/user/addUser":
                         $this->addUser($data);
-                        break; 
+                        break;
                     case "/api/user/deleteUser":
                         $this->deleteUser($data);
                         break;
@@ -55,7 +55,6 @@ class UserAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
-        
     }
 
     public function handlePutRequest($uri)
@@ -83,7 +82,7 @@ class UserAPIController extends APIController
 
             //Store user in session
             session_start();
-            $_SESSION["user"] = $user;
+            $_SESSION["user"] = serialize($user);
 
             parent::sendSuccessMessage("Login successful.");
         } catch (Exception $ex) {
@@ -108,9 +107,11 @@ class UserAPIController extends APIController
             $customerService = new CustomerService();
 
             //Check if all data is present
-            if (!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password)
-            || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse)){
-                
+            if (
+                !isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password)
+                || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse)
+            ) {
+
                 throw new MissingVariableException("Registration data incomplete.");
             }
 
@@ -190,7 +191,8 @@ class UserAPIController extends APIController
             ) {
                 throw new Exception("Please fill all the information.");
             }
-            $userService->addUser($data);
+            $now = new DateTime();
+            $userService->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, $data->role, $now);
             parent::sendSuccessMessage("User added.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
@@ -232,16 +234,19 @@ class UserAPIController extends APIController
         }
     }
 
-    private function updateCustomer($data){
+    private function updateCustomer($data)
+    {
         try {
             $customerService = new CustomerService();
 
-            if (!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->dateOfBirth)
-                || !isset($data->phoneNumber) || !isset($data->address)){
+            if (
+                !isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->dateOfBirth)
+                || !isset($data->phoneNumber) || !isset($data->address)
+            ) {
                 throw new MissingVariableException("Not all data received.");
             }
             session_start();
-            $customer = $_SESSION['user'];
+            $customer = unserialize($_SESSION['user']);
             $customerService->updateCustomer($customer, $data);
 
             parent::sendSuccessMessage("Your account was successfully updated.");
@@ -249,5 +254,4 @@ class UserAPIController extends APIController
             parent::sendErrorMessage($ex->getMessage());
         }
     }
-
 }
