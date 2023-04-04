@@ -64,19 +64,20 @@ class ImageService
         }
 
         // rename jpeg to jpg
-        $fileName = str_replace("jpeg", "jpg", $fileName);
+        $fileNameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
         $fileExtension = str_replace("jpeg", "jpg", $fileExtension);
-        $targetFile = $targetDirectory . $fileExtension . "/" . $fileName;
+        // Where the file is supposed to be saved.
+        $targetFile = $targetDirectory . $fileExtension . "/" . $fileNameWithoutExtension . "." . $fileExtension;
 
         // if file already exists, append a number to the end of the file name
         $i = 1;
         while (file_exists($targetFile)) {
-            $targetFile = $targetDirectory . $fileExtension . "/" . $i . basename($file);
+            $fileNameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME) . "(" . $i . ")";
+            $targetFile = $targetDirectory . $fileExtension . "/" . $fileNameWithoutExtension . "." . $fileExtension;
             $i++;
         }
-
         // generate src
-        $src = "/img/" . $fileExtension . "/" . $fileName;
+        $src = "/img/" . $fileExtension . "/" . $fileNameWithoutExtension . "." . $fileExtension;
 
         move_uploaded_file($file["tmp_name"], $targetFile);
         $this->imageRepository->addImage($src, $alt);

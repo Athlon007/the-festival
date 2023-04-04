@@ -74,6 +74,9 @@ class UploaderController
             $get .= "errors=" . $errors;
         }
 
+        // make GET html-friendly.
+        $get = str_replace(" ", "%20", $get);
+
         header("Location: /admin/images" . $get);
     }
 }
