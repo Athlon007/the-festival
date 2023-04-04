@@ -1,53 +1,54 @@
 //Is ticket template for now, will change
 
 <div class="container">
-<h2>Invoice</h2>
-<h3>Invoice number: <?php $order->getOrderId() ?></h3>
+    <h2>Invoice</h2>
+    <h3>Invoice number: <?php $order->getOrderId() ?></h3>
 
-    <div class="billing-address">
-        <label>Billing address:</label>
+    <div>
+        <label>Invoice date:</label>
         <p>
+            <?= $order->getOrderDate()->format('l, m/d/Y') ?>
+        </p>
+    </div>
+    
+    <div class="customer">
+        <label>Customer:</label>
+        <p>
+            <?php $order->getCustomer()->getFullName() ?><br>
             <?php $order->getCustomer()->getAddress()->getAddressLine1() ?><br>
             <?php $order->getCustomer()->getAddress()->getAddressLine2() ?><br>
             <?php $order->getCustomer()->getAddress()->getCountry() ?>
         </p>
     </div>
 
-    <table border="1" cellpadding="1">
+    <table border-width="1" cellpadding="1">
         <tbody>
-            <?php foreach($order->getTickets() as $ticket){ ?>
             <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <th>Ticket Name</th>
+                <th>Count</th>
+                <th>Base Price</th>
+                <th>VAT Percentage</th>
+                <th>VAT Amount</th>
+                <th>Full Price</th>
             </tr>
-
-
-            } 
+    
+            <?php foreach($order->getTickets() as $ticket){ ?>
             
             <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <td><?php $ticket->getEvent()->getName() ?> </td>
+                <td><?php $ticket->getEvent()->getName() ?> </td>
+                <td><?php $ticket->getEvent()->getName() ?> </td>
+                <td><?php $ticket->getEvent()->getName() ?> </td>
+                <td><?php $ticket->getEvent()->getName() ?> </td>
             </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-            </tr>
+            <?php 
+            } ?>
+        </tbody>
+    </table>
+
+    <table>
+        <tbody>
+            
         </tbody>
     </table>
 
@@ -97,8 +98,6 @@
     <hr>
 </div>
 </div>
-
-
 
 <style>
     body {
