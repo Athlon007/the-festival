@@ -56,11 +56,11 @@ class ImageService
         $fileName = basename($file["name"]);
         $fileName = str_replace(" ", "_", $fileName);
         // get file extension
-        $fileExtension = pathinfo($file["name"], PATHINFO_EXTENSION);
+        $fileExtension = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
 
         // check if file is an image
         if (!in_array($fileExtension, $this->allowedImageTypes)) {
-            throw new UploadException("File is not an image. Only PNG and JPEG are allowed.");
+            throw new UploadException("File is not an image. Allowed formats are: " . implode(', ', $this->allowedImageTypes) . ". This image type: " . $fileExtension);
         }
 
         // rename jpeg to jpg

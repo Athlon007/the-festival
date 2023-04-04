@@ -12,6 +12,9 @@ class Router
      */
     public function route($request): void
     {
+        // Remove anything after '?'.
+        $request = strtok($request, '?');
+
         if (str_starts_with($request, "/api/")) {
             $this->routeAPI($request);
             return;
