@@ -40,37 +40,39 @@ class UserService
                     $customer = $this->customerService->getCustomerByUser($user);
                     return $customer;
                 }
-                
+
                 return $user;
             } else {
                 throw new IncorrectPasswordException();
             }
-
         } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
-    public function createNewUser(string $email, string $firstName, string $lastName, string $password, int $usertype, DateTime $registrationDate): void
+    public function createNewUser(string $email, string $firstName, string $lastName, string $password, $usertype, DateTime $registrationDate): void
     {
-        try {
-            //Create user object
-            $user = new User();
-            $user->setEmail($email);
-            $user->setFirstName($firstName);
-            $user->setLastName($lastName);
+        //Create user object
+        $user = new User();
+        $user->setEmail($email);
+        $user->setFirstName($firstName);
+        $user->setLastName($lastName);
+        // if usertype is string
+        if (is_string($usertype)) {
+            $user->setUserTypeByString($usertype);
+        } elseif (is_int($usertype)) {
             $user->setUserType($usertype);
-            $user->setRegistrationDate($registrationDate);
-
-            //Hash password
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $user->setHashPassword($hashedPassword);
-
-            //Pass to repository
-            $this->repository->insertUser($user);
-        } catch (Exception $ex) {
-            throw ($ex);
+        } else {
+            throw new Exception('Invalid data type for usertype.');
         }
+        $user->setRegistrationDate($registrationDate);
+
+        //Hash password
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $user->setHashPassword($hashedPassword);
+
+        //Pass to repository
+        $this->repository->insertUser($user);
     }
     public function updateUserPassword($data)
     {
@@ -264,13 +266,12 @@ class UserService
 
             if (htmlspecialchars($data->role == "admin")) {
                 $user->setUserType(1);
-            } else if (htmlspecialchars($data->role == "employee")){
+            } else if (htmlspecialchars($data->role == "employee")) {
                 $user->setUserType(2);
-            }
-            else {
+            } else {
                 $user->setUserType(3);
             }
-            
+
             $this->repository->updateUser($user);
         } catch (Exception $ex) {
             throw ($ex);
@@ -290,29 +291,29 @@ class UserService
     {
         try {
             return $this->repository->emailAlreadyExists($email);
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
-    public function sanitiseUserData($data){
-        if(isset($data->email)){
+    public function sanitiseUserData($data)
+    {
+        if (isset($data->email)) {
             $data->email = htmlspecialchars($data->email);
         }
-        if(isset($data->password)){
+        if (isset($data->password)) {
             $data->password = htmlspecialchars($data->password);
         }
-        if(isset($data->firstName)){
+        if (isset($data->firstName)) {
             $data->firstName = htmlspecialchars($data->firstName);
         }
-        if(isset($data->lastName)){
+        if (isset($data->lastName)) {
             $data->lastName = htmlspecialchars($data->lastName);
         }
-        if(isset($data->userType)){
+        if (isset($data->userType)) {
             $data->userType = htmlspecialchars($data->userType);
         }
 
         return $data;
-      }
+    }
 }

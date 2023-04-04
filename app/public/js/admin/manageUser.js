@@ -19,6 +19,7 @@ function addUser() {
         role: role,
         password: password
     }
+
     fetch("/api/user/addUser", {
         method: 'POST',
         credentials: 'same-origin',
@@ -34,6 +35,7 @@ function addUser() {
                 alert(data.error_message)
             }
         })
+        .catch(err => console.log(err))
 }
 
 function deleteUser(id) {
