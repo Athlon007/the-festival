@@ -12,6 +12,9 @@ class Router
      */
     public function route($request): void
     {
+        // Remove anything after '?'.
+        $request = strtok($request, '?');
+
         if (str_starts_with($request, "/api/")) {
             $this->routeAPI($request);
             return;
@@ -146,9 +149,6 @@ class Router
                 require_once("controllers/UserController.php");
                 $userController = new UserController();
                 $userController->addUser();
-                break;
-            case "/konradstestpage":
-                require_once("views/konrads-test-page.php");
                 break;
             case "/shopping-cart":
                 require_once("controllers/OrderController.php");

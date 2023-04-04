@@ -161,6 +161,8 @@ export class MsgBox {
                 let picker = new ImagePicker();
                 picker.loadImagePicker(pickerContainer, () => { picker.unselectAllButOneNotInSelectedImages(); }, () => { });
                 modalBodyInputs.appendChild(pickerContainer);
+                pickerContainer.style.overflowY = 'auto';
+                pickerContainer.style.height = '200px';
             } else if (i.type == 'textarea') {
                 let label = document.createElement('label');
                 label.classList.add('form-label');

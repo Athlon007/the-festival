@@ -307,6 +307,7 @@ function updateExistingPage(id, data) {
         headers: {
             'Content-Type': 'application/json'
         },
+        credentials: 'same-origin',
         body: JSON.stringify(data)
     })
         .then(response => response.json())
@@ -319,7 +320,8 @@ function updateExistingPage(id, data) {
             }
         })
         .catch(error => {
-            msgBox.createToast('Somethin went wrong', error);
+            msgBox.createToast('Somethin went wrong: ', error);
+            console.error(error);
         });
 }
 
@@ -329,6 +331,7 @@ function createNewPage(data) {
         headers: {
             'Content-Type': 'application/json'
         },
+        credentials: 'same-origin',
         body: JSON.stringify(data)
     })
         .then(response => response.json())
@@ -365,7 +368,6 @@ function createNewPage(data) {
 btnSubmit.onclick = function () {
     let titleValue = title.value;
     let pickedImageIds = imgPicker.getSelectedImages();
-    console.log(pickedImageIds);
     let content = tinymce.activeEditor.getContent();
 
     // to json
@@ -393,6 +395,7 @@ document.getElementById('delete').onclick = function () {
         // fetch with post
         fetch('/api/textpages/' + editedPageId, {
             method: 'DELETE',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             }

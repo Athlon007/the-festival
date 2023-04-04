@@ -23,9 +23,9 @@ class CartItemService
         return $this->cartItemRepository->getAllPasses($filters);
     }
 
-    public function getAllHistory()
+    public function getAllHistory($filters = [])
     {
-        return $this->cartItemRepository->getAllHistory();
+        return $this->cartItemRepository->getAllHistory($filters);
     }
 
     public function getAllJazz($sort = null, $filters = []): array

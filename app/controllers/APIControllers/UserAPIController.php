@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\type;
+
 require_once(__DIR__ . "/APIController.php");
 require_once("../services/UserService.php");
 require_once("../services/CustomerService.php");
@@ -181,6 +184,11 @@ class UserAPIController extends APIController
 
     private function addUser($data)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            parent::sendErrorMessage("You are not authorized to perform this action.");
+            return;
+        }
+
         try {
             $userService = new UserService();
 
@@ -191,6 +199,7 @@ class UserAPIController extends APIController
             ) {
                 throw new Exception("Please fill all the information.");
             }
+
             $now = new DateTime();
             $userService->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, $data->role, $now);
             parent::sendSuccessMessage("User added.");
@@ -201,6 +210,11 @@ class UserAPIController extends APIController
 
     private function deleteUser($data)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            parent::sendErrorMessage("You are not authorized to perform this action.");
+            return;
+        }
+
         try {
             $userService = new UserService();
 
@@ -218,6 +232,11 @@ class UserAPIController extends APIController
 
     private function updateUser($data)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            parent::sendErrorMessage("You are not authorized to perform this action.");
+            return;
+        }
+
         try {
             $userService = new UserService();
             if (

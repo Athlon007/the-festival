@@ -45,21 +45,25 @@ class TextPageAPIController extends APIController
             return;
         }
 
-        if (str_starts_with($uri, "/api/textpages") && is_numeric(basename($uri))) {
-            if (!isset($data->title) || !isset($data->content) || !isset($data->images) || !isset($data->href)) {
-                $this->sendErrorMessage("Invalid data received. Required: title, content, images, href.", 400);
+        try {
+            if (str_starts_with($uri, "/api/textpages") && is_numeric(basename($uri))) {
+                if (!isset($data->title) || !isset($data->content) || !isset($data->images) || !isset($data->href)) {
+                    $this->sendErrorMessage("Invalid data received. Required: title, content, images, href.", 400);
+                    return;
+                }
+
+                $this->service->updateTextPage(basename($uri), $data->title, $data->content, $data->images, $data->href);
+
+                // get page
+                $page = $this->service->getTextPageById(basename($uri));
+                echo json_encode($page);
                 return;
             }
 
-            $this->service->updateTextPage(basename($uri), $data->title, $data->content, $data->images, $data->href);
-
-            // get page
-            $page = $this->service->getTextPageById(basename($uri));
-            echo json_encode($page);
-            return;
+            $this->sendErrorMessage("Invalid request.");
+        } catch (Exception $e) {
+            $this->sendErrorMessage($e->getMessage(), 400);
         }
-
-        $this->sendErrorMessage("Invalid request.");
     }
 
     public function handlePostRequest($uri)
@@ -75,18 +79,22 @@ class TextPageAPIController extends APIController
             return;
         }
 
-        if (str_starts_with($uri, "/api/textpages")) {
-            if (!isset($data->title) || !isset($data->content) || !isset($data->images) || !isset($data->href)) {
-                $this->sendErrorMessage("Invalid data received. Required: title, content, images, href.", 400);
+        try {
+            if (str_starts_with($uri, "/api/textpages")) {
+                if (!isset($data->title) || !isset($data->content) || !isset($data->images) || !isset($data->href)) {
+                    $this->sendErrorMessage("Invalid data received. Required: title, content, images, href.", 400);
+                }
+
+                $page = $this->service->createTextPage($data->title, $data->content, $data->images, $data->href);
+
+                echo json_encode($page);
+                return;
             }
 
-            $page = $this->service->createTextPage($data->title, $data->content, $data->images, $data->href);
-
-            echo json_encode($page);
-            return;
+            $this->sendErrorMessage("Invalid request.", 400);
+        } catch (Exception $e) {
+            $this->sendErrorMessage($e->getMessage(), 400);
         }
-
-        $this->sendErrorMessage("Invalid request.", 400);
     }
 
     public function handleDeleteRequest($uri)
