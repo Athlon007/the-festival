@@ -457,7 +457,7 @@ class StrollEventList extends EventsList {
                 });
                 // ticket
                 document.getElementById('ticket').addEventListener('change', (event) => {
-                    this.ticket = event.target.value;
+                    this.type = event.target.value;
                 });
 
                 document.getElementById('apply-btn').addEventListener('click', () => {
@@ -466,6 +466,35 @@ class StrollEventList extends EventsList {
 
                 this.loadEvents();
             });
+
+        // Load dates
+        let dates = await fetch('/api/events/dates').then((res) => res.json());
+
+        // create array of dates also in between the first and last date
+        let firstDate = new Date(dates[0]);
+        let lastDate = new Date(dates[dates.length - 1]);
+
+        while (firstDate <= lastDate) {
+            let date = firstDate.toISOString().split('T')[0];
+            if (!dates.includes(date)) {
+                dates.push(date);
+            }
+            firstDate.setDate(firstDate.getDate() + 1);
+        }
+
+
+        // convert them to date objects
+        dates = dates.map((date) => new Date(date));
+        // sort
+        dates.sort((a, b) => a - b);
+
+        for (let date of dates) {
+            console.log(date);
+            let option = document.createElement('option');
+            option.value = date.toISOString().split('T')[0];
+            option.innerText = date.toDateString();
+            document.getElementById('date').appendChild(option);
+        }
     }
 
     async loadEvents() {
@@ -502,8 +531,8 @@ class StrollEventList extends EventsList {
         if (this.language) {
             addArg(`language=${this.language}`);
         }
-        if (this.ticket) {
-            addArg(`ticket=${this.ticket}`);
+        if (this.type) {
+            addArg(`type=${this.type}`);
         }
 
         let response = await fetch(url + args);

@@ -98,7 +98,7 @@ class EventAPIController extends APIController
                 if (isset($_GET['ticket_type'])) {
                     $filters['ticket_type'] = $_GET['ticket_type'];
                 }
-                echo json_encode($cartItemService->getAllHistory($sort, $filters));
+                echo json_encode($cartItemService->getAllHistory($filters));
             } elseif (str_starts_with($uri, '/api/events/passes')) {
                 $cartItemService = new CartItemService();
                 if (is_numeric(basename($uri))) {
