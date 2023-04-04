@@ -43,7 +43,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card col-5 px-1">
+            <div class="card col-5 px-1" id="details-thing">
                 <h2>Details</h2>
                 <div class="row">
                     <div class="col-12">

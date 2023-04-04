@@ -5,9 +5,12 @@ const price = document.getElementById('event-price');
 const quantity = document.getElementById('quantity');
 const master = document.getElementById('master');
 
+const details = document.getElementById('details-thing');
+
 // disable both
 eventType.disabled = true;
 passType.disabled = true;
+details.classList.add('disabled');
 
 let eventTypeId = 0;
 let passTypeId = 0;
@@ -34,6 +37,13 @@ async function load() {
     eventType.addEventListener('change', async (e) => {
         eventTypeId = e.target.value;
         loadPassTypes();
+
+        date.innerHTML = '';
+        price.innerHTML = '';
+
+        passTypeId = 0;
+
+        details.classList.add('disabled');
     });
 
     eventType.value = 0;
@@ -93,6 +103,10 @@ async function loadPassTypes() {
 }
 
 function prepare() {
+    if (passTypeId == 0 || quantity.value == 0) {
+        return;
+    }
+
     fetch('/api/events/passes/' + passTypeId, {
         method: 'GET',
         headers: {
@@ -108,6 +122,8 @@ function prepare() {
                 date.innerHTML = data.event.startTime.date.split(' ')[0];
             }
             price.innerHTML = '€ ' + data.ticketType.price * quantity.value;
+
+            details.classList.remove('disabled');
         })
         .catch((error) => {
             console.error('Error:', error);
