@@ -35,6 +35,7 @@ if (window.frameElement != null && window.frameElement.getAttribute('data-kind')
 function updateExistingEntry(id, data) {
     fetch(baseURL + "/" + id, {
         method: 'PUT',
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -57,6 +58,7 @@ function updateExistingEntry(id, data) {
 function createNewEntry(data) {
     fetch(baseURL, {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -118,6 +120,7 @@ document.getElementById('delete').onclick = function () {
         // fetch with post
         fetch('/api/events/' + editedId, {
             method: 'DELETE',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             }

@@ -23,7 +23,7 @@ class CartItemService
         return $this->cartItemRepository->getAllPasses($filters);
     }
 
-    public function getAllHistory($filters)
+    public function getAllHistory($filters = [])
     {
         return $this->cartItemRepository->getAllHistory($filters);
     }

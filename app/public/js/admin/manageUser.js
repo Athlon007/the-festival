@@ -21,6 +21,7 @@ function addUser() {
     }
     fetch("/api/user/addUser", {
         method: 'POST',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
     }).then(res => res.json())
@@ -42,6 +43,7 @@ function deleteUser(id) {
         }
         fetch("/api/user/deleteUser", {
             method: 'POST',
+            credentials: 'same-origin',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         }).then(res => res.json())
@@ -75,6 +77,7 @@ function updateUser(id) {
     }
     fetch("/api/user/updateUser", {
         method: 'POST',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
     }).then(res => res.json())
@@ -89,4 +92,3 @@ function updateUser(id) {
         }
         )
 }
-

@@ -75,27 +75,37 @@ class APIController
 
     final protected function isLoggedIn()
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION["user"])) {
-            return false;
-        }
-
-        return true;
-    }
-
-    final protected function isLoggedInAsAdmin()
-    {
-        if ($this->isLoggedIn()) {
+        require_once(__DIR__ . '/../../models/User.php');
+        try {
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
 
-            return unserialize($_SESSION["user"])->getUserType() == "1";
-        }
+            if (!isset($_SESSION["user"])) {
+                return false;
+            }
 
-        return false;
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    final protected function isLoggedInAsAdmin()
+    {
+        require_once(__DIR__ . '/../../models/User.php');
+        try {
+            if ($this->isLoggedIn()) {
+                if (session_status() == PHP_SESSION_NONE) {
+                    session_start();
+                }
+
+                return unserialize($_SESSION["user"])->getUserType() == "1";
+            }
+
+            return false;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 }
