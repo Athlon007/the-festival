@@ -103,6 +103,15 @@ class Countdown {
                 return resolve(this.festivalStart);
             }
 
+            // Check if we have the start date in the localStorage.
+            const festivalStart = localStorage.getItem('festivalStart');
+            const festivalStartExpiration = localStorage.getItem('festivalStartExpiration');
+            if (festivalStart && festivalStartExpiration && new Date().getTime() < festivalStartExpiration) {
+                // We have the start date in the localStorage and it is not expired.
+                this.festivalStart = new Date(festivalStart);
+                return resolve(this.festivalStart);
+            }
+
             fetch('/api/events/dates',
                 {
                     method: 'GET',
@@ -115,6 +124,10 @@ class Countdown {
                         return reject(data.error_message);
                     }
                     this.festivalStart = new Date(data[0]);
+                    // We can save it in the localStorage.
+                    localStorage.setItem('festivalStart', this.festivalStart);
+                    // Set the expiration date to 1 day.
+                    localStorage.setItem('festivalStartExpiration', new Date().getTime() + 1000 * 60 * 60 * 24);
                     return resolve(this.festivalStart);
                 })
                 .catch((error) => {
