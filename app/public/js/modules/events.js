@@ -362,7 +362,8 @@ class JazzEventList extends EventsList {
         rowDetails.appendChild(this.createDetailBox('Time', displayTime));
 
         if (event.ticketType.price > 0) {
-            rowDetails.appendChild(this.createDetailBox('Seats', event.event.location.capacity));
+            const availableTickets = event.event.availableTickets;
+            rowDetails.appendChild(this.createDetailBox('Seats', availableTickets + " / " + event.event.location.capacity));
         }
         let price = this.createDetailBox('Price', event.ticketType.price == 0 ? "FREE" : "€ " + event.ticketType.price)
         price.classList.add('price');

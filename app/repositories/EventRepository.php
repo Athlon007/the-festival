@@ -52,7 +52,8 @@ class EventRepository extends Repository
                 new DateTime($event['endTime']),
                 $artistRepo->getById($event['artistId']),
                 $locationRepo->getById($event['locationId']),
-                $eventTypeRepo->getById($event['festivalEventType'])
+                $eventTypeRepo->getById($event['festivalEventType']),
+                $event['availableTickets']
             );
 
             if (isset($filters['artist_kind'])) {
@@ -165,7 +166,7 @@ class EventRepository extends Repository
 
     public function getAllJazzEvents($sort, array $filters)
     {
-        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, t.ticketTypePrice " .
+        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, t.ticketTypePrice, e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets " .
             "FROM JazzEvents je " .
             "JOIN Events e ON e.eventId = je.eventId " .
             "JOIN cartitems c on e.eventId = c.eventId " .
@@ -257,7 +258,7 @@ class EventRepository extends Repository
 
     public function getJazzEventById($id)
     {
-        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.festivalEventType "
+        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets  "
             . "FROM JazzEvents je "
             . "JOIN Events e ON e.eventId = je.eventId "
             . "WHERE je.eventId = :id";

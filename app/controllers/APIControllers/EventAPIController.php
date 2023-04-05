@@ -150,10 +150,8 @@ class EventAPIController extends APIController
                 $locationService = new LocationService();
                 $location = $locationService->getById($data['event']['location']['id']);
 
-                $availableSeats = null;
-                if (isset($data['event']['availableSeats'])) {
-                    $availableSeats = $data['event']['availableSeats'];
-                }
+                // In terms of music events, the capacity is the number of available seats.
+                $availableSeats = $location->getCapacity();
 
                 $event = new MusicEvent(
                     $data['event']['id'],

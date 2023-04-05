@@ -12,6 +12,12 @@ class FestivalJazzController
         $artistService = new JazzArtistService();
         $artist = $artistService->getById(basename($uri));
 
+        if ($artist === null) {
+            // redirect to 404
+            header("Location: /404");
+            return;
+        }
+
         require_once(__DIR__ . "/../services/CartItemService.php");
         $ciService = new CartItemService();
         $events = $ciService->getAllJazz("time", ["artist" => $artist->getId()]);

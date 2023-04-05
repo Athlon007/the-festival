@@ -103,6 +103,9 @@ btnSubmit.onclick = function () {
         }
     };
 
+    // disable the editor.
+    toggleEditor(masterEditor, false);
+
     if (isInCreationMode) {
         createNewEntry(data);
     } else {
@@ -161,7 +164,8 @@ function createNewOptionItem(element) {
 
     // make sure that name always is 15 chars long
     if (name.length > maxNameLength) {
-        name = name.substring(0, maxNameLength) + '...';
+        // cut off last 3 chars and add ...
+        name = name.substring(0, maxNameLength - 3) + '...';
     } else {
         let spacesAdded = 0;
         let spacesToAdd = maxNameLength - name.length;
@@ -264,6 +268,8 @@ function createNewOptionItem(element) {
     return option;
 }
 
+let isBasicStuffLoaded = false;
+
 function loadList() {
     let lastSelectedId = locations.value;
 
@@ -312,6 +318,11 @@ function loadList() {
             }
         });
 
+    if (isBasicStuffLoaded) {
+        return
+    }
+    isBasicStuffLoaded = true;
+
     // load artist list to artist select
     artist.innerHTML = '';
     let jazzSelectOption = document.createElement('option');
@@ -357,6 +368,8 @@ function loadList() {
 
     locationURI += '?sort=name';
 
+    locationSelect.innerHTML = '';
+
     // and now, load jazz locations.
     location.innerHTML = '';
     fetch(locationURI, {
@@ -379,6 +392,8 @@ function loadList() {
         }
         );
     location.selectedIndex = -1;
+
+    ticketType.innerHTML = '';
 
     // Load ticket types.
     fetch('/api/tickettypes', {

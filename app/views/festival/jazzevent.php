@@ -31,15 +31,20 @@
     <div class="container">
         <div class="row col-12 py-1 justify-content-center">
             <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $cartItem->getId() ?>)">Add ticket to cart</button>
+            <p class="mx-auto text-center"><?= $cartItem->getEvent()->getAvailableTickets() ?> / <?= $cartItem->getEvent()->getLocation()->getCapacity() ?></p>
         </div>
         <div class="row card col-10 mx-auto p-1 my-2">
             <div class="row mx-auto">
                 <div class="col-8">
                     <h2>About artist</h2>
-                    <p><?= $event->getArtist()->getDescription() ?></p>
-                    <a href="/festival/jazz/artist/<?= $event->getArtist()->getId() ?>">
-                        <button class="btn btn-primary">More about <?= $event->getArtist()->getName() ?></button>
-                    </a>
+                    <?php if ($event->getArtist()->noInformation()) { ?>
+                        <p>Sorry, but currently we don't have any information about this artist!</p>
+                    <?php } else { ?>
+                        <p><?= $event->getArtist()->getDescription() ?></p>
+                        <a href="/festival/jazz/artist/<?= $event->getArtist()->getId() ?>">
+                            <button class="btn btn-primary">More about <?= $event->getArtist()->getName() ?></button>
+                        </a>
+                    <?php } ?>
                 </div>
                 <div class="col-4">
                     <h2>Time</h2>
@@ -86,7 +91,7 @@
                                 </div>
                                 <div class="col-3">
                                     <h4>Seats</h4>
-                                    <p><?= $after->getEvent()->getLocation()->getCapacity() ?></p>
+                                    <p><?= $after->getEvent()->getAvailableTickets() ?> / <?= $after->getEvent()->getLocation()->getCapacity() ?></p>
                                 </div>
                                 <div class="col-3">
                                     <h4>Price</h4>

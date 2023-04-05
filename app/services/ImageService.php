@@ -8,7 +8,7 @@ class ImageService
 {
     private $imageRepository;
 
-    private $allowedImageTypes = array("png", "jpg", "jpeg");
+    private $allowedImageTypes = array("png", "jpg", "jpeg", "webp");
 
     public function __construct()
     {
@@ -78,6 +78,11 @@ class ImageService
         }
         // generate src
         $src = "/img/" . $fileExtension . "/" . $fileNameWithoutExtension . "." . $fileExtension;
+
+        // Check if folder for this image format exists.
+        if (!file_exists($targetDirectory . $fileExtension)) {
+            mkdir($targetDirectory . $fileExtension);
+        }
 
         move_uploaded_file($file["tmp_name"], $targetFile);
         $this->imageRepository->addImage($src, $alt);

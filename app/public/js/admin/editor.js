@@ -26,7 +26,7 @@ tinymce.init({
     menu: {
         custom: {
             title: 'Modules',
-            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile | customJazzOptions customStrollOptions customYummyOptions '
+            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile customIframe | customJazzOptions customStrollOptions customYummyOptions '
         }
     },
     menubar: 'file edit view insert format tools table custom',
@@ -295,6 +295,33 @@ tinymce.init({
                     });
                 }
             })
+            editor.ui.registry.addMenuItem('customIframe', {
+                text: 'iFrame',
+                onAction: () => {
+                    msgBox.createDialogWithInputs('Insert iFrame', [
+                        {
+                            label: 'Link',
+                            id: 'link',
+                        },
+                        {
+                            label: 'Width (auto if blank)',
+                            id: 'width',
+                        },
+                        {
+                            label: 'Height (auto if blank)',
+                            id: 'height',
+                        }]
+                        , () => {
+                            let link = document.getElementById('link').value;
+                            let width = document.getElementById('width').value;
+                            if (width == '') width = 'auto';
+                            let height = document.getElementById('height').value;
+                            if (height == '') height = 'auto';
+                            let iframe = `<iframe src='${link}' width='${width}' height='${height}'></iframe>`;
+                            editor.insertContent(iframe);
+                        });
+                }
+            });
         } catch (error) {
             console.error(error);
         }
