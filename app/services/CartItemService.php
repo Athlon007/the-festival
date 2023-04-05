@@ -18,11 +18,6 @@ class CartItemService
         return $this->repo->getAll($sort = null, $filters = []);
     }
 
-    public function getAllPasses($filters = []): array
-    {
-        return $this->repo->getAllPasses($filters);
-    }
-
     public function getById(int $id): CartItem
     {
         return $this->repo->getById($id);

@@ -101,8 +101,10 @@ class CartItemRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        $result = $stmt->fetch();
+
+        $result = $stmt->fetchAll();
         $output = $this->build($result);
+
         if (empty($output)) {
             return null;
         }

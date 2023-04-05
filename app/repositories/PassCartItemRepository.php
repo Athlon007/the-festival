@@ -6,27 +6,26 @@ require_once("TicketTypeRepository.php");
 
 class PassCartItemRepository extends CartItemRepository
 {
-    protected function build($arr): array
-    {
-        $eventRepo = new EventRepository();
-        $ttRepo = new TicketTypeRepository();
-        $output = array();
-
-        foreach ($arr as $item) {
-            $event = $eventRepo->getEventById($item['eventId']);
-            $ticketType = $ttRepo->getById($item['ticketTypeId']);
-            $cartItem = new CartItem($item['cartItemId'], $event, $ticketType);
-            array_push($output, $cartItem);
-        }
-
-        return $output;
-    }
-
     public function getAll($sort = null, $filters = [])
     {
         // availableTickets is null if it's a pass
-        $sql = "SELECT c.cartItemId, c.eventId, c.ticketTypeId FROM cartitems c
-        JOIN events e ON e.eventId = c.eventId
+        $sql = "SELECT e.eventId,
+		e.name as eventName,
+		e.startTime,
+		e.endTime,
+		e.availableTickets,
+		f.eventTypeId as eventTypeId,
+		f.name as eventTypeName,
+		f.VAT as evenTypeVat,
+		t.ticketTypeId as ticketTypeId,
+		t.ticketTypeName as ticketTypeName,
+		t.ticketTypePrice as ticketTypePrice,
+		t.nrOfPeople as ticketTypeNrOfPeople,
+        c.cartItemId as cartItemId
+        FROM Events e
+        JOIN cartitems c on e.eventId = c.eventId
+        join tickettypes t on c.ticketTypeId = t.ticketTypeId
+        join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
         WHERE e.availableTickets = 0";
 
         if (!empty($filters)) {
@@ -35,6 +34,8 @@ class PassCartItemRepository extends CartItemRepository
                 switch ($key) {
                     case 'event_type':
                         $sql .= "e.festivalEventType >= :$key ";
+                        break;
+                    default:
                         break;
                 }
 
