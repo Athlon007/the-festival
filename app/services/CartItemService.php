@@ -6,41 +6,26 @@ require_once("TicketTypeService.php");
 
 class CartItemService
 {
-    private CartItemRepository $cartItemRepository;
+    protected CartItemRepository $repo;
 
     public function __construct()
     {
-        $this->cartItemRepository = new CartItemRepository();
+        $this->repo = new CartItemRepository();
     }
 
-    public function getAll(): array
+    public function getAll($sort = null, $filters = []): array
     {
-        return $this->cartItemRepository->getAll();
-    }
-
-    public function getAllPasses($filters = []): array
-    {
-        return $this->cartItemRepository->getAllPasses($filters);
-    }
-
-    public function getAllHistory($filters = [])
-    {
-        return $this->cartItemRepository->getAllHistory($filters);
-    }
-
-    public function getAllJazz($sort = null, $filters = []): array
-    {
-        return $this->cartItemRepository->getAllJazz($sort, $filters);
+        return $this->repo->getAll($sort, $filters);
     }
 
     public function getById(int $id): CartItem
     {
-        return $this->cartItemRepository->getById($id);
+        return $this->repo->getById($id);
     }
 
     public function getByEventId(int $id): CartItem
     {
-        $item = $this->cartItemRepository->getByEventId($id);
+        $item = $this->repo->getByEventId($id);
         if ($item == null) {
             throw new Exception("CartItem not found");
         }
@@ -55,7 +40,7 @@ class CartItemService
         $ticketType = $ticketTypeService->getById($cartItem->getTicketType()->getId());
         $event = $eventService->addEvent($cartItem->getEvent());
 
-        $id = $this->cartItemRepository->createCartItem($event->getId(), $ticketType->getId());
+        $id = $this->repo->createCartItem($event->getId(), $ticketType->getId());
         return $this->getById($id);
     }
 
@@ -68,7 +53,7 @@ class CartItemService
         $eventService = new EventService();
         $eventService->editEvent($cartItem->getEvent());
 
-        $this->cartItemRepository->updateCartItem($id, $eventId, $ticketTypeId);
+        $this->repo->updateCartItem($id, $eventId, $ticketTypeId);
 
         return $this->getById($id);
     }
@@ -79,6 +64,6 @@ class CartItemService
         $eventService->deleteEvent($cartItem->getEvent());
 
         $id = htmlspecialchars($cartItem->getId());
-        $this->cartItemRepository->deleteCartItem($id);
+        $this->repo->deleteCartItem($id);
     }
 }

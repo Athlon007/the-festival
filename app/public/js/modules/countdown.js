@@ -3,8 +3,12 @@
 class Countdown {
     constructor(container) {
         this.container = container;
+        this.load();
+    }
 
-        this.festivalStart = this.getFestivalStartDate();
+    async load() {
+
+        this.festivalStart = await this.getFestivalStartDate();
 
         // If the festival has already started, show 'Festival started' instead of the countdown
         if (this.festivalStart < new Date()) {
@@ -93,12 +97,43 @@ class Countdown {
     }
 
     getFestivalStartDate() {
-        if (this.festivalStart) {
-            // We already have the start date.
-            return this.festivalStart;
-        }
+        return new Promise((resolve, reject) => {
+            if (this.festivalStart) {
+                // We already have the start date.
+                return resolve(this.festivalStart);
+            }
 
-        // TODO: Get the start date from the database
-        return new Date('2023-07-27 10:00:00');
+            // Check if we have the start date in the localStorage.
+            const festivalStart = localStorage.getItem('festivalStart');
+            const festivalStartExpiration = localStorage.getItem('festivalStartExpiration');
+            if (festivalStart && festivalStartExpiration && new Date().getTime() < festivalStartExpiration) {
+                // We have the start date in the localStorage and it is not expired.
+                this.festivalStart = new Date(festivalStart);
+                return resolve(this.festivalStart);
+            }
+
+            fetch('/api/events/dates',
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => response.json())
+                .then(data => {
+                    if (data.error_message) {
+                        return reject(data.error_message);
+                    }
+                    this.festivalStart = new Date(data[0]);
+                    // We can save it in the localStorage.
+                    localStorage.setItem('festivalStart', this.festivalStart);
+                    // Set the expiration date to 1 day.
+                    localStorage.setItem('festivalStartExpiration', new Date().getTime() + 1000 * 60 * 60 * 24);
+                    return resolve(this.festivalStart);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    return reject(error);
+                });
+        });
     }
 }

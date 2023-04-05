@@ -1,9 +1,18 @@
 <?php
 
+require_once(__DIR__ . "/../services/JazzCartItemService.php");
+
 class FestivalJazzController
 {
     const JAZZ_ARTIST_PAGE = "/../views/festival/jazzartist.php";
     const JAZZ_EVENT_PAGE = "/../views/festival/jazzevent.php";
+
+    private $ciService;
+
+    public function __construct()
+    {
+        $this->ciService = new JazzCartItemService();
+    }
 
     public function loadArtistPage($uri)
     {
@@ -18,20 +27,15 @@ class FestivalJazzController
             return;
         }
 
-        require_once(__DIR__ . "/../services/CartItemService.php");
-        $ciService = new CartItemService();
-        $events = $ciService->getAllJazz("time", ["artist" => $artist->getId()]);
 
+        $events = $this->ciService->getAll("time", ["artist" => $artist->getId()]);
 
         require(__DIR__ . self::JAZZ_ARTIST_PAGE);
     }
 
     public function loadEventPage($uri)
     {
-        require_once(__DIR__ . "/../services/CartItemService.php");
-
-        $eventService = new CartItemService();
-        $cartItem = $eventService->getByEventId(basename($uri));
+        $cartItem = $this->ciService->getByEventId(basename($uri));
         $event = $cartItem->getEvent();
 
         // if event is of jazzevent type
@@ -41,7 +45,7 @@ class FestivalJazzController
         }
 
 
-        $afterThat = $eventService->getAllJazz("", [
+        $afterThat = $this->ciService->getAll("", [
             "day" => $event->getStartTime()->format('d'),
             "time_from" => $event->getEndTime()->format('H:i'),
             "location" => $event->getLocation()->getLocationId()
