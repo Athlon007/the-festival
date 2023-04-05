@@ -129,7 +129,7 @@
                                 <?php if ($event->getTicketType()->getPrice() > 0) { ?>
                                     <div class="col-3">
                                         <h3>Seats</h3>
-                                        <p>X/<?= $event->getEvent()->getLocation()->getCapacity(); ?></p>
+                                        <p><?= $event->getEvent()->getAvailableTickets(); ?> / <?= $event->getEvent()->getLocation()->getCapacity(); ?></p>
                                     </div>
                                 <?php } ?>
                                 <div class="col-3">
