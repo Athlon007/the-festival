@@ -3,12 +3,16 @@
 require_once(__DIR__ . '/../../models/Event.php');
 require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
-require_once(__DIR__ . '/../../services/CartItemService.php');
 require_once(__DIR__ . '/../../services/EventTypeService.php');
 require_once(__DIR__ . '/../../services/TicketTypeService.php');
 require_once("APIController.php");
 require_once(__DIR__ . '/../../models/Types/TicketType.php');
 require_once(__DIR__ . '/../../models/CartItem.php');
+
+require_once(__DIR__ . '/../../services/CartItemService.php');
+require_once(__DIR__ . '/../../services/JazzCartItemService.php');
+require_once(__DIR__ . '/../../services/HistoryCartItemService.php');
+require_once(__DIR__ . '/../../services/PassCartItemService.php');
 
 class EventAPIController extends APIController
 {
@@ -68,14 +72,14 @@ class EventAPIController extends APIController
                     $filters['artist_kind'] = 'dance';
                 }
 
-                $cartItemService = new CartItemService();
+                $cartItemService = new JazzCartItemService();
 
-                echo json_encode($cartItemService->getAllJazz($sort, $filters));
+                echo json_encode($cartItemService->getAll($sort, $filters));
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
                 //require_once(__DIR__ . "/../../services/FestivalHistoryService.php");
                 //$strollService = new FestivalHistoryService();
 
-                $cartItemService = new CartItemService();
+                $cartItemService = new HistoryCartItemService();
 
                 if (is_numeric(basename($uri))) {
                     $id = basename($uri);
@@ -98,14 +102,14 @@ class EventAPIController extends APIController
                 if (isset($_GET['ticket_type'])) {
                     $filters['ticket_type'] = $_GET['ticket_type'];
                 }
-                echo json_encode($cartItemService->getAllHistory($filters));
+                echo json_encode($cartItemService->getAll($filters));
             } elseif (str_starts_with($uri, '/api/events/passes')) {
-                $cartItemService = new CartItemService();
+                $cartItemService = new PassCartItemService();
                 if (is_numeric(basename($uri))) {
                     echo json_encode($cartItemService->getById(basename($uri)));
                     return;
                 }
-                echo json_encode($cartItemService->getAllPasses($filters));
+                echo json_encode($cartItemService->getAll($filters));
             } else {
                 if (is_numeric(basename($uri))) {
                     $id = basename($uri);
@@ -140,8 +144,10 @@ class EventAPIController extends APIController
             $ticketType = $this->ticketTypeService->getById($data['ticketType']['id']);
 
             $event = null;
+            $cartItemService = new CartItemService();
 
             if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
+                $cartItemService = new JazzCartItemService();
                 require_once(__DIR__ . '/../../services/JazzArtistService.php');
                 $artistService = new JazzArtistService();
                 $artist = $artistService->getById($data['event']['artist']['id']);
@@ -186,7 +192,7 @@ class EventAPIController extends APIController
             }
 
             $cartItem = new CartItem(0, $event, $ticketType);
-            $cartItemService = new CartItemService();
+
             $cartItem = $cartItemService->add($cartItem);
 
             echo json_encode($cartItem);
@@ -212,7 +218,10 @@ class EventAPIController extends APIController
 
             $event = null;
 
+            $cartItemService = new CartItemService();
+
             if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
+                $cartItemService = new JazzCartItemService();
                 require_once(__DIR__ . '/../../services/JazzArtistService.php');
                 $artistService = new JazzArtistService();
                 $artist = $artistService->getById($data['event']['artist']['id']);
@@ -264,7 +273,7 @@ class EventAPIController extends APIController
 
             $cartItem = new CartItem($editedCartItemID, $event, $ticketType);
 
-            $cartItemService = new CartItemService();
+
             $cartItem = $cartItemService->updateCartItem($cartItem);
 
             echo json_encode($cartItem);
