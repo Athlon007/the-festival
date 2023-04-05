@@ -143,7 +143,7 @@ class JazzArtistRepository extends Repository
         $artistKindId
     ): int {
         $sql = "INSERT INTO JazzArtists "
-            . "(name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl) "
+            . "(name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, artistKindId) "
             . "VALUES (:name, :description, :recentAlbums, :genres, :country, :homepageUrl, :facebookUrl, :twitterUrl, :instagramUrl, :spotifyUrl, :artistKindId)";
         $statement = $this->connection->prepare($sql);
         $statement->bindParam(":name", $name);
@@ -157,6 +157,7 @@ class JazzArtistRepository extends Repository
         $statement->bindParam(":instagramUrl", $instagramUrl);
         $statement->bindParam(":spotifyUrl", $spotifyUrl);
         $statement->bindParam(":artistKindId", $artistKindId);
+
         $statement->execute();
 
         return $this->connection->lastInsertId();

@@ -46,7 +46,14 @@ class UploaderController
         $alt = $_POST["alt"];
 
         if ($file["error"] != 0) {
-            throw new UploadException("Error uploading file. " + $file["error"]);
+            switch ($file["error"]) {
+                case 1:
+                    throw new UploadException("File is too large. Max size is " . ini_get("upload_max_filesize") . "B");
+                    break;
+                default: // 4
+                    throw new UploadException("Error uploading file. ");
+                    break;
+            }
         }
 
         $this->imageService->addImage($file, $alt);
