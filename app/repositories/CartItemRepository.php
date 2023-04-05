@@ -170,8 +170,8 @@ class CartItemRepository extends Repository
             );
             $artist = new Artist(
                 $item['artistId'],
-                $item['artistName'],
-                $this->readIfSet($item['artistDescription']),
+                htmlspecialchars_decode($item['artistName']),
+                htmlspecialchars_decode($this->readIfSet($item['artistDescription'])),
                 $images,
                 $this->readIfSet($item['artistCountry']),
                 $this->readIfSet($item['artistGenres']),
@@ -186,7 +186,7 @@ class CartItemRepository extends Repository
 
             $event = new MusicEvent(
                 $item['eventId'],
-                $item['eventName'],
+                htmlspecialchars_decode($item['eventName']),
                 new DateTime($item['startTime']),
                 new DateTime($item['endTime']),
                 $artist,
