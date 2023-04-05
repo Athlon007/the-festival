@@ -29,129 +29,143 @@
         </div>
     <?php } ?>
     <div class="container">
-        <div class="row card col-10 mx-auto p-1 my-2">
-            <div class="row">
-                <h2>Overview</h2>
-            </div>
-            <div class="row mx-auto">
-                <div class="col-3">
-                    <h3>Recent albums</h3>
-                    <p><?= str_replace(',', "<br>", $artist->getRecentAlbums()); ?></p>
-                </div>
-                <div class="col-3">
-                    <h3>Genres</h3>
-                    <p><?= str_replace(',', "<br>", $artist->getGenres()); ?></p>
-                </div>
-                <div class="col-3">
-                    <h3>Country</h3>
-                    <p><?= $artist->getCountry(); ?></p>
+        <?php if ($artist->noInformation()) { ?>
+            <div class="container">
+                <div class="row">
+                    <h2 class="mx-auto text-center">Sorry! No information about <?= $artist->getName() ?> is currently available.</h2>
                 </div>
             </div>
-            <div class="row d-flex justify-content-end p-1">
-                <!-- Social Media Buttons -->
-                <?php
-                if (strlen($artist->getFacebook()) > 0) {
-                    echo '<a href="' . $artist->getFacebook() . '" class="w-auto p-1" target="_blank"><button class="btn btn-primary btn-icon facebook-icon"></button></a>';
-                }
-                if (strlen($artist->getTwitter()) > 0) {
-                    echo '<a href="' . $artist->getTwitter() . '" class="w-auto p-1" target="_blank"><button class="btn btn-primary btn-icon twitter-icon"></button></a>';
-                }
-                if (strlen($artist->getInstagram()) > 0) {
-                    echo '<a href="' . $artist->getInstagram() . '" class="w-auto p-1" target="_blank"><button class="btn btn-primary btn-icon instagram-icon"></button></a>';
-                }
-                if (strlen($artist->getSpotify()) > 0) {
-                    echo '<a href="' . $artist->getSpotify() . '" class="w-auto p-1" target="_blank"><button class="btn btn-primary btn-icon spotify-icon"></button></a>';
-                }
-                if (strlen($artist->getHomepage()) > 0) {
-                    echo '<a href="' . $artist->getHomepage() . '" class="w-auto p-1" target="_blank"><button class="btn btn-primary btn-icon homepage-icon"></button></a>';
-                }
-                ?>
-            </div>
-        </div>
-        <div class="row">
-            <?php if (count($artist->getImages()) > 1) { ?>
-                <div id="bannerCarouselSecond" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        <?php
-                        for ($counter = 1; $counter < count($artist->getImages()); $counter++) {
-                            $image = $artist->getImages()[$counter];
-                        ?>
-                            <div class="carousel-item <?= $counter == 1 ? 'active' : ''; ?>">
-                                <img src="<?= $image->getSrc(); ?>" class="d-block w-100" alt="<?= $image->getAlt(); ?>">
-                            </div>
-                        <?php } ?>
-                    </div>
-                    <?php if (count($artist->getImages()) > 2) { ?>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarouselSecond" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#bannerCarouselSecond" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
+        <?php } else { ?>
+            <div class="row card col-10 mx-auto p-1 my-2">
+                <div class="row">
+                    <h2>Overview</h2>
+                </div>
+                <div class="row mx-auto">
+                    <?php if ($artist->getRecentAlbums() != '') { ?>
+                        <div class="col-3">
+                            <h3>Recent albums</h3>
+                            <p><?= str_replace(',', "<br>", $artist->getRecentAlbums()); ?></p>
+                        </div>
                     <?php } ?>
-                </div>
-            <?php } ?>
-        </div>
-        <div class="row">
-            <div class="col-12 col-xl-6 mx-auto">
-                <h2>About</h2>
-                <p><?= $artist->getDescription(); ?></p>
-            </div>
-            <?php if (strlen($artist->getSpotify()) > 0) { ?>
-                <div class="col-12 col-xl-4 mx-auto">
-                    <h2>Listen</h2>
-                    <iframe src="https://open.spotify.com/embed/artist/<?= basename($artist->getSpotify()) ?>" width="100%" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-                </div>
-            <?php } ?>
-        </div>
-        <?php if (count($events) > 0) { ?>
-            <div class="row my-1">
-                <div class="col-12 mx-auto">
-                    <h2>Events</h2>
-                </div>
-                <div class="row col-12">
-                    <?php foreach ($events as $event) { ?>
-                        <div class="row col-11 mx-auto my-2 card">
-                            <div class="row col-12 py-2">
-                                <h2><?= $event->getEvent()->getStartTime()->format('l, F jS'); ?></h2>
-                            </div>
-                            <div class="row mx-auto">
-                                <div class="col-3">
-                                    <h3>Location</h3>
-                                    <p><?= $event->getEvent()->getLocation()->getName() ?></p>
-                                </div>
-                                <div class="col-3">
-                                    <h3>Time</h3>
-                                    <p><?= $event->getEvent()->getStartTime()->format('H:i') ?> - <?= $event->getEvent()->getEndTime()->format('H:i') ?></p>
-                                </div>
-                                <?php if ($event->getTicketType()->getPrice() > 0) { ?>
-                                    <div class="col-3">
-                                        <h3>Seats</h3>
-                                        <p><?= $event->getEvent()->getAvailableTickets(); ?> / <?= $event->getEvent()->getLocation()->getCapacity(); ?></p>
-                                    </div>
-                                <?php } ?>
-                                <div class="col-3">
-                                    <h3>Price</h3>
-                                    <p class="price text-start"><?= $event->getTicketType()->getPrice() == 0 ? "FREE" : $event->getTicketType()->getPrice(); ?>€</p>
-                                </div>
-                            </div>
-                            <div class="row d-flex justify-content-end py-2">
-                                <?php if ($event->getTicketType()->getPrice() > 0) { ?>
-                                    <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $event->getId() ?>)">Add ticket to cart</button>
-                                <?php } else { ?>
-                                    <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $event->getId() ?>)">Book a ticket</button>
-                                <?php } ?>
-                                <a href="/festival/jazz/event/<?= $event->getEvent()->getId(); ?>" class="w-auto p-0">
-                                    <button class="btn btn-secondary px-2 w-auto">About event</button>
-                                </a>
-                            </div>
+                    <?php if ($artist->getGenres() != '') { ?>
+                        <div class="col-3">
+                            <h3>Genres</h3>
+                            <p><?= str_replace(',', "<br>", $artist->getGenres()); ?></p>
+                        </div>
+                    <?php } ?>
+                    <?php if ($artist->getCountry() != '') { ?>
+                        <div class="col-3">
+                            <h3>Country</h3>
+                            <p><?= $artist->getCountry(); ?></p>
                         </div>
                     <?php } ?>
                 </div>
+                <div class="row d-flex justify-content-end p-1">
+                    <!-- Social Media Buttons -->
+                    <?php
+                    if (strlen($artist->getFacebook()) > 0) {
+                        echo '<a href="' . $artist->getFacebook() . '" class="w-auto p-1" target="_blank"><button class="btn btn-primary btn-icon facebook-icon"></button></a>';
+                    }
+                    if (strlen($artist->getTwitter()) > 0) {
+                        echo '<a href="' . $artist->getTwitter() . '" class="w-auto p-1" target="_blank"><button class="btn btn-primary btn-icon twitter-icon"></button></a>';
+                    }
+                    if (strlen($artist->getInstagram()) > 0) {
+                        echo '<a href="' . $artist->getInstagram() . '" class="w-auto p-1" target="_blank"><button class="btn btn-primary btn-icon instagram-icon"></button></a>';
+                    }
+                    if (strlen($artist->getSpotify()) > 0) {
+                        echo '<a href="' . $artist->getSpotify() . '" class="w-auto p-1" target="_blank"><button class="btn btn-primary btn-icon spotify-icon"></button></a>';
+                    }
+                    if (strlen($artist->getHomepage()) > 0) {
+                        echo '<a href="' . $artist->getHomepage() . '" class="w-auto p-1" target="_blank"><button class="btn btn-primary btn-icon homepage-icon"></button></a>';
+                    }
+                    ?>
+                </div>
             </div>
-        <?php } ?>
+            <div class="row">
+                <?php if (count($artist->getImages()) > 1) { ?>
+                    <div id="bannerCarouselSecond" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <?php
+                            for ($counter = 1; $counter < count($artist->getImages()); $counter++) {
+                                $image = $artist->getImages()[$counter];
+                            ?>
+                                <div class="carousel-item <?= $counter == 1 ? 'active' : ''; ?>">
+                                    <img src="<?= $image->getSrc(); ?>" class="d-block w-100" alt="<?= $image->getAlt(); ?>">
+                                </div>
+                            <?php } ?>
+                        </div>
+                        <?php if (count($artist->getImages()) > 2) { ?>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarouselSecond" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#bannerCarouselSecond" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        <?php } ?>
+                    </div>
+                <?php } ?>
+            </div>
+            <div class="row">
+                <div class="col-12 col-xl-6 mx-auto">
+                    <h2>About</h2>
+                    <p><?= $artist->getDescription(); ?></p>
+                </div>
+                <?php if (strlen($artist->getSpotify()) > 0) { ?>
+                    <div class="col-12 col-xl-4 mx-auto">
+                        <h2>Listen</h2>
+                        <iframe src="https://open.spotify.com/embed/artist/<?= basename($artist->getSpotify()) ?>" width="100%" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                    </div>
+                <?php } ?>
+            </div>
+            <?php if (count($events) > 0) { ?>
+                <div class="row my-1">
+                    <div class="col-12 mx-auto">
+                        <h2>Events</h2>
+                    </div>
+                    <div class="row col-12">
+                        <?php foreach ($events as $event) { ?>
+                            <div class="row col-11 mx-auto my-2 card">
+                                <div class="row col-12 py-2">
+                                    <h2><?= $event->getEvent()->getStartTime()->format('l, F jS'); ?></h2>
+                                </div>
+                                <div class="row mx-auto">
+                                    <div class="col-3">
+                                        <h3>Location</h3>
+                                        <p><?= $event->getEvent()->getLocation()->getName() ?></p>
+                                    </div>
+                                    <div class="col-3">
+                                        <h3>Time</h3>
+                                        <p><?= $event->getEvent()->getStartTime()->format('H:i') ?> - <?= $event->getEvent()->getEndTime()->format('H:i') ?></p>
+                                    </div>
+                                    <?php if ($event->getTicketType()->getPrice() > 0) { ?>
+                                        <div class="col-3">
+                                            <h3>Seats</h3>
+                                            <p><?= $event->getEvent()->getAvailableTickets(); ?> / <?= $event->getEvent()->getLocation()->getCapacity(); ?></p>
+                                        </div>
+                                    <?php } ?>
+                                    <div class="col-3">
+                                        <h3>Price</h3>
+                                        <p class="price text-start"><?= $event->getTicketType()->getPrice() == 0 ? "FREE" : $event->getTicketType()->getPrice(); ?>€</p>
+                                    </div>
+                                </div>
+                                <div class="row d-flex justify-content-end py-2">
+                                    <?php if ($event->getTicketType()->getPrice() > 0) { ?>
+                                        <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $event->getId() ?>)">Add ticket to cart</button>
+                                    <?php } else { ?>
+                                        <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $event->getId() ?>)">Book a ticket</button>
+                                    <?php } ?>
+                                    <a href="/festival/jazz/event/<?= $event->getEvent()->getId(); ?>" class="w-auto p-0">
+                                        <button class="btn btn-secondary px-2 w-auto">About event</button>
+                                    </a>
+                                </div>
+                            </div>
+                        <?php } ?>
+                    </div>
+                </div>
+        <?php }
+        } ?>
     </div>
     <footer class="foot row bottom"></footer>
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>

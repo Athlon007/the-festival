@@ -37,10 +37,14 @@
             <div class="row mx-auto">
                 <div class="col-8">
                     <h2>About artist</h2>
-                    <p><?= $event->getArtist()->getDescription() ?></p>
-                    <a href="/festival/jazz/artist/<?= $event->getArtist()->getId() ?>">
-                        <button class="btn btn-primary">More about <?= $event->getArtist()->getName() ?></button>
-                    </a>
+                    <?php if ($event->getArtist()->noInformation()) { ?>
+                        <p>Sorry, but currently we don't have any information about this artist!</p>
+                    <?php } else { ?>
+                        <p><?= $event->getArtist()->getDescription() ?></p>
+                        <a href="/festival/jazz/artist/<?= $event->getArtist()->getId() ?>">
+                            <button class="btn btn-primary">More about <?= $event->getArtist()->getName() ?></button>
+                        </a>
+                    <?php } ?>
                 </div>
                 <div class="col-4">
                     <h2>Time</h2>
