@@ -15,7 +15,7 @@ class CartItemService
 
     public function getAll($sort = null, $filters = []): array
     {
-        return $this->repo->getAll($sort = null, $filters = []);
+        return $this->repo->getAll($sort, $filters);
     }
 
     public function getById(int $id): CartItem

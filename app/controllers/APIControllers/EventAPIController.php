@@ -67,9 +67,9 @@ class EventAPIController extends APIController
 
                 // Get the appropriate kind, or all artists if none is specified.
                 if (str_starts_with($uri, '/api/events/jazz')) {
-                    $filters['artist_kind'] = 'jazz';
+                    $filters['artist_kind'] = '1';
                 } elseif (str_starts_with($uri, '/api/events/dance')) {
-                    $filters['artist_kind'] = 'dance';
+                    $filters['artist_kind'] = '2';
                 }
 
                 $cartItemService = new JazzCartItemService();

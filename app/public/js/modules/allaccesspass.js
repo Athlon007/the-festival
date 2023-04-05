@@ -107,7 +107,6 @@ class AllAccessPass {
     async getAllAccessPass(kind) {
 
         if (kind == 'jazz') {
-            // TODO: Get jazz pass from API.
             let obj = {
                 name: 'All-Access Jazz Pass',
                 perks: [

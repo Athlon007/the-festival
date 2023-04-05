@@ -1,5 +1,7 @@
 <?php
 
+use function PHPSTORM_META\type;
+
 require_once("EventRepository.php");
 require_once("CartItemRepository.php");
 
@@ -135,23 +137,18 @@ class JazzCartItemRepository extends CartItemRepository
 		a2.id as artistKindId,
 		a2.name as artistKindName,
         c.cartItemId as cartItemId
-FROM JazzEvents je
-JOIN Events e ON e.eventId = je.eventId
-JOIN cartitems c on e.eventId = c.eventId
-join tickettypes t on c.ticketTypeId = t.ticketTypeId
-join jazzartists a on a.artistId = je.artistId
-join locations l on l.locationId = je.locationId
-join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
-join addresses ad on ad.addressId =l.addressId
-join artistkinds a2 on a2.id = a.artistKindId ";
+        FROM JazzEvents je
+        JOIN Events e ON e.eventId = je.eventId
+        JOIN cartitems c on e.eventId = c.eventId
+        join tickettypes t on c.ticketTypeId = t.ticketTypeId
+        join jazzartists a on a.artistId = je.artistId
+        join locations l on l.locationId = je.locationId
+        join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
+        join addresses ad on ad.addressId =l.addressId
+        join artistkinds a2 on a2.id = a.artistKindId ";
 
-        if (!empty($filters) && !(count($filters) === 1 && isset($filters['artist_kind']))) {
-            // if only filter is artist_kind, skip
+        if (!empty($filters)) {
             $sql .= " WHERE ";
-            $i = 0;
-            if (isset($filters['artist_kind'])) {
-                $i++;
-            }
 
             foreach ($filters as $key => $filter) {
                 switch ($key) {
@@ -167,8 +164,8 @@ join artistkinds a2 on a2.id = a.artistKindId ";
                     case 'time_to':
                         $sql .= " HOUR(e.endTime) <= :$key ";
                         break;
-                    case 'hide_no_seats':
-                        // TODO: Hide events with no seats.
+                    case 'hide_without_seats':
+                        $sql .= " availableTickets > 0 ";
                         break;
                     case 'day':
                         $sql .= " DAY(e.startTime) = :$key ";
@@ -182,16 +179,16 @@ join artistkinds a2 on a2.id = a.artistKindId ";
                     case 'artist':
                         $sql .= " je.artistId = :$key ";
                         break;
+                    case "artist_kind":
+                        $sql .= " a.artistKindId = :$key";
+                        break;
                     default:
-                        // no filtering by default
-                        $i++;
                         continue 2;
                 }
 
-                if ($i < count($filters) - 1) {
+                if (end($filters) !== $filter) {
                     $sql .= " AND ";
                 }
-                $i++;
             }
         }
 
@@ -214,18 +211,16 @@ join artistkinds a2 on a2.id = a.artistKindId ";
 
         $stmt = $this->connection->prepare($sql);
 
-        if (!(count($filters) === 1 && isset($filters['artist_kind']))) {
-            foreach ($filters as $key => $filter) {
-                if ($key == 'artist_kind') {
-                    continue;
-                }
-
-                $pdoType = is_numeric($filter) ? PDO::PARAM_INT : PDO::PARAM_STR;
-                if (str_starts_with($key, 'price')) {
-                    $pdoType = PDO::PARAM_STR;
-                }
-                $stmt->bindValue(':' . $key, $filter, $pdoType);
+        foreach ($filters as $key => $filter) {
+            if (empty($filter)) {
+                continue;
             }
+
+            $pdoType = is_numeric($filter) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            if (str_starts_with($key, 'price')) {
+                $pdoType = PDO::PARAM_STR;
+            }
+            $stmt->bindValue(':' . $key, $filter, $pdoType);
         }
 
         $stmt->execute();

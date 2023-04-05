@@ -101,7 +101,7 @@ function loadCalendar() {
             return new Date();
         }
 
-        return START_DATE; // TODO: Pull that from the database
+        return START_DATE;
     }
 
     function checkResize() {
