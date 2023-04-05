@@ -106,50 +106,52 @@
                 </div>
             <?php } ?>
         </div>
-        <div class="row my-1">
-            <div class="col-12 mx-auto">
-                <h2>Events</h2>
-            </div>
-            <div class="row col-12">
-                <?php foreach ($events as $event) { ?>
-                    <div class="row col-11 mx-auto my-2 card">
-                        <div class="row col-12 py-2">
-                            <h2><?= $event->getEvent()->getStartTime()->format('l, F jS'); ?></h2>
-                        </div>
-                        <div class="row mx-auto">
-                            <div class="col-3">
-                                <h3>Location</h3>
-                                <p><?= $event->getEvent()->getLocation()->getName() ?></p>
+        <?php if (count($events) > 0) { ?>
+            <div class="row my-1">
+                <div class="col-12 mx-auto">
+                    <h2>Events</h2>
+                </div>
+                <div class="row col-12">
+                    <?php foreach ($events as $event) { ?>
+                        <div class="row col-11 mx-auto my-2 card">
+                            <div class="row col-12 py-2">
+                                <h2><?= $event->getEvent()->getStartTime()->format('l, F jS'); ?></h2>
                             </div>
-                            <div class="col-3">
-                                <h3>Time</h3>
-                                <p><?= $event->getEvent()->getStartTime()->format('H:i') ?> - <?= $event->getEvent()->getEndTime()->format('H:i') ?></p>
-                            </div>
-                            <?php if ($event->getTicketType()->getPrice() > 0) { ?>
+                            <div class="row mx-auto">
                                 <div class="col-3">
-                                    <h3>Seats</h3>
-                                    <p>X/<?= $event->getEvent()->getLocation()->getCapacity(); ?></p>
+                                    <h3>Location</h3>
+                                    <p><?= $event->getEvent()->getLocation()->getName() ?></p>
                                 </div>
-                            <?php } ?>
-                            <div class="col-3">
-                                <h3>Price</h3>
-                                <p class="price text-start"><?= $event->getTicketType()->getPrice() == 0 ? "FREE" : $event->getTicketType()->getPrice(); ?>€</p>
+                                <div class="col-3">
+                                    <h3>Time</h3>
+                                    <p><?= $event->getEvent()->getStartTime()->format('H:i') ?> - <?= $event->getEvent()->getEndTime()->format('H:i') ?></p>
+                                </div>
+                                <?php if ($event->getTicketType()->getPrice() > 0) { ?>
+                                    <div class="col-3">
+                                        <h3>Seats</h3>
+                                        <p>X/<?= $event->getEvent()->getLocation()->getCapacity(); ?></p>
+                                    </div>
+                                <?php } ?>
+                                <div class="col-3">
+                                    <h3>Price</h3>
+                                    <p class="price text-start"><?= $event->getTicketType()->getPrice() == 0 ? "FREE" : $event->getTicketType()->getPrice(); ?>€</p>
+                                </div>
+                            </div>
+                            <div class="row d-flex justify-content-end py-2">
+                                <?php if ($event->getTicketType()->getPrice() > 0) { ?>
+                                    <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $event->getId() ?>)">Add ticket to cart</button>
+                                <?php } else { ?>
+                                    <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $event->getId() ?>)">Book a ticket</button>
+                                <?php } ?>
+                                <a href="/festival/jazz/event/<?= $event->getEvent()->getId(); ?>" class="w-auto p-0">
+                                    <button class="btn btn-secondary px-2 w-auto">About event</button>
+                                </a>
                             </div>
                         </div>
-                        <div class="row d-flex justify-content-end py-2">
-                            <?php if ($event->getTicketType()->getPrice() > 0) { ?>
-                                <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $event->getId() ?>)">Add ticket to cart</button>
-                            <?php } else { ?>
-                                <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $event->getId() ?>)">Book a ticket</button>
-                            <?php } ?>
-                            <a href="/festival/jazz/event/<?= $event->getEvent()->getId(); ?>" class="w-auto p-0">
-                                <button class="btn btn-secondary px-2 w-auto">About event</button>
-                            </a>
-                        </div>
-                    </div>
-                <?php } ?>
+                    <?php } ?>
+                </div>
             </div>
-        </div>
+        <?php } ?>
     </div>
     <footer class="foot row bottom"></footer>
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
