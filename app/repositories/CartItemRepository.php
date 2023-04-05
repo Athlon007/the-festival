@@ -119,13 +119,154 @@ class CartItemRepository extends Repository
         }
     }
 
+    private function buildJazzCartItems($arr)
+    {
+        require_once(__DIR__ . '/../models/Address.php');
+        require_once(__DIR__ . "/../models/Location.php");
+        require_once(__DIR__ . "/../models/Types/TicketType.php");
+        require_once(__DIR__ . "/../models/Types/EventType.php");
+        require_once(__DIR__ . "/../models/Music/Artist.php");
+        require_once(__DIR__ . "/../models/Music/ArtistKind.php");
+        require_once(__DIR__ . '/ImageRepository.php');
+        require_once(__DIR__ . "/../models/Music/MusicEvent.php");
+        require_once(__DIR__ . "/../models/CartItem.php");
+
+        $imageRepository = new ImageRepository();
+        $output = array();
+        foreach ($arr as $item) {
+            $address = new Address(
+                $item['addressId'],
+                $item['addressStreetName'],
+                $item['addressHouseNumber'],
+                $item['addressPostalCode'],
+                $item['addressCity'],
+                $item['addressCountry']
+            );
+            $location = new Location(
+                $item['locationId'],
+                $item['locationName'],
+                $address,
+                $item['locationType'],
+                $item['locationLon'],
+                $item['locationLat'],
+                $item['locationCapacity'],
+                $item['locationDescription']
+            );
+            $ticketType = new TicketType(
+                $item['ticketTypeId'],
+                $item['ticketTypeName'],
+                $item['ticketTypePrice'],
+                $item['ticketTypeNrOfPeople']
+            );
+            $eventType = new EventType(
+                $item['eventTypeId'],
+                $item['eventTypeName'],
+                $item['evenTypeVat']
+            );
+            $images = $imageRepository->getImagesForArtistId($item['artistId']);
+            $artistKind = new ArtistKind(
+                $item['artistKindId'],
+                $item['artistKindName']
+            );
+            $artist = new Artist(
+                $item['artistId'],
+                $item['artistName'],
+                $this->readIfSet($item['artistDescription']),
+                $images,
+                $this->readIfSet($item['artistCountry']),
+                $this->readIfSet($item['artistGenres']),
+                $this->readIfSet($item['artistHomepage']),
+                $this->readIfSet($item['artistFacebook']),
+                $this->readIfSet($item['artistTwitter']),
+                $this->readIfSet($item['artistInstagram']),
+                $this->readIfSet($item['artistSpotify']),
+                $this->readIfSet($item['artistRecentAlbums']),
+                $artistKind
+            );
+
+            $event = new MusicEvent(
+                $item['eventId'],
+                $item['eventName'],
+                new DateTime($item['startTime']),
+                new DateTime($item['endTime']),
+                $artist,
+                $location,
+                $eventType,
+                $item['availableTickets']
+            );
+
+            $cartItem = new CartItem(
+                $item['cartItemId'],
+                $event,
+                $ticketType
+            );
+
+            array_push($output, $cartItem);
+        }
+
+        return $output;
+    }
+
+    private function readIfSet($value)
+    {
+        if (isset($value)) {
+            return $value;
+        } else {
+            return "";
+        }
+    }
+
     public function getAllJazz($sort = null, $filters = [])
     {
-        $sql = "select c.cartItemId, e.eventId, t.ticketTypeId, je.locationId " .
-            "from cartitems c " .
-            "join tickettypes t ON t.ticketTypeId = c.ticketTypeId " .
-            "join events e  on e.eventId = c.eventId " .
-            "join jazzevents je on je.eventId = e.eventId ";
+        $sql = "SELECT e.eventId,
+		e.name as eventName,
+		e.startTime,
+		e.endTime,
+		e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets,
+		a.artistId,
+		a.name  as artistName,
+		a.description as artistDescription,
+		a.recentAlbums as artistRecentAlbums,
+		a.genres as artistGenres,
+		a.country as artistCountry,
+		a.homepageUrl as artistHomepage,
+		a.facebookUrl as artistFacebok,
+		a.twitterUrl as artistTwitter,
+		a.instagramUrl as artistInstagram,
+		a.spotifyUrl as artistSpotify,
+		a.homepageUrl as artistHomepage,
+		f.eventTypeId as eventTypeId,
+		f.name as eventTypeName,
+		f.VAT as evenTypeVat,
+		l.locationId as locationId,
+		l.name as locationName,
+		l.locationType as locationType,
+		l.capacity as locationCapacity,
+		l.lon as locationLon,
+		l.lat as locationLat,
+		l.description as locationDescription,
+		ad.addressId as addressId,
+		ad.streetName as addressStreetName,
+		ad.houseNumber as addressHouseNumber,
+		ad.postalCode as addressPostalCode,
+		ad.city as addressCity,
+		ad.country as addressCountry,
+		t.ticketTypeId as ticketTypeId,
+		t.ticketTypeName as ticketTypeName,
+		t.ticketTypePrice as ticketTypePrice,
+		t.nrOfPeople as ticketTypeNrOfPeople,
+		a2.id as artistKindId,
+		a2.name as artistKindName,
+        c.cartItemId as cartItemId
+FROM JazzEvents je
+JOIN Events e ON e.eventId = je.eventId
+JOIN cartitems c on e.eventId = c.eventId
+join tickettypes t on c.ticketTypeId = t.ticketTypeId
+join jazzartists a on a.artistId = je.artistId
+join locations l on l.locationId = je.locationId
+join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
+join addresses ad on ad.addressId =l.addressId
+join artistkinds a2 on a2.id = a.artistKindId ";
 
         if (!empty($filters) && !(count($filters) === 1 && isset($filters['artist_kind']))) {
             // if only filter is artist_kind, skip
@@ -212,48 +353,135 @@ class CartItemRepository extends Repository
 
         $stmt->execute();
         $result = $stmt->fetchAll();
-
-        require_once(__DIR__ . "/LocationRepository.php");
-        $eventRepo = new EventRepository();
-        $locationRepo = new LocationRepository();
-        $ticketTypeRepo = new TicketTypeRepository();
-        $output = array();
-        foreach ($result as $key => $item) {
-            $event = $eventRepo->getJazzEventById($item['eventId']);
-            $location = $locationRepo->getById($item['locationId']);
-            $event->setLocation($location);
-            $ticketType = $ticketTypeRepo->getById($item['ticketTypeId']);
-            $cartItem = new CartItem($item['cartItemId'], $event, $ticketType);
-            array_push($output, $cartItem);
-        }
-
-        return $output;
+        return $this->buildJazzCartItems($result);
     }
 
 
     public function getById($id)
     {
-        $sql = "SELECT cartItemId, eventId, ticketTypeId FROM cartitems WHERE cartItemId = :id";
+        $sql = "SELECT e.eventId,
+		e.name as eventName,
+		e.startTime,
+		e.endTime,
+		e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets,
+		a.artistId,
+		a.name  as artistName,
+		a.description as artistDescription,
+		a.recentAlbums as artistRecentAlbums,
+		a.genres as artistGenres,
+		a.country as artistCountry,
+		a.homepageUrl as artistHomepage,
+		a.facebookUrl as artistFacebok,
+		a.twitterUrl as artistTwitter,
+		a.instagramUrl as artistInstagram,
+		a.spotifyUrl as artistSpotify,
+		a.homepageUrl as artistHomepage,
+		f.eventTypeId as eventTypeId,
+		f.name as eventTypeName,
+		f.VAT as evenTypeVat,
+		l.locationId as locationId,
+		l.name as locationName,
+		l.locationType as locationType,
+		l.capacity as locationCapacity,
+		l.lon as locationLon,
+		l.lat as locationLat,
+		l.description as locationDescription,
+		ad.addressId as addressId,
+		ad.streetName as addressStreetName,
+		ad.houseNumber as addressHouseNumber,
+		ad.postalCode as addressPostalCode,
+		ad.city as addressCity,
+		ad.country as addressCountry,
+		t.ticketTypeId as ticketTypeId,
+		t.ticketTypeName as ticketTypeName,
+		t.ticketTypePrice as ticketTypePrice,
+		t.nrOfPeople as ticketTypeNrOfPeople,
+		a2.id as artistKindId,
+		a2.name as artistKindName,
+        c.cartItemId as cartItemId
+FROM JazzEvents je
+JOIN Events e ON e.eventId = je.eventId
+JOIN cartitems c on e.eventId = c.eventId
+join tickettypes t on c.ticketTypeId = t.ticketTypeId
+join jazzartists a on a.artistId = je.artistId
+join locations l on l.locationId = je.locationId
+join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
+join addresses ad on ad.addressId =l.addressId
+join artistkinds a2 on a2.id = a.artistKindId
+WHERE cartItemId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch();
-        return $this->buildCartItems([$result])[0];
+        $output = $this->buildJazzCartItems($result);
+        if (empty($output)) {
+            return null;
+        }
+        return $output[0];
     }
 
     public function getByEventId($id): ?CartItem
     {
-        $sql = "SELECT cartItemId, eventId, ticketTypeId FROM cartitems WHERE eventId = :id";
+        $sql = "SELECT e.eventId,
+		e.name as eventName,
+		e.startTime,
+		e.endTime,
+		e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets,
+		a.artistId,
+		a.name  as artistName,
+		a.description as artistDescription,
+		a.recentAlbums as artistRecentAlbums,
+		a.genres as artistGenres,
+		a.country as artistCountry,
+		a.homepageUrl as artistHomepage,
+		a.facebookUrl as artistFacebok,
+		a.twitterUrl as artistTwitter,
+		a.instagramUrl as artistInstagram,
+		a.spotifyUrl as artistSpotify,
+		a.homepageUrl as artistHomepage,
+		f.eventTypeId as eventTypeId,
+		f.name as eventTypeName,
+		f.VAT as evenTypeVat,
+		l.locationId as locationId,
+		l.name as locationName,
+		l.locationType as locationType,
+		l.capacity as locationCapacity,
+		l.lon as locationLon,
+		l.lat as locationLat,
+		l.description as locationDescription,
+		ad.addressId as addressId,
+		ad.streetName as addressStreetName,
+		ad.houseNumber as addressHouseNumber,
+		ad.postalCode as addressPostalCode,
+		ad.city as addressCity,
+		ad.country as addressCountry,
+		t.ticketTypeId as ticketTypeId,
+		t.ticketTypeName as ticketTypeName,
+		t.ticketTypePrice as ticketTypePrice,
+		t.nrOfPeople as ticketTypeNrOfPeople,
+		a2.id as artistKindId,
+		a2.name as artistKindName,
+        c.cartItemId as cartItemId
+FROM JazzEvents je
+JOIN Events e ON e.eventId = je.eventId
+JOIN cartitems c on e.eventId = c.eventId
+join tickettypes t on c.ticketTypeId = t.ticketTypeId
+join jazzartists a on a.artistId = je.artistId
+join locations l on l.locationId = je.locationId
+join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
+join addresses ad on ad.addressId =l.addressId
+join artistkinds a2 on a2.id = a.artistKindId
+WHERE e.eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        $output = $this->buildCartItems($result);
-        if (count($output) > 0) {
-            return $output[0];
+        $output = $this->buildJazzCartItems($result);
+        if (empty($output)) {
+            return null;
         }
-        return null;
+        return $output[0];
     }
 
     public function createCartItem($eventId, $ticketTypeId): int
