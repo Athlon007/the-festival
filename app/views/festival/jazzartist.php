@@ -15,10 +15,10 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
-    <? if (count($artist->getImages()) > 0) { ?>
+    <?php if (count($artist->getImages()) > 0) { ?>
         <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
-                <? $image = $artist->getImages()[0]; ?>
+                <?php $image = $artist->getImages()[0]; ?>
                 <div class="carousel-item active">
                     <img src="<?= $image->getSrc(); ?>" class="d-block w-100" alt="<?= $image->getAlt(); ?>">
                     <div class="carousel-caption">
@@ -27,7 +27,7 @@
                 </div>
             </div>
         </div>
-    <? } ?>
+    <?php } ?>
     <div class="container">
         <div class="row card col-10 mx-auto p-1 my-2">
             <div class="row">
@@ -69,19 +69,19 @@
             </div>
         </div>
         <div class="row">
-            <? if (count($artist->getImages()) > 1) { ?>
+            <?php if (count($artist->getImages()) > 1) { ?>
                 <div id="bannerCarouselSecond" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
-                        <?
+                        <?php
                         for ($counter = 1; $counter < count($artist->getImages()); $counter++) {
                             $image = $artist->getImages()[$counter];
                         ?>
                             <div class="carousel-item <?= $counter == 1 ? 'active' : ''; ?>">
                                 <img src="<?= $image->getSrc(); ?>" class="d-block w-100" alt="<?= $image->getAlt(); ?>">
                             </div>
-                        <? } ?>
+                        <?php } ?>
                     </div>
-                    <? if (count($artist->getImages()) > 2) { ?>
+                    <?php if (count($artist->getImages()) > 2) { ?>
                         <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarouselSecond" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Previous</span>
@@ -90,21 +90,21 @@
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Next</span>
                         </button>
-                    <? } ?>
+                    <?php } ?>
                 </div>
-            <? } ?>
+            <?php } ?>
         </div>
         <div class="row">
             <div class="col-12 col-xl-6 mx-auto">
                 <h2>About</h2>
                 <p><?= $artist->getDescription(); ?></p>
             </div>
-            <? if (strlen($artist->getSpotify()) > 0) { ?>
+            <?php if (strlen($artist->getSpotify()) > 0) { ?>
                 <div class="col-12 col-xl-4 mx-auto">
                     <h2>Listen</h2>
                     <iframe src="https://open.spotify.com/embed/artist/<?= basename($artist->getSpotify()) ?>" width="100%" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
                 </div>
-            <? } ?>
+            <?php } ?>
         </div>
         <div class="row my-1">
             <div class="col-12 mx-auto">
