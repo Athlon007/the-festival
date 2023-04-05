@@ -149,14 +149,27 @@ function loadCalendar() {
                     let borderColor = "#412c0c";
                     let url = "#";
 
-                    if (e.event.artist != null) {
-                        backgroundColor = "#d6e7ef";
-                        borderColor = "#005990";
-                        url = "/festival/jazz/event/" + e.event.id;
-                    } else if (e.event.name.includes("A Stroll Through History")) {
-                        backgroundColor = "#e2e0da";
-                        borderColor = "#412c0c";
-                        url = "/festival/history-stroll";
+                    switch (e.event.eventType.id) {
+                        case 1:
+                            backgroundColor = "#d6e7ef";
+                            borderColor = "#005990";
+                            url = "/festival/jazz/event/" + e.event.id;
+                            break;
+                        case 2:
+                            backgroundColor = "#e2e0da";
+                            borderColor = "#412c0c";
+                            url = "/festival/yummy";
+                            break;
+                        case 3:
+                            backgroundColor = "#e2e0da";
+                            borderColor = "#412c0c";
+                            url = "/festival/history-stroll";
+                            break;
+                        case 4:
+                            backgroundColor = "#fff0ef";
+                            borderColor = "#9D49E0";
+                            url = "/festival/dance";
+                            break;
                     }
 
                     const startTime = new Date(e.event.startTime.date);

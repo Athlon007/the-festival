@@ -2,6 +2,7 @@
 
 require_once("EventRepository.php");
 require_once("CartItemRepository.php");
+require_once("TicketTypeRepository.php");
 
 class PassCartItemRepository extends CartItemRepository
 {

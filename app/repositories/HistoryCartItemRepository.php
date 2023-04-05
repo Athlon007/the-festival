@@ -74,4 +74,29 @@ class HistoryCartItemRepository extends CartItemRepository
             throw $ex;
         }
     }
+
+    public function getById($id)
+    {
+        $sql = "SELECT cartItemId, eventId, ticketTypeId FROM cartitems WHERE cartItemId = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch();
+        return $this->build([$result])[0];
+    }
+
+    public function getByEventId($id): ?CartItem
+    {
+        $sql = "SELECT cartItemId, eventId, ticketTypeId FROM cartitems WHERE eventId = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        $output = $this->build($result);
+        if (count($output) > 0) {
+            return $output[0];
+        }
+        return null;
+    }
 }
