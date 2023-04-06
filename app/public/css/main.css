@@ -81,6 +81,10 @@ h2 {
     border-left: 1px solid #525252;
 }
 
+.navbar {
+    z-index: 1000;
+}
+
 .navbar-brand {
     max-height: 3rem;
     margin-left: 1em;
@@ -91,7 +95,8 @@ h2 {
     border-radius: 0;
     border: 1px solid #525252;
     text-align: center;
-    transform: translateX(-25%);
+    transform: translateX(-25%) translateY(-4px);
+    z-index: 10000;
 }
 
 .dropdown-menu>a {

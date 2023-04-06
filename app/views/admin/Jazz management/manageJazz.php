@@ -19,18 +19,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <script type="module" src="/js/nav.js"></script>
     <br>
-    <nav class="nav nav-pills flex-column flex-sm-row">
-        <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/manageTextPages">Text Pages</a>
-        <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/manageImages">Images</a>
-        <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/../manageUsers">Users</a>
-        <a class="flex-sm-fill text-sm-center nav-link active" href="/../manageJazz">Jazz</a>
-        <a class="flex-sm-fill text-sm-center nav-link" href="/../manageRestaurants">Restaurants</a>
-        <a class="flex-sm-fill text-sm-center nav-link" href="/../manageDJs">Dance</a>
-        <a class="flex-sm-fill text-sm-center nav-link" href="/../manageHistory">History</a>
-        <a class="flex-sm-fill text-sm-center nav-link" href="/manageTicketTypes">Ticket Types</a>
-        <a class="flex-sm-fill text-sm-center nav-link" href="/managePasses">Passes</a>
-        <a class="flex-sm-fill text-sm-center nav-link" href="/manageNavBar">Nav Bar</a>
-    </nav>
+    <?php require_once(__DIR__ . '/../adminNavbar.php'); ?>
 
     <h1 class="text-center mt-3">Manage Jazz</h1>
     <br>

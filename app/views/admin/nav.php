@@ -28,7 +28,6 @@
                     </div>
                     <div class="mt-1">
                         <button id="submit" class="btn btn-success">Save</button>
-                        <button id="cancel" class="btn btn-secondary">Cancel</button>
                     </div>
                 </div>
             </div>

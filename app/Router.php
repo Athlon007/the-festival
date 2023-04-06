@@ -357,6 +357,11 @@ class Router
             return;
         }
 
+        if ($user->getUserType() == 2 || $request == "/manageScanTicket") {
+            require_once('views/employee/ticketScan.php');
+            return;
+        }
+
         switch ($request) {
             case "/manageUsers":
                 require_once("controllers/UserController.php");
