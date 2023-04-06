@@ -35,22 +35,28 @@ class FestivalJazzController
 
     public function loadEventPage($uri)
     {
-        $cartItem = $this->ciService->getByEventId(basename($uri));
-        $event = $cartItem->getEvent();
+        try {
+            $cartItem = $this->ciService->getByEventId(basename($uri));
+            $event = $cartItem->getEvent();
 
-        // if event is of jazzevent type
-        if (!($event instanceof MusicEvent)) {
+            // if event is of jazzevent type
+            if (!($event instanceof MusicEvent)) {
+                // redirect to 404
+                return;
+            }
+
+
+            $afterThat = $this->ciService->getAll("", [
+                "day" => $event->getStartTime()->format('d'),
+                "time_from" => $event->getEndTime()->format('H:i'),
+                "location" => $event->getLocation()->getLocationId()
+            ]);
+
+            require(__DIR__ . self::JAZZ_EVENT_PAGE);
+        } catch (Exception $e) {
             // redirect to 404
+            header("Location: /404");
             return;
         }
-
-
-        $afterThat = $this->ciService->getAll("", [
-            "day" => $event->getStartTime()->format('d'),
-            "time_from" => $event->getEndTime()->format('H:i'),
-            "location" => $event->getLocation()->getLocationId()
-        ]);
-
-        require(__DIR__ . self::JAZZ_EVENT_PAGE);
     }
 }
