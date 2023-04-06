@@ -39,10 +39,12 @@ function createDropdown(collapseLi, element) {
         // if window width is less than 960 px
         collapseLi.classList.add('show');
         collapseLi.children[1].classList.add('show');
+        collapseLi.children[0].setAttribute('aria-expanded', 'true');
     };
     collapseLi.onmouseleave = function () {
         collapseLi.classList.remove('show');
         collapseLi.children[1].classList.remove('show');
+        collapseLi.children[0].setAttribute('aria-expanded', 'false');
     };
     // Create the a
     let collapseA = document.createElement('a');
@@ -101,10 +103,12 @@ function createLanguagePicker() {
     collapseLi.onmouseover = function () {
         collapseLi.classList.add('show');
         collapseLi.children[1].classList.add('show');
+        collapseLi.children[0].setAttribute('aria-expanded', 'true');
     };
     collapseLi.onmouseleave = function () {
         collapseLi.classList.remove('show');
         collapseLi.children[1].classList.remove('show');
+        collapseLi.children[0].setAttribute('aria-expanded', 'false');
     };
     // Create the a
     let collapseA = document.createElement('a');
@@ -186,10 +190,12 @@ function createSearch() {
     collapseLi.onmouseover = function () {
         collapseLi.classList.add('show');
         collapseLi.children[1].classList.add('show');
+        collapseLi.children[0].setAttribute('aria-expanded', 'true');
     };
     collapseLi.onmouseleave = function () {
         collapseLi.classList.remove('show');
         collapseLi.children[1].classList.remove('show');
+        collapseLi.children[0].setAttribute('aria-expanded', 'false');
     };
     // Create the a
     let collapseA = document.createElement('a');
