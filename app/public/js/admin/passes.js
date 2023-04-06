@@ -45,6 +45,9 @@ function updateExistingEntry(id, data) {
                     }
                 }
 
+                // remove the option from the list
+                locations.removeChild(options[locations.selectedIndex]);
+
                 // create new option
                 locations.appendChild(createNewOptionItem(data));
                 locations.selectedIndex = locations.length - 1;
