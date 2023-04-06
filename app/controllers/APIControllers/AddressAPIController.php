@@ -82,6 +82,11 @@ class AddressAPIController extends APIController
 
     protected function handlePutRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         if (!is_numeric(basename($uri))) {
             $this->sendErrorMessage("Invalid API Request. You can only update specific addresses.", 400);
             return;

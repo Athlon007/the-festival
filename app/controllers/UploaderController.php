@@ -22,6 +22,15 @@ class UploaderController
     private function performPost($request)
     {
         try {
+            // Only admins can upload images
+            require_once(__DIR__ . "/../models/User.php");
+            $user = unserialize($_SESSION['user']);
+
+            if ($user->getUserType() > 1) {
+                throw new UploadException("You are not authorized to upload images.");
+            }
+
+
             switch ($request) {
                 case "/uploader/upload-image":
                     $this->uploadImage();
