@@ -19,12 +19,6 @@ class NavBarAPIController extends APIController
             return;
         }
 
-        if (is_numeric(basename($uri))) {
-            $output = $this->navService->getNavBarItemById(basename($uri));
-            echo json_encode($output);
-            return;
-        }
-
         $output = $this->navService->getAll();
         echo json_encode($output);
     }

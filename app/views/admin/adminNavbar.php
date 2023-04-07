@@ -19,4 +19,9 @@
             a.classList.add('active');
         }
     }
+    // get href without the domain
+    const href = window.location.href.split(window.location.host)[1];
+    if (href == '/manage') {
+        document.getElementById('admin-nav').querySelectorAll('a')[0].classList.add('active');
+    }
 </script>
