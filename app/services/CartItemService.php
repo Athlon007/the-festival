@@ -19,12 +19,12 @@ class CartItemService
         return $this->repo->getAll($sort, $filters);
     }
 
-    public function getById(int $id): CartItem
+    public function getById(int $id): ?CartItem
     {
         return $this->repo->getById($id);
     }
 
-    public function getByEventId(int $id): CartItem
+    public function getByEventId(int $id): ?CartItem
     {
         $item = $this->repo->getByEventId($id);
         if ($item == null) {
@@ -33,7 +33,7 @@ class CartItemService
         return $item;
     }
 
-    public function add(CartItem $cartItem): CartItem
+    public function add(CartItem $cartItem): ?CartItem
     {
         $eventService = new EventService();
         $ticketTypeService = new TicketTypeService();
@@ -45,7 +45,7 @@ class CartItemService
         return $this->getById($id);
     }
 
-    public function updateCartItem(CartItem $cartItem): CartItem
+    public function updateCartItem(CartItem $cartItem): ?CartItem
     {
         $id = htmlspecialchars($cartItem->getId());
         $eventId = htmlspecialchars($cartItem->getEvent()->getId());
@@ -56,13 +56,13 @@ class CartItemService
 
         $this->repo->updateCartItem($id, $eventId, $ticketTypeId);
 
-        return $this->getById($id);
+        return $this->getByEventId($eventId);
     }
 
     public function deleteCartItem(CartItem $cartItem): void
     {
         $eventService = new EventService();
-        $eventService->deleteEvent($cartItem->getEvent());
+        $eventService->deleteEvent($cartItem->getEvent()->getId());
 
         $id = htmlspecialchars($cartItem->getId());
         $this->repo->deleteCartItem($id);

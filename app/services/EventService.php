@@ -61,8 +61,6 @@ class EventService
     {
         $event->setName(htmlspecialchars($event->getName()));
         $event->setAvailableTickets(htmlspecialchars($event->getAvailableTickets()));
-        $event->setStartTime(htmlspecialchars($event->getStartTime()));
-        $event->setEndTime(htmlspecialchars($event->getEndTime()));
 
         if ($event->getStartTime() > $event->getEndTime()) {
             throw new InvalidVariableException("Start time cannot be after end time");
@@ -100,8 +98,6 @@ class EventService
     {
         $event->setName(htmlspecialchars($event->getName()));
         $event->setId(htmlspecialchars($event->getId()));
-        $event->setStartTime(htmlspecialchars($event->getStartTime()));
-        $event->setEndTime(htmlspecialchars($event->getEndTime()));
 
         if ($event->getStartTime() > $event->getEndTime()) {
             throw new InvalidVariableException("Start time cannot be after end time");
@@ -132,9 +128,8 @@ class EventService
         return $this->repo->getEventById($event->getId());
     }
 
-    public function deleteEvent($id)
+    public function deleteEvent(int $id)
     {
-        $id = htmlspecialchars($id);
         $this->repo->deleteById($id);
     }
 

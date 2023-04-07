@@ -71,10 +71,6 @@ btnSubmit.onclick = function () {
     createNewEntry(data);
 }
 
-document.getElementById('cancel').onclick = function () {
-    toggleEditor(masterEditor, false);
-}
-
 function createNewOptionItem(element) {
     // create option
     let li = document.createElement('li');
