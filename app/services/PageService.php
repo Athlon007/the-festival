@@ -76,7 +76,7 @@ class PageService
             throw new PageNotFoundException("Page with ID '$id' was not found.");
         }
 
-        /*
+
         // Check if file exists
         if (!($page instanceof TextPage)) {
             // Check if file exists
@@ -85,7 +85,7 @@ class PageService
                 throw new FileDoesNotExistException("File at '$location' was not found.");
             }
         }
-        */
+
 
         return $page;
     }
@@ -101,6 +101,11 @@ class PageService
         $content = htmlspecialchars($content);
         $title = htmlspecialchars($title);
         $href = htmlspecialchars($href);
+
+        // Check if href starts with '/', unless it's a link to another website.
+        if ($href[0] != '/' && !str_starts_with($href, 'http')) {
+            $href = '/' . $href;
+        }
 
         // Check if it even exists in table.
         if ($this->repo->countTextPagesById($id) == 0) {
@@ -131,6 +136,11 @@ class PageService
         $content = htmlspecialchars($content);
         $title = htmlspecialchars($title);
         $href = htmlspecialchars($href);
+
+        // Check if href starts with '/', unless it's a link to another website.
+        if ($href[0] != '/' && !str_starts_with($href, 'http')) {
+            $href = '/' . $href;
+        }
 
         // Check if page with this href already exists.
         if ($this->repo->countTextPages($href) > 0) {

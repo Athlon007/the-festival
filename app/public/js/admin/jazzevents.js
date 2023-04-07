@@ -20,6 +20,14 @@ const endTime = document.getElementById('endTime');
 const btnSubmit = document.getElementById('submit');
 let isInCreationMode = false;
 
+// On startTime change finished, set endTime to startTime + 1 hour.
+// Because we are lazy, woooo!
+startTime.onchange = function () {
+    let start = new Date(startTime.value);
+    start.setHours(start.getHours() + 3);
+    endTime.value = start.toISOString().slice(0, 16);
+}
+
 const msgBox = new MsgBox();
 
 const maxNameLength = 12;
@@ -95,7 +103,7 @@ btnSubmit.onclick = function () {
                 id: locationSelect.value
             },
             eventType: {
-                id: 1
+                id: window.frameElement.getAttribute('data-kind') == 'jazz' ? 1 : 4
             }
         },
         ticketType: {
@@ -109,19 +117,20 @@ btnSubmit.onclick = function () {
     if (isInCreationMode) {
         createNewEntry(data);
     } else {
-        updateExistingEntry(editedId, data);
+        data.id = editedId;
+        updateExistingEntry(editedEventId, data);
     }
 }
 
 document.getElementById('delete').onclick = function () {
-    if (editedId === -1) {
+    if (editedEventId === -1) {
         msgBox.createToast('Error!', 'No page selected');
         return;
     }
 
     msgBox.createYesNoDialog('Delete page', 'Are you sure you want to delete this event? This is irreversible!', function () {
         // fetch with post
-        fetch('/api/events/' + editedId, {
+        fetch(baseURL + "/" + editedEventId, {
             method: 'DELETE',
             credentials: 'same-origin',
             headers: {
@@ -134,7 +143,7 @@ document.getElementById('delete').onclick = function () {
                     // remove the option from the list
                     let options = locations.getElementsByTagName('option');
                     for (let option of options) {
-                        if (option.value == editedId) {
+                        if (option.value == editedEventId) {
                             option.remove();
                             break;
                         }
@@ -173,8 +182,6 @@ function createNewOptionItem(element) {
             name += '&nbsp;';
             spacesAdded++;
         }
-
-        console.log(name);
     }
 
     // make sure that location always is 15 chars long

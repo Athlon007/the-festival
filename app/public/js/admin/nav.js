@@ -1,5 +1,5 @@
 if (window.frameElement == null) {
-    window.location.href = '/manageTicketTypes';
+    window.location.href = '/manageNavBar';
 }
 
 import { MsgBox } from "./modals.js";
@@ -69,10 +69,6 @@ btnSubmit.onclick = function () {
     }
 
     createNewEntry(data);
-}
-
-document.getElementById('cancel').onclick = function () {
-    toggleEditor(masterEditor, false);
 }
 
 function createNewOptionItem(element) {

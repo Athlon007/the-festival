@@ -175,36 +175,6 @@ class Router
                 $festivalHistoryController = new FestivalHistoryController();
                 $festivalHistoryController->loadHistoryStrollPage();
                 break;
-
-            case "/addVenue":
-                require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->addVenue();
-                break;
-            case "/updateVenue":
-                require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->updateVenue();
-                break;
-            case "/addArtist":
-                require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->addArtist();
-                break;
-            case "/updateArtist":
-                require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->updateArtist();
-                break;
-            case "/addEvent":
-                require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->addEvent();
-                break;
-            case "/updateEvent":
-                require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->updateEvent();
                 break;
             case "/addLocation":
                 require_once("controllers/HistoryController.php");

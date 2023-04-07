@@ -1,5 +1,7 @@
 <?php
 
+use function PHPSTORM_META\map;
+
 require_once(__DIR__ . '/../../models/Event.php');
 require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
@@ -31,8 +33,10 @@ class EventAPIController extends APIController
     {
         $sort = $_GET['sort'] ?? 'time';
         $filters = isset($_GET) ? $_GET : [];
+
         // remove the 'sort' from filters
         unset($filters['sort']);
+
         // htmlspecialchars all the things
         $sort = htmlspecialchars($sort);
         $filters = array_map('htmlspecialchars', $filters);
@@ -44,25 +48,18 @@ class EventAPIController extends APIController
                 $eventService = new EventService();
                 $dates = $eventService->getFestivalDates();
                 echo json_encode($dates);
-                return;
-            }
-
-            if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
+            } elseif (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 if (isset($_GET['artist'])) {
                     $artistId = $_GET['artist'];
                     echo json_encode($this->service->getJazzEventsByArtistId($artistId));
                     return;
                 }
 
-                if (is_numeric(basename($uri))) {
-                    $id = basename($uri);
-                    $event = $cartItemService->getByEventId($id);
-                    echo json_encode($event);
-                    return;
-                }
+                $cartItemService = new JazzCartItemService();
 
-                if (isset($_GET['hide_no_seats'])) {
-                    $filters['hide_no_seats'] = $_GET['hide_no_seats'];
+                if (is_numeric(basename($uri))) {
+                    echo json_encode($cartItemService->getByEventId(basename($uri)));
+                    return;
                 }
 
                 // Get the appropriate kind, or all artists if none is specified.
@@ -72,13 +69,8 @@ class EventAPIController extends APIController
                     $filters['artist_kind'] = '2';
                 }
 
-                $cartItemService = new JazzCartItemService();
-
                 echo json_encode($cartItemService->getAll($sort, $filters));
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
-                //require_once(__DIR__ . "/../../services/FestivalHistoryService.php");
-                //$strollService = new FestivalHistoryService();
-
                 $cartItemService = new HistoryCartItemService();
 
                 if (is_numeric(basename($uri))) {
@@ -87,21 +79,6 @@ class EventAPIController extends APIController
                     return;
                 }
 
-                if (isset($_GET['date'])) {
-                    $filters['date'] = $_GET['date'];
-                }
-
-                if (isset($_GET['time'])) {
-                    $filters['time'] = $_GET['time'];
-                }
-
-                if (isset($_GET['language'])) {
-                    $filters['language'] = $_GET['language'];
-                }
-
-                if (isset($_GET['ticket_type'])) {
-                    $filters['ticket_type'] = $_GET['ticket_type'];
-                }
                 echo json_encode($cartItemService->getAll($filters));
             } elseif (str_starts_with($uri, '/api/events/passes')) {
                 $cartItemService = new PassCartItemService();
@@ -112,16 +89,9 @@ class EventAPIController extends APIController
                 echo json_encode($cartItemService->getAll($filters));
             } else {
                 if (is_numeric(basename($uri))) {
-                    $id = basename($uri);
-                    $event = $cartItemService->getByEventId($id);
-                    if ($event == null) {
-                        $this->sendErrorMessage("Event with id $id not found", 404);
-                        return;
-                    }
-                    echo json_encode($event);
+                    echo json_encode($cartItemService->getByEventId(basename($uri)));
                     return;
                 }
-
                 echo json_encode($cartItemService->getAll());
             }
         } catch (TypeError $e) {
@@ -159,6 +129,10 @@ class EventAPIController extends APIController
                 // In terms of music events, the capacity is the number of available seats.
                 $availableSeats = $location->getCapacity();
 
+                require_once(__DIR__ . '/../../services/EventTypeService.php');
+                $eventTypeService = new EventTypeService();
+                $eventType = $eventTypeService->getById($data['event']['eventType']['id']);
+
                 $event = new MusicEvent(
                     $data['event']['id'],
                     $data['event']['name'],
@@ -166,7 +140,7 @@ class EventAPIController extends APIController
                     new DateTime($data['event']['endTime']),
                     $artist,
                     $location,
-                    new EventType(1, 'Jazz', 0.21),
+                    $eventType,
                     $availableSeats,
                 );
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
@@ -235,14 +209,18 @@ class EventAPIController extends APIController
                     $availableSeats = $data['event']['availableSeats'];
                 }
 
+                require_once(__DIR__ . '/../../services/EventTypeService.php');
+                $eventTypeService = new EventTypeService();
+                $eventType = $eventTypeService->getById($data['event']['eventType']['id']);
+
                 $event = new MusicEvent(
-                    $data['event']['id'],
+                    basename($uri),
                     $data['event']['name'],
                     new DateTime($data['event']['startTime']),
                     new DateTime($data['event']['endTime']),
                     $artist,
                     $location,
-                    new EventType(1, 'Jazz', 0.21),
+                    $eventType,
                     $availableSeats
                 );
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
@@ -254,7 +232,7 @@ class EventAPIController extends APIController
                 }
 
                 $event = new Event();
-                $event->setId($data['event']['id']);
+                $event->setId(basename($uri));
                 $event->setName($data['event']['name']);
                 $event->setStartTime(new DateTime($data['event']['startTime']));
                 $event->setEndTime(new DateTime($data['event']['endTime']));
@@ -271,8 +249,7 @@ class EventAPIController extends APIController
                 $event->setEventType($eventType);
             }
 
-            $cartItem = new CartItem($editedCartItemID, $event, $ticketType);
-
+            $cartItem = new CartItem($data["id"], $event, $ticketType);
 
             $cartItem = $cartItemService->updateCartItem($cartItem);
 
@@ -292,16 +269,17 @@ class EventAPIController extends APIController
         }
 
         try {
-            $deletedCartItemId = basename($uri);
+            $deleteEventId = basename($uri);
             $cartItemService = new CartItemService();
-            $ci = $cartItemService->getById($deletedCartItemId);
+            $ci = $cartItemService->getByEventId($deleteEventId);
             $cartItemService->deleteCartItem($ci);
 
+            $ciId = $ci->getId();
             $eventId = $ci->getEvent()->getId();
 
-            $this->sendSuccessMessage("Cart Item with id $deletedCartItemId and event id $eventId deleted", 200);
+            $this->sendSuccessMessage("Cart Item $ciId and event $eventId deleted.", 200);
         } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled exception", 500);
+            $this->sendErrorMessage("Unhandled exception. " . $e->getMessage() . " " . $e->getTraceAsString(), 500);
         }
     }
 }
