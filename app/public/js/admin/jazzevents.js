@@ -111,8 +111,6 @@ btnSubmit.onclick = function () {
         }
     };
 
-    console.log(JSON.stringify(data));
-
     // disable the editor.
     toggleEditor(masterEditor, false);
 
