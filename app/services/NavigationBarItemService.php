@@ -26,17 +26,20 @@ class NavigationBarItemService
      */
     public function getNavBarItemById(int $id): NavigationBarItem
     {
+        $id = htmlspecialchars($id);
         return $this->navBarItemRepository->getById($id);
     }
 
     public function setNavbars(array $navbars): array
     {
-        //return $navbars;
         // First, we must clear the database of all the navigation bar items.
         $this->navBarItemRepository->clear();
 
         // Then, we must add the new navigation bar items.
         foreach ($navbars as $navbar) {
+            $navbar->getPage()->setId(htmlspecialchars($navbar->getPage()->getId()));
+            $navbar->setOrder(htmlspecialchars($navbar->getOrder()));
+
             $id = $this->navBarItemRepository->insert($navbar->getPage()->getId(), $navbar->getOrder());
 
             // If the navigation bar item has children, we must add them as well.

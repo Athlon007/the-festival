@@ -19,6 +19,7 @@ class TicketTypeService
 
     public function getById($id): TicketType
     {
+        $id = htmlspecialchars($id);
         return $this->ticketTypeRepository->getById($id);
     }
 

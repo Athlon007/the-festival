@@ -60,13 +60,16 @@ class EventService
     public function addEvent($event): Event
     {
         $event->setName(htmlspecialchars($event->getName()));
+        $event->setAvailableTickets(htmlspecialchars($event->getAvailableTickets()));
+        $event->setStartTime(htmlspecialchars($event->getStartTime()));
+        $event->setEndTime(htmlspecialchars($event->getEndTime()));
 
         if ($event->getStartTime() > $event->getEndTime()) {
             throw new InvalidVariableException("Start time cannot be after end time");
         }
 
         if ($event->getEventType() !== null) {
-            $eventTypeId = $event->getEventType()->getId();
+            $eventTypeId = htmlspecialchars($event->getEventType()->getId());
         }
 
         $id = $this->repo->createEvent(
@@ -79,6 +82,8 @@ class EventService
 
         // if event is type of jazzevent
         if ($event instanceof MusicEvent) {
+            $event->getArtist()->setId(htmlspecialchars($event->getArtist()->getId()));
+            $event->getLocation()->setLocationId(htmlspecialchars($event->getLocation()->getLocationId()));
             $this->repo->createJazzEvent(
                 $id,
                 $event->getArtist()->getId(),
@@ -94,12 +99,15 @@ class EventService
     public function editEvent($event): Event
     {
         $event->setName(htmlspecialchars($event->getName()));
+        $event->setId(htmlspecialchars($event->getId()));
+        $event->setStartTime(htmlspecialchars($event->getStartTime()));
+        $event->setEndTime(htmlspecialchars($event->getEndTime()));
 
         if ($event->getStartTime() > $event->getEndTime()) {
             throw new InvalidVariableException("Start time cannot be after end time");
         }
 
-        $eventTypeId = $event->getEventType()->getId();
+        $eventTypeId = htmlspecialchars($event->getEventType()->getId());
 
         $this->repo->updateEvent(
             $event->getId(),
@@ -111,6 +119,9 @@ class EventService
 
         // if event is type of jazzevent
         if ($event instanceof MusicEvent) {
+            $event->getArtist()->setId(htmlspecialchars($event->getArtist()->getId()));
+            $event->getLocation()->setLocationId(htmlspecialchars($event->getLocation()->getLocationId()));
+
             $this->repo->updateJazzEvent(
                 $event->getId(),
                 $event->getArtist()->getId(),

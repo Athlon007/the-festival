@@ -76,7 +76,7 @@ class PageService
             throw new PageNotFoundException("Page with ID '$id' was not found.");
         }
 
-        /*
+
         // Check if file exists
         if (!($page instanceof TextPage)) {
             // Check if file exists
@@ -85,7 +85,7 @@ class PageService
                 throw new FileDoesNotExistException("File at '$location' was not found.");
             }
         }
-        */
+
 
         return $page;
     }

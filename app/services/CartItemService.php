@@ -3,6 +3,7 @@
 require_once(__DIR__ . "/../repositories/CartItemRepository.php");
 require_once("EventService.php");
 require_once("TicketTypeService.php");
+require_once(__DIR__ . "/../models/Exceptions/ObjectNotFoundException.php");
 
 class CartItemService
 {
@@ -27,7 +28,7 @@ class CartItemService
     {
         $item = $this->repo->getByEventId($id);
         if ($item == null) {
-            throw new Exception("CartItem not found");
+            throw new ObjectNotFoundException("CartItem not found");
         }
         return $item;
     }
