@@ -38,6 +38,7 @@ class ImageAPIController extends APIController
 
         if (str_starts_with($uri, "/api/images") && is_numeric(basename($uri))) {
             $this->service->removeImage(basename($uri));
+            $this->sendSuccessMessage("Image removed.");
             return;
         }
 
