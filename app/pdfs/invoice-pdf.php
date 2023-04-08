@@ -2,17 +2,17 @@
 
 <div class="container">
     <h2>Invoice</h2>
-    <h3>Invoice number: <?php $order->getOrderId() ?></h3>
+    <h3>Order number: <?php $order->getOrderId() ?></h3>
 
     <div>
-        <label>Invoice date:</label>
+        <h5>Invoice date:</h5>
         <p>
             <?= $order->getOrderDate()->format('l, m/d/Y') ?>
         </p>
     </div>
     
-    <div class="customer">
-        <label>Customer:</label>
+    <div>
+        <h5>Customer:</h5>
         <p>
             <?php $order->getCustomer()->getFullName() ?><br>
             <?php $order->getCustomer()->getAddress()->getAddressLine1() ?><br>
@@ -33,7 +33,6 @@
             </tr>
     
             <?php foreach($order->getTickets() as $ticket){ ?>
-            
             <tr>
                 <td><?php $ticket->getEvent()->getName() ?> </td>
                 <td><?php $ticket->getEvent()->getName() ?> </td>
@@ -52,14 +51,14 @@
         </tbody>
     </table>
 
-    <div class="ticket-info">
+    <div>
         <label>Event Date:</label>
         <p>
             <?= $ticket->getEvent()->getStartTime()->format('l, m/d/Y') ?>
         </p>
     </div>
 
-    <div class="ticket-info">
+    <div>
         <label>Event Time:</label>
         <p>
             <?= $ticket->getEvent()->getStartTime()->format('H:i') ?>
@@ -67,26 +66,26 @@
         </p>
     </div>
 
-    <div class="ticket-info">
+    <div>
         <label>Customer Name:</label>
         <p>
             <?= $ticket->getCustomer()->getFirstName() . ' ' . $ticket->getCustomer()->getLastName() ?>
         </p>
     </div>
 
-    <div class="ticket-info">
+    <div>
         <label>Event Location:</label>
         <p>St. Bavo Church</p>
     </div>
 
-    <div class="ticket-info">
+    <div>
         <label>Customer Email:</label>
         <p>
             <?= $ticket->getCustomer()->getEmail() ?>
         </p>
     </div>
 
-    <div class="ticket-info">
+    <div>
         <label>Price:</label>
         <p style="color: red"><strong>€
                 <?= $ticket->getEvent()->getPrice() ?>
@@ -106,19 +105,6 @@
         font-size: 16px;
     }
 
-    h1 {
-        color: brown;
-        font-size: 24px;
-        font-weight: bold;
-        margin: 0 0 20px;
-        text-align: center;
-        text-transform: uppercase;
-    }
-
-    .ticket-information {
-        font-style: italic;
-    }
-
     .container {
         background-color: #fff;
         border-radius: 10px;
@@ -126,28 +112,5 @@
         margin: 30px auto;
         padding: 30px;
         max-width: 500px;
-    }
-
-    .ticket-info {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-    }
-
-    .ticket-info label {
-        display: inline-block;
-        font-weight: bold;
-        margin-right: 10px;
-        width: 140px;
-    }
-
-    .ticket-info p {
-        display: block;
-        margin: 0;
-        padding: 0;
-    }
-
-    .qr-code {
-        max-width: 150px;
     }
 </style>
