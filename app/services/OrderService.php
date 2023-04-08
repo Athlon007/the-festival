@@ -14,16 +14,16 @@ require_once(__DIR__ . '/../repositories/TicketRepository.php');
 class OrderService
 {
     private $orderRepository;
-    private $cartItemService;
-    private $ticketService;
+    private $cartItemRepository;
+    private $ticketRepository;
 
     const CART_ARRAY = 'cartItemIds';
 
     public function __construct()
     {
         $this->orderRepository = new OrderRepository();
-        $this->cartItemService = new CartItemService();
-        $this->ticketService = new TicketService();
+        $this->cartItemRepository = new CartItemRepository();
+        $this->ticketRepository = new TicketRepository();
     }
 
     public function getOrderById($id)
@@ -46,7 +46,7 @@ class OrderService
         $order = new Order();
         $order->setCustomer($customer);
         foreach ($cartItemIds as $cartItemId) {
-            $cartItem = $this->cartItemRepository->getCartItemById($cartItemId);
+            $cartItem = $this->cartItemRepository->getById($cartItemId);
             $ticket = $cartItem->getTicket();
             $tickets[] = $ticket;
         }
