@@ -37,9 +37,6 @@ class NavigationBarItemService
 
         // Then, we must add the new navigation bar items.
         foreach ($navbars as $navbar) {
-            $navbar->getPage()->setId(htmlspecialchars($navbar->getPage()->getId()));
-            $navbar->setOrder(htmlspecialchars($navbar->getOrder()));
-
             $id = $this->navBarItemRepository->insert($navbar->getPage()->getId(), $navbar->getOrder());
 
             // If the navigation bar item has children, we must add them as well.
