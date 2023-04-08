@@ -21,9 +21,9 @@ class JazzArtistRepository extends Repository
         foreach ($arr as $row) {
             $artistId = $row["artistId"];
             $name = htmlspecialchars_decode($row["name"]);
-            $description = htmlspecialchars_decode($row["description"]);
-            $genres = htmlspecialchars_decode($row["genres"]);
-            $country = htmlspecialchars_decode($row["country"]);
+            $description = $this->readIfSet($row, "description");
+            $genres = $this->readIfSet($row, "genres");
+            $country = $this->readIfSet($row, "country");
 
             $homepage = $this->readIfSet($row, "homepageUrl");
             $facebook = $this->readIfSet($row, "facebookUrl");
@@ -114,7 +114,7 @@ class JazzArtistRepository extends Repository
     /**
      * Returns the artist with the given id.
      */
-    public function getById($id): Artist
+    public function getById($id): ?Artist
     {
         $sql = "SELECT artistId, name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, recentAlbums, artistKindId "
             . "FROM JazzArtists WHERE artistId = :id";
@@ -123,6 +123,9 @@ class JazzArtistRepository extends Repository
         $statement->execute();
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         $artists = $this->buildJazzArtist($result);
+        if (count($artists) == 0) {
+            return null;
+        }
         return $artists[0];
     }
 
@@ -143,7 +146,7 @@ class JazzArtistRepository extends Repository
         $artistKindId
     ): int {
         $sql = "INSERT INTO JazzArtists "
-            . "(name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl) "
+            . "(name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, artistKindId) "
             . "VALUES (:name, :description, :recentAlbums, :genres, :country, :homepageUrl, :facebookUrl, :twitterUrl, :instagramUrl, :spotifyUrl, :artistKindId)";
         $statement = $this->connection->prepare($sql);
         $statement->bindParam(":name", $name);
@@ -157,6 +160,7 @@ class JazzArtistRepository extends Repository
         $statement->bindParam(":instagramUrl", $instagramUrl);
         $statement->bindParam(":spotifyUrl", $spotifyUrl);
         $statement->bindParam(":artistKindId", $artistKindId);
+
         $statement->execute();
 
         return $this->connection->lastInsertId();

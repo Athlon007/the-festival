@@ -4,10 +4,11 @@ function resetPassword() {
     const data = {
         email: emailField.value
     }
-    
+
     fetch("/api/user/resetPassword", {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
     }).then(res => res.json())
         .then(data => {
@@ -18,5 +19,3 @@ function resetPassword() {
             }
         })
 };
-
-

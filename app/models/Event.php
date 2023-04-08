@@ -6,21 +6,30 @@ class Event implements JsonSerializable
     private $name;
     private DateTime $startTime;
     private DateTime $endTime;
-    private EventType $eventType;
-    private int $availableTickets = 0;
+    private ?EventType $eventType;
+    private ?int $availableTickets;
 
     public function jsonSerialize(): mixed
     {
-        return [
+        $obj = [
             "id" => $this->getId(),
             "name" => $this->getName(),
             "startTime" => $this->getStartTime(),
             "endTime" => $this->getEndTime(),
-            "vat" => $this->getVat(),
-            "availableTickets" => $this->getAvailableTickets(),
+            "vat" => $this->getVat()
         ];
+
+        if (isset($this->availableTickets) && $this->availableTickets != null && $this->availableTickets) {
+            $obj["availableTickets"] = $this->availableTickets;
+        }
+
+        if (isset($this->eventType) && $this->eventType != null && $this->eventType) {
+            $obj["eventType"] = $this->eventType;
+        }
+
+        return $obj;
     }
-    
+
     public function getId()
     {
         return $this->id;
@@ -68,11 +77,24 @@ class Event implements JsonSerializable
 
     public function getAvailableTickets()
     {
+        if (!isset($this->availableTickets) || $this->availableTickets == null || !$this->availableTickets) {
+            return null;
+        }
         return $this->availableTickets;
     }
 
     public function setAvailableTickets($value)
     {
         $this->availableTickets = $value;
+    }
+
+    public function getEventType(): ?EventType
+    {
+        return $this->eventType;
+    }
+
+    public function setEventType(?EventType $value)
+    {
+        $this->eventType = $value;
     }
 }

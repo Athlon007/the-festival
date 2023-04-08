@@ -1,169 +1,146 @@
 <?php
 
 require_once(__DIR__ . "/../models/CartItem.php");
+require_once(__DIR__ . "/../models/Types/TicketType.php");
+require_once(__DIR__ . "/../models/Types/EventType.php");
 require_once("Repository.php");
-require_once("EventRepository.php");
-require_once("TicketTypeRepository.php");
 
 class CartItemRepository extends Repository
 {
-    private function buildCartItems($arr): array
+    protected function build($arr): array
     {
-        $eventRepo = new EventRepository();
-        $ttRepo = new TicketTypeRepository();
+        require_once(__DIR__ . "/../models/Event.php");
+
         $output = array();
 
         foreach ($arr as $item) {
-            $event = $eventRepo->getEventById($item['eventId']);
-            $ticketType = $ttRepo->getById($item['ticketTypeId']);
+            $evenType = new EventType(
+                $item['eventTypeId'],
+                $item['eventTypeName'],
+                $item['evenTypeVat']
+            );
+
+            $event = new Event();
+            $event->setId($item['eventId']);
+            $event->setName(htmlspecialchars_decode($item['eventName']));
+            $event->setStartTime(new DateTime($item['startTime']));
+            $event->setEndTime(new DateTime($item['endTime']));
+            $event->setAvailableTickets($item['availableTickets']);
+            $event->setEventType($evenType);
+
+            $ticketType = new TicketType(
+                $item['ticketTypeId'],
+                $item['ticketTypeName'],
+                $item['ticketTypePrice'],
+                $item['ticketTypeNrOfPeople']
+            );
+
             $cartItem = new CartItem($item['cartItemId'], $event, $ticketType);
-            array_push($output, $cartItem);
+
+            $output[] = $cartItem;
         }
 
         return $output;
     }
 
-    public function getAll()
+    protected function readIfSet($value)
     {
-        $sql = "SELECT cartItemId, eventId, ticketTypeId FROM cartitems";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetchAll();
-        return $this->buildCartItems($result);
+        if (isset($value)) {
+            return $value;
+        } else {
+            return "";
+        }
     }
 
-    public function getAllJazz($sort = null, $filters = [])
+    public function getAll($sort = null, $filters = [])
     {
-        $sql = "select c.cartItemId, e.eventId, t.ticketTypeId, je.locationId " .
-            "from cartitems c " .
-            "join tickettypes t ON t.ticketTypeId = c.ticketTypeId " .
-            "join events e  on e.eventId = c.eventId " .
-            "join jazzevents je on je.eventId = e.eventId ";
-
-        if (!empty($filters) && !(count($filters) === 1 && isset($filters['artist_kind']))) {
-            // if only filter is artist_kind, skip
-            $sql .= " WHERE ";
-            $i = 0;
-            if (isset($filters['artist_kind'])) {
-                $i++;
-            }
-
-            foreach ($filters as $key => $filter) {
-                switch ($key) {
-                    case 'price_from':
-                        $sql .= " t.ticketTypePrice >= :$key ";
-                        break;
-                    case 'price_to':
-                        $sql .= " t.ticketTypePrice <= :$key ";
-                        break;
-                    case 'time_from':
-                        $sql .= " HOUR(e.startTime) >= :$key ";
-                        break;
-                    case 'time_to':
-                        $sql .= " HOUR(e.endTime) <= :$key ";
-                        break;
-                    case 'hide_no_seats':
-                        // TODO: Hide events with no seats.
-                        break;
-                    case 'day':
-                        $sql .= " DAY(e.startTime) = :$key ";
-                        break;
-                    case 'date':
-                        $sql .= " DATE(e.startTime) = :$key ";
-                        break;
-                    case 'location':
-                        $sql .= " je.locationId = :$key ";
-                        break;
-                    default:
-                        // no filtering by default
-                        $i++;
-                        continue 2;
-                }
-
-                if ($i < count($filters) - 1) {
-                    $sql .= " AND ";
-                }
-                $i++;
-            }
-        }
-
-        if (isset($sort)) {
-            switch ($sort) {
-                case "time_desc":
-                    $sql .= " ORDER BY e.startTime DESC";
-                    break;
-                case "price":
-                    $sql .= " ORDER BY t.ticketTypePrice";
-                    break;
-                case "price_desc":
-                    $sql .= " ORDER BY t.ticketTypePrice DESC";
-                    break;
-                default:
-                    $sql .= " ORDER BY e.startTime";
-                    break;
-            }
-        }
-
+        $sql = "SELECT e.eventId,
+		e.name as eventName,
+		e.startTime,
+		e.endTime,
+		e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets,
+		f.eventTypeId as eventTypeId,
+		f.name as eventTypeName,
+		f.VAT as evenTypeVat,
+		t.ticketTypeId as ticketTypeId,
+		t.ticketTypeName as ticketTypeName,
+		t.ticketTypePrice as ticketTypePrice,
+		t.nrOfPeople as ticketTypeNrOfPeople,
+        c.cartItemId as cartItemId
+    FROM Events e
+    JOIN cartitems c on e.eventId = c.eventId
+    join tickettypes t on c.ticketTypeId = t.ticketTypeId
+    join festivaleventtypes f on f.eventTypeId  = e.festivalEventType";
         $stmt = $this->connection->prepare($sql);
-
-        if (!(count($filters) === 1 && isset($filters['artist_kind']))) {
-            foreach ($filters as $key => $filter) {
-                if ($key == 'artist_kind') {
-                    continue;
-                }
-
-                $pdoType = is_numeric($filter) ? PDO::PARAM_INT : PDO::PARAM_STR;
-                if (str_starts_with($key, 'price')) {
-                    $pdoType = PDO::PARAM_STR;
-                }
-                $stmt->bindValue(':' . $key, $filter, $pdoType);
-            }
-        }
-
         $stmt->execute();
         $result = $stmt->fetchAll();
-
-        require_once(__DIR__ . "/LocationRepository.php");
-        $eventRepo = new EventRepository();
-        $locationRepo = new LocationRepository();
-        $ticketTypeRepo = new TicketTypeRepository();
-        $output = array();
-        foreach ($result as $key => $item) {
-            $event = $eventRepo->getJazzEventById($item['eventId']);
-            $location = $locationRepo->getById($item['locationId']);
-            $event->setLocation($location);
-            $ticketType = $ticketTypeRepo->getById($item['ticketTypeId']);
-            $cartItem = new CartItem($item['cartItemId'], $event, $ticketType);
-            array_push($output, $cartItem);
-        }
-
-        return $output;
+        return $this->build($result);
     }
 
 
     public function getById($id)
     {
-        $sql = "SELECT cartItemId, eventId, ticketTypeId FROM cartitems WHERE cartItemId = :id";
+        $sql = "SELECT e.eventId,
+		e.name as eventName,
+		e.startTime,
+		e.endTime,
+		e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets,
+		f.eventTypeId as eventTypeId,
+		f.name as eventTypeName,
+		f.VAT as evenTypeVat,
+		t.ticketTypeId as ticketTypeId,
+		t.ticketTypeName as ticketTypeName,
+		t.ticketTypePrice as ticketTypePrice,
+		t.nrOfPeople as ticketTypeNrOfPeople,
+        c.cartItemId as cartItemId
+        FROM Events e
+        JOIN cartitems c on e.eventId = c.eventId
+        join tickettypes t on c.ticketTypeId = t.ticketTypeId
+        join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
+        WHERE cartItemId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        $result = $stmt->fetch();
-        return $this->buildCartItems([$result])[0];
+
+        $result = $stmt->fetchAll();
+        $output = $this->build($result);
+
+        if (empty($output)) {
+            return null;
+        }
+        return $output[0];
     }
 
     public function getByEventId($id): ?CartItem
     {
-        $sql = "SELECT cartItemId, eventId, ticketTypeId FROM cartitems WHERE eventId = :id";
+        $sql = "SELECT e.eventId,
+		e.name as eventName,
+		e.startTime,
+		e.endTime,
+		e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets,
+		f.eventTypeId as eventTypeId,
+		f.name as eventTypeName,
+		f.VAT as evenTypeVat,
+		t.ticketTypeId as ticketTypeId,
+		t.ticketTypeName as ticketTypeName,
+		t.ticketTypePrice as ticketTypePrice,
+		t.nrOfPeople as ticketTypeNrOfPeople,
+        c.cartItemId as cartItemId
+        FROM Events e
+        JOIN cartitems c on e.eventId = c.eventId
+        join tickettypes t on c.ticketTypeId = t.ticketTypeId
+        join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
+        WHERE e.eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        $output = $this->buildCartItems($result);
-        if (count($output) > 0) {
-            return $output[0];
+        $output = $this->build($result);
+        if (empty($output)) {
+            return null;
         }
-        return null;
+        return $output[0];
     }
 
     public function createCartItem($eventId, $ticketTypeId): int

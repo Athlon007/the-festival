@@ -14,10 +14,10 @@ class AllAccessPass {
         return new AllAccessPass(container);
     }
 
-    build() {
+    async build() {
         this.container.innerHTML = '';
         this.container.className = 'row col-12 d-flex justify-content-center mx-auto allday-pass px-0';
-        this.details = this.getAllAccessPass(this.container.dataset.kind);
+        this.details = await this.getAllAccessPass(this.container.dataset.kind);
 
         let headerContainer = document.createElement('div');
         headerContainer.classList.add('row', 'col-12', 'col-xl-6', 'col-xl-5', 'mx-auto', 'text-center');
@@ -104,11 +104,10 @@ class AllAccessPass {
         this.container.appendChild(rowDetailsAndPurchase);
     }
 
-    getAllAccessPass(kind) {
+    async getAllAccessPass(kind) {
 
         if (kind == 'jazz') {
-            // TODO: Get jazz pass from API.
-            return {
+            let obj = {
                 name: 'All-Access Jazz Pass',
                 perks: [
                     'Pay once to access everything',
@@ -117,20 +116,48 @@ class AllAccessPass {
                 ],
                 passes: [
                     {
+                        id: 7,
                         name: 'One-day pass',
                         price: 35
                     },
                     {
+                        id: 8,
                         name: 'All-Day Pass',
                         price: 80
                     }
                 ]
             }
+
+            let t1 = await fetch('/api/tickettypes/7', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            let data1 = await t1.json()
+
+            let t2 = await fetch('/api/tickettypes/8', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            let data2 = await t2.json()
+
+            obj.passes[0].price = data1.price;
+            obj.passes[1].price = data2.price;
+
+            return obj;
         }
     }
 
     addPassToCart(pass) {
-        // TODO: Add pass to cart.
-        console.log('Added pass to cart: ' + pass.name + ' for € ' + pass.price + '.')
+        // redirect to /buyPass
+        let kindId = -1;
+        if (this.container.dataset.kind == 'jazz') {
+            kindId = 1;
+        }
+
+        window.location.href = '/buyPass?event_type=' + kindId;
     }
 }

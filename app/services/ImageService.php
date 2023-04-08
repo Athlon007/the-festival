@@ -8,7 +8,7 @@ class ImageService
 {
     private $imageRepository;
 
-    private $allowedImageTypes = array("png", "jpg", "jpeg");
+    private $allowedImageTypes = array("png", "jpg", "jpeg", "webp");
 
     public function __construct()
     {
@@ -56,27 +56,33 @@ class ImageService
         $fileName = basename($file["name"]);
         $fileName = str_replace(" ", "_", $fileName);
         // get file extension
-        $fileExtension = pathinfo($file["name"], PATHINFO_EXTENSION);
+        $fileExtension = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
 
         // check if file is an image
         if (!in_array($fileExtension, $this->allowedImageTypes)) {
-            throw new UploadException("File is not an image. Only PNG and JPEG are allowed.");
+            throw new UploadException("File is not an image. Allowed formats are: " . implode(', ', $this->allowedImageTypes) . ". This image type: " . $fileExtension);
         }
 
         // rename jpeg to jpg
-        $fileName = str_replace("jpeg", "jpg", $fileName);
+        $fileNameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
         $fileExtension = str_replace("jpeg", "jpg", $fileExtension);
-        $targetFile = $targetDirectory . $fileExtension . "/" . $fileName;
+        // Where the file is supposed to be saved.
+        $targetFile = $targetDirectory . $fileExtension . "/" . $fileNameWithoutExtension . "." . $fileExtension;
 
         // if file already exists, append a number to the end of the file name
         $i = 1;
         while (file_exists($targetFile)) {
-            $targetFile = $targetDirectory . $fileExtension . "/" . $i . basename($file);
+            $fileNameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME) . "(" . $i . ")";
+            $targetFile = $targetDirectory . $fileExtension . "/" . $fileNameWithoutExtension . "." . $fileExtension;
             $i++;
         }
-
         // generate src
-        $src = "/img/" . $fileExtension . "/" . $fileName;
+        $src = "/img/" . $fileExtension . "/" . $fileNameWithoutExtension . "." . $fileExtension;
+
+        // Check if folder for this image format exists.
+        if (!file_exists($targetDirectory . $fileExtension)) {
+            mkdir($targetDirectory . $fileExtension);
+        }
 
         move_uploaded_file($file["tmp_name"], $targetFile);
         $this->imageRepository->addImage($src, $alt);

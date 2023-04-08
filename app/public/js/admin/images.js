@@ -50,6 +50,7 @@ document.getElementById('btn-remove').onclick = () => {
     if (id) {
         fetch(`/api/images/` + id, {
             method: 'DELETE',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -74,6 +75,7 @@ document.getElementById('btn-save').onclick = () => {
     if (id) {
         fetch(`/api/images/` + id, {
             method: 'PUT',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             },

@@ -1,209 +1,285 @@
 <?php
 
+use function PHPSTORM_META\map;
+
 require_once(__DIR__ . '/../../models/Event.php');
 require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
-require_once(__DIR__ . '/../../services/CartItemService.php');
+require_once(__DIR__ . '/../../services/EventTypeService.php');
+require_once(__DIR__ . '/../../services/TicketTypeService.php');
 require_once("APIController.php");
+require_once(__DIR__ . '/../../models/Types/TicketType.php');
+require_once(__DIR__ . '/../../models/CartItem.php');
+
+require_once(__DIR__ . '/../../services/CartItemService.php');
+require_once(__DIR__ . '/../../services/JazzCartItemService.php');
+require_once(__DIR__ . '/../../services/HistoryCartItemService.php');
+require_once(__DIR__ . '/../../services/PassCartItemService.php');
 
 class EventAPIController extends APIController
 {
     private $service;
+    private $ticketTypeService;
+    private $eventTypeService;
 
     public function __construct()
     {
         $this->service = new EventService();
+        $this->ticketTypeService = new TicketTypeService();
+        $this->eventTypeService = new EventTypeService();
     }
 
     public function handleGetRequest($uri)
     {
         $sort = $_GET['sort'] ?? 'time';
-        $filters = [];
+        $filters = isset($_GET) ? $_GET : [];
 
-        if (isset($_GET['time_from'])) {
-            $filters['time_from'] = $_GET['time_from'];
-        }
-        if (isset($_GET['time_to'])) {
-            $filters['time_to'] = $_GET['time_to'];
-        }
+        // remove the 'sort' from filters
+        unset($filters['sort']);
 
-        if (isset($_GET['price_from'])) {
-            $filters['price_from'] = $_GET['price_from'];
-        }
-        if (isset($_GET['price_to'])) {
-            $filters['price_to'] = $_GET['price_to'];
-        }
+        // htmlspecialchars all the things
+        $sort = htmlspecialchars($sort);
+        $filters = array_map('htmlspecialchars', $filters);
 
-        if (isset($_GET['day'])) {
-            $filters['day'] = $_GET['day'];
-        }
+        $cartItemService = new CartItemService();
 
         try {
-            if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
+            if (str_starts_with($uri, '/api/events/dates')) {
+                $eventService = new EventService();
+                $dates = $eventService->getFestivalDates();
+                echo json_encode($dates);
+            } elseif (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
                 if (isset($_GET['artist'])) {
                     $artistId = $_GET['artist'];
                     echo json_encode($this->service->getJazzEventsByArtistId($artistId));
                     return;
                 }
 
-                if (is_numeric(basename($uri))) {
-                    $id = basename($uri);
-                    $event = $this->service->getJazzEventById($id);
-                    echo json_encode($event);
-                    return;
-                }
+                $cartItemService = new JazzCartItemService();
 
-                if (isset($_GET['hide_no_seats'])) {
-                    $filters['hide_no_seats'] = $_GET['hide_no_seats'];
+                if (is_numeric(basename($uri))) {
+                    echo json_encode($cartItemService->getByEventId(basename($uri)));
+                    return;
                 }
 
                 // Get the appropriate kind, or all artists if none is specified.
                 if (str_starts_with($uri, '/api/events/jazz')) {
-                    $filters['artist_kind'] = 'jazz';
+                    $filters['artist_kind'] = '1';
                 } elseif (str_starts_with($uri, '/api/events/dance')) {
-                    $filters['artist_kind'] = 'dance';
+                    $filters['artist_kind'] = '2';
                 }
 
-                $cartItemService = new CartItemService();
-
-                echo json_encode($cartItemService->getAllJazz($sort, $filters));
+                echo json_encode($cartItemService->getAll($sort, $filters));
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
-                require_once(__DIR__ . "/../../services/FestivalHistoryService.php");
-                $strollService = new FestivalHistoryService();
+                $cartItemService = new HistoryCartItemService();
 
                 if (is_numeric(basename($uri))) {
                     $id = basename($uri);
-                    echo json_encode($event);
+                    echo json_encode($cartItemService->getById($id));
                     return;
                 }
 
-                if (isset($_GET['date'])) {
-                    $filters['date'] = $_GET['date'];
+                echo json_encode($cartItemService->getAll($filters));
+            } elseif (str_starts_with($uri, '/api/events/passes')) {
+                $cartItemService = new PassCartItemService();
+                if (is_numeric(basename($uri))) {
+                    echo json_encode($cartItemService->getById(basename($uri)));
+                    return;
                 }
-
-                if (isset($_GET['time'])) {
-                    $filters['time'] = $_GET['time'];
-                }
-
-                if (isset($_GET['language'])) {
-                    $filters['language'] = $_GET['language'];
-                }
-
-                if (isset($_GET['ticket_type'])) {
-                    $filters['ticket_type'] = $_GET['ticket_type'];
-                }
-                echo json_encode($strollService->getAllHistoryEvents());
+                echo json_encode($cartItemService->getAll($filters));
             } else {
                 if (is_numeric(basename($uri))) {
-                    $id = basename($uri);
-                    $event = $this->service->getEventById($id);
-                    if ($event == null) {
-                        $this->sendErrorMessage("Event with id $id not found", 404);
-                        return;
-                    }
-                    echo json_encode($event);
+                    echo json_encode($cartItemService->getByEventId(basename($uri)));
                     return;
                 }
-
-                $cartItemService = new CartItemService();
                 echo json_encode($cartItemService->getAll());
             }
         } catch (TypeError $e) {
-            $this->sendErrorMessage("Event not found", 404);
+            $this->sendErrorMessage("Event not found. " . $e->getMessage(), 404);
         } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled exception: " . $e->getMessage(), 500);
+            $this->sendErrorMessage("Unhandled exception: " . $e->getMessage() . "\r\n" . $e->getTraceAsString(), 500);
         }
     }
 
     public function handlePostRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
+            $ticketType = $this->ticketTypeService->getById($data['ticketType']['id']);
+
+            $event = null;
+            $cartItemService = new CartItemService();
+
             if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
+                $cartItemService = new JazzCartItemService();
                 require_once(__DIR__ . '/../../services/JazzArtistService.php');
                 $artistService = new JazzArtistService();
-                $artist = $artistService->getById($data['artist']['artistId']);
+                $artist = $artistService->getById($data['event']['artist']['id']);
 
                 require_once(__DIR__ . '/../../services/LocationService.php');
                 $locationService = new LocationService();
-                $location = $locationService->getById($data['location']['locationId']);
+                $location = $locationService->getById($data['event']['location']['id']);
+
+                // In terms of music events, the capacity is the number of available seats.
+                $availableSeats = $location->getCapacity();
+
+                require_once(__DIR__ . '/../../services/EventTypeService.php');
+                $eventTypeService = new EventTypeService();
+                $eventType = $eventTypeService->getById($data['event']['eventType']['id']);
 
                 $event = new MusicEvent(
-                    null,
-                    $data['name'],
-                    new DateTime($data['startTime']),
-                    new DateTime($data['endTime']),
+                    $data['event']['id'],
+                    $data['event']['name'],
+                    new DateTime($data['event']['startTime']),
+                    new DateTime($data['event']['endTime']),
                     $artist,
-                    $location
+                    $location,
+                    $eventType,
+                    $availableSeats,
                 );
-
-                try {
-                    $event = $this->service->addEvent($event);
-
-                    echo json_encode($event);
-                } catch (Exception $e) {
-                    $this->sendErrorMessage($e->getMessage());
-                }
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
             } else {
-                $this->sendErrorMessage('Invalid request', 400);
+                // if availableTickets is not set, it is a pass.
+                if (isset($data['event']['availableTickets'])) {
+                    $this->sendErrorMessage('Invalid request', 400);
+                    return;
+                }
+
+                $event = new Event();
+                $event->setId($data['event']['id']);
+                $event->setName($data['event']['name']);
+                $event->setStartTime(new DateTime($data['event']['startTime']));
+                $event->setEndTime(new DateTime($data['event']['endTime']));
+
+                $eventType = null;
+                if (isset($data['event']['eventType'])) {
+                    $eventType = $this->eventTypeService->getById($data['event']['eventType']['id']);
+                }
+
+                $event->setEventType($eventType);
             }
+
+            $cartItem = new CartItem(0, $event, $ticketType);
+
+            $cartItem = $cartItemService->add($cartItem);
+
+            echo json_encode($cartItem);
         } catch (InvalidVariableException $e) {
             $this->sendErrorMessage($e->getMessage(), 400);
         } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled exception", 500);
+            $this->sendErrorMessage("Unhandled exception. " . $e->getMessage() . "\r\n\r\n" . $e->getTraceAsString(), 500);
         }
     }
 
     public function handlePutRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
-            $editedEventId = basename($uri);
+            $editedCartItemID = basename($uri);
+            $ticketType = $this->ticketTypeService->getById($data['ticketType']['id']);
+
+            $event = null;
+
+            $cartItemService = new CartItemService();
 
             if (str_starts_with($uri, '/api/events/jazz') || str_starts_with($uri, '/api/events/dance')) {
+                $cartItemService = new JazzCartItemService();
                 require_once(__DIR__ . '/../../services/JazzArtistService.php');
                 $artistService = new JazzArtistService();
-                $artist = $artistService->getById($data['artist']['artistId']);
+                $artist = $artistService->getById($data['event']['artist']['id']);
 
                 require_once(__DIR__ . '/../../services/LocationService.php');
                 $locationService = new LocationService();
-                $location = $locationService->getById($data['location']['locationId']);
+                $location = $locationService->getById($data['event']['location']['id']);
+
+                $availableSeats = null;
+                if (isset($data['event']['availableSeats'])) {
+                    $availableSeats = $data['event']['availableSeats'];
+                }
+
+                require_once(__DIR__ . '/../../services/EventTypeService.php');
+                $eventTypeService = new EventTypeService();
+                $eventType = $eventTypeService->getById($data['event']['eventType']['id']);
 
                 $event = new MusicEvent(
-                    $editedEventId,
-                    $data['name'],
-                    new DateTime($data['startTime']),
-                    new DateTime($data['endTime']),
+                    basename($uri),
+                    $data['event']['name'],
+                    new DateTime($data['event']['startTime']),
+                    new DateTime($data['event']['endTime']),
                     $artist,
-                    $location
+                    $location,
+                    $eventType,
+                    $availableSeats
                 );
-
-                $event = $this->service->editEvent($event);
-                echo json_encode($event);
             } elseif (str_starts_with($uri, '/api/events/stroll')) {
             } else {
-                $this->sendErrorMessage('Invalid request', 400);
+                // if availableTickets is not set, it is a pass.
+                if (isset($data['event']['availableTickets'])) {
+                    $this->sendErrorMessage('Invalid request', 400);
+                    return;
+                }
+
+                $event = new Event();
+                $event->setId(basename($uri));
+                $event->setName($data['event']['name']);
+                $event->setStartTime(new DateTime($data['event']['startTime']));
+                $event->setEndTime(new DateTime($data['event']['endTime']));
+
+                $eventType = null;
+                if (isset($data['event']['eventType'])) {
+                    $eventType = new EventType(
+                        $data['event']['eventType']['id'],
+                        $data['event']['eventType']['name'],
+                        $data['event']['eventType']['vat']
+                    );
+                }
+
+                $event->setEventType($eventType);
             }
+
+            $cartItem = new CartItem($data["id"], $event, $ticketType);
+
+            $cartItem = $cartItemService->updateCartItem($cartItem);
+
+            echo json_encode($cartItem);
         } catch (InvalidVariableException $e) {
             $this->sendErrorMessage($e->getMessage(), 400);
         } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled Exception", 500);
+            $this->sendErrorMessage("Unhandled Exception. " . $e->getMessage(), 500);
         }
     }
 
     public function handleDeleteRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         try {
-            $deletedEventId = basename($uri);
+            $deleteEventId = basename($uri);
+            $cartItemService = new CartItemService();
+            $ci = $cartItemService->getByEventId($deleteEventId);
+            $cartItemService->deleteCartItem($ci);
 
-            $this->service->deleteEvent($deletedEventId);
+            $ciId = $ci->getId();
+            $eventId = $ci->getEvent()->getId();
 
-            $this->sendSuccessMessage("Event with id $deletedEventId deleted", 200);
+            $this->sendSuccessMessage("Cart Item $ciId and event $eventId deleted.", 200);
         } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled exception", 500);
+            $this->sendErrorMessage("Unhandled exception. " . $e->getMessage() . " " . $e->getTraceAsString(), 500);
         }
     }
 }

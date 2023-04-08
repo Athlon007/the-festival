@@ -11,22 +11,24 @@ class Order implements JsonSerializable
     private $totalVat9;
     private $totalVat21;
     private $totalFullPrice;
-   
-    public function jsonSerialize(){
-    return [
-        'orderId' => $this->orderId,
-        'tickets' => $this->tickets,
-        'customer' => $this->customer,
-        'orderDate' => $this->orderDate,
-        'isPaid' => $this->isPaid,
-        'totalBasePrice' => $this->totalBasePrice,
-        'totalVat9' => $this->totalVat9,
-        'totalVat21' => $this->totalVat21,
-        'totalFullPrice' => $this->totalFullPrice,
-    ];
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'orderId' => $this->orderId,
+            'tickets' => $this->tickets,
+            'customer' => $this->customer,
+            'orderDate' => $this->orderDate,
+            'isPaid' => $this->isPaid,
+            'totalBasePrice' => $this->totalBasePrice,
+            'totalVat9' => $this->totalVat9,
+            'totalVat21' => $this->totalVat21,
+            'totalFullPrice' => $this->totalFullPrice,
+        ];
     }
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->tickets = [];
         $this->orderDate = new DateTime("now");
         $this->isPaid = false;
@@ -94,7 +96,8 @@ class Order implements JsonSerializable
         $this->isPaid = $isPaid;
     }
 
-    public function getTotalBasePrice(){
+    public function getTotalBasePrice()
+    {
         $totalBasePrice = 0;
         foreach ($this->tickets as $ticket) {
             $totalBasePrice += $ticket->getBasePrice();
@@ -110,6 +113,4 @@ class Order implements JsonSerializable
         }
         return $totalPrice;
     }
-
-
 }

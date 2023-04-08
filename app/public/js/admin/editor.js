@@ -26,7 +26,7 @@ tinymce.init({
     menu: {
         custom: {
             title: 'Modules',
-            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile | customJazzOptions customStrollOptions customYummyOptions '
+            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile customIframe | customJazzOptions customStrollOptions customYummyOptions '
         }
     },
     menubar: 'file edit view insert format tools table custom',
@@ -295,6 +295,33 @@ tinymce.init({
                     });
                 }
             })
+            editor.ui.registry.addMenuItem('customIframe', {
+                text: 'iFrame',
+                onAction: () => {
+                    msgBox.createDialogWithInputs('Insert iFrame', [
+                        {
+                            label: 'Link',
+                            id: 'link',
+                        },
+                        {
+                            label: 'Width (auto if blank)',
+                            id: 'width',
+                        },
+                        {
+                            label: 'Height (auto if blank)',
+                            id: 'height',
+                        }]
+                        , () => {
+                            let link = document.getElementById('link').value;
+                            let width = document.getElementById('width').value;
+                            if (width == '') width = 'auto';
+                            let height = document.getElementById('height').value;
+                            if (height == '') height = 'auto';
+                            let iframe = `<iframe src='${link}' width='${width}' height='${height}'></iframe>`;
+                            editor.insertContent(iframe);
+                        });
+                }
+            });
         } catch (error) {
             console.error(error);
         }
@@ -307,6 +334,7 @@ function updateExistingPage(id, data) {
         headers: {
             'Content-Type': 'application/json'
         },
+        credentials: 'same-origin',
         body: JSON.stringify(data)
     })
         .then(response => response.json())
@@ -319,7 +347,8 @@ function updateExistingPage(id, data) {
             }
         })
         .catch(error => {
-            msgBox.createToast('Somethin went wrong', error);
+            msgBox.createToast('Somethin went wrong: ', error);
+            console.error(error);
         });
 }
 
@@ -329,6 +358,7 @@ function createNewPage(data) {
         headers: {
             'Content-Type': 'application/json'
         },
+        credentials: 'same-origin',
         body: JSON.stringify(data)
     })
         .then(response => response.json())
@@ -365,7 +395,6 @@ function createNewPage(data) {
 btnSubmit.onclick = function () {
     let titleValue = title.value;
     let pickedImageIds = imgPicker.getSelectedImages();
-    console.log(pickedImageIds);
     let content = tinymce.activeEditor.getContent();
 
     // to json
@@ -393,6 +422,7 @@ document.getElementById('delete').onclick = function () {
         // fetch with post
         fetch('/api/textpages/' + editedPageId, {
             method: 'DELETE',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             }

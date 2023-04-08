@@ -39,8 +39,10 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <label for="price" class="form-label">Price &#40;&euro;&#41;</label>
-                            <input type="number" id="price" class="form-control mb-2" placeholder="15" required>
+                            <label for="ticketType" class="form-label">Ticket Type</label>
+                            <select id="ticketType" class="form-label d-block w-100" required>
+                                <option value="-1" disabled selected>-- Select Ticket Type --</option>
+                            </select>
                         </div>
                     </div>
                     <div class="row">

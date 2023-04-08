@@ -31,6 +31,11 @@ class ImageAPIController extends APIController
 
     public function handleDeleteRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         if (str_starts_with($uri, "/api/images") && is_numeric(basename($uri))) {
             $this->service->removeImage(basename($uri));
             return;
@@ -41,6 +46,11 @@ class ImageAPIController extends APIController
 
     public function handlePutRequest($uri)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
         $data = json_decode(file_get_contents("php://input"));
         if ($data == null) {
             $this->sendErrorMessage("No data received.");
@@ -63,4 +73,3 @@ class ImageAPIController extends APIController
         $this->sendErrorMessage("Invalid request.");
     }
 }
-?>

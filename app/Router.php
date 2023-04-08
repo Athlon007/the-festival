@@ -12,6 +12,9 @@ class Router
      */
     public function route($request): void
     {
+        // Remove anything after '?'.
+        $request = strtok($request, '?');
+
         if (str_starts_with($request, "/api/")) {
             $this->routeAPI($request);
             return;
@@ -23,7 +26,7 @@ class Router
         try {
             //Start or continue session and create cart if it doesn't exist
             session_start();
-            if(!isset($_SESSION['cart'])){
+            if (!isset($_SESSION['cart'])) {
                 $_SESSION['cart'] = array();
             }
 
@@ -102,6 +105,16 @@ class Router
             }
         }
 
+        if (str_starts_with($request, '/admin/')) {
+            $this->routeAdminPanels($request);
+            return;
+        }
+
+        if (str_starts_with($request, '/manage')) {
+            $this->routeAdminManage($request);
+            return;
+        }
+
         // split off the ?
         $request = explode("?", $request)[0];
 
@@ -115,21 +128,6 @@ class Router
                 require_once("controllers/TextPageController.php");
                 $textPageController = new TextPageController();
                 $textPageController->loadPage($page);
-                break;
-            case "/admin/editor":
-                require("views/admin/editor.php");
-                break;
-            case "/admin/artists":
-                require("views/admin/artists.php");
-                break;
-            case "/admin/jazz-events":
-                require("views/admin/jazz-events.php");
-                break;
-            case "/admin/images":
-                require("views/admin/images.php");
-                break;
-            case "/admin/locations":
-                require("views/admin/locations.php");
                 break;
             case "/home/login":
             case "/home/account":
@@ -147,25 +145,10 @@ class Router
                 $authController = new AuthController();
                 $authController->provideEmail();
                 break;
-            case "/manageUsers":
-                require_once("controllers/UserController.php");
-                $userController = new UserController();
-                $userController->manageUsers();
-                break;
-            case "/manageImages":
-                require("views/admin/manageImages.php");
-                return;
-            case "/manageTextPages":
-            case "/manage":
-                require("views/admin/manageTextPages.php");
-                return;
             case "/addUser":
                 require_once("controllers/UserController.php");
                 $userController = new UserController();
                 $userController->addUser();
-                break;
-            case "/konradstestpage":
-                require_once("views/konrads-test-page.php");
                 break;
             case "/shopping-cart":
                 require_once("controllers/OrderController.php");
@@ -177,6 +160,11 @@ class Router
                 $ticketController = new TicketController();
                 $ticketController->buyTicket();
                 break;
+            case "/buyPass":
+            case "/buy-pass":
+            case "/buypass":
+                require_once("views/buy-pass.php");
+                break;
             case "/generateTicket":
                 require_once("controllers/TicketController.php");
                 $ticketController = new TicketController();
@@ -187,50 +175,6 @@ class Router
                 $festivalHistoryController = new FestivalHistoryController();
                 $festivalHistoryController->loadHistoryStrollPage();
                 break;
-            case "/manageRestaurants":
-                require_once("controllers/RestaurantController.php");
-                $restaurantController = new RestaurantController();
-                $restaurantController->manageRestaurants();
-                break;
-            case "/manageJazz":
-                require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->manageJazz();
-                break;
-            case "/addVenue":
-                require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->addVenue();
-                break;
-            case "/updateVenue":
-                require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->updateVenue();
-                break;
-            case "/addArtist":
-                require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->addArtist();
-                break;
-            case "/updateArtist":
-                require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->updateArtist();
-                break;
-            case "/addEvent":
-                require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->addEvent();
-                break;
-            case "/updateEvent":
-                require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->updateEvent();
-                break;
-            case "/manageHistory":
-                require_once("controllers/HistoryController.php");
-                $historyController = new HistoryController();
-                $historyController->manageHistory();
                 break;
             case "/addLocation":
                 require_once("controllers/HistoryController.php");
@@ -242,10 +186,6 @@ class Router
                 $historyController = new HistoryController();
                 $historyController->addTour();
                 break;
-            case "/manageDance":
-            case "/manageDJs":
-                require("views/admin/Dance management/manageDance.php");
-                return;
             case "/foodfestival":
                 require_once("controllers/FestivalFoodController.php");
                 $festivalFoodController = new FestivalFoodController();
@@ -298,6 +238,18 @@ class Router
         } elseif (str_starts_with($request, "/api/events")) {
             require_once("controllers/APIControllers/EventAPIController.php");
             $controller = new EventAPIController();
+        } elseif (str_starts_with($request, "/api/tickettypes")) {
+            require_once("controllers/APIControllers/TicketTypesAPIController.php");
+            $controller = new TicketTypesAPIController();
+        } elseif (str_starts_with($request, "/api/cart")) {
+            require_once("controllers/APIControllers/CartAPIController.php");
+            $controller = new CartAPIController();
+        } elseif (str_starts_with($request, "/api/eventtypes")) {
+            require_once("controllers/APIControllers/EventTypeAPIController.php");
+            $controller = new EventTypeAPIController();
+        } elseif (str_starts_with($request, "/api/pages")) {
+            require_once("controllers/APIControllers/PagesAPIController.php");
+            $controller = new PagesAPIController();
         } else {
             http_response_code(400);
             // send json
@@ -307,5 +259,120 @@ class Router
         }
 
         $controller->initialize($request);
+    }
+
+    private function routeAdminPanels($request)
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION["user"])) {
+            header("Location: /");
+            return;
+        }
+
+        require_once("models/User.php");
+        $user = unserialize($_SESSION['user']);
+
+        if ($user->getUserType() > 2) {
+            header("Location: /");
+            return;
+        }
+
+        switch ($request) {
+            case "/admin/editor":
+                require("views/admin/editor.php");
+                break;
+            case "/admin/artists":
+                require("views/admin/artists.php");
+                break;
+            case "/admin/jazz-events":
+                require("views/admin/jazz-events.php");
+                break;
+            case "/admin/images":
+                require("views/admin/images.php");
+                break;
+            case "/admin/locations":
+                require("views/admin/locations.php");
+                break;
+            case "/admin/tickettypes":
+                require("views/admin/tickettypes.php");
+                break;
+            case "/admin/passes":
+                require("views/admin/passes.php");
+                break;
+            case "/admin/nav":
+                require("views/admin/nav.php");
+                break;
+        }
+    }
+
+    private function routeAdminManage($request)
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION["user"])) {
+            header("Location: /");
+            return;
+        }
+
+        require_once("models/User.php");
+        $user = unserialize($_SESSION['user']);
+
+        if ($user->getUserType() > 2) {
+            header("Location: /");
+            return;
+        }
+
+        if ($user->getUserType() == 2 || $request == "/manageScanTicket") {
+            require_once('views/employee/ticketScan.php');
+            return;
+        }
+
+        switch ($request) {
+            case "/manageUsers":
+                require_once("controllers/UserController.php");
+                $userController = new UserController();
+                $userController->manageUsers();
+                break;
+            case "/manageImages":
+                require("views/admin/manageImages.php");
+                return;
+            case "/manageTextPages":
+            case "/manage":
+                require("views/admin/manageTextPages.php");
+                return;
+            case "/manageTicketTypes":
+                require("views/admin/manageTicketTypes.php");
+                return;
+            case "/managePasses":
+                require("views/admin/managePasses.php");
+                return;
+            case "/manageNavBar":
+                require("views/admin/manageNavBar.php");
+                return;
+            case "/manageDance":
+            case "/manageDJs":
+                require("views/admin/Dance management/manageDance.php");
+                return;
+            case "/manageRestaurants":
+                require_once("controllers/RestaurantController.php");
+                $restaurantController = new RestaurantController();
+                $restaurantController->manageRestaurants();
+                break;
+            case "/manageJazz":
+                require_once("controllers/JazzController.php");
+                $jazzController = new JazzController();
+                $jazzController->manageJazz();
+                break;
+            case "/manageHistory":
+                require_once("controllers/HistoryController.php");
+                $historyController = new HistoryController();
+                $historyController->manageHistory();
+                break;
+        }
     }
 }

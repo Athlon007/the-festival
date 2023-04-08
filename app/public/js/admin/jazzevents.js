@@ -5,7 +5,7 @@ if (window.frameElement == null) {
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;
-let editedEvent = null;
+let editedEventId = -1;
 const locations = document.getElementById('locations');
 const masterEditor = document.getElementById('master-editor');
 const btnOpen = document.getElementById('open');
@@ -13,12 +13,20 @@ const btnOpen = document.getElementById('open');
 // Artist fields.
 const artist = document.getElementById('artist');
 const locationSelect = document.getElementById('location');
-const price = document.getElementById('price');
+const ticketType = document.getElementById('ticketType');
 const startTime = document.getElementById('startTime');
 const endTime = document.getElementById('endTime');
 
 const btnSubmit = document.getElementById('submit');
 let isInCreationMode = false;
+
+// On startTime change finished, set endTime to startTime + 1 hour.
+// Because we are lazy, woooo!
+startTime.onchange = function () {
+    let start = new Date(startTime.value);
+    start.setHours(start.getHours() + 3);
+    endTime.value = start.toISOString().slice(0, 16);
+}
 
 const msgBox = new MsgBox();
 
@@ -35,6 +43,7 @@ if (window.frameElement != null && window.frameElement.getAttribute('data-kind')
 function updateExistingEntry(id, data) {
     fetch(baseURL + "/" + id, {
         method: 'PUT',
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -43,27 +52,8 @@ function updateExistingEntry(id, data) {
         .then(response => response.json())
         .then(data => {
             if (!data.error_message) {
-
-                // update the option in the list
-                let options = locations.getElementsByTagName('option');
-                for (let option of options) {
-                    if (option.value == editedId) {
-                        // remove the option from the list
-                        option.remove();
-                        break;
-                    }
-                }
-
-                // create new option
-                let option = createNewOptionItem(data);
-                locations.appendChild(option);
-                locations.selectedIndex = locations.length - 1;
-                editedId = data.id;
-                editedEvent = data;
-                isInCreationMode = false;
-                btnSubmit.innerHTML = 'Save';
-
-                msgBox.createToast('Success!', 'Location has been updated');
+                loadList();
+                msgBox.createToast('Success!', 'Event has been updated');
             } else {
                 msgBox.createToast('Something went wrong', data.error_message);
             }
@@ -76,6 +66,7 @@ function updateExistingEntry(id, data) {
 function createNewEntry(data) {
     fetch(baseURL, {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -83,22 +74,7 @@ function createNewEntry(data) {
     })
         .then(response => response.json())
         .then(data => {
-            if (!data.error_message) {
-                let option = createNewOptionItem(data);
-                locations.appendChild(option);
-                locations.selectedIndex = locations.length - 1;
-                editedId = data.id;
-                editedEvent = data;
-                isInCreationMode = false;
-                btnSubmit.innerHTML = 'Save';
-                msgBox.createToast('Success!', 'Location has been created');
-
-                // exit the new page mode
-                isInCreationMode = false;
-                btnSubmit.innerHTML = 'Save';
-            } else {
-                msgBox.createToast('Something went wrong', data.error_message);
-            }
+            loadList();
         })
         .catch(error => {
             msgBox.createToast('Something went wrong', error);
@@ -115,35 +91,48 @@ btnSubmit.onclick = function () {
     // to json
     let data = {
         id: 0,
-        name: artist.options[artist.selectedIndex].text,
-        startTime: start,
-        endTime: end,
-        price: price.value,
-        artist: {
-            artistId: artist.value
+        event: {
+            id: editedEventId,
+            name: artist.options[artist.selectedIndex].text,
+            startTime: start,
+            endTime: end,
+            artist: {
+                id: artist.value
+            },
+            location: {
+                id: locationSelect.value
+            },
+            eventType: {
+                id: window.frameElement.getAttribute('data-kind') == 'jazz' ? 1 : 4
+            }
         },
-        location: {
-            locationId: locationSelect.value
+        ticketType: {
+            id: ticketType.value,
         }
     };
+
+    // disable the editor.
+    toggleEditor(masterEditor, false);
 
     if (isInCreationMode) {
         createNewEntry(data);
     } else {
-        updateExistingEntry(editedId, data);
+        data.id = editedId;
+        updateExistingEntry(editedEventId, data);
     }
 }
 
 document.getElementById('delete').onclick = function () {
-    if (editedId === -1) {
+    if (editedEventId === -1) {
         msgBox.createToast('Error!', 'No page selected');
         return;
     }
 
     msgBox.createYesNoDialog('Delete page', 'Are you sure you want to delete this event? This is irreversible!', function () {
         // fetch with post
-        fetch('/api/events/' + editedId, {
+        fetch(baseURL + "/" + editedEventId, {
             method: 'DELETE',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -154,7 +143,7 @@ document.getElementById('delete').onclick = function () {
                     // remove the option from the list
                     let options = locations.getElementsByTagName('option');
                     for (let option of options) {
-                        if (option.value == editedId) {
+                        if (option.value == editedEventId) {
                             option.remove();
                             break;
                         }
@@ -177,14 +166,15 @@ function createNewOptionItem(element) {
     // create option
     let option = document.createElement('option');
 
-    let name = element.name;
-    let location = element.location.name;
-    let dispStartTime = element.startTime.date;
-    let dispEndTime = element.endTime.date;
+    let name = element.event.name;
+    let location = element.event.location.name;
+    let dispStartTime = element.event.startTime.date;
+    let dispEndTime = element.event.endTime.date;
 
     // make sure that name always is 15 chars long
     if (name.length > maxNameLength) {
-        name = name.substring(0, maxNameLength) + '...';
+        // cut off last 3 chars and add ...
+        name = name.substring(0, maxNameLength - 3) + '...';
     } else {
         let spacesAdded = 0;
         let spacesToAdd = maxNameLength - name.length;
@@ -192,8 +182,6 @@ function createNewOptionItem(element) {
             name += '&nbsp;';
             spacesAdded++;
         }
-
-        console.log(name);
     }
 
     // make sure that location always is 15 chars long
@@ -206,8 +194,6 @@ function createNewOptionItem(element) {
             location += '&nbsp;';
             spacesAdded++;
         }
-
-        console.log(location);
     }
 
     // display startTime and endTime in a following pattern: dd/mm/yyyy hh:mm
@@ -216,7 +202,7 @@ function createNewOptionItem(element) {
 
     option.innerHTML = name + ' | ' + location + ' | ' + dispStartTime + ' | ' + dispEndTime;
 
-    option.value = element.id;
+    option.value = element.event.id;
 
     // on click
     option.onclick = function () {
@@ -224,7 +210,7 @@ function createNewOptionItem(element) {
         btnSubmit.innerHTML = 'Save';
         isInCreationMode = false;
         // Do the api call to get the page content.
-        fetch(baseURL + "/" + element.id, {
+        fetch(baseURL + "/" + element.event.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -234,12 +220,12 @@ function createNewOptionItem(element) {
             .then(data => {
                 if (!data.error_message) {
                     editedId = data.id;
-                    editedEvent = data;
+                    editedEventId = data.event.id;
 
                     // select the artist option corresponding to id in the select
                     let options = artist.getElementsByTagName('option');
                     for (let option of options) {
-                        if (option.value == data.artist.id) {
+                        if (option.value == data.event.artist.id) {
                             option.selected = true;
                             break;
                         }
@@ -248,36 +234,36 @@ function createNewOptionItem(element) {
                     // select the location option corresponding to id in the selec
                     options = locationSelect.getElementsByTagName('option');
                     for (let option of options) {
-                        if (option.value == data.location.id) {
+                        if (option.value == data.event.location.id) {
                             option.selected = true;
                             break;
                         }
                     }
 
 
-                    price.value = data.price;
+                    ticketType.value = data.ticketType.id;
 
-                    let dateStart = new Date(data.startTime.date);
+                    let dateStart = new Date(data.event.startTime.date);
                     dateStart.setHours(dateStart.getHours() + 2);
                     dateStart = dateStart.toISOString().slice(0, 16);
                     startTime.value = dateStart;
 
-                    let dateEnd = new Date(data.endTime.date);
+                    let dateEnd = new Date(data.event.endTime.date);
                     dateEnd.setHours(dateEnd.getHours() + 2);
                     dateEnd = dateEnd.toISOString().slice(0, 16);
                     endTime.value = dateEnd;
 
                     btnOpen.onclick = function () {
                         if (baseURL.endsWith('dance')) {
-                            window.open('/festival/dance/event/' + data.id, '_blank');
+                            window.open('/festival/dance/event/' + data.event.id, '_blank');
                         } else {
-                            window.open('/festival/jazz/event/' + data.id, '_blank');
+                            window.open('/festival/jazz/event/' + data.event.id, '_blank');
                         }
 
                     }
 
                 } else {
-                    msgBox.createToast('Something went wrong', data.error_message);
+                    msgBox.createToast('Something went wrong', data.event.error_message);
                 }
             })
             .catch(error => {
@@ -289,7 +275,8 @@ function createNewOptionItem(element) {
     return option;
 }
 
-// Load text pages from '/api/admin/text-pages'
+let isBasicStuffLoaded = false;
+
 function loadList() {
     let lastSelectedId = locations.value;
 
@@ -338,6 +325,11 @@ function loadList() {
             }
         });
 
+    if (isBasicStuffLoaded) {
+        return
+    }
+    isBasicStuffLoaded = true;
+
     // load artist list to artist select
     artist.innerHTML = '';
     let jazzSelectOption = document.createElement('option');
@@ -383,6 +375,8 @@ function loadList() {
 
     locationURI += '?sort=name';
 
+    locationSelect.innerHTML = '';
+
     // and now, load jazz locations.
     location.innerHTML = '';
     fetch(locationURI, {
@@ -405,6 +399,30 @@ function loadList() {
         }
         );
     location.selectedIndex = -1;
+
+    ticketType.innerHTML = '';
+
+    // Load ticket types.
+    fetch('/api/tickettypes', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            // check if data is array
+            if (Array.isArray(data)) {
+                data.forEach(element => {
+                    let option = document.createElement('option');
+                    option.innerHTML = element.name + ' - ' + element.price + '€';
+                    option.value = element.id;
+                    ticketType.appendChild(option);
+                });
+            }
+        }
+        );
+    ticketType.selectedIndex = 0;
 }
 
 loadList();
@@ -415,10 +433,9 @@ function toggleEditor(element, isEnabled) {
     } else {
         element.classList.add('disabled-module');
         editedId = -1;
-        editedEvent = null;
         artist.selectedIndex = 0;
         locationSelect.selectedIndex = 0;
-        price.value = '';
+        ticketType.selectedIndex = 0;
         startTime.value = '';
         endTime.value = '';
 

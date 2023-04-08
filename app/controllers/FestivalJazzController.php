@@ -1,46 +1,62 @@
 <?php
 
+require_once(__DIR__ . "/../services/JazzCartItemService.php");
+
 class FestivalJazzController
 {
     const JAZZ_ARTIST_PAGE = "/../views/festival/jazzartist.php";
     const JAZZ_EVENT_PAGE = "/../views/festival/jazzevent.php";
 
+    private $ciService;
+
+    public function __construct()
+    {
+        $this->ciService = new JazzCartItemService();
+    }
+
     public function loadArtistPage($uri)
     {
         require_once(__DIR__ . "/../services/JazzArtistService.php");
-        require_once(__DIR__ . "/../services/EventService.php");
 
         $artistService = new JazzArtistService();
         $artist = $artistService->getById(basename($uri));
 
-        $eventService = new EventService();
-        $events = $eventService->getJazzEventsByArtistId($artist->getId());
+        if ($artist === null) {
+            // redirect to 404
+            header("Location: /404");
+            return;
+        }
 
+
+        $events = $this->ciService->getAll("time", ["artist" => $artist->getId()]);
 
         require(__DIR__ . self::JAZZ_ARTIST_PAGE);
     }
 
     public function loadEventPage($uri)
     {
-        require_once(__DIR__ . "/../services/CartItemService.php");
+        try {
+            $cartItem = $this->ciService->getByEventId(basename($uri));
+            $event = $cartItem->getEvent();
 
-        $eventService = new CartItemService();
-        $cartItem = $eventService->getByEventId(basename($uri));
-        $event = $cartItem->getEvent();
+            // if event is of jazzevent type
+            if (!($event instanceof MusicEvent)) {
+                // redirect to 404
+                return;
+            }
 
-        // if event is of jazzevent type
-        if (!($event instanceof MusicEvent)) {
+
+            $afterThat = $this->ciService->getAll("", [
+                "day" => $event->getStartTime()->format('d'),
+                "time_from" => $event->getEndTime()->format('H:i'),
+                "location" => $event->getLocation()->getLocationId()
+            ]);
+
+            require(__DIR__ . self::JAZZ_EVENT_PAGE);
+        } catch (Exception $e) {
             // redirect to 404
+            header("Location: /404");
             return;
         }
-
-
-        $afterThat = $eventService->getAllJazz("", [
-            "day" => $event->getStartTime()->format('d'),
-            "time_from" => $event->getEndTime()->format('H:i'),
-            "location" => $event->getLocation()->getLocationId()
-        ]);
-
-        require(__DIR__ . self::JAZZ_EVENT_PAGE);
     }
 }
