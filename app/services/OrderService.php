@@ -43,6 +43,8 @@ class OrderService
 
     public function createOrder($customer, $cartItemIds)
     {
+        //TODO: doesn't work atm, cartitem doesn't have a ticket. Needs orderItem implementation.
+        
         $order = new Order();
         $order->setCustomer($customer);
         foreach ($cartItemIds as $cartItemId) {
