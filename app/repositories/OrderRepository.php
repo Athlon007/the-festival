@@ -36,7 +36,7 @@ class OrderRepository extends Repository{
         }
     }
 
-    public function getOrderHistory($customerId) : ?array
+    public function getOrderHistory($customerId) : array
     {
         
     }
