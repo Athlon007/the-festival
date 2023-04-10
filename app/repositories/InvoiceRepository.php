@@ -6,7 +6,7 @@ require_once(__DIR__ . "/../models/InvoiceItem.php");
 class InvoiceRepository extends Repository{
 
     private function buildInvoice($row) : Invoice{
-
+        
     }
 
     private function buildInvoiceItem($row) : InvoiceItem{
@@ -22,7 +22,12 @@ class InvoiceRepository extends Repository{
     }
     
     public function getById($invoiceId) : Invoice{
-
+        $sql = "select * from invoices where invoiceId = :invoiceId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":invoiceId", $invoiceId);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $this->buildInvoice($result);
     }
 
     public function getInvoiceItemsByOrderId($orderId) : array{

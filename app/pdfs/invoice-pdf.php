@@ -1,16 +1,15 @@
-//Is ticket template for now, will change
+<!--Invoice template by Joshua-->
 
 <div class="container">
     <h2>Invoice</h2>
-    <h3>Order number: <?php $order->getOrderId() ?></h3>
-
+    <h3>Invoice Number: <?= $order->getInvoice()->getInvoiceId() ?></h3>
+    <h3>Order Number: <?= $order->getOrderId() ?></h3>
     <div>
         <h5>Invoice date:</h5>
         <p>
-            <?= $order->getOrderDate()->format('l, m/d/Y') ?>
+            <?= $order->getInvoice()->GetInvoiceDate()->format('l, m/d/Y') ?>
         </p>
     </div>
-    
     <div>
         <h5>Customer:</h5>
         <p>
