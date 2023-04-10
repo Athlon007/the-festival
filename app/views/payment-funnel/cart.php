@@ -31,14 +31,26 @@
                     <!-- Cart -->
 
                     <?php 
-                    if($cartItems.length == 0){
+                    if(!$cartItems){
                         echo "Your cart is empty. Go back and buy some stuff!";
+                        
 
                     }
                     else{
                         foreach($cartItems as $cartItem){ ?> 
                         
-                        <div class="card">
+                        <div class="card p-3 m-3" style="width: 60%">
+                            <div class="card-header">
+                                <?= $cartItem['cartItem']->getEvent()->getName() ?>
+                                <?= $cartItem['cartItem']->getTicketType()->getName() ?>
+                            </div>
+                            <br>
+                            <div>
+                                <button class="btn btn-light" style="width: 40%">-</button>
+                                <span><?= $cartItem['count'] ?></span>
+                                <button class="btn btn-light" style="width: 40%">+</button>
+                            </div>
+                            
                             
                         </div>
                             
