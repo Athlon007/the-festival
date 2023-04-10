@@ -1,19 +1,31 @@
 <?php
+
+require_once(__DIR__ . "/../services/OrderService.php");
+
 class OrderController
 {
+    private $service;
+
+    public function __construct()
+    {
+        $this->service = new OrderService();
+    }
+
     public function showShoppingCart()
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-        if (!isset($_SESSION['cart']) || count($_SESSION['cart']) == 0) {
+        if (!isset($_SESSION['cartItemIds']) || count($_SESSION['cartItemIds']) == 0) {
             $cartItems = array();
         }
         else {
-            $cartItemIds = $_SESSION['cart'];
-            $cartService = new CartItemService();
-            $cartItems = $cartService->getCartItems($cartItemIds);
-            $_SESSION['cart'] = $cartItems;
+            $cartItems = $this->service->getCart();
+            $totalPrice = 0;
+            
+            foreach ($cartItems as $cartItem) {
+                $totalPrice += $cartItem['price'];
+            }
         }
         require('../views/payment-funnel/cart.php');
     }

@@ -75,7 +75,7 @@ class OrderService
             throw new Exception("No tickets available for this event.");
         }
 
-        // Check if session is initalized.
+        // Check if session is initialized.
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
@@ -193,6 +193,7 @@ class OrderService
         foreach ($_SESSION[OrderService::CART_ARRAY] as $id) {
             $ci = $this->cartItemRepository->getById($id);
             $count = $this->countItemInCart($ci);
+            $price = $ci->getTicketType()->getPrice() * $count;
 
             // If output already contains the cart item, we don't need to add it again.
             if (in_array($ci->getId(), $idsAdded)) {
@@ -201,7 +202,8 @@ class OrderService
 
             $output[] = [
                 'cartItem' => $ci,
-                'count' => $count
+                'count' => $count,
+                'price' => $price,
             ];
 
             $idsAdded[] = $ci->getId();

@@ -17,7 +17,7 @@ class UserRepository extends Repository
             $result = $stmt->fetch();
 
             if (!$result)
-                throw new UserNotFoundException("User ID not found");
+                throw new UserNotFoundException();
                 
             return $this->buildUser($result);
         } catch (Exception $ex) {
@@ -37,7 +37,7 @@ class UserRepository extends Repository
             $result = $stmt->fetch();
 
             if (!$result)
-                throw new UserNotFoundException("User email not found");
+                throw new UserNotFoundException();
 
             return $this->buildUser($result);
         } catch (Exception $ex) {
@@ -122,7 +122,7 @@ class UserRepository extends Repository
             $result = $stmt->fetchAll();
 
             if (is_bool($result))
-                throw new UserNotFoundException("User ID not found");
+                throw new UserNotFoundException();
 
             $users = array();
 

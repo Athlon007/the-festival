@@ -23,13 +23,47 @@
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
                     <h2 class="m-5">Shopping Cart</h2>
-
+                    <button class="btn btn-secondary float-end">Order History</button>
                     <!--Pop-up message-->
                     <div id="popup">
                     </div>
                     
                     <!-- Cart -->
+
+                    <?php 
+                    if(!$cartItems){
+                        echo "Your cart is empty. Go back and buy some stuff!";
+                    }
+                    else{
+                        foreach($cartItems as $cartItem){ ?> 
+                        
+                        <div class="card p-3 m-3" style="width: 60%">
+                            <div class="card-header" style="width: 100%">
+                                <?= $cartItem['cartItem']->getEvent()->getName() ?>
+                                <?= $cartItem['cartItem']->getTicketType()->getName() ?> - &euro; <?= $cartItem['cartItem']->getTicketType()->getPrice() ?>
+                            </div>
+                            <br>
+                            <div style="width: 100%">
+                                <button class="btn btn-light" style="width: 20%">-</button>
+                                <span><?= $cartItem['count'] ?></span>
+                                <button class="btn btn-light" style="width: 20%">+</button>
+                                <span class="float-end">Total price: &euro; <?= $cartItem['price'] ?></span>
+                            </div>
+                            <br>
+                            <div style="width: 100%">
+                                <button class="btn btn-danger float-end">Remove all</button>
+                            </div> 
+                        </div>
+                            
                     
+                    <?php }
+                    }   ?> 
+                    <br>
+                    <br>
+                    <h4>Total price: &euro; <?= $totalPrice?></h4>
+                    <button class="btn btn-primary">Check out</button>
+        
+
                 </div>
             </div>
         </div>

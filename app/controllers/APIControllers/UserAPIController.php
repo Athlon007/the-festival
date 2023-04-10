@@ -83,7 +83,10 @@ class UserAPIController extends APIController
             $user = $userService->verifyUser($data);
 
             //Store user in session
-            session_start();
+            if(session_status() == PHP_SESSION_NONE){
+                session_start();
+            }
+
             $_SESSION["user"] = serialize($user);
 
             $this->sendSuccessMessage("Login successful.");
@@ -95,8 +98,11 @@ class UserAPIController extends APIController
     private function logout()
     {
         try {
-            session_start();
-            session_destroy();
+            if(session_status() == PHP_SESSION_NONE){
+                session_start();
+            }
+
+            $_SESSION["user"] = null;
             $this->sendSuccessMessage("Logout successful.");
         } catch (Exception $ex) {
             $this->sendErrorMessage($ex->getMessage());
