@@ -33,30 +33,35 @@
                     <?php 
                     if(!$cartItems){
                         echo "Your cart is empty. Go back and buy some stuff!";
-                        
-
                     }
                     else{
                         foreach($cartItems as $cartItem){ ?> 
                         
                         <div class="card p-3 m-3" style="width: 60%">
-                            <div class="card-header">
+                            <div class="card-header" style="width: 100%">
                                 <?= $cartItem['cartItem']->getEvent()->getName() ?>
-                                <?= $cartItem['cartItem']->getTicketType()->getName() ?>
+                                <?= $cartItem['cartItem']->getTicketType()->getName() ?> - &euro; <?= $cartItem['cartItem']->getTicketType()->getPrice() ?>
                             </div>
                             <br>
-                            <div>
-                                <button class="btn btn-light" style="width: 40%">-</button>
+                            <div style="width: 100%">
+                                <button class="btn btn-light" style="width: 20%">-</button>
                                 <span><?= $cartItem['count'] ?></span>
-                                <button class="btn btn-light" style="width: 40%">+</button>
+                                <button class="btn btn-light" style="width: 20%">+</button>
+                                <span class="float-end">Total price: &euro; <?= $cartItem['price'] ?></span>
                             </div>
-                            
-                            
+                            <br>
+                            <div style="width: 100%">
+                                <button class="btn btn-danger float-end">Remove all</button>
+                            </div> 
                         </div>
                             
                     
                     <?php }
                     }   ?> 
+                    <br>
+                    <br>
+                    <h4>Total price: &euro; <?= $totalPrice?></h4>
+                    <button class="btn btn-primary">Check out</button>
         
 
                 </div>

@@ -21,6 +21,11 @@ class OrderController
         }
         else {
             $cartItems = $this->service->getCart();
+            $totalPrice = 0;
+            
+            foreach ($cartItems as $cartItem) {
+                $totalPrice += $cartItem['price'];
+            }
         }
         require('../views/payment-funnel/cart.php');
     }
