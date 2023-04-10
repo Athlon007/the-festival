@@ -23,13 +23,29 @@
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
                     <h2 class="m-5">Shopping Cart</h2>
-
+                    <button class="btn btn-secondary float-end">Order History</button>
                     <!--Pop-up message-->
                     <div id="popup">
                     </div>
                     
                     <!-- Cart -->
-                    <?php foreach ?> 
+
+                    <?php 
+                    if($cartItems.length == 0){
+                        echo "Your cart is empty. Go back and buy some stuff!";
+
+                    }
+                    else{
+                        foreach($cartItems as $cartItem){ ?> 
+                        
+                        <div class="card">
+                            
+                        </div>
+                            
+                    
+                    <?php }
+                    }   ?> 
+        
 
                 </div>
             </div>

@@ -75,7 +75,7 @@ class OrderService
             throw new Exception("No tickets available for this event.");
         }
 
-        // Check if session is initalized.
+        // Check if session is initialized.
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
