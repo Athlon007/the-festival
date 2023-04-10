@@ -6,7 +6,12 @@ require_once(__DIR__ . "/../models/InvoiceItem.php");
 class InvoiceRepository extends Repository{
 
     private function buildInvoice($row) : Invoice{
-        
+        $invoice = new Invoice();
+        $invoice->setInvoiceId($row['invoiceId']);
+        $invoice->setInvoiceDate($row['invoiceDate']);
+        $invoice->setInvoiceDeadline($row['invoiceDeadline']);
+        $invoice->setInvoiceItems($this->getInvoiceItemsByOrderId($row['orderId']));
+        return $invoice;
     }
 
     private function buildInvoiceItem($row) : InvoiceItem{

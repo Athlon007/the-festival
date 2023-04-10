@@ -30,6 +30,10 @@ function attemptLogin(){
         })
     .then(response => response.json())
     .then(data => {
+            if(data.error_message){
+                displayError(data.error_message);
+                return;
+            }
             displaySuccess(data.success_message);
             window.location.assign("/");
         })

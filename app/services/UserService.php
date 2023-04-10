@@ -101,7 +101,7 @@ class UserService
             if ($this->repository->getByEmail($email) != null) {
                 $this->repository->storeResetToken($email, $reset_token);
             } else {
-                throw new UserNotFoundException("This email is not registered.");
+                throw new UserNotFoundException();
             }
         } catch (Exception $ex) {
             throw ($ex);
