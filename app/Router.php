@@ -175,7 +175,6 @@ class Router
                 $festivalHistoryController = new FestivalHistoryController();
                 $festivalHistoryController->loadHistoryStrollPage();
                 break;
-                break;
             case "/addLocation":
                 require_once("controllers/HistoryController.php");
                 $historyController = new HistoryController();

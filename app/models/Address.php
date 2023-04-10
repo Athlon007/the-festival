@@ -90,4 +90,12 @@ class Address implements JsonSerializable
     {
         return $this->country;
     }
+
+    public function getAddressLine1(){
+        return ($this->streetName . " " . $this->houseNumber);
+    }
+
+    public function getAddressLine2(){
+        return ($this->postalCode . " " . $this->city);
+    }
 }

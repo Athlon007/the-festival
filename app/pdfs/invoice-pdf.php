@@ -1,83 +1,96 @@
-//Is ticket template for now, will change
+<!--Invoice template by Joshua-->
 
 <div class="container">
-<h2>Invoice</h2>
-<h3>Invoice number: <?php $order->getOrderId() ?></h3>
-
-    <div class="company-address">
-        <label>Event Name:</label>
+    <h2>Invoice</h2>
+    <br>
+    <br>
+    <h3>Invoice Number: <?= $order->getInvoice()->getInvoiceId() ?></h3>
+    <br>
+    <h3>Order Number: <?= $order->getOrderId() ?></h3>
+    <br>
+    <br>
+    <div>
+        <h5>Invoice date:</h5>
         <p>
-            <?= $ticket->getEvent()->getName() ?>
+            <?= $order->getInvoice()->GetInvoiceDate()->format('d/m/Y') ?>
         </p>
-    </div>
-
-    <div class="ticket-info">
-        <label>Event Date:</label>
-        <p>
-            <?= $ticket->getEvent()->getStartTime()->format('l, m/d/Y') ?>
-        </p>
-    </div>
-
-    <div class="ticket-info">
-        <label>Event Time:</label>
-        <p>
-            <?= $ticket->getEvent()->getStartTime()->format('H:i') ?>
-            <?= $ticket->getEvent()->getEndTime()->format('H:i') ?>
-        </p>
-    </div>
-
-    <div class="ticket-info">
-        <label>Customer Name:</label>
-        <p>
-            <?= $ticket->getCustomer()->getFirstName() . ' ' . $ticket->getCustomer()->getLastName() ?>
-        </p>
-    </div>
-
-    <div class="ticket-info">
-        <label>Event Location:</label>
-        <p>St. Bavo Church</p>
-    </div>
-
-    <div class="ticket-info">
-        <label>Customer Email:</label>
-        <p>
-            <?= $ticket->getCustomer()->getEmail() ?>
-        </p>
-    </div>
-
-    <div class="ticket-info">
-        <label>Price:</label>
-        <p style="color: red"><strong>€
-                <?= $ticket->getEvent()->getPrice() ?>
-            </strong></p>
     </div>
     <br>
-    <hr>
-    <img src="<?= $qrCodeImage ?>" alt="Ticket QR Code" class="qr-code">
-    <hr>
+    <br>
+    <div>
+        <h5>Customer:</h5>
+        <br>
+        <p>
+            <?php $order->getCustomer()->getFullName() ?><br>
+            <?php $order->getCustomer()->getAddress()->getAddressLine1() ?><br>
+            <?php $order->getCustomer()->getAddress()->getAddressLine2() ?><br>
+            <?php $order->getCustomer()->getAddress()->getCountry() ?>
+        </p>
+    </div>
+    <br>
+    <br>
+    <table border-width="1" cellpadding="1">
+        <thead>
+            <tr>
+                <th>Quantity</th>
+                <th>Event</th>
+                <th>Ticket Type</th>
+                <th>Base Price</th>
+                <th>VAT Percentage</th>
+                <th>VAT Amount</th>
+                <th>Full Price</th>
+            </tr>
+        </thead>
+        <tbody><y>
+    
+            <?php foreach($order->getInvoice()->getInvoiceItems as $invoiceItem){ ?>
+            <tr>
+                <td><?= $invoiceItem->getQuantity() ?> </td>
+                <td><?= $invoiceItem->getEventName() ?> </td>
+                <td><?= $invoiceItem->getTicketTypeName() ?> </td>
+                <td>&euro; <?= $invoiceItem->getBasePrice() ?> </td>
+                <td><?= ($invoiceItem->getVatPercentage() * 100) . "%" ?> </td>
+                <td>&euro; <?= $invoiceItem->getVatAmount() ?> </td>
+                <td>&euro; <?= $invoiceItem->getFullPrice() ?> </td>
+                <td>&euro; <?= $invoiceItem->getTotalPrice() ?> </td>
+            </tr>
+            <?php 
+            } ?>
+        </tbody>
+    </table>
+    <br>
+    <br>
+    <div>
+        <h5>Total Base Price: </h5>
+        <p>
+            &euro; <?= $order->getInvoice()->calculateBasePrice() ?>
+        </p>
+    </div>
+    <div>
+        <h5>Total VAT 9%:</h5>
+        <p>
+            &euro; <?= $order->getInvoice()->calculateVat9Amount() ?>
+        </p>
+    </div>
+    <div>
+        <h5>Total VAT 21%:</h5>
+        <p>
+            &euro; <?= $order->getInvoice()->calculateVat21Amount() ?>
+        </p>
+    </div>
+    <div>
+        <h5>Total Price:</h5>
+        <p>
+            &euro; <?= $order->getInvoice()->calculateTotalPrice() ?>
+        </p>
+    </div>
 </div>
-</div>
-
-
 
 <style>
     body {
         background-color: #f2f2f2;
         font-family: Arial, sans-serif;
         font-size: 16px;
-    }
-
-    h1 {
-        color: brown;
-        font-size: 24px;
-        font-weight: bold;
-        margin: 0 0 20px;
-        text-align: center;
-        text-transform: uppercase;
-    }
-
-    .ticket-information {
-        font-style: italic;
     }
 
     .container {
@@ -87,28 +100,5 @@
         margin: 30px auto;
         padding: 30px;
         max-width: 500px;
-    }
-
-    .ticket-info {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-    }
-
-    .ticket-info label {
-        display: inline-block;
-        font-weight: bold;
-        margin-right: 10px;
-        width: 140px;
-    }
-
-    .ticket-info p {
-        display: block;
-        margin: 0;
-        padding: 0;
-    }
-
-    .qr-code {
-        max-width: 150px;
     }
 </style>

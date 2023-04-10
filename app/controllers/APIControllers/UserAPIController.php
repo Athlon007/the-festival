@@ -15,7 +15,6 @@ class UserAPIController extends APIController
         try {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-                parent::handlePostRequest($uri);
                 $data = json_decode(file_get_contents("php://input"));
 
                 switch ($uri) {
@@ -87,9 +86,9 @@ class UserAPIController extends APIController
             session_start();
             $_SESSION["user"] = serialize($user);
 
-            parent::sendSuccessMessage("Login successful.");
+            $this->sendSuccessMessage("Login successful.");
         } catch (Exception $ex) {
-            parent::sendErrorMessage($ex->getMessage());
+            $this->sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -98,9 +97,9 @@ class UserAPIController extends APIController
         try {
             session_start();
             session_destroy();
-            parent::sendSuccessMessage("Logout successful.");
+            $this->sendSuccessMessage("Logout successful.");
         } catch (Exception $ex) {
-            parent::sendErrorMessage($ex->getMessage());
+            $this->sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -131,9 +130,9 @@ class UserAPIController extends APIController
             //Register new customer
             $customerService->registerCustomer($data);
 
-            parent::sendSuccessMessage("Registration successful.");
+            $this->sendSuccessMessage("Registration successful.");
         } catch (Exception $ex) {
-            parent::sendErrorMessage($ex->getMessage());
+            $this->sendErrorMessage($ex->getMessage());
         }
     }
 

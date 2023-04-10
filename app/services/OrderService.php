@@ -28,25 +28,27 @@ class OrderService
 
     public function getOrderById($id)
     {
-        return $this->repository->getOrderById($id);
+        return $this->orderRepository->getOrderById($id);
     }
 
     public function getOrderHistory($customerId)
     {
-        return $this->repository->getOrderHistory($customerId);
+        return $this->orderRepository->getOrderHistory($customerId);
     }
 
     public function getUnpaidOrder($customerId)
     {
-        return $this->repository->getUnpaidOrder($customerId);
+        return $this->orderRepository->getUnpaidOrder($customerId);
     }
 
     public function createOrder($customer, $cartItemIds)
     {
+        //TODO: doesn't work atm, cartitem doesn't have a ticket. Needs orderItem implementation.
+        
         $order = new Order();
         $order->setCustomer($customer);
         foreach ($cartItemIds as $cartItemId) {
-            $cartItem = $this->cartItemRepository->getCartItemById($cartItemId);
+            $cartItem = $this->cartItemRepository->getById($cartItemId);
             $ticket = $cartItem->getTicket();
             $tickets[] = $ticket;
         }
