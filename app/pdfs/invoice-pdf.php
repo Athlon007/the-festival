@@ -61,7 +61,7 @@
     <br>
     <br>
     <div>
-        <h5>Total Base Price:</h5>
+        <h5>Total Base Price: </h5>
         <p>
             &euro; <?= $order->getInvoice()->calculateBasePrice() ?>
         </p>
