@@ -29,7 +29,8 @@
                     </div>
                     
                     <!-- Cart -->
-                    
+                    <?php foreach ?> 
+
                 </div>
             </div>
         </div>
