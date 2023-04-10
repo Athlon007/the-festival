@@ -7,17 +7,20 @@ class OrderController
             session_start();
         }
         if (!isset($_SESSION['cart']) || count($_SESSION['cart']) == 0) {
-            $_SESSION['cart'] = array();
+            $cartItems = array();
         }
-        require('app/views/payment-funnel/cart.php');
+        else {
+            $cartItemIds = $_SESSION['cart'];
+            $cartService = new CartItemService();
+            $cartItems = $cartService->getCartItems($cartItemIds);
+            $_SESSION['cart'] = $cartItems;
+        }
+        require('../views/payment-funnel/cart.php');
     }
 
     public function showOrderHistory()
     {
-    }
 
-    public function generateInvoice()
-    {
     }
 
     //Create order after completing payment or selecting "pay later"
