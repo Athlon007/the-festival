@@ -83,4 +83,11 @@ class InvoiceItem implements JsonSerializable {
     {
         $this->quantity = $quantity;
     }
+
+    public function getTotalPrice(): float
+    {
+        return $this->fullPrice * $this->quantity;
+    }
+
+    
 }
