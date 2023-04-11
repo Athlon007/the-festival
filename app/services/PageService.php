@@ -32,7 +32,7 @@ class PageService
     {
         $href = htmlspecialchars($href);
         // Check if last char is '/'.
-        if (strlen($href) > 0 && substr($href, -1) == '/') {
+        if (strlen($href) > 1 && substr($href, -1) == '/') {
             // If so, remove it from the string.
             // Strings should be saved without the '/' at the end, as it screws with GET requests.
             $href = rtrim($href, "/");
