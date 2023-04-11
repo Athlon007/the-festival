@@ -22,17 +22,18 @@
         <div class="container py-5 h-100">   
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
-                    <h2 class="m-5">Shopping Cart</h2>
+                    <h2 class="">Shopping Cart</h2>
                     <button class="btn btn-secondary float-end">Order History</button>
                     <!--Pop-up message-->
                     <div id="popup">
+                    
                     </div>
                     
                     <!-- Cart -->
-
+                    <div class="mt-5">
                     <?php 
                     if(!$cartItems){
-                        echo "Your cart is empty. Go back and buy some stuff!";
+                        echo "Your cart is empty. Go back to the Festival and buy some tickets!";
                     }
                     else{
                         foreach($cartItems as $cartItem){ ?> 
@@ -58,9 +59,11 @@
                     
                     <?php }
                     }   ?> 
+                    </div>
                     <br>
                     <br>
                     <h4>Total price: &euro; <?= $totalPrice?></h4>
+                    <br>
                     <button class="btn btn-primary">Check out</button>
         
 
