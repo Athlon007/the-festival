@@ -14,4 +14,16 @@ class FestivalFoodService
             echo $e->getMessage();
         }
     }
+    public function getAllTypes()
+    {
+        try{
+            require_once("../repositories/FestivalFoodRepository.php");
+            $festivalFoodRepository = new FestivalFoodRepository();
+            $types = $festivalFoodRepository->getAllTypes();
+
+            return $types;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
 }

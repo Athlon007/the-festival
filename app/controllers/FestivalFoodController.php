@@ -1,13 +1,15 @@
 <?php
 class FestivalFoodController
 {
-    public function loadFoodFestivalPage()
+    public function  loadFoodFestivalPage()
     {
         try {
+            require_once("../models/Restaurant.php");
             require_once("../services/FestivalFoodService.php");
             $festivalFoodService = new FestivalFoodService();
             $restaurants = $festivalFoodService->getAllRestaurants();
-            require("../views/festival/food_festival.php");
+            $types = $festivalFoodService->getAllTypes();
+            require_once("../views/festival/food_Festival.php");
 
         } catch (PDOException $e) {
             echo $e->getMessage();
