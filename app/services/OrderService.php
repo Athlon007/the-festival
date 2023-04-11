@@ -44,7 +44,7 @@ class OrderService
     public function createOrder($customer, $cartItemIds)
     {
         //TODO: doesn't work atm, cartitem doesn't have a ticket. Needs orderItem implementation.
-        
+
         $order = new Order();
         $order->setCustomer($customer);
         foreach ($cartItemIds as $cartItemId) {
@@ -71,9 +71,9 @@ class OrderService
     public function addItemToCart(CartItem $cartItem): array
     {
         // Free event have no limit on tickets.
-        if ($cartItem->getTicketType()->getPrice() > 0 && $cartItem->getEvent()->getAvailableTickets() == 0) {
-            throw new Exception("No tickets available for this event.");
-        }
+        //if ($cartItem->getTicketType()->getPrice() > 0 && $cartItem->getEvent()->getAvailableTickets() == 0) {
+        //    throw new Exception("No tickets available for this event.");
+        //}
 
         // Check if session is initialized.
         if (session_status() == PHP_SESSION_NONE) {
