@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../repositories/TicketRepository.php';
 require_once __DIR__ . '/../models/Ticket/Ticket.php';
+require_once(__DIR__ . '/../models/CartItem.php');
 require_once(__DIR__ . '/../models/Exceptions/TicketNotFoundException.php');
 require_once(__DIR__ . '/../services/PDFService.php');
 
@@ -100,7 +101,7 @@ class TicketService
       $name = $order->getCustomer()->getFullName();
 
       ob_start();
-      require_once(__DIR__ . '/../views/ticket/generateEmailBody.php');
+      require_once(__DIR__ . '/../emails/ticket-email.php');
       $mail->Body = ob_get_clean();
 
       $mail->addAddress('turkvedat0911@gmail.com', $name);
@@ -116,14 +117,22 @@ class TicketService
     }
   }
 
-  public function addTicketToOrder($orderId, $ticketId)
-  {
-      return $this->repository->addTicketToOrder($orderId, $ticketId);
+  public function createTicketFromCartItem(CartItem $cartItem){
+
   }
 
+  //TODO: check if obsolete before handing in
+  public function addTicketToOrder($orderId, $ticketId)
+  {
+      
+    return $this->repository->addTicketToOrder($orderId, $ticketId);
+  }
+
+  //TODO: check if obsolete before handing in
   public function removeTicketFromOrder($orderId, $ticketId)
   {
-      return $this->repository->removeTicketFromOrder($orderId, $ticketId);
+        
+    return $this->repository->removeTicketFromOrder($orderId, $ticketId);
   }
 
 }

@@ -1,34 +1,43 @@
 <?php
-
+require(__dir__ . "/../models/Types/EventType.php");
 class Event implements JsonSerializable
 {
     private $id;
     private $name;
     private DateTime $startTime;
     private DateTime $endTime;
-    private $vat;
-    private int $availableTickets = 0;
+    private ?EventType $eventType;
+    private ?int $availableTickets;
 
     public function jsonSerialize(): mixed
     {
-        return [
+        $obj = [
             "id" => $this->getId(),
             "name" => $this->getName(),
             "startTime" => $this->getStartTime(),
             "endTime" => $this->getEndTime(),
-            "vat" => $this->getVat(),
-            "availableTickets" => $this->getAvailableTickets(),
+            "vat" => $this->getVat()
         ];
-    }
 
-    public function setId($value)
-    {
-        $this->id = $value;
+        if (isset($this->availableTickets) && $this->availableTickets != null && $this->availableTickets) {
+            $obj["availableTickets"] = $this->availableTickets;
+        }
+
+        if (isset($this->eventType) && $this->eventType != null && $this->eventType) {
+            $obj["eventType"] = $this->eventType;
+        }
+
+        return $obj;
     }
 
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setId($value)
+    {
+        $this->id = $value;
     }
 
     public function getName()
@@ -63,21 +72,29 @@ class Event implements JsonSerializable
 
     public function getVat()
     {
-        return $this->vat;
-    }
-
-    public function setVat($value)
-    {
-        $this->vat = $value;
+        return $this->eventType->getVat();
     }
 
     public function getAvailableTickets()
     {
+        if (!isset($this->availableTickets) || $this->availableTickets == null || !$this->availableTickets) {
+            return null;
+        }
         return $this->availableTickets;
     }
 
     public function setAvailableTickets($value)
     {
         $this->availableTickets = $value;
+    }
+
+    public function getEventType(): ?EventType
+    {
+        return $this->eventType;
+    }
+
+    public function setEventType(?EventType $value)
+    {
+        $this->eventType = $value;
     }
 }

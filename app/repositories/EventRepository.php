@@ -6,17 +6,18 @@ require_once(__DIR__ . "/../models/Music/MusicEvent.php");
 require_once("Repository.php");
 require_once("LocationRepository.php");
 require_once("JazzArtistRepository.php");
+require_once("EventTypeRepository.php");
 
 class EventRepository extends Repository
 {
     private function buildEvent($arr): array
     {
+        $eventTypeRepo = new EventTypeRepository();
         $events = [];
         foreach ($arr as $event) {
             if ($this->isInJazzEvents($event['eventId'])) {
                 $events[] = $this->getJazzEventById($event['eventId']);
-            }
-            if ($this->isInHistoryEvents($event['eventId'])) {
+            } elseif ($this->isInHistoryEvents($event['eventId'])) {
                 $events[] = $this->getHistoryEventById($event['eventId']);
             } else {
                 $eventEntry = new Event();
@@ -24,6 +25,13 @@ class EventRepository extends Repository
                 $eventEntry->setName($event['name']);
                 $eventEntry->setStartTime(new DateTime($event['startTime']));
                 $eventEntry->setEndTime(new DateTime($event['endTime']));
+                // if festivalEventType is not null
+                if ($event['festivalEventType'] !== null) {
+                    $eventEntry->setEventType($eventTypeRepo->getById($event['festivalEventType']));
+                }
+                if ($event['availableTickets'] !== null) {
+                    $eventEntry->setAvailableTickets($event['availableTickets']);
+                }
                 array_push($events, $eventEntry);
             }
         }
@@ -35,6 +43,7 @@ class EventRepository extends Repository
         $events = [];
         $locationRepo = new LocationRepository();
         $artistRepo = new JazzArtistRepository();
+        $eventTypeRepo = new EventTypeRepository();
         foreach ($arr as $event) {
             $event = new MusicEvent(
                 $event['eventId'],
@@ -42,7 +51,9 @@ class EventRepository extends Repository
                 new DateTime($event['startTime']),
                 new DateTime($event['endTime']),
                 $artistRepo->getById($event['artistId']),
-                $locationRepo->getById($event['locationId'])
+                $locationRepo->getById($event['locationId']),
+                $eventTypeRepo->getById($event['festivalEventType']),
+                $event['availableTickets']
             );
 
             if (isset($filters['artist_kind'])) {
@@ -61,22 +72,23 @@ class EventRepository extends Repository
 
     public function getAll()
     {
-        $sql = "SELECT eventId, name, startTime, endTime, price FROM Events";
+        $sql = "SELECT eventId, name, startTime, endTime, festivalEventType FROM Events";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $arr = $stmt->fetchAll();
         return $this->buildEvent($arr);
     }
 
-    public function getEventById($id)
+    public function getEventById($id): ?Event
     {
-        $sql = "SELECT eventId, name, startTime, endTime FROM Events WHERE eventId = :id";
+        $sql = "SELECT eventId, name, startTime, endTime, festivalEventType, availableTickets FROM Events WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute(['id' => $id]);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
         $arr = $stmt->fetchAll();
         $output = $this->buildEvent($arr);
 
-        if (count($output) === 0) {
+        if (empty($output)) {
             return null;
         }
         return $output[0];
@@ -94,30 +106,41 @@ class EventRepository extends Repository
         return $dateTime->format('Y-m-d H:i:s');
     }
 
-    public function createEvent($name, DateTime $startTime, DateTime $endTime, $price): int
+    public function createEvent($name, DateTime $startTime, DateTime $endTime, ?int $eventTypeId, ?int $availableTickets): int
     {
-        $sql = "INSERT INTO Events (name, startTime, endTime, price) VALUES (:name, :startTime, :endTime, :price)";
+        if ($eventTypeId === null) {
+            $eventTypeId = 'NULL';
+        }
+        if ($availableTickets === null) {
+            $availableTickets = 'NULL';
+        }
+        $sql = "INSERT INTO Events (name, startTime, endTime, festivalEventType, availableTickets) VALUES (:name, :startTime, :endTime, :eventTypeId, :availableTickets)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
         $startToString = $this->formatDateTimeToString($startTime);
         $stmt->bindParam(':startTime', $startToString, PDO::PARAM_STR);
         $endToString = $this->formatDateTimeToString($endTime);
         $stmt->bindParam(':endTime', $endToString, PDO::PARAM_STR);
-        $stmt->bindValue(':price', $price);
+        $stmt->bindParam(':eventTypeId', $eventTypeId, PDO::PARAM_INT);
+        $stmt->bindParam(':availableTickets', $availableTickets, PDO::PARAM_INT);
         $stmt->execute();
 
         return $this->connection->lastInsertId();
     }
 
-    public function updateEvent($id, $name, $startTime, $endTime, $price)
+    public function updateEvent($id, $name, $startTime, $endTime, ?int $eventTypeId)
     {
-        $sql = "UPDATE Events SET name = :name, startTime = :startTime, endTime = :endTime, price = :price WHERE eventId = :id";
+        if ($eventTypeId === null) {
+            $eventTypeId = 'NULL';
+        }
+
+        $sql = "UPDATE Events SET name = :name, startTime = :startTime, endTime = :endTime, festivalEventType = :eventTypeId WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
         $stmt->bindParam(':startTime', $startTime->format('Y-m-d H:i:s'), PDO::PARAM_STR);
         $stmt->bindParam(':endTime', $endTime->format('Y-m-d H:i:s'), PDO::PARAM_STR);
-        $stmt->bindValue(':price', $price);
+        $stmt->bindParam(':eventTypeId', $eventTypeId, PDO::PARAM_INT);
         $stmt->execute();
     }
 
@@ -143,7 +166,7 @@ class EventRepository extends Repository
 
     public function getAllJazzEvents($sort, array $filters)
     {
-        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, t.ticketTypePrice " .
+        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, t.ticketTypePrice, e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets " .
             "FROM JazzEvents je " .
             "JOIN Events e ON e.eventId = je.eventId " .
             "JOIN cartitems c on e.eventId = c.eventId " .
@@ -235,7 +258,7 @@ class EventRepository extends Repository
 
     public function getJazzEventById($id)
     {
-        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime "
+        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets  "
             . "FROM JazzEvents je "
             . "JOIN Events e ON e.eventId = je.eventId "
             . "WHERE je.eventId = :id";
@@ -251,12 +274,13 @@ class EventRepository extends Repository
     {
         try {
             $locationRep = new LocationRepository();
+            $eventTypeRep = new EventTypeRepository();
 
             $sql = "SELECT he.eventId as eventId, he.locationId as locationId, e.name as name,
-             e.startTime as startTime, e.endTime as endTime, g.guideId as guideId, e.availableTickets as availableTickets
+             e.startTime as startTime, e.endTime as endTime, g.guideId as guideId, e.availableTickets as availableTickets, e.festivalEventType
             FROM historyEvents he
-            JOIN Events e ON e.eventId = he.eventId 
-            join guides g on g.guideId = he.guideId 
+            JOIN Events e ON e.eventId = he.eventId
+            join guides g on g.guideId = he.guideId
             where he.eventId  = :id";
 
             $stmt = $this->connection->prepare($sql);
@@ -269,8 +293,10 @@ class EventRepository extends Repository
             $location = $locationRep->getById($result['locationId']);
             $startTime = new DateTime($result['startTime']);
             $endTime = new DateTime($result['endTime']);
-            
-            $historyEvent = new HistoryEvent($result['eventId'], $result['name'], $result['availableTickets'], $startTime, $endTime, $guide, $location);
+
+            $evenType = $eventTypeRep->getById($result['festivalEventType']);
+
+            $historyEvent = new HistoryEvent($result['eventId'], $result['name'], $result['availableTickets'], $startTime, $endTime, $guide, $location, $evenType);
             return $historyEvent;
         } catch (Exception $ex) {
             throw ($ex);
@@ -323,7 +349,7 @@ class EventRepository extends Repository
 
     public function getJazzEventsForArtist($artistId)
     {
-        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.price "
+        $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, e.availableTickets "
             . "FROM JazzEvents je "
             . "JOIN Events e ON e.eventId = je.eventId "
             . "WHERE artistId = :artistId";
@@ -331,5 +357,26 @@ class EventRepository extends Repository
         $stmt->execute(['artistId' => $artistId]);
         $arr = $stmt->fetchAll();
         return $this->buildJazzEvent($arr);
+    }
+
+    public function getFestivalDates(): array
+    {
+        $sql = "SELECT DISTINCT DATE(startTime) as date FROM Events ORDER BY date";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        $arr = $stmt->fetchAll();
+        return array_map(fn ($date) => $date['date'], $arr);
+    }
+
+    public function getPasses(): array
+    {
+        // passes don't have availableTickets
+        $sql = "SELECT e.eventId, e.name, e.startTime, e.endTime, e.festivalEventType
+            FROM Events e
+            WHERE e.availableTickets = 0";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        $arr = $stmt->fetchAll();
+        return $this->buildEvent($arr);
     }
 }

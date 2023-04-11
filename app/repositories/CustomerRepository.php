@@ -26,9 +26,9 @@ class CustomerRepository extends Repository{
             $stmt->execute();
             $result = $stmt->fetchAll();
 
-            if (is_bool($result)){
+            if (!$result){
                 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
-                throw new UserNotFoundException("User ID not found");
+                throw new UserNotFoundException();
             }
 
             $result = $result[0];
@@ -72,7 +72,7 @@ class CustomerRepository extends Repository{
             $customer->setUserId($this->userRepository->connection->lastInsertId());
             
             $query = "INSERT INTO customers (dateOfBirth, phoneNumber, addressId, userId) " .
-                        "VALUES (:dateOfBirth, :phoneNumber, :addressId, :userId)";
+                                "VALUES (:dateOfBirth, :phoneNumber, :addressId, :userId)";
             $stmt = $this->connection->prepare($query);
             
             $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirthAsString());

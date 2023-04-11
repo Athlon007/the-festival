@@ -3,6 +3,7 @@
 require_once(__DIR__ . "/../repositories/LocationRepository.php");
 require_once(__DIR__ . "/AddressService.php");
 require_once(__DIR__ . "/../models/Location.php");
+require_once(__DIR__ . '/../models/Exceptions/ObjectNotFoundException.php');
 
 
 class LocationService
@@ -97,9 +98,9 @@ class LocationService
         $response = file_get_contents($url, true, $context);
         $response = json_decode($response, true);
 
-        // chekc if response is null
+        // Check if response is null
         if ($response == null) {
-            throw new Exception("Invalid JSON");
+            throw new ObjectNotFoundException("Invalid JSON");
         }
 
         $lat = $response['results'][0]['position']['lat'];

@@ -185,4 +185,9 @@ class Artist implements JsonSerializable
             'kind' => $this->getArtistKind()
         ];
     }
+
+    public function noInformation()
+    {
+        return $this->getDescription() == "" && $this->getImages() == [] && $this->getCountry() == "" && $this->getGenres() == "";
+    }
 }

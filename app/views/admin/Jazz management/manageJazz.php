@@ -19,15 +19,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <script type="module" src="/js/nav.js"></script>
     <br>
-    <nav class="nav nav-pills flex-column flex-sm-row">
-        <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/manageTextPages">Text Pages</a>
-        <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/manageImages">Images</a>
-        <a class="flex-sm-fill text-sm-center nav-link" aria-current="page" href="/../manageUsers">Users</a>
-        <a class="flex-sm-fill text-sm-center nav-link active" href="/../manageJazz">Jazz</a>
-        <a class="flex-sm-fill text-sm-center nav-link" href="/../manageRestaurants">Restaurants</a>
-        <a class="flex-sm-fill text-sm-center nav-link" href="/../manageDJs">Dance</a>
-        <a class="flex-sm-fill text-sm-center nav-link" href="/../manageHistory">History</a>
-    </nav>
+    <?php require_once(__DIR__ . '/../adminNavbar.php'); ?>
 
     <h1 class="text-center mt-3">Manage Jazz</h1>
     <br>
@@ -60,7 +52,6 @@
     <footer class="foot row bottom"></footer>
     <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    <script type="module" src="/js/admin/locations.js"></script>
     <script type="module" src="/js/foot.js"></script>
     <script>
         $(document).ready(function() {
@@ -68,6 +59,13 @@
                     //alert($(this).val());
                     $(".data").hide();
                     $("#" + $(this).val()).fadeIn(700);
+
+                    // get the value of the selected option
+                    var selected = $(this).val();
+                    // get iframe that belongs to the selected option
+                    var iframe = $("#" + selected).find("iframe");
+                    // reload iframe
+                    iframe.attr("src", iframe.attr("src"));
                 })
                 .change();
         });

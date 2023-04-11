@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\type;
+
 require_once(__DIR__ . "/APIController.php");
 require_once("../services/UserService.php");
 require_once("../services/CustomerService.php");
@@ -12,7 +15,6 @@ class UserAPIController extends APIController
         try {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-                parent::handlePostRequest($uri);
                 $data = json_decode(file_get_contents("php://input"));
 
                 switch ($uri) {
@@ -33,7 +35,7 @@ class UserAPIController extends APIController
                         break;
                     case "/api/user/addUser":
                         $this->addUser($data);
-                        break; 
+                        break;
                     case "/api/user/deleteUser":
                         $this->deleteUser($data);
                         break;
@@ -55,7 +57,6 @@ class UserAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
-        
     }
 
     public function handlePutRequest($uri)
@@ -82,23 +83,29 @@ class UserAPIController extends APIController
             $user = $userService->verifyUser($data);
 
             //Store user in session
-            session_start();
-            $_SESSION["user"] = $user;
+            if(session_status() == PHP_SESSION_NONE){
+                session_start();
+            }
 
-            parent::sendSuccessMessage("Login successful.");
+            $_SESSION["user"] = serialize($user);
+
+            $this->sendSuccessMessage("Login successful.");
         } catch (Exception $ex) {
-            parent::sendErrorMessage($ex->getMessage());
+            $this->sendErrorMessage($ex->getMessage());
         }
     }
 
     private function logout()
     {
         try {
-            session_start();
-            session_destroy();
-            parent::sendSuccessMessage("Logout successful.");
+            if(session_status() == PHP_SESSION_NONE){
+                session_start();
+            }
+
+            $_SESSION["user"] = null;
+            $this->sendSuccessMessage("Logout successful.");
         } catch (Exception $ex) {
-            parent::sendErrorMessage($ex->getMessage());
+            $this->sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -108,9 +115,11 @@ class UserAPIController extends APIController
             $customerService = new CustomerService();
 
             //Check if all data is present
-            if (!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password)
-            || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse)){
-                
+            if (
+                !isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password)
+                || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse)
+            ) {
+
                 throw new MissingVariableException("Registration data incomplete.");
             }
 
@@ -127,9 +136,9 @@ class UserAPIController extends APIController
             //Register new customer
             $customerService->registerCustomer($data);
 
-            parent::sendSuccessMessage("Registration successful.");
+            $this->sendSuccessMessage("Registration successful.");
         } catch (Exception $ex) {
-            parent::sendErrorMessage($ex->getMessage());
+            $this->sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -180,6 +189,11 @@ class UserAPIController extends APIController
 
     private function addUser($data)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            parent::sendErrorMessage("You are not authorized to perform this action.");
+            return;
+        }
+
         try {
             $userService = new UserService();
 
@@ -190,7 +204,9 @@ class UserAPIController extends APIController
             ) {
                 throw new Exception("Please fill all the information.");
             }
-            $userService->addUser($data);
+
+            $now = new DateTime();
+            $userService->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, $data->role, $now);
             parent::sendSuccessMessage("User added.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
@@ -199,6 +215,11 @@ class UserAPIController extends APIController
 
     private function deleteUser($data)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            parent::sendErrorMessage("You are not authorized to perform this action.");
+            return;
+        }
+
         try {
             $userService = new UserService();
 
@@ -216,6 +237,11 @@ class UserAPIController extends APIController
 
     private function updateUser($data)
     {
+        if (!$this->isLoggedInAsAdmin()) {
+            parent::sendErrorMessage("You are not authorized to perform this action.");
+            return;
+        }
+
         try {
             $userService = new UserService();
             if (
@@ -232,16 +258,19 @@ class UserAPIController extends APIController
         }
     }
 
-    private function updateCustomer($data){
+    private function updateCustomer($data)
+    {
         try {
             $customerService = new CustomerService();
 
-            if (!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->dateOfBirth)
-                || !isset($data->phoneNumber) || !isset($data->address)){
+            if (
+                !isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->dateOfBirth)
+                || !isset($data->phoneNumber) || !isset($data->address)
+            ) {
                 throw new MissingVariableException("Not all data received.");
             }
             session_start();
-            $customer = $_SESSION['user'];
+            $customer = unserialize($_SESSION['user']);
             $customerService->updateCustomer($customer, $data);
 
             parent::sendSuccessMessage("Your account was successfully updated.");
@@ -249,5 +278,4 @@ class UserAPIController extends APIController
             parent::sendErrorMessage($ex->getMessage());
         }
     }
-
 }

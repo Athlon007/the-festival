@@ -22,21 +22,21 @@ var postalCodeField = document.getElementById("postalCode");
 var cityField = document.getElementById("city");
 var countryField = document.getElementById("country");
 
-function enableSaveChanges(){
+function enableSaveChanges() {
     saveChangesButton.disabled = false;
 }
 
-function disableSaveChanges(){
+function disableSaveChanges() {
     saveChangesButton.disabled = true;
 }
 
-function updateAccount(){
+function updateAccount() {
     //Clear popups
     popup.innerHTML = "";
     //Remove all spaces from the appropriate fields
     removeAllSpaces();
     //Check if all fields are filled in
-    if(!allFieldsFilled()){
+    if (!allFieldsFilled()) {
         displayError("Please fill in all required fields");
         return;
     }
@@ -51,7 +51,7 @@ function updateAccount(){
 
     var data;
     //If a new password is filled in, pass passwords in the data
-    if(passwordField.value != ""){
+    if (passwordField.value != "") {
         data = {
             firstName: firstNameField.value,
             lastName: lastNameField.value,
@@ -62,9 +62,9 @@ function updateAccount(){
             passwordConfirm: passwordConfirmField.value,
             address: address
         }
-   }
-   //If new password is not filled in, do not pass passwords in the data
-   else{
+    }
+    //If new password is not filled in, do not pass passwords in the data
+    else {
         data = {
             firstName: firstNameField.value,
             lastName: lastNameField.value,
@@ -73,47 +73,48 @@ function updateAccount(){
             email: emailField.value,
             address: address
         }
-    } 
+    }
     //Pass the data to the update api
     fetch("/api/user/update-customer", {
         method: "POST",
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
-    .then(data => {
-        displaySuccess(data.success_message);
-    })
-    .catch(error => {displayError(error)});
+        .then(response => response.json())
+        .then(data => {
+            displaySuccess(data.success_message);
+        })
+        .catch(error => { displayError(error) });
 }
 
 
-function logout(){
-    fetch("/api/user/logout",{
+function logout() {
+    fetch("/api/user/logout", {
         method: "POST",
-        body: JSON.stringify({logout: "true"})
+        credentials: 'same-origin',
+        body: JSON.stringify({ logout: "true" })
     })
-    .then(response => response.json())
-    .then(data =>{
+        .then(response => response.json())
+        .then(data => {
             window.location.assign("/home/login");
-    })
-    .catch(error => {displayError(error)});
+        })
+        .catch(error => { displayError(error) });
 }
 
-function removeAllSpaces(){
+function removeAllSpaces() {
     houseNumberField.value = houseNumberField.value.replace(/\s/g, '');
     postalCodeField.value = postalCodeField.value.replace(/\s/g, '');
     emailField.value = emailField.value.replace(/\s/g, '');
 }
 
-function allFieldsFilled(){
-    return !(firstNameField.value == "" || lastNameField.value == "" || 
-    doBField.value == "" || phoneNumberField.value == "" || 
-    streetNameField.value == "" || houseNumberField.value == "" || 
-    postalCodeField.value == "" || cityField.value == "" || 
-    countryField.value == "" || emailField.value == "")
+function allFieldsFilled() {
+    return !(firstNameField.value == "" || lastNameField.value == "" ||
+        doBField.value == "" || phoneNumberField.value == "" ||
+        streetNameField.value == "" || houseNumberField.value == "" ||
+        postalCodeField.value == "" || cityField.value == "" ||
+        countryField.value == "" || emailField.value == "")
 }
 
-function displayError(error){
+function displayError(error) {
     errorDiv = document.createElement("div");
     errorDiv.innerHTML = error;
     errorDiv.classList.add("alert");
@@ -123,7 +124,7 @@ function displayError(error){
     popup.appendChild(errorDiv);
 }
 
-function displaySuccess(success){
+function displaySuccess(success) {
     successDiv = document.createElement("div");
     successDiv.innerHTML = success;
     successDiv.classList.add("alert");
@@ -131,4 +132,4 @@ function displaySuccess(success){
     successDiv.classList.add("p-3");
     successDiv.setAttribute("role", "alert");
     popup.appendChild(successDiv);
-}   
+}

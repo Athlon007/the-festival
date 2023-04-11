@@ -1,5 +1,14 @@
 import { isCurrentLink, getNavbarItems } from './utils.js';
 
+// Check if /js/cart.js is loaded.
+if (typeof Cart === 'undefined') {
+    console.error('cart.js is not loaded!');
+    // load it.
+    let script = document.createElement('script');
+    script.src = '/js/cart.js';
+    document.head.appendChild(script);
+}
+
 // Creates a nav link for the navbar.
 function createNavLink(collapseLi, element) {
     // Create the a
@@ -30,10 +39,12 @@ function createDropdown(collapseLi, element) {
         // if window width is less than 960 px
         collapseLi.classList.add('show');
         collapseLi.children[1].classList.add('show');
+        collapseLi.children[0].setAttribute('aria-expanded', 'true');
     };
     collapseLi.onmouseleave = function () {
         collapseLi.classList.remove('show');
         collapseLi.children[1].classList.remove('show');
+        collapseLi.children[0].setAttribute('aria-expanded', 'false');
     };
     // Create the a
     let collapseA = document.createElement('a');
@@ -92,10 +103,12 @@ function createLanguagePicker() {
     collapseLi.onmouseover = function () {
         collapseLi.classList.add('show');
         collapseLi.children[1].classList.add('show');
+        collapseLi.children[0].setAttribute('aria-expanded', 'true');
     };
     collapseLi.onmouseleave = function () {
         collapseLi.classList.remove('show');
         collapseLi.children[1].classList.remove('show');
+        collapseLi.children[0].setAttribute('aria-expanded', 'false');
     };
     // Create the a
     let collapseA = document.createElement('a');
@@ -147,6 +160,24 @@ function createIcon(href, alt, iconClass) {
 
     collapseLi.appendChild(collapseA);
 
+    if (alt == 'Shopping cart') {
+        // Create a circle with the number of items in the cart
+        let cartCircle = document.createElement('div');
+        cartCircle.classList.add('shopping-circle', 'd-none');
+        cartCircle.id = 'shopping-circle';
+
+        let cartCircleText = document.createElement('p');
+        cartCircleText.classList.add('shopping-circle-text');
+        cartCircleText.textContent = '0';
+        cartCircleText.id = 'shopping-circle-text';
+
+        cartCircle.appendChild(cartCircleText);
+
+        collapseA.appendChild(cartCircle);
+
+        Cart.UpdateCounter();
+    }
+
     return collapseLi;
 }
 
@@ -159,10 +190,12 @@ function createSearch() {
     collapseLi.onmouseover = function () {
         collapseLi.classList.add('show');
         collapseLi.children[1].classList.add('show');
+        collapseLi.children[0].setAttribute('aria-expanded', 'true');
     };
     collapseLi.onmouseleave = function () {
         collapseLi.classList.remove('show');
         collapseLi.children[1].classList.remove('show');
+        collapseLi.children[0].setAttribute('aria-expanded', 'false');
     };
     // Create the a
     let collapseA = document.createElement('a');
@@ -266,7 +299,7 @@ function loadNavbar() {
     })
         .then(() => {
             // add language picker
-            collapseUl.appendChild(createSearch());
+            //collapseUl.appendChild(createSearch());
             collapseUl.appendChild(createLanguagePicker());
             collapseUl.appendChild(createIcon('/home/account', 'Account', 'user-icon'));
             collapseUl.appendChild(createIcon('/shopping-cart', 'Shopping cart', 'shopping-cart-icon'));

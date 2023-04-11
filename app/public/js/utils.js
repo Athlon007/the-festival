@@ -10,6 +10,8 @@ export function getNavbarItems() {
             .then(data => data)
             .catch(error => console.error(error));
     }
+
+
     return navItems;
 }
 
@@ -25,6 +27,6 @@ export function isCurrentLink(href) {
     return window.location.pathname == href;
 }
 
-export function isValidPassword(password){
+export function isValidPassword(password) {
     return (password.length >= 8);
 }

@@ -45,6 +45,7 @@ function updateExistingArtist(id, data) {
         headers: {
             'Content-Type': 'application/json'
         },
+        credentials: 'same-origin',
         body: JSON.stringify(data)
     })
         .then(response => response.json())
@@ -67,6 +68,7 @@ function createNewArtist(data) {
         headers: {
             'Content-Type': 'application/json'
         },
+        credentials: 'same-origin',
         body: JSON.stringify(data)
     })
         .then(response => response.json())
@@ -131,6 +133,7 @@ document.getElementById('delete').onclick = function () {
         // fetch with post
         fetch('/api/artists/' + editedArtistId, {
             method: 'DELETE',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             }

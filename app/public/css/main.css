@@ -81,6 +81,10 @@ h2 {
     border-left: 1px solid #525252;
 }
 
+.navbar {
+    z-index: 1000;
+}
+
 .navbar-brand {
     max-height: 3rem;
     margin-left: 1em;
@@ -91,7 +95,8 @@ h2 {
     border-radius: 0;
     border: 1px solid #525252;
     text-align: center;
-    transform: translateX(-25%);
+    transform: translateX(-25%) translateY(-4px);
+    z-index: 10000;
 }
 
 .dropdown-menu>a {
@@ -289,6 +294,29 @@ h2 {
 .gy-1>* {
     margin-bottom: 1em;
     margin-top: 1em
+}
+
+.shopping-circle {
+    position: absolute;
+    border-radius: 100%;
+    transform: translateY(12px);
+    background-color: #fff;
+    width: 1em;
+    height: 1em;
+}
+
+.shopping-circle>p {
+    transform: translate(35%, 10%);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    color: #000;
+    margin: auto;
+}
+
+.disabled {
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.5;
 }
 
 @media (min-width: 960px) {

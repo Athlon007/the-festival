@@ -41,6 +41,7 @@ if (window.frameElement != null && window.frameElement.getAttribute('data-locati
 function updateExistingEntry(id, data) {
     fetch('/api/locations/' + id, {
         method: 'PUT',
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -63,6 +64,7 @@ function updateExistingEntry(id, data) {
 function createNewEntry(data) {
     fetch('/api/locations', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -131,6 +133,7 @@ document.getElementById('delete').onclick = function () {
         // fetch with post
         fetch('/api/locations/' + editedId, {
             method: 'DELETE',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             }

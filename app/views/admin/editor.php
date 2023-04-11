@@ -40,7 +40,7 @@
                         </div>
                         <label for="banner-images" class="form-label">Banner Images</label>
                         <div class="card">
-                            <div id="images" class="card-body">
+                            <div id="images" class="card-body" style="overflow-y:auto; max-height:200px">
                             </div>
                         </div>
                     </div>

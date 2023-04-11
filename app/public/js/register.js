@@ -56,8 +56,12 @@ function attemptRegister(captcha)
     })
     .then(response => response.json())
     .then(data => {
-            window.location.assign("/home/login");
-        })
+        if(data.error_message){
+            displayError(data.error_message);
+            return;
+        }
+        window.location.assign("/home/login");
+    })
     .catch(error => {displayError(error)});
 }
 
@@ -107,7 +111,7 @@ function fetchAddress(){
             countryField.value = "Netherlands";
         }
     })
-    .catch(error => {displayError(error)});
+    .catch(error => {console.log(error)});
 }
 
 function displayError(error){

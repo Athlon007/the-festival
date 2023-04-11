@@ -4,28 +4,26 @@ class Order implements JsonSerializable
 {
     private int $orderId;
     private array $tickets;
+    private Invoice $invoice;
     private Customer $customer;
     private DateTime $orderDate;
-    private bool $isPaid;
-    private float $totalBasePrice;
-    private float $totalVat9;
-    private float $totalVat21;
-    private float $totalPrice;
-   
-    public function jsonSerialize(){
-    return [
-        'orderId' => $this->orderId,
-        'tickets' => $this->tickets,
-        'customer' => $this->customer,
-        'orderDate' => $this->orderDate,
-        'isPaid' => $this->isPaid
-    ];
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'orderId' => $this->orderId,
+            'tickets' => $this->tickets,
+            'invoice' => $this->invoice,
+            'customer' => $this->customer,
+            'orderDate' => $this->orderDate,
+            'totalFullPrice' => $this->getTotalPrice(),
+        ];
     }
 
-    public function __construct(){
-        $this->tickets = [];	
-        $this->orderDate = new DateTime();
-        $this->isPaid = false;
+    public function __construct()
+    {
+        $this->tickets = [];
+        $this->orderDate = new DateTime("now");
     }
 
     public function getOrderId(): int
@@ -70,34 +68,22 @@ class Order implements JsonSerializable
         $this->customer = $customer;
     }
 
-    public function getOrderDate(): ?DateTime
+    public function getOrderDate(): DateTime
     {
         return $this->orderDate;
     }
 
-    public function setOrderDate(?DateTime $orderDate): void
+    public function setOrderDate(DateTime $orderDate): void
     {
         $this->orderDate = $orderDate;
-    }
-
-    public function isPaid(): bool
-    {
-        return $this->isPaid;
-    }
-
-    public function setIsPaid(bool $isPaid): void
-    {
-        $this->isPaid = $isPaid;
     }
 
     public function getTotalPrice(): float
     {
         $totalPrice = 0;
         foreach ($this->tickets as $ticket) {
-            $totalPrice += $ticket->getPrice();
+            $totalPrice += $ticket->getFullPrice();
         }
         return $totalPrice;
     }
-
-
 }

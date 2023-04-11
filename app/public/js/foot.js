@@ -108,7 +108,19 @@ function onLoad() {
             navLi.appendChild(navLiA);
             navUl.appendChild(navLi);
         })
+
+        // Add 'admin' link
+        let navLi = document.createElement('li');
+        navLi.classList.add('list-unstyled')
+        let navLiA = document.createElement('a');
+        navLiA.innerText = 'Admin';
+        navLiA.href = '/manage';
+        navLiA.classList.add('footer-nav');
+        navLi.appendChild(navLiA);
+        navUl.appendChild(navLi);
     });
+
+
 
     navDiv.appendChild(navUl);
     foot.appendChild(navDiv);

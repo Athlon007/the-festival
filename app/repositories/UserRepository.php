@@ -5,7 +5,7 @@ require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
 
 class UserRepository extends Repository
 {
-    public function getbyId($userId): User
+    public function getById($userId): User
     {
         try {
             $query = "SELECT * FROM users WHERE userId = :userId";
@@ -16,9 +16,9 @@ class UserRepository extends Repository
 
             $result = $stmt->fetch();
 
-            if (is_bool($result))
-                throw new UserNotFoundException("User ID not found");
-
+            if (!$result)
+                throw new UserNotFoundException();
+                
             return $this->buildUser($result);
         } catch (Exception $ex) {
             throw ($ex);
@@ -36,8 +36,8 @@ class UserRepository extends Repository
 
             $result = $stmt->fetch();
 
-            if (is_bool($result))
-                throw new UserNotFoundException("User email not found");
+            if (!$result)
+                throw new UserNotFoundException();
 
             return $this->buildUser($result);
         } catch (Exception $ex) {
@@ -122,7 +122,7 @@ class UserRepository extends Repository
             $result = $stmt->fetchAll();
 
             if (is_bool($result))
-                throw new UserNotFoundException("User ID not found");
+                throw new UserNotFoundException();
 
             $users = array();
 
@@ -175,25 +175,6 @@ class UserRepository extends Repository
             $stmt = $this->connection->prepare("DELETE FROM users WHERE userId = :id");
             $stmt->bindValue(':id', $id);
             $stmt->execute();
-        } catch (Exception $ex) {
-            throw ($ex);
-        }
-    }
-
-    public function getUserByID($id)
-    {
-        try {
-            $query = "SELECT * FROM users WHERE userId = :id";
-            $stmt = $this->connection->prepare($query);
-            $stmt->bindValue(':id', $id);
-            $stmt->execute();
-
-            $result = $stmt->fetch();
-
-            if (is_bool($result))
-                throw new UserNotFoundException("User ID not found");
-
-            return $this->buildUser($result);
         } catch (Exception $ex) {
             throw ($ex);
         }

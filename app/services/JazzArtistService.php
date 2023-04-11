@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . "/../repositories/JazzArtistRepository.php");
 require_once("ImageService.php");
+require_once(__DIR__ . "/../models/Exceptions/InvalidVariableException.php");
 
 class JazzArtistService
 {
@@ -17,7 +18,7 @@ class JazzArtistService
         return $this->repo->getAll($sort, $filters);
     }
 
-    public function getById($id): Artist
+    public function getById($id): ?Artist
     {
         $id = htmlspecialchars($id);
         return $this->repo->getById($id);
@@ -25,6 +26,10 @@ class JazzArtistService
 
     public function insertArtist($name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $images, $artistKindId): Artist
     {
+        if (empty($name)) {
+            throw new InvalidVariableException("Artist name is required.");
+        }
+
         $name = htmlspecialchars($name);
         $description = htmlspecialchars($description);
         $country = htmlspecialchars($country);

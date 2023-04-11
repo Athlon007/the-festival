@@ -6,13 +6,15 @@ class UserController
     public function manageUsers()
     {
         try {
-            session_start();
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
 
             if (!isset($_SESSION['user'])) {
                 header("Location: /");
             }
 
-            $user = $_SESSION['user'];
+            $user = unserialize($_SESSION['user']);
             if ($user->getUserTypeAsString() != "Admin") {
                 header("Location: /");
             }

@@ -11,7 +11,7 @@ class User implements JsonSerializable
 
     protected DateTime $registrationDate;
 
-    public function jsonSerialize() : mixed
+    public function jsonSerialize(): mixed
     {
         return [
             'userId' => $this->userId,
@@ -23,69 +23,71 @@ class User implements JsonSerializable
             'registrationDate' => $this->registrationDate->format('Y-m-d')
         ];
     }
-    public function getUserId() : int
+    public function getUserId(): int
     {
         return $this->userId;
     }
 
-    public function setUserId(int $id) : void
+    public function setUserId(int $id): void
     {
         $this->userId = $id;
     }
 
-    public function getEmail() : string
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email) : void
+    public function setEmail(string $email): void
     {
         $this->email = $email;
     }
 
-    public function getFullName() : string{
+    public function getFullName(): string
+    {
         return $this->firstName . " " . $this->lastName;
     }
 
-    public function getFirstName() : string
+    public function getFirstName(): string
     {
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName) : void
+    public function setFirstName(string $firstName): void
     {
         $this->firstName = $firstName;
     }
 
-    public function getLastName() : string
+    public function getLastName(): string
     {
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName) : void
+    public function setLastName(string $lastName): void
     {
         $this->lastName = $lastName;
     }
 
 
-    public function getHashPassword() : string
+    public function getHashPassword(): string
     {
         return $this->hashPassword;
     }
 
-    public function setHashPassword(string $hash) : void
+    public function setHashPassword(string $hash): void
     {
         $this->hashPassword = $hash;
     }
 
-    public function getUserType() : int
+    public function getUserType(): int
     {
         return $this->userType;
     }
 
-    public function getUserTypeAsString() : string{
-        
-        switch($this->userType){
+    public function getUserTypeAsString(): string
+    {
+
+        switch ($this->userType) {
             case 1:
                 return "Admin";
             case 2:
@@ -97,27 +99,42 @@ class User implements JsonSerializable
         }
     }
 
-    public function setUserType(int $userType) : void
+    public function setUserType(int $userType): void
     {
         $this->userType = $userType;
     }
 
-    public function getRegistrationDate() : DateTime
+    public function setUserTypeByString(string $userType): void
+    {
+        $userType = strtolower($userType);
+        switch ($userType) {
+            case "admin":
+                $this->userType = 1;
+                break;
+            case "employee":
+                $this->userType = 2;
+                break;
+            case "customer":
+                $this->userType = 3;
+                break;
+            default:
+                $this->userType = 0;
+                break;
+        }
+    }
+
+    public function getRegistrationDate(): DateTime
     {
         return $this->registrationDate;
     }
 
-    public function setRegistrationDate(DateTime $date) : void
+    public function setRegistrationDate(DateTime $date): void
     {
         $this->registrationDate = $date;
     }
 
-    public function isAdmin() : bool
+    public function isAdmin(): bool
     {
         return $this->userType == 1;
     }
-
-    
 }
-
-?>
