@@ -10,7 +10,11 @@ protected String $restaurantName;
 protected int $addressId;
 protected int $numOfSessions;
 protected string $durationOfSessions;
+protected int $availableSeats;
 protected string $description;
+protected string $price;
+protected RestaurantType $typeId;
+protected int $rating;
 
 /**
  * Summary of jsonSerialize
@@ -24,6 +28,11 @@ public function jsonSerialize() : mixed
         'addressId' => $this->addressId,
         'numOfSessions' => $this->numOfSessions,
         'durationOfSessions' => $this->durationOfSessions,
+        'availableSeats' => $this->availableSeats,
+        'description' => $this->description,
+        'price' => $this->price,
+        'typeid' => $this->typeId,
+        'rating' => $this->rating
     ];
 }
 	/**
@@ -119,6 +128,70 @@ public function jsonSerialize() : mixed
 	 */
 	public function setDescription(string $description): self {
 		$this->description = $description;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPrice(): string {
+		return $this->price;
+	}
+	
+	/**
+	 * @param string $price 
+	 * @return self
+	 */
+	public function setPrice(string $price): self {
+		$this->price = $price;
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getAvailableSeats(): int {
+		return $this->availableSeats;
+	}
+	
+	/**
+	 * @param int $availableSeats 
+	 * @return self
+	 */
+	public function setAvailableSeats(int $availableSeats): self {
+		$this->availableSeats = $availableSeats;
+		return $this;
+	}
+	
+	/**
+	 * @return int
+	 */
+	public function getRating(): int {
+		return $this->rating;
+	}
+	
+	/**
+	 * @param int $rating 
+	 * @return self
+	 */
+	public function setRating(int $rating): self {
+		$this->rating = $rating;
+		return $this;
+	}
+
+	/**
+	 * @return RestaurantType
+	 */
+	public function getTypeId(): RestaurantType {
+		return $this->typeId;
+	}
+	
+	/**
+	 * @param RestaurantType $typeId 
+	 * @return self
+	 */
+	public function setTypeId(RestaurantType $typeId): self {
+		$this->typeId = $typeId;
 		return $this;
 	}
 }

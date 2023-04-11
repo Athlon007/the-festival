@@ -185,6 +185,12 @@ class Router
                 $historyController = new HistoryController();
                 $historyController->addTour();
                 break;
+            case "/manageDance":
+                require_once("controllers/DanceController.php");
+                $danceController = new DanceController();
+                $danceController->manageDance();
+                break;
+            case "/festival/yummy":
             case "/foodfestival":
                 require_once("controllers/FestivalFoodController.php");
                 $festivalFoodController = new FestivalFoodController();
