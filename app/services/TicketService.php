@@ -104,6 +104,7 @@ class TicketService
       require_once(__DIR__ . '/../emails/ticket-email.php');
       $mail->Body = ob_get_clean();
 
+      //TODO: Hardcoded for now for testing purposes. Remove when unnecessary
       $mail->addAddress('turkvedat0911@gmail.com', $name);
       $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');
 
@@ -121,14 +122,14 @@ class TicketService
 
   }
 
-  //TODO: check if obsolete before handing in
+  //TODO: check if obsolete after payment funnel is finished
   public function addTicketToOrder($orderId, $ticketId)
   {
       
     return $this->repository->addTicketToOrder($orderId, $ticketId);
   }
 
-  //TODO: check if obsolete before handing in
+  //TODO: check if obsolete after payment funnel is finished
   public function removeTicketFromOrder($orderId, $ticketId)
   {
         

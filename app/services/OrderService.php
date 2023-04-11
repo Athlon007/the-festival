@@ -10,12 +10,19 @@ require_once(__DIR__ . '/../models/Exceptions/OrderNotFoundException.php');
 require_once(__DIR__ . '/../repositories/CartItemRepository.php');
 require_once(__DIR__ . '/../models/CartItem.php');
 require_once(__DIR__ . '/../repositories/TicketRepository.php');
+require_once(__DIR__ . '/../services/TicketService.php');
+require_once(__DIR__ . '/../services/InvoiceService.php');
+require_once(__DIR__ . '/../service/PDFService.php');
+
 
 class OrderService
 {
     private $orderRepository;
     private $cartItemRepository;
     private $ticketRepository;
+    private $ticketService;
+    private $invoiceService;
+    private $pdfService;
 
     const CART_ARRAY = 'cartItemIds';
 
@@ -24,6 +31,9 @@ class OrderService
         $this->orderRepository = new OrderRepository();
         $this->cartItemRepository = new CartItemRepository();
         $this->ticketRepository = new TicketRepository();
+        $this->ticketService = new TicketService();
+        $this->invoiceService = new InvoiceService();
+        $this->pdfService = new PDFService();
     }
 
     public function getOrderById($id)
@@ -41,25 +51,20 @@ class OrderService
         return $this->orderRepository->getUnpaidOrder($customerId);
     }
 
+    //
     public function createOrder($customer, $cartItemIds)
     {
-        //TODO: doesn't work atm, cartitem doesn't have a ticket. Needs orderItem implementation.
         
-        $order = new Order();
-        $order->setCustomer($customer);
-        foreach ($cartItemIds as $cartItemId) {
-            $cartItem = $this->cartItemRepository->getById($cartItemId);
-            $ticket = $cartItem->getTicket();
-            $tickets[] = $ticket;
-        }
     }
 
-    public function generateInvoice($order)
-    {
-    }
 
     public function sendInvoiceAndTicketsByEmail($order)
     {
+        foreach ($order->getTickets() as $ticket) {
+            //Generate a PDF for the ticket and send it by email.
+            $domPdf = $this->pdfService->generatePDF($ticket->getHtml(), "Ticket", "ticket " . $ticket->getId() .".pdf");
+            $this->ticketService->sendTicketByEmail($domPdf, $ticket, $order);
+        }
     }
 
     /**
