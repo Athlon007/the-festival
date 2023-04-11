@@ -14,7 +14,6 @@ require_once(__DIR__ . '/../services/TicketService.php');
 require_once(__DIR__ . '/../services/InvoiceService.php');
 require_once(__DIR__ . '/../service/PDFService.php');
 
-
 class OrderService
 {
     private $orderRepository;
@@ -57,13 +56,13 @@ class OrderService
         
     }
 
-
     public function sendInvoiceAndTicketsByEmail($order)
     {
         foreach ($order->getTickets() as $ticket) {
             //Generate a PDF for the ticket and send it by email.
-            $domPdf = $this->pdfService->generatePDF($ticket->getHtml(), "Ticket", "ticket " . $ticket->getId() .".pdf");
-            $this->ticketService->sendTicketByEmail($domPdf, $ticket, $order);
+            $qrCode = $this->ticketService->generateQRCode($ticket);
+            $dompdf = $this->ticketService->generatePDFTicket($ticket, $qrCode, $order);
+            $this->ticketService->sendTicketByEmail($dompdf, $ticket, $order);
         }
     }
 

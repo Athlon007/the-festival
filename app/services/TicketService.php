@@ -37,6 +37,16 @@ class TicketService
     $this->repository = new TicketRepository();
   }
 
+  public function getTicketByID($ticketID): Ticket
+  {
+    try {
+      $ticket = $this->repository->getTicketByID($ticketID);
+      return $ticket;
+    } catch (Exception $ex) {
+      throw ($ex);
+    }
+  }
+
   public function generateQRCode($ticket): string
   {
     //Generate a QR code image with the ticket ID as data
@@ -54,7 +64,7 @@ class TicketService
     return $qrCodeImage;
   }
 
-  public function generatePDFTicket($ticket,$qrCodeImage): Dompdf
+  public function generatePDFTicket($ticket, $qrCodeImage, $order): Dompdf
   {
       $pdfService = new PDFService();  
 
@@ -68,16 +78,6 @@ class TicketService
       $filename = "ticket.pdf";
 
       return $pdfService->generatePDF($html, $title, $filename);
-  }
-
-  public function getTicketByID($ticketID): Ticket
-  {
-    try {
-      $ticket = $this->repository->getTicketByID($ticketID);
-      return $ticket;
-    } catch (Exception $ex) {
-      throw ($ex);
-    }
   }
 
   public function sendTicketByEmail(Dompdf $dompdf, Ticket $ticket, Order $order)
@@ -116,6 +116,13 @@ class TicketService
     } catch (Exception $ex) {
       throw ($ex);
     }
+  }
+
+  public function generateAndSendTicket($id, $order){
+    $ticket = $this->getTicketByID(3);
+    $qrCodeImage = $this->generateQRCode($ticket);
+    $dompdf = $this->generatePDFTicket($ticket, $qrCodeImage);
+    $this->sendTicketByEmail($dompdf, $ticket, $order);
   }
 
   public function createTicketFromCartItem(CartItem $cartItem){
