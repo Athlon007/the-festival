@@ -118,13 +118,6 @@ class TicketService
     }
   }
 
-  public function generateAndSendTicket($id, $order){
-    $ticket = $this->getTicketByID(3);
-    $qrCodeImage = $this->generateQRCode($ticket);
-    $dompdf = $this->generatePDFTicket($ticket, $qrCodeImage);
-    $this->sendTicketByEmail($dompdf, $ticket, $order);
-  }
-
   public function createTicketFromCartItem(CartItem $cartItem){
 
   }

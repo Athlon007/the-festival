@@ -50,7 +50,7 @@ class OrderService
         return $this->orderRepository->getUnpaidOrder($customerId);
     }
 
-    //
+    //To be called after payment (can't be implemented yet)
     public function createOrder($customer, $cartItemIds)
     {
         
@@ -58,12 +58,14 @@ class OrderService
 
     public function sendInvoiceAndTicketsByEmail($order)
     {
+        //Generate and email the tickets
         foreach ($order->getTickets() as $ticket) {
             //Generate a PDF for the ticket and send it by email.
             $qrCode = $this->ticketService->generateQRCode($ticket);
             $dompdf = $this->ticketService->generatePDFTicket($ticket, $qrCode, $order);
             $this->ticketService->sendTicketByEmail($dompdf, $ticket, $order);
         }
+        //Generate and email the invoice
     }
 
     /**
