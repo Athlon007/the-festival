@@ -112,7 +112,7 @@ class AllAccessPass {
                 perks: [
                     'Pay once to access everything',
                     'Affordable way to experience more than one artist',
-                    'Save up to € 145'
+                    //'Save up to € 145'
                 ],
                 passes: [
                     {
