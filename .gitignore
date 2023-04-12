@@ -8,3 +8,6 @@
 /httpRequests/
 .DS_Store
 .vscode
+
+app/logs/*
+*.log

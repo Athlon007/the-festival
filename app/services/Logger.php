@@ -28,7 +28,12 @@ class Logger
             $file = fopen(self::LOG_FOLDER . $fileName, "w");
 
             // Write to file
-            fwrite($file, $t->getMessage() . "\n\n" . $t->getTraceAsString());
+            fwrite(
+                $file,
+                $t->getMessage()
+                    . "\n\n" . $t->getFile() . ":" . $t->getLine()
+                    . "\n\n" . $t->getTraceAsString()
+            );
 
             // Close file
             fclose($file);

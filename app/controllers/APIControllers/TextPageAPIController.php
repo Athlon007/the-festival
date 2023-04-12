@@ -14,21 +14,26 @@ class TextPageAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
-        if (str_starts_with($uri, "/api/textpages")) {
-            if (is_numeric(basename($uri))) {
-                $page = $this->service->getTextPageById(basename($uri));
-                if ($page == null) {
-                    $this->sendErrorMessage("Page not found.", 404);
+        try {
+            if (str_starts_with($uri, "/api/textpages")) {
+                if (is_numeric(basename($uri))) {
+                    $page = $this->service->getTextPageById(basename($uri));
+                    if ($page == null) {
+                        $this->sendErrorMessage("Page not found.", 404);
+                        return;
+                    }
+                    echo json_encode($page);
                     return;
                 }
-                echo json_encode($page);
-                return;
-            }
 
-            $pages = $this->service->getAllTextPages();
-            echo json_encode($pages);
-        } else {
-            $this->sendErrorMessage("Invalid request.");
+                $pages = $this->service->getAllTextPages();
+                echo json_encode($pages);
+            } else {
+                $this->sendErrorMessage("Invalid request.");
+            }
+        } catch (Exception $e) {
+            Logger::write($e);
+            $this->sendErrorMessage($e->getMessage(), 500);
         }
     }
 
@@ -62,6 +67,7 @@ class TextPageAPIController extends APIController
 
             $this->sendErrorMessage("Invalid request.");
         } catch (Exception $e) {
+            Logger::write($e);
             $this->sendErrorMessage($e->getMessage(), 400);
         }
     }
@@ -93,6 +99,7 @@ class TextPageAPIController extends APIController
 
             $this->sendErrorMessage("Invalid request.", 400);
         } catch (Exception $e) {
+            Logger::write($e);
             $this->sendErrorMessage($e->getMessage(), 400);
         }
     }
@@ -104,12 +111,17 @@ class TextPageAPIController extends APIController
             return;
         }
 
-        if (str_starts_with($uri, "/api/textpages") && is_numeric(basename($uri))) {
-            $this->service->delete(basename($uri));
-            $this->sendSuccessMessage("Page deleted successfully.");
-            return;
-        }
+        try {
+            if (str_starts_with($uri, "/api/textpages") && is_numeric(basename($uri))) {
+                $this->service->delete(basename($uri));
+                $this->sendSuccessMessage("Page deleted successfully.");
+                return;
+            }
 
-        $this->sendErrorMessage("Invalid request.");
+            $this->sendErrorMessage("Invalid request.");
+        } catch (Exception $e) {
+            Logger::write($e);
+            $this->sendErrorMessage($e->getMessage(), 400);
+        }
     }
 }

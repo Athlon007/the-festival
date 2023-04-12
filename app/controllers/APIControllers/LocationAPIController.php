@@ -15,55 +15,60 @@ class LocationAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
-        if (str_starts_with($uri, "/api/locations/geocode")) {
-            if (!isset($_GET['street'])) {
-                $this->sendErrorMessage("Street is required", 400);
+        try {
+            if (str_starts_with($uri, "/api/locations/geocode")) {
+                if (!isset($_GET['street'])) {
+                    $this->sendErrorMessage("Street is required", 400);
+                    return;
+                }
+                if (!isset($_GET['number'])) {
+                    $this->sendErrorMessage("House number is required", 400);
+                    return;
+                }
+                if (!isset($_GET['postal'])) {
+                    $this->sendErrorMessage("Postal code is required", 400);
+                    return;
+                }
+                if (!isset($_GET['city'])) {
+                    $this->sendErrorMessage("City is required", 400);
+                    return;
+                }
+
+                $street = $_GET['street'];
+                $houseNumber = $_GET['number'];
+                $postalCode = $_GET['postal'];
+                $city = $_GET['city'];
+
+                $output = $this->locationService->fetchGeocoding($street, $houseNumber, $postalCode, $city);
+                echo json_encode($output);
                 return;
             }
-            if (!isset($_GET['number'])) {
-                $this->sendErrorMessage("House number is required", 400);
-                return;
-            }
-            if (!isset($_GET['postal'])) {
-                $this->sendErrorMessage("Postal code is required", 400);
-                return;
-            }
-            if (!isset($_GET['city'])) {
-                $this->sendErrorMessage("City is required", 400);
+
+            if (str_starts_with($uri, "/api/locations/types")) {
+                $this->getLocationTypes();
                 return;
             }
 
-            $street = $_GET['street'];
-            $houseNumber = $_GET['number'];
-            $postalCode = $_GET['postal'];
-            $city = $_GET['city'];
+            $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
 
-            $output = $this->locationService->fetchGeocoding($street, $houseNumber, $postalCode, $city);
-            echo json_encode($output);
-            return;
+            if (str_starts_with($uri, "/api/locations/type/")) {
+                $base = basename($uri);
+                // remove stuf after ?
+                $base = explode("?", $base)[0];
+                echo json_encode($this->locationService->getLocationsByType($base, $sort));
+                return;
+            }
+
+            if (is_numeric(basename($uri))) {
+                echo json_encode($this->locationService->getById(basename($uri)));
+                return;
+            }
+
+            echo json_encode($this->locationService->getAll($sort));
+        } catch (Exception $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to retrive locations.", 500);
         }
-
-        if (str_starts_with($uri, "/api/locations/types")) {
-            $this->getLocationTypes();
-            return;
-        }
-
-        $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
-
-        if (str_starts_with($uri, "/api/locations/type/")) {
-            $base = basename($uri);
-            // remove stuf after ?
-            $base = explode("?", $base)[0];
-            echo json_encode($this->locationService->getLocationsByType($base, $sort));
-            return;
-        }
-
-        if (is_numeric(basename($uri))) {
-            echo json_encode($this->locationService->getById(basename($uri)));
-            return;
-        }
-
-        echo json_encode($this->locationService->getAll($sort));
     }
 
     public function handlePostRequest($uri)
@@ -143,7 +148,8 @@ class LocationAPIController extends APIController
 
             echo json_encode($location);
         } catch (MissingVariableException $e) {
-            $this->sendErrorMessage($e->getMessage(), 400);
+            Logger::write($e);
+            $this->sendErrorMessage("Could not post new location.", 400);
         }
     }
 
@@ -235,7 +241,8 @@ class LocationAPIController extends APIController
 
             echo json_encode($location);
         } catch (MissingVariableException $e) {
-            $this->sendErrorMessage($e->getMessage(), 400);
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to edit location.", 400);
         }
     }
 
@@ -251,8 +258,13 @@ class LocationAPIController extends APIController
             return;
         }
 
-        $this->locationService->deleteLocation(basename($uri));
-        $this->sendSuccessMessage("Location deleted");
+        try {
+            $this->locationService->deleteLocation(basename($uri));
+            $this->sendSuccessMessage("Location deleted");
+        } catch (Exception $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to delete location.", 400);
+        }
     }
 
     private function getLocationTypes()

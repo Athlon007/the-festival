@@ -19,8 +19,13 @@ class NavBarAPIController extends APIController
             return;
         }
 
-        $output = $this->navService->getAll();
-        echo json_encode($output);
+        try {
+            $output = $this->navService->getAll();
+            echo json_encode($output);
+        } catch (Exception $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to retrive pages.");
+        }
     }
 
     public function handlePostRequest($uri)
@@ -60,7 +65,8 @@ class NavBarAPIController extends APIController
             $output = $this->navService->setNavbars($navBarItemsArray);
             echo json_encode($output);
         } catch (Exception $e) {
-            $this->sendErrorMessage($e->getMessage());
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to create navigation bar.");
         }
     }
 }

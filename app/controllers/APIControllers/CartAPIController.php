@@ -21,18 +21,23 @@ class CartAPIController extends APIController
 
     protected function handleGetRequest($uri)
     {
-        if (basename($uri) == 'count') {
-            echo json_encode(["count" => $this->orderService->getCartCount()]);
-            return;
-        } elseif (is_numeric(basename($uri))) {
-            $cartItem = $this->ciService->getById(basename($uri));
-            $count = $this->orderService->countItemInCart($cartItem);
-            echo json_encode(["count" => $count]);
-            return;
-        }
+        try {
+            if (basename($uri) == 'count') {
+                echo json_encode(["count" => $this->orderService->getCartCount()]);
+                return;
+            } elseif (is_numeric(basename($uri))) {
+                $cartItem = $this->ciService->getById(basename($uri));
+                $count = $this->orderService->countItemInCart($cartItem);
+                echo json_encode(["count" => $count]);
+                return;
+            }
 
-        $cart = $this->orderService->getCart();
-        echo json_encode($cart);
+            $cart = $this->orderService->getCart();
+            echo json_encode($cart);
+        } catch (Throwable $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to retrive cart.", 500);
+        }
     }
 
     protected function handlePostRequest($uri)
@@ -50,7 +55,8 @@ class CartAPIController extends APIController
             $cart = $this->orderService->getCart();
             echo json_encode($cart);
         } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled error. " . $e->getMessage(), 500);
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to add item into cart.", 500);
             return;
         }
     }
@@ -76,7 +82,8 @@ class CartAPIController extends APIController
             $cart = $this->orderService->getCart();
             echo json_encode($cart);
         } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled error", 500);
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to remove item from cart.", 500);
             return;
         }
     }

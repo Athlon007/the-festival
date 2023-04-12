@@ -87,6 +87,7 @@ class APIController
 
             return true;
         } catch (Exception $e) {
+            Logger::write($e);
             return false;
         }
     }
@@ -105,6 +106,7 @@ class APIController
 
             return false;
         } catch (Exception $e) {
+            Logger::write($e);
             return false;
         }
     }
