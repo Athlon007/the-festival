@@ -95,9 +95,8 @@ class EventAPIController extends APIController
                 echo json_encode($cartItemService->getAll());
             }
         } catch (TypeError $e) {
-            $this->sendErrorMessage("Event not found. " . $e->getMessage(), 404);
-        } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled exception: " . $e->getMessage() . "\r\n" . $e->getTraceAsString(), 500);
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to retrieve events.", 500);
         }
     }
 
