@@ -18,19 +18,26 @@ class FestivalJazzController
     {
         require_once(__DIR__ . "/../services/JazzArtistService.php");
 
-        $artistService = new JazzArtistService();
-        $artist = $artistService->getById(basename($uri));
+        try {
+            $artistService = new JazzArtistService();
+            $artist = $artistService->getById(basename($uri));
 
-        if ($artist === null) {
+            if ($artist === null) {
+                // redirect to 404
+                header("Location: /404");
+                return;
+            }
+
+
+            $events = $this->ciService->getAll("time", ["artist" => $artist->getId()]);
+
+            require(__DIR__ . self::JAZZ_ARTIST_PAGE);
+        } catch (Exception $e) {
             // redirect to 404
+            Logger::write($e);
             header("Location: /404");
             return;
         }
-
-
-        $events = $this->ciService->getAll("time", ["artist" => $artist->getId()]);
-
-        require(__DIR__ . self::JAZZ_ARTIST_PAGE);
     }
 
     public function loadEventPage($uri)
@@ -55,6 +62,7 @@ class FestivalJazzController
             require(__DIR__ . self::JAZZ_EVENT_PAGE);
         } catch (Exception $e) {
             // redirect to 404
+            Logger::write($e);
             header("Location: /404");
             return;
         }

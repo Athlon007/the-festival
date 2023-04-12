@@ -14,7 +14,12 @@ class PagesAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
-        $output = $this->pageService->getAll();
-        echo json_encode($output);
+        try {
+            $output = $this->pageService->getAll();
+            echo json_encode($output);
+        } catch (Exception $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to retrive pages.", 500);
+        }
     }
 }

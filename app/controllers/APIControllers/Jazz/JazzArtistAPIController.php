@@ -15,23 +15,28 @@ class JazzArtistAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
-        if (basename($uri) == "kinds") {
-            echo json_encode($this->service->getArtistKinds());
-            return;
-        }
+        try {
+            if (basename($uri) == "kinds") {
+                echo json_encode($this->service->getArtistKinds());
+                return;
+            }
 
-        if (is_numeric(basename($uri))) {
-            echo json_encode($this->service->getById(basename($uri)));
-            return;
-        }
+            if (is_numeric(basename($uri))) {
+                echo json_encode($this->service->getById(basename($uri)));
+                return;
+            }
 
-        $sort = $_GET["sort"] ?? "name";
-        $filters = [];
-        if (isset($_GET["kind"])) {
-            $filters["kind"] = $_GET["kind"];
-        }
+            $sort = $_GET["sort"] ?? "name";
+            $filters = [];
+            if (isset($_GET["kind"])) {
+                $filters["kind"] = $_GET["kind"];
+            }
 
-        echo json_encode($this->service->getAll($sort, $filters));
+            echo json_encode($this->service->getAll($sort, $filters));
+        } catch (Throwable $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to retrieve artists.", 500);
+        }
     }
 
     public function handlePostRequest($uri)
@@ -82,7 +87,8 @@ class JazzArtistAPIController extends APIController
                 $kindId
             ));
         } catch (Throwable $e) {
-            $this->sendErrorMessage($e->getMessage());
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to insert artist.", 500);
         }
     }
 
@@ -102,13 +108,18 @@ class JazzArtistAPIController extends APIController
             return;
         }
 
-        if (is_numeric(basename($uri))) {
-            $this->service->deleteById(basename($uri));
-            $this->sendSuccessMessage("Artist deleted");
-            return;
-        }
+        try {
+            if (is_numeric(basename($uri))) {
+                $this->service->deleteById(basename($uri));
+                $this->sendSuccessMessage("Artist deleted");
+                return;
+            }
 
-        $this->sendErrorMessage("Invalid URI");
+            $this->sendErrorMessage("Invalid URI");
+        } catch (Throwable $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to delete artist.", 500);
+        }
     }
 
     public function handlePutRequest($uri)
@@ -166,7 +177,8 @@ class JazzArtistAPIController extends APIController
                 $kindId
             ));
         } catch (Throwable $e) {
-            $this->sendErrorMessage($e->getMessage());
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to update artist.", 500);
         }
     }
 }
