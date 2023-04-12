@@ -8,9 +8,14 @@ class TextPageController
 
     public function loadPage($page)
     {
-        $title = $page->getTitle();
-        $content = $page->getContent();
-        $images = $page->getImages();
-        require(__DIR__ . self::TEXT_PAGE_PATH);
+        try {
+            $title = $page->getTitle();
+            $content = $page->getContent();
+            $images = $page->getImages();
+            require(__DIR__ . self::TEXT_PAGE_PATH);
+        } catch (Throwable $t) {
+            Logger::write($t);
+            require(__DIR__ . "../views/404.php");
+        }
     }
 }
