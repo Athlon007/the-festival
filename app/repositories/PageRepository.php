@@ -54,7 +54,7 @@ class PageRepository extends Repository
      */
     public function getPageById($id): ?Page
     {
-        $sql = "SELECT id, title, href, location FROM Pages WHERE id = :id";
+        $sql = "SELECT id, title, href, location FROM pages WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -68,7 +68,7 @@ class PageRepository extends Repository
      */
     public function getAll(): array
     {
-        $sql = "SELECT id, title, href, location FROM Pages";
+        $sql = "SELECT id, title, href, location FROM pages";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         return $this->pageBuilder($stmt->fetchAll());
@@ -81,7 +81,7 @@ class PageRepository extends Repository
      */
     public function getPageByHref($href): ?Page
     {
-        $sql = "SELECT id, title, href, location FROM Pages WHERE href = :href";
+        $sql = "SELECT id, title, href, location FROM pages WHERE href = :href";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":href", $href, PDO::PARAM_STR);
         $stmt->execute();
@@ -92,7 +92,7 @@ class PageRepository extends Repository
     public function getTextPageByHref($href): ?TextPage
     {
         $sql = "SELECT tp.textPageId, tp.content, p.title, p.href, p.location "
-            . "FROM TextPages tp JOIN Pages p ON p.id = tp.textPageId "
+            . "FROM textpages tp JOIN pages p ON p.id = tp.textPageId "
             . "WHERE p.href = :href";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":href", $href, PDO::PARAM_STR);
@@ -104,7 +104,7 @@ class PageRepository extends Repository
     public function getTextPageById($id): ?TextPage
     {
         $sql = "SELECT tp.textPageId, tp.content, p.title, p.href, p.location "
-            . "FROM TextPages tp JOIN Pages p ON p.id = tp.textPageId "
+            . "FROM textpages tp JOIN pages p ON p.id = tp.textPageId "
             . "WHERE tp.textPageId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
@@ -115,7 +115,7 @@ class PageRepository extends Repository
 
     public function countTextPages(string $href): int
     {
-        $sql = "SELECT p.id, p.href FROM Pages p JOIN TextPages tp ON p.id = tp.textPageId WHERE p.href = :href";
+        $sql = "SELECT p.id, p.href FROM pages p JOIN textpages tp ON p.id = tp.textPageId WHERE p.href = :href";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":href", $href, PDO::PARAM_STR);
         $stmt->execute();
@@ -124,7 +124,7 @@ class PageRepository extends Repository
 
     public function countTextPagesById(int $id): int
     {
-        $sql = "SELECT p.id, p.href FROM Pages p JOIN TextPages tp ON p.id = tp.textPageId WHERE p.id = :id";
+        $sql = "SELECT p.id, p.href FROM pages p JOIN textpages tp ON p.id = tp.textPageId WHERE p.id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -134,7 +134,7 @@ class PageRepository extends Repository
     public function getAllTextPages(): array
     {
         $sql = "SELECT tp.textPageId, tp.content, p.title, p.href, p.location "
-            . "FROM TextPages tp JOIN Pages p ON p.id = tp.textPageId";
+            . "FROM textpages tp JOIN pages p ON p.id = tp.textPageId";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         return $this->textPageBuilder($stmt->fetchAll());
@@ -142,13 +142,13 @@ class PageRepository extends Repository
 
     public function updateTextPage($id, $title, $content, $href)
     {
-        $sql = "UPDATE TextPages SET content = :content WHERE textPageId = :id";
+        $sql = "UPDATE textpages SET content = :content WHERE textPageId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":content", $content, PDO::PARAM_STR);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
 
-        $sql = "UPDATE Pages SET title = :title, href = :href WHERE id = :id";
+        $sql = "UPDATE pages SET title = :title, href = :href WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":title", $title, PDO::PARAM_STR);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
@@ -158,7 +158,7 @@ class PageRepository extends Repository
 
     public function createTextPage($title, $content, $href): int
     {
-        $sql = "INSERT INTO Pages (title, href, location) VALUES (:title, :href, :location)";
+        $sql = "INSERT INTO pages (title, href, location) VALUES (:title, :href, :location)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":title", $title, PDO::PARAM_STR);
         $stmt->bindParam(":href", $href, PDO::PARAM_STR);
@@ -167,7 +167,7 @@ class PageRepository extends Repository
 
         $lastId = $this->connection->lastInsertId();
 
-        $sql = "INSERT INTO TextPages (textPageId, content) VALUES (:id, :content)";
+        $sql = "INSERT INTO textpages (textPageId, content) VALUES (:id, :content)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":content", $content, PDO::PARAM_STR);
         $stmt->bindParam(":id", $lastId, PDO::PARAM_INT);
@@ -178,7 +178,7 @@ class PageRepository extends Repository
 
     public function delete($id)
     {
-        $sql = "DELETE FROM Pages WHERE id = :id";
+        $sql = "DELETE FROM pages WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();

@@ -137,8 +137,8 @@ class JazzCartItemRepository extends CartItemRepository
 		a2.id as artistKindId,
 		a2.name as artistKindName,
         c.cartItemId as cartItemId
-        FROM JazzEvents je
-        JOIN Events e ON e.eventId = je.eventId
+        FROM jazzevents je
+        JOIN events e ON e.eventId = je.eventId
         JOIN cartitems c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
         join jazzartists a on a.artistId = je.artistId
@@ -271,8 +271,8 @@ class JazzCartItemRepository extends CartItemRepository
 		a2.id as artistKindId,
 		a2.name as artistKindName,
         c.cartItemId as cartItemId
-        FROM JazzEvents je
-        JOIN Events e ON e.eventId = je.eventId
+        FROM jazzevents je
+        JOIN events e ON e.eventId = je.eventId
         JOIN cartitems c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
         join jazzartists a on a.artistId = je.artistId
@@ -334,8 +334,8 @@ class JazzCartItemRepository extends CartItemRepository
 		a2.id as artistKindId,
 		a2.name as artistKindName,
         c.cartItemId as cartItemId
-        FROM JazzEvents je
-        JOIN Events e ON e.eventId = je.eventId
+        FROM jazzevents je
+        JOIN events e ON e.eventId = je.eventId
         JOIN cartitems c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
         join jazzartists a on a.artistId = je.artistId

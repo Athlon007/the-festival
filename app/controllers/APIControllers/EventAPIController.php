@@ -94,7 +94,7 @@ class EventAPIController extends APIController
                 }
                 echo json_encode($cartItemService->getAll());
             }
-        } catch (TypeError $e) {
+        } catch (Throwable $e) {
             Logger::write($e);
             $this->sendErrorMessage("Unable to retrieve events.", 500);
         }
@@ -169,7 +169,7 @@ class EventAPIController extends APIController
             $cartItem = $cartItemService->add($cartItem);
 
             echo json_encode($cartItem);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             Logger::write($e);
             $this->sendErrorMessage("Unable to retrive event(s).", 500);
         }
