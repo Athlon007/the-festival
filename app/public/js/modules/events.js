@@ -388,12 +388,15 @@ class JazzEventList extends EventsList {
         amountInput.style.marginRight = '0.5em';
         */
         // buy button
-        let buyButton = document.createElement('button');
-        buyButton.classList.add('btn', 'btn-primary', 'col-3');
-        buyButton.innerText = event.ticketType.price == 0 ? 'Book a ticket' : 'Add ticket to cart';
-        buyButton.addEventListener('click', () => {
-            this.addToCart(event.id);
-        });
+        if (event.ticketType.price == 0 || event.event.availableTickets > 0) {
+            let buyButton = document.createElement('button');
+            buyButton.classList.add('btn', 'btn-primary', 'col-3');
+            buyButton.innerText = event.ticketType.price == 0 ? 'Book a ticket' : 'Add ticket to cart';
+            buyButton.addEventListener('click', () => {
+                this.addToCart(event.id);
+            });
+            rowButtons.appendChild(buyButton);
+        }
         let buttonDetailsA = document.createElement('a');
         buttonDetailsA.href = `/festival/jazz/event/${event.event.id}`;
         buttonDetailsA.classList.add('col-3');
@@ -402,8 +405,9 @@ class JazzEventList extends EventsList {
         buttonDetails.innerText = 'About event';
         buttonDetailsA.appendChild(buttonDetails);
         //rowButtons.appendChild(amountInput);
-        rowButtons.appendChild(buyButton);
+
         rowButtons.appendChild(buttonDetailsA);
+
 
         eventContainer.appendChild(rowTitle);
         eventContainer.appendChild(rowDetails);

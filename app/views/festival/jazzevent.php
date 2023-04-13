@@ -32,14 +32,16 @@
     <? } ?>
     <div class="container">
         <div class="row col-12 py-1 justify-content-center">
-            <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $cartItem->getId() ?>)">Add ticket to cart</button>
             <?php if ($cartItem->getTicketType()->getPrice() > 0) {
-                if ($cartItem->getEvent()->getAvailableTickets() <= 0) { ?>
-                    <p class="mx-auto text-center">Sold out!</p>
-                <?php } else { ?>
+                if ($cartItem->getEvent()->getAvailableTickets() > 0) { ?>
+                    <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $cartItem->getId() ?>)">Add ticket to cart</button>
                     <p class="mx-auto text-center"><?= $cartItem->getEvent()->getAvailableTickets() ?> / <?= $cartItem->getEvent()->getLocation()->getCapacity() ?></p>
-            <?php }
-            } ?>
+                <?php } else { ?>
+                    <p class="mx-auto text-center">Sold out!</p>
+                <?php }
+            } else { ?>
+                <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $cartItem->getId() ?>)">Book a ticket</button>
+            <?php } ?>
         </div>
         <div class="row card col-10 mx-auto p-1 my-2">
             <div class="row mx-auto">
