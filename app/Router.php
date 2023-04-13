@@ -185,11 +185,6 @@ class Router
                 $historyController = new HistoryController();
                 $historyController->addTour();
                 break;
-            case "/manageDance":
-                require_once("controllers/DanceController.php");
-                $danceController = new DanceController();
-                $danceController->manageDance();
-                break;
             case "/festival/yummy":
             case "/foodfestival":
                 require_once("controllers/FestivalFoodController.php");
@@ -370,8 +365,7 @@ class Router
                 break;
             case "/manageJazz":
                 require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->manageJazz();
+                require('views/admin/Jazz management/manageJazz.php');
                 break;
             case "/manageHistory":
                 require_once("controllers/HistoryController.php");
