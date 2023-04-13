@@ -8,10 +8,13 @@ require_once(__DIR__ . "/../models/Exceptions/ObjectNotFoundException.php");
 class CartItemService
 {
     protected CartItemRepository $repo;
+    private EventService $eventService;
+    private TicketTypeService $ticketTypeService;
 
     public function __construct()
     {
         $this->repo = new CartItemRepository();
+        $this->eventService = new EventService();
     }
 
     public function getAll($sort = null, $filters = []): array
@@ -35,11 +38,8 @@ class CartItemService
 
     public function add(CartItem $cartItem): ?CartItem
     {
-        $eventService = new EventService();
-        $ticketTypeService = new TicketTypeService();
-
-        $ticketType = $ticketTypeService->getById($cartItem->getTicketType()->getId());
-        $event = $eventService->addEvent($cartItem->getEvent());
+        $ticketType = $this->ticketTypeService->getById($cartItem->getTicketType()->getId());
+        $event = $this->eventService->addEvent($cartItem->getEvent());
 
         $id = $this->repo->createCartItem($event->getId(), $ticketType->getId());
         return $this->getById($id);

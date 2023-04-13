@@ -98,6 +98,7 @@ class EventService
     {
         $event->setName(htmlspecialchars($event->getName()));
         $event->setId(htmlspecialchars($event->getId()));
+        $event->setAvailableTickets(htmlspecialchars($event->getAvailableTickets()));
 
         if ($event->getStartTime() > $event->getEndTime()) {
             throw new InvalidVariableException("Start time cannot be after end time");
@@ -110,7 +111,8 @@ class EventService
             $event->getName(),
             $event->getStartTime(),
             $event->getEndTime(),
-            $eventTypeId
+            $eventTypeId,
+            $event->getAvailableTickets()
         );
 
         // if event is type of jazzevent
