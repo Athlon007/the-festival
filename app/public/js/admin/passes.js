@@ -4,7 +4,6 @@ if (window.frameElement == null) {
 
 import { MsgBox } from "./modals.js";
 
-let editedId = -1;
 let editedEventId = -1;
 const locations = document.getElementById('locations');
 const masterEditor = document.getElementById('master-editor');
@@ -38,7 +37,7 @@ function updateExistingEntry(id, data) {
                 // update the option in the list
                 let options = locations.getElementsByTagName('option');
                 for (let option of options) {
-                    if (option.value == editedId) {
+                    if (option.value == editedEventId) {
                         // remove the option from the list
                         option.remove();
                         break;
@@ -51,7 +50,7 @@ function updateExistingEntry(id, data) {
                 // create new option
                 locations.appendChild(createNewOptionItem(data));
                 locations.selectedIndex = locations.length - 1;
-                editedId = data.id;
+                editedEventId = data.event.id;
                 isInCreationMode = false;
                 btnSubmit.innerHTML = 'Save';
 
@@ -79,7 +78,7 @@ function createNewEntry(data) {
             if (!data.error_message) {
                 locations.appendChild(createNewOptionItem(data));
                 locations.selectedIndex = locations.length - 1;
-                editedId = data.id;
+                editedEventId = data.event.id;
 
                 msgBox.createToast('Success!', 'Pass has been created');
 
@@ -120,19 +119,19 @@ btnSubmit.onclick = function () {
     if (isInCreationMode) {
         createNewEntry(data);
     } else {
-        updateExistingEntry(editedId, data);
+        updateExistingEntry(editedEventId, data);
     }
 }
 
 document.getElementById('delete').onclick = function () {
-    if (editedId === -1) {
+    if (editedEventId === -1) {
         msgBox.createToast('Error!', 'No page selected');
         return;
     }
 
     msgBox.createYesNoDialog('Delete page', 'Are you sure you want to delete this event? This is irreversible!', function () {
         // fetch with post
-        fetch('/api/events/' + editedId, {
+        fetch('/api/events/' + editedEventId, {
             method: 'DELETE',
             credentials: 'same-origin',
             headers: {
@@ -145,7 +144,7 @@ document.getElementById('delete').onclick = function () {
                     // remove the option from the list
                     let options = locations.getElementsByTagName('option');
                     for (let option of options) {
-                        if (option.value == editedId) {
+                        if (option.value == editedEventId) {
                             option.remove();
                             break;
                         }
@@ -176,7 +175,7 @@ function createNewOptionItem(element) {
         btnSubmit.innerHTML = 'Save';
         isInCreationMode = false;
         // Do the api call to get the page content.
-        fetch(baseURL + "/" + element.id, {
+        fetch(baseURL + "/" + element.event.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -185,7 +184,6 @@ function createNewOptionItem(element) {
             .then(response => response.json())
             .then(data => {
                 if (!data.error_message) {
-                    editedId = data.id;
                     editedEventId = data.event.id;
 
                     name.value = data.event.name;
@@ -312,7 +310,7 @@ function toggleEditor(element, isEnabled) {
         element.classList.remove('disabled-module');
     } else {
         element.classList.add('disabled-module');
-        editedId = -1;
+        editedEventId = -1;
 
         name.value = '';
         date.value = '';

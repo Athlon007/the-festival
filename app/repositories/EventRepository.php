@@ -128,19 +128,27 @@ class EventRepository extends Repository
         return $this->connection->lastInsertId();
     }
 
-    public function updateEvent($id, $name, $startTime, $endTime, ?int $eventTypeId)
+    public function updateEvent($id, $name, $startTime, $endTime, ?int $eventTypeId, ?int $availableTickets)
     {
         if ($eventTypeId === null) {
             $eventTypeId = 'NULL';
         }
 
-        $sql = "UPDATE Events SET name = :name, startTime = :startTime, endTime = :endTime, festivalEventType = :eventTypeId WHERE eventId = :id";
+        if ($availableTickets === null) {
+            $availableTickets = 'NULL';
+        }
+
+        $sql = "UPDATE Events
+        SET name = :name, startTime = :startTime, endTime = :endTime,
+        festivalEventType = :eventTypeId, availableTickets = :availableTickets
+        WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
         $stmt->bindParam(':startTime', $startTime->format('Y-m-d H:i:s'), PDO::PARAM_STR);
         $stmt->bindParam(':endTime', $endTime->format('Y-m-d H:i:s'), PDO::PARAM_STR);
         $stmt->bindParam(':eventTypeId', $eventTypeId, PDO::PARAM_INT);
+        $stmt->bindParam(':availableTickets', $availableTickets, PDO::PARAM_INT);
         $stmt->execute();
     }
 

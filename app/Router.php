@@ -86,13 +86,6 @@ class Router
             return;
         }
 
-        // if (str_starts_with($request, "/festival/history")) {
-        //     require_once("controllers/FestivalHistoryController.php");
-        //     $festivalHistoryController = new FestivalHistoryController();
-        //     $festivalHistoryController->loadHistoryStrollPage();
-        //     return;
-        // }
-
         if (str_starts_with($request, "/festival/jazz/")) {
             require_once("controllers/FestivalJazzController.php");
             $festivalJazzController = new FestivalJazzController();
@@ -155,20 +148,10 @@ class Router
                 $orderController = new OrderController();
                 $orderController->showShoppingCart();
                 break;
-            case "/buyTicket":
-                require_once("controllers/TicketController.php");
-                $ticketController = new TicketController();
-                $ticketController->buyTicket();
-                break;
             case "/buyPass":
             case "/buy-pass":
             case "/buypass":
                 require_once("views/buy-pass.php");
-                break;
-            case "/generateTicket":
-                require_once("controllers/TicketController.php");
-                $ticketController = new TicketController();
-                $ticketController->generateAndSendTicket();
                 break;
             case "/festival/history-stroll":
                 require_once("controllers/FestivalHistoryController.php");
@@ -184,11 +167,6 @@ class Router
                 require_once("controllers/HistoryController.php");
                 $historyController = new HistoryController();
                 $historyController->addTour();
-                break;
-            case "/manageDance":
-                require_once("controllers/DanceController.php");
-                $danceController = new DanceController();
-                $danceController->manageDance();
                 break;
             case "/festival/yummy":
             case "/foodfestival":
@@ -369,9 +347,7 @@ class Router
                 $restaurantController->manageRestaurants();
                 break;
             case "/manageJazz":
-                require_once("controllers/JazzController.php");
-                $jazzController = new JazzController();
-                $jazzController->manageJazz();
+                require('views/admin/Jazz management/manageJazz.php');
                 break;
             case "/manageHistory":
                 require_once("controllers/HistoryController.php");

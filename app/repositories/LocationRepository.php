@@ -116,4 +116,16 @@ class LocationRepository extends Repository
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
     }
+
+    public function updateJazzEventCapacity($locationId, $capacity)
+    {
+        $sql = "UPDATE events e
+                join jazzevents je on je.eventId = e.eventId
+                SET e.availableTickets = :capacity
+                WHERE je.locationID = :locationId AND e.festivalEventType = 1";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":locationId", $locationId, PDO::PARAM_INT);
+        $stmt->bindParam(":capacity", $capacity, PDO::PARAM_INT);
+        $stmt->execute();
+    }
 }

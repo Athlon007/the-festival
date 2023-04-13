@@ -52,7 +52,7 @@ for (let counter of cartCounterSpans) {
 
         const div = document.getElementById('cart-item-' + id);
         div.parentNode.removeChild(div);
-        Cart.Delete(id);
+        Cart.Remove(id);
 
         const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
         const totalAmount = parseFloat(total.innerHTML.split('€')[1]);
