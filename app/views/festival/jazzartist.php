@@ -142,7 +142,11 @@
                                     <?php if ($event->getTicketType()->getPrice() > 0) { ?>
                                         <div class="col-3">
                                             <h3>Seats</h3>
-                                            <p><?= $event->getEvent()->getAvailableTickets(); ?> / <?= $event->getEvent()->getLocation()->getCapacity(); ?></p>
+                                            <?php if ($event->getEvent()->getAvailableTickets() == 0) { ?>
+                                                <p class="text-danger">Sold out</p>
+                                            <?php } else { ?>
+                                                <p><?= $event->getEvent()->getAvailableTickets(); ?> / <?= $event->getEvent()->getLocation()->getCapacity(); ?></p>
+                                            <?php } ?>
                                         </div>
                                     <?php } ?>
                                     <div class="col-3">
