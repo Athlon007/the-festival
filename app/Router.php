@@ -86,13 +86,6 @@ class Router
             return;
         }
 
-        // if (str_starts_with($request, "/festival/history")) {
-        //     require_once("controllers/FestivalHistoryController.php");
-        //     $festivalHistoryController = new FestivalHistoryController();
-        //     $festivalHistoryController->loadHistoryStrollPage();
-        //     return;
-        // }
-
         if (str_starts_with($request, "/festival/jazz/")) {
             require_once("controllers/FestivalJazzController.php");
             $festivalJazzController = new FestivalJazzController();
@@ -155,20 +148,10 @@ class Router
                 $orderController = new OrderController();
                 $orderController->showShoppingCart();
                 break;
-            case "/buyTicket":
-                require_once("controllers/TicketController.php");
-                $ticketController = new TicketController();
-                $ticketController->buyTicket();
-                break;
             case "/buyPass":
             case "/buy-pass":
             case "/buypass":
                 require_once("views/buy-pass.php");
-                break;
-            case "/generateTicket":
-                require_once("controllers/TicketController.php");
-                $ticketController = new TicketController();
-                $ticketController->generateAndSendTicket();
                 break;
             case "/festival/history-stroll":
                 require_once("controllers/FestivalHistoryController.php");

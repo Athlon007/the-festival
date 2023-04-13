@@ -29,31 +29,36 @@ class EventAPIController extends APIController
 
     public const URI_JAZZ = "/api/events/jazz";
     public const URI_DANCE = "/api/events/dance";
+    public const URI_STROLL = "/api/events/stroll";
+    public const URI_PASSES = "/api/events/passes";
 
     public function __construct()
     {
         $this->eventService = new EventService();
         $this->ticketTypeService = new TicketTypeService();
         $this->eventTypeService = new EventTypeService();
-        $this->cartItemService = new CartItemService();
 
+        // Load appropriate CartItemService.
         $request = $_SERVER['REQUEST_URI'];
-
         if (
             str_starts_with($request, EventAPIController::URI_JAZZ)
             || str_starts_with($request, EventAPIController::URI_DANCE)
         ) {
             $this->cartItemService = new JazzCartItemService();
 
+            // Jazz Services
             require_once(__DIR__ . '/../../services/JazzArtistService.php');
             $this->jazzArtistService = new JazzArtistService();
 
             require_once(__DIR__ . '/../../services/LocationService.php');
             $this->locationService = new LocationService();
-        } elseif (str_starts_with($request, "/api/events/stroll")) {
+        } elseif (str_starts_with($request, EventAPIController::URI_STROLL)) {
             $this->cartItemService = new HistoryCartItemService();
-        } elseif (str_starts_with($request, "/api/events/passes")) {
+        } elseif (str_starts_with($request, EventAPIController::URI_PASSES)) {
             $this->cartItemService = new PassCartItemService();
+        } else {
+            // Load the generic CartItemService.
+            $this->cartItemService = new CartItemService();
         }
     }
 
@@ -118,7 +123,10 @@ class EventAPIController extends APIController
             $ticketType = $this->ticketTypeService->getById($data['ticketType']['id']);
             $event = null;
 
-            if (str_starts_with($uri, EventAPIController::URI_JAZZ) || str_starts_with($uri, '/api/events/dance')) {
+            if (
+                str_starts_with($uri, EventAPIController::URI_JAZZ)
+                || str_starts_with($uri, EventAPIController::URI_DANCE)
+            ) {
                 $artist = $this->jazzArtistService->getById($data['event']['artist']['id']);
                 $location = $this->locationService->getById($data['event']['location']['id']);
 
@@ -137,7 +145,7 @@ class EventAPIController extends APIController
                     $eventType,
                     $availableSeats,
                 );
-            } elseif (str_starts_with($uri, '/api/events/stroll')) {
+            } elseif (str_starts_with($uri, EventAPIController::URI_STROLL)) {
                 $this->sendErrorMessage('Invalid request', 400);
                 return;
             } else {
@@ -211,7 +219,7 @@ class EventAPIController extends APIController
                     $eventType,
                     $availableSeats
                 );
-            } elseif (str_starts_with($uri, '/api/events/stroll')) {
+            } elseif (str_starts_with($uri, EventAPIController::URI_STROLL)) {
                 $this->sendErrorMessage('Invalid request', 400);
                 return;
             } else {
