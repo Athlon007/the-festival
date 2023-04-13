@@ -147,7 +147,13 @@
                                     <?php } ?>
                                     <div class="col-3">
                                         <h3>Price</h3>
-                                        <p class="price text-start"><?= $event->getTicketType()->getPrice() == 0 ? "FREE" : $event->getTicketType()->getPrice(); ?>€</p>
+                                        <?php
+                                        if ($event->getTicketType()->getPrice() == 0) {
+                                            echo '<p class="price text-start">FREE</p>';
+                                        } else {
+                                            echo '<p class="price text-start">&euro; ' . $event->getTicketType()->getPrice() . '</p>';
+                                        }
+                                        ?>
                                     </div>
                                 </div>
                                 <div class="row d-flex justify-content-end py-2">
