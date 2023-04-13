@@ -1,7 +1,5 @@
 <?php
 
-use function PHPSTORM_META\map;
-
 require_once(__DIR__ . '/../../models/Event.php');
 require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
