@@ -10,7 +10,7 @@ class AddressRepository extends Repository
     public function insertAddress(Address $address): int
     {
         try {
-            $query = "INSERT INTO Addresses (streetName, houseNumber, postalCode, city, country) VALUES (:streetName, :houseNumber, :postalCode, :city, :country)";
+            $query = "INSERT INTO addresses (streetName, houseNumber, postalCode, city, country) VALUES (:streetName, :houseNumber, :postalCode, :city, :country)";
             $stmt = $this->connection->prepare($query);
 
             $stmt->bindValue(":streetName", $address->getStreetName());
@@ -30,7 +30,7 @@ class AddressRepository extends Repository
     public function getAddressById($addressId): ?Address
     {
         try {
-            $query = "SELECT * FROM Addresses WHERE addressId = :addressId";
+            $query = "SELECT * FROM addresses WHERE addressId = :addressId";
             $stmt = $this->connection->prepare($query);
 
             $stmt->bindValue(":addressId", $addressId);
@@ -41,11 +41,11 @@ class AddressRepository extends Repository
                 throw new AddressNotFoundException();
             else
                 $streetName = $result['streetName'];
-                $houseNumber = $result['houseNumber'];
-                $postalCode = $result['postalCode'];
-                $city = $result['city'];
-                $country = $result['country'];
-                return new Address($addressId, $streetName, $houseNumber, $postalCode, $city, $country);
+            $houseNumber = $result['houseNumber'];
+            $postalCode = $result['postalCode'];
+            $city = $result['city'];
+            $country = $result['country'];
+            return new Address($addressId, $streetName, $houseNumber, $postalCode, $city, $country);
         } catch (Exception $ex) {
             throw ($ex);
         }
@@ -54,7 +54,7 @@ class AddressRepository extends Repository
     public function updateAddress(Address $address): void
     {
         try {
-            $query = "UPDATE Addresses SET streetName = :streetName, houseNumber = :houseNumber, postalCode = :postalCode, city = :city, country = :country WHERE addressId = :addressId";
+            $query = "UPDATE addresses SET streetName = :streetName, houseNumber = :houseNumber, postalCode = :postalCode, city = :city, country = :country WHERE addressId = :addressId";
             $stmt = $this->connection->prepare($query);
 
             $stmt->bindValue(":streetName", $address->getStreetName());
@@ -73,7 +73,7 @@ class AddressRepository extends Repository
     public function deleteAddress($addressId): void
     {
         try {
-            $query = "DELETE FROM Addresses WHERE addressId = :addressId";
+            $query = "DELETE FROM addresses WHERE addressId = :addressId";
             $stmt = $this->connection->prepare($query);
 
             $stmt->bindValue(":addressId", $addressId);

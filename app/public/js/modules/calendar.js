@@ -149,27 +149,22 @@ function loadCalendar() {
                     let borderColor = "#412c0c";
                     let url = "#";
 
-                    switch (e.event.eventType.id) {
-                        case 1:
-                            backgroundColor = "#d6e7ef";
-                            borderColor = "#005990";
-                            url = "/festival/jazz/event/" + e.event.id;
-                            break;
-                        case 2:
-                            backgroundColor = "#e2e0da";
-                            borderColor = "#412c0c";
-                            url = "/festival/yummy";
-                            break;
-                        case 3:
-                            backgroundColor = "#e2e0da";
-                            borderColor = "#412c0c";
-                            url = "/festival/history-stroll";
-                            break;
-                        case 4:
-                            backgroundColor = "#fff0ef";
-                            borderColor = "#9D49E0";
-                            url = "/festival/dance";
-                            break;
+                    if (e.event.eventType.id == 1) {
+                        backgroundColor = "#d6e7ef";
+                        borderColor = "#005990";
+                        url = "/festival/jazz/event/" + e.event.id;
+                    } else if (e.event.eventType.id == 2) {
+                        backgroundColor = "#e2e0da";
+                        borderColor = "#412c0c";
+                        url = "/festival/yummy";
+                    } else if (e.event.eventType.id == 3) {
+                        backgroundColor = "#e2e0da";
+                        borderColor = "#412c0c";
+                        url = "/festival/history-stroll";
+                    } else if (e.event.eventType.id == 4) {
+                        backgroundColor = "#fff0ef";
+                        borderColor = "#9D49E0";
+                        url = "/festival/dance";
                     }
 
                     const startTime = new Date(e.event.startTime.date);

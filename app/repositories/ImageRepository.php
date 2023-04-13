@@ -20,7 +20,7 @@ class ImageRepository extends Repository
 
     public function getImageById($id): ?Image
     {
-        $sql = "SELECT imageId, src, alt FROM Images WHERE imageId = :id";
+        $sql = "SELECT imageId, src, alt FROM images WHERE imageId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -30,8 +30,8 @@ class ImageRepository extends Repository
 
     public function getImagesForPageId($pageId): array
     {
-        $sql = "SELECT i.imageId, i.src, i.alt FROM Images i
-                INNER JOIN BannerImages bi ON i.imageId = bi.imageId
+        $sql = "SELECT i.imageId, i.src, i.alt FROM images i
+                INNER JOIN bannerimages bi ON i.imageId = bi.imageId
                 WHERE bi.pageId = :pageId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":pageId", $pageId, PDO::PARAM_INT);
@@ -41,7 +41,7 @@ class ImageRepository extends Repository
 
     public function getAll(): array
     {
-        $sql = "SELECT imageId, src, alt FROM Images";
+        $sql = "SELECT imageId, src, alt FROM images";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         return $this->imageBuilder($stmt->fetchAll());
@@ -49,7 +49,7 @@ class ImageRepository extends Repository
 
     public function removeImagesForPage($pageId): void
     {
-        $sql = "DELETE FROM BannerImages WHERE pageId = :pageId";
+        $sql = "DELETE FROM bannerimages WHERE pageId = :pageId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":pageId", $pageId, PDO::PARAM_INT);
         $stmt->execute();
@@ -57,7 +57,7 @@ class ImageRepository extends Repository
 
     public function setImagesForPage($pageId, $imageIds): void
     {
-        $sql = "INSERT INTO BannerImages (pageId, imageId) VALUES (:pageId, :imageId)";
+        $sql = "INSERT INTO bannerimages (pageId, imageId) VALUES (:pageId, :imageId)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":pageId", $pageId, PDO::PARAM_INT);
         foreach ($imageIds as $imageId) {
@@ -68,7 +68,7 @@ class ImageRepository extends Repository
 
     public function addImage($src, $alt): void
     {
-        $sql = "INSERT INTO Images (src, alt) VALUES (:src, :alt)";
+        $sql = "INSERT INTO images (src, alt) VALUES (:src, :alt)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":src", $src, PDO::PARAM_STR);
         $stmt->bindParam(":alt", $alt, PDO::PARAM_STR);
@@ -77,7 +77,7 @@ class ImageRepository extends Repository
 
     public function removeImage($id): void
     {
-        $sql = "DELETE FROM Images WHERE imageId = :id";
+        $sql = "DELETE FROM images WHERE imageId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -85,7 +85,7 @@ class ImageRepository extends Repository
 
     public function updateImage($id, $alt): void
     {
-        $sql = "UPDATE Images SET alt = :alt WHERE imageId = :id";
+        $sql = "UPDATE images SET alt = :alt WHERE imageId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->bindParam(":alt", $alt, PDO::PARAM_STR);
@@ -94,8 +94,8 @@ class ImageRepository extends Repository
 
     public function getImagesForArtistId($artistId): array
     {
-        $sql = "SELECT i.imageId, i.src, i.alt FROM Images i
-                INNER JOIN JazzArtistImage ai ON i.imageId = ai.imageId
+        $sql = "SELECT i.imageId, i.src, i.alt FROM images i
+                INNER JOIN jazzartistimage ai ON i.imageId = ai.imageId
                 WHERE ai.artistId = :artistId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":artistId", $artistId, PDO::PARAM_INT);
@@ -105,7 +105,7 @@ class ImageRepository extends Repository
 
     public function assignImageToArtist($artistId, $imageId)
     {
-        $sql = "INSERT INTO JazzArtistImage (artistId, imageId) VALUES (:artistId, :imageId)";
+        $sql = "INSERT INTO jazzartistimage (artistId, imageId) VALUES (:artistId, :imageId)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":artistId", $artistId, PDO::PARAM_INT);
         $stmt->bindParam(":imageId", $imageId, PDO::PARAM_INT);
@@ -114,7 +114,7 @@ class ImageRepository extends Repository
 
     public function removeImagesForArtist($artistId): void
     {
-        $sql = "DELETE FROM JazzArtistImage WHERE artistId = :artistId";
+        $sql = "DELETE FROM jazzartistimage WHERE artistId = :artistId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":artistId", $artistId, PDO::PARAM_INT);
         $stmt->execute();
@@ -122,7 +122,7 @@ class ImageRepository extends Repository
 
     public function search($search): array
     {
-        $sql = "SELECT imageId, src, alt FROM Images WHERE ";
+        $sql = "SELECT imageId, src, alt FROM images WHERE ";
         $counter = 0;
         foreach ($search as $word) {
             $sql .= "alt LIKE '%$word%'";

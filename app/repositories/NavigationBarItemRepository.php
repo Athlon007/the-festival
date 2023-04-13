@@ -109,7 +109,7 @@ class NavigationBarItemRepository extends Repository
 
     public function insert($pageId, $order): int
     {
-        $sql = "INSERT INTO NavigationBarItems (pageId, `order`) VALUES (:pageId, :order)";
+        $sql = "INSERT INTO navigationbaritems (pageId, `order`) VALUES (:pageId, :order)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":pageId", $pageId, PDO::PARAM_INT);
         $stmt->bindParam(":order", $order, PDO::PARAM_INT);
@@ -120,7 +120,7 @@ class NavigationBarItemRepository extends Repository
 
     public function setParent($id, $parentId)
     {
-        $sql = "UPDATE NavigationBarItems SET parentNavId = :parentId WHERE id = :id";
+        $sql = "UPDATE navigationbaritems SET parentNavId = :parentId WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":parentId", $parentId, PDO::PARAM_INT);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);

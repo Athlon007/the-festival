@@ -22,7 +22,7 @@ class PassCartItemRepository extends CartItemRepository
 		t.ticketTypePrice as ticketTypePrice,
 		t.nrOfPeople as ticketTypeNrOfPeople,
         c.cartItemId as cartItemId
-        FROM Events e
+        FROM events e
         JOIN cartitems c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
         join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
