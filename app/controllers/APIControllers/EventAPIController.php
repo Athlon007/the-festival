@@ -202,10 +202,7 @@ class EventAPIController extends APIController
                 $artist = $this->jazzArtistService->getById($data['event']['artist']['id']);
                 $location = $this->locationService->getById($data['event']['location']['id']);
 
-                $availableSeats = null;
-                if (isset($data['event']['availableSeats'])) {
-                    $availableSeats = $data['event']['availableSeats'];
-                }
+                $availableSeats = $location->getCapacity();
 
                 $eventType = $this->eventTypeService->getById($data['event']['eventType']['id']);
 
