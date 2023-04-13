@@ -4,13 +4,16 @@ require_once(__DIR__ . "/../services/OrderService.php");
 
 class OrderController
 {
-    private $service;
+    private $orderService;
 
     public function __construct()
     {
-        $this->service = new OrderService();
+        $this->orderService = new OrderService();
     }
 
+    /**
+     * Show the shopping cart
+     */
     public function showShoppingCart()
     {
         if (session_status() == PHP_SESSION_NONE) {
@@ -19,7 +22,7 @@ class OrderController
         if (!isset($_SESSION['cartItemIds']) || count($_SESSION['cartItemIds']) == 0) {
             $cartItems = array();
         } else {
-            $cartItems = $this->service->getCart();
+            $cartItems = $this->orderService->getCart();
             $totalPrice = 0;
 
             foreach ($cartItems as $cartItem) {
@@ -30,11 +33,17 @@ class OrderController
         require('../views/payment-funnel/cart.php');
     }
 
+    /**
+     * Show the logged in customer's order history
+     */
     public function showOrderHistory()
     {
+        //TODO: Implement
     }
 
-    //Create order after completing payment or selecting "pay later"
+    /**
+     * Create order after completing payment or selecting "pay later"
+     */
     public function createOrder()
     {
         try {
@@ -51,8 +60,7 @@ class OrderController
             }
 
             $cartItemIds = $_SESSION['cart'];
-            $orderService = new OrderService();
-            $order = $orderService->createOrder($customer, $cartItemIds);
+            $order = $this->orderService->createOrder($customer, $cartItemIds);
         } catch (Exception $e) {
             echo $e->getMessage();
             return;
