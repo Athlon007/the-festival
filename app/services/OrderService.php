@@ -53,7 +53,6 @@ class OrderService
     //To be called after payment (can't be implemented yet)
     public function createOrder($customer, $cartItemIds)
     {
-        
     }
 
     public function sendInvoiceAndTicketsByEmail($order)
@@ -77,9 +76,9 @@ class OrderService
     public function addItemToCart(CartItem $cartItem): array
     {
         // Free event have no limit on tickets.
-        if ($cartItem->getTicketType()->getPrice() > 0 && $cartItem->getEvent()->getAvailableTickets() == 0) {
-            throw new Exception("No tickets available for this event.");
-        }
+        //if ($cartItem->getTicketType()->getPrice() > 0 && $cartItem->getEvent()->getAvailableTickets() == 0) {
+        //    throw new Exception("No tickets available for this event.");
+        //}
 
         // Check if session is initialized.
         if (session_status() == PHP_SESSION_NONE) {

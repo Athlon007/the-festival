@@ -63,8 +63,9 @@ class AddressAPIController extends APIController
 
             $address = $this->addressService->insertAddress($streetName, $houseNumber, $postalCode, $city, $country);
             echo json_encode($address);
-        } catch (MissingVariableException $e) {
-            $this->sendErrorMessage($e->getMessage(), 400);
+        } catch (Throwable $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to post address.", 400);
         }
     }
 
@@ -75,9 +76,14 @@ class AddressAPIController extends APIController
             return;
         }
 
-        $addressId = basename($uri);
-        $address = $this->addressService->getAddressById($addressId);
-        echo json_encode($address);
+        try {
+            $addressId = basename($uri);
+            $address = $this->addressService->getAddressById($addressId);
+            echo json_encode($address);
+        } catch (Throwable $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("unable to retrive an address.", 400);
+        }
     }
 
     protected function handlePutRequest($uri)
@@ -135,8 +141,9 @@ class AddressAPIController extends APIController
                 $country
             );
             echo json_encode($address);
-        } catch (Exception $e) {
-            $this->sendErrorMessage($e->getMessage(), 400);
+        } catch (Throwable $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to update address.", 400);
         }
     }
 
@@ -152,9 +159,14 @@ class AddressAPIController extends APIController
             return;
         }
 
-        $addressId = basename($uri);
-        $this->addressService->deleteAddress($addressId);
-        $this->sendSuccessMessage("Address deleted successfully");
+        try {
+            $addressId = basename($uri);
+            $this->addressService->deleteAddress($addressId);
+            $this->sendSuccessMessage("Address deleted successfully");
+        } catch (Throwable $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to delete address.", 400);
+        }
     }
 
     private function fetchAddress($data)
@@ -168,8 +180,9 @@ class AddressAPIController extends APIController
                 "street" => $address->street,
                 "city" => $address->city,
             ]);
-        } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+        } catch (Throwable $ex) {
+            Logger::write($ex);
+            $this->sendErrorMessage("Unable to fetch address.", 400);
         }
     }
 }

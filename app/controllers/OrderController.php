@@ -18,21 +18,20 @@ class OrderController
         }
         if (!isset($_SESSION['cartItemIds']) || count($_SESSION['cartItemIds']) == 0) {
             $cartItems = array();
-        }
-        else {
+        } else {
             $cartItems = $this->service->getCart();
             $totalPrice = 0;
-            
+
             foreach ($cartItems as $cartItem) {
                 $totalPrice += $cartItem['price'];
             }
         }
+
         require('../views/payment-funnel/cart.php');
     }
 
     public function showOrderHistory()
     {
-
     }
 
     //Create order after completing payment or selecting "pay later"

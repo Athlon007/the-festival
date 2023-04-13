@@ -32,7 +32,7 @@ class PageService
     {
         $href = htmlspecialchars($href);
         // Check if last char is '/'.
-        if (strlen($href) > 0 && substr($href, -1) == '/') {
+        if (strlen($href) > 1 && substr($href, -1) == '/') {
             // If so, remove it from the string.
             // Strings should be saved without the '/' at the end, as it screws with GET requests.
             $href = rtrim($href, "/");
@@ -78,11 +78,12 @@ class PageService
 
 
         // Check if file exists
-        if (!($page instanceof TextPage)) {
+        if (!$this->isInTextPage($id)) {
             // Check if file exists
+            $href =  $page->getHref();
             $location = "../" .  $page->getLocation();
             if (!file_exists($location)) {
-                throw new FileDoesNotExistException("File at '$location' was not found.");
+                throw new FileDoesNotExistException("File for href '$href' at '$location' was not found.");
             }
         }
 
@@ -160,5 +161,11 @@ class PageService
     {
         $id = htmlspecialchars($id);
         $this->repo->delete($id);
+    }
+
+    public function isInTextPage($id): bool
+    {
+        $id = htmlspecialchars($id);
+        return $this->repo->countTextPagesById($id) > 0;
     }
 }

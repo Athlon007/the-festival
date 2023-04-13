@@ -19,8 +19,13 @@ class NavBarAPIController extends APIController
             return;
         }
 
-        $output = $this->navService->getAll();
-        echo json_encode($output);
+        try {
+            $output = $this->navService->getAll();
+            echo json_encode($output);
+        } catch (Exception $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to retrive pages.");
+        }
     }
 
     public function handlePostRequest($uri)
@@ -39,24 +44,29 @@ class NavBarAPIController extends APIController
         require_once(__DIR__ . '/../../services/PageService.php');
         $pageService = new PageService();
 
-        $input = json_decode(file_get_contents("php://input"), true);
+        try {
+            $input = json_decode(file_get_contents("php://input"), true);
 
-        $navBarItemsArray = array();
-        $index = 0;
-        foreach ($input as $i) {
-            $index++;
-            $page = $pageService->getPageById($i["page"]["id"]);
-            $children = array();
-            $childIndex = (int)((string)$index . '00');
-            foreach ($i["children"] as $child) {
-                $childIndex++;
-                $childPage = $pageService->getPageById($child["page"]["id"]);
-                $children[] = new NavigationBarItem(0, $childPage, array(), $childIndex);
+            $navBarItemsArray = array();
+            $index = 0;
+            foreach ($input as $i) {
+                $index++;
+                $page = $pageService->getPageById($i["page"]["id"]);
+                $children = array();
+                $childIndex = (int)((string)$index . '00');
+                foreach ($i["children"] as $child) {
+                    $childIndex++;
+                    $childPage = $pageService->getPageById($child["page"]["id"]);
+                    $children[] = new NavigationBarItem(0, $childPage, array(), $childIndex);
+                }
+                $navBarItemsArray[] = new NavigationBarItem(0, $page, $children, $index);
             }
-            $navBarItemsArray[] = new NavigationBarItem(0, $page, $children, $index);
-        }
 
-        $output = $this->navService->setNavbars($navBarItemsArray);
-        echo json_encode($output);
+            $output = $this->navService->setNavbars($navBarItemsArray);
+            echo json_encode($output);
+        } catch (Exception $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to create navigation bar.");
+        }
     }
 }

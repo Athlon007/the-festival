@@ -32,7 +32,7 @@ class UserController
         try {
             $userService = new UserService();
             $user = $userService->getUserById($_GET['id']);
-            require("../views/admin/updateUser.php");
+            require("../views/admin/User management/updateUser.php");
         } catch (Exception $e) {
             echo $e->getMessage();
         }

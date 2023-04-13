@@ -95,9 +95,8 @@ class EventAPIController extends APIController
                 echo json_encode($cartItemService->getAll());
             }
         } catch (TypeError $e) {
-            $this->sendErrorMessage("Event not found. " . $e->getMessage(), 404);
-        } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled exception: " . $e->getMessage() . "\r\n" . $e->getTraceAsString(), 500);
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to retrieve events.", 500);
         }
     }
 
@@ -170,10 +169,9 @@ class EventAPIController extends APIController
             $cartItem = $cartItemService->add($cartItem);
 
             echo json_encode($cartItem);
-        } catch (InvalidVariableException $e) {
-            $this->sendErrorMessage($e->getMessage(), 400);
-        } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled exception. " . $e->getMessage() . "\r\n\r\n" . $e->getTraceAsString(), 500);
+        } catch (Exception $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to retrive event(s).", 500);
         }
     }
 
@@ -254,10 +252,9 @@ class EventAPIController extends APIController
             $cartItem = $cartItemService->updateCartItem($cartItem);
 
             echo json_encode($cartItem);
-        } catch (InvalidVariableException $e) {
-            $this->sendErrorMessage($e->getMessage(), 400);
         } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled Exception. " . $e->getMessage(), 500);
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to edit event.", 500);
         }
     }
 
@@ -279,7 +276,8 @@ class EventAPIController extends APIController
 
             $this->sendSuccessMessage("Cart Item $ciId and event $eventId deleted.", 200);
         } catch (Throwable $e) {
-            $this->sendErrorMessage("Unhandled exception. " . $e->getMessage() . " " . $e->getTraceAsString(), 500);
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to delete the event.", 500);
         }
     }
 }

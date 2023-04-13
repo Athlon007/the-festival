@@ -19,7 +19,7 @@
 
     <!-- Container -->
     <section class="h-100 h-custom">
-        <div class="container py-5 h-100">   
+        <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
                     <h2 class="">Shopping Cart</h2>
@@ -28,7 +28,7 @@
                     <div id="popup">
                     
                     </div>
-                    
+
                     <!-- Cart -->
                     <div class="mt-5">
                     <?php 
@@ -37,7 +37,7 @@
                     }
                     else{
                         foreach($cartItems as $cartItem){ ?> 
-                        
+                       
                         <div class="card p-3 m-3" style="width: 60%">
                             <div class="card-header" style="width: 100%">
                                 <?= $cartItem['cartItem']->getEvent()->getName() ?>
@@ -50,13 +50,8 @@
                                 <button class="btn btn-light" style="width: 20%">+</button>
                                 <span class="float-end">Total price: &euro; <?= $cartItem['price'] ?></span>
                             </div>
-                            <br>
-                            <div style="width: 100%">
-                                <button class="btn btn-danger float-end">Remove all</button>
-                            </div> 
-                        </div>
-                            
-                    
+
+
                     <?php }
                     }   ?> 
                     </div>
@@ -65,18 +60,15 @@
                     <h4>Total price: &euro; <?= $totalPrice?></h4>
                     <br>
                     <button class="btn btn-primary">Check out</button>
-        
-
                 </div>
             </div>
         </div>
     </section>
-    
-    <script src="/js/accountmanager.js"></script>
+
     <footer class="foot row bottom"></footer>
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-
+    <script src="/js/cartcontroller.js"></script>
     <script type="module" src="/js/foot.js"></script>
 </body>
 

@@ -14,13 +14,18 @@ class TicketTypesAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
-        if (is_numeric(basename($uri))) {
-            $id = basename($uri);
-            $ticketType = $this->ttService->getById($id);
-            echo json_encode($ticketType);
-        } else {
-            $ticketTypes = $this->ttService->getAll();
-            echo json_encode($ticketTypes);
+        try {
+            if (is_numeric(basename($uri))) {
+                $id = basename($uri);
+                $ticketType = $this->ttService->getById($id);
+                echo json_encode($ticketType);
+            } else {
+                $ticketTypes = $this->ttService->getAll();
+                echo json_encode($ticketTypes);
+            }
+        } catch (Exception $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to retrive ticket types.", 500);
         }
     }
 
@@ -31,31 +36,46 @@ class TicketTypesAPIController extends APIController
             return;
         }
 
-        $data = json_decode(file_get_contents('php://input'), true);
-        $ticketType = new TicketType(0, $data['name'], $data['price'], $data['nrOfPeople']);
-        $ticketType = $this->ttService->create($ticketType);
-        echo json_encode($ticketType);
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $ticketType = new TicketType(0, $data['name'], $data['price'], $data['nrOfPeople']);
+            $ticketType = $this->ttService->create($ticketType);
+            echo json_encode($ticketType);
+        } catch (Exception $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to create ticket type.", 500);
+        }
     }
 
     public function handlePutRequest($uri)
     {
-        if (!$this->isLoggedInAsAdmin()) {
-            $this->sendErrorMessage('You are not logged in as admin.', 401);
-            return;
+        try {
+            if (!$this->isLoggedInAsAdmin()) {
+                $this->sendErrorMessage('You are not logged in as admin.', 401);
+                return;
+            }
+            $data = json_decode(file_get_contents('php://input'), true);
+            $ticketType = new TicketType(basename($uri), $data['name'], $data['price'], $data['nrOfPeople']);
+            $ticketType = $this->ttService->update($ticketType);
+            echo json_encode($ticketType);
+        } catch (Exception $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to update ticket type.", 500);
         }
-        $data = json_decode(file_get_contents('php://input'), true);
-        $ticketType = new TicketType(basename($uri), $data['name'], $data['price'], $data['nrOfPeople']);
-        $ticketType = $this->ttService->update($ticketType);
-        echo json_encode($ticketType);
     }
 
     public function handleDeleteRequest($uri)
     {
-        if (!$this->isLoggedInAsAdmin()) {
-            $this->sendErrorMessage('You are not logged in as admin.', 401);
-            return;
+        try {
+            if (!$this->isLoggedInAsAdmin()) {
+                $this->sendErrorMessage('You are not logged in as admin.', 401);
+                return;
+            }
+            $this->ttService->delete(basename($uri));
+            $this->sendSuccessMessage('Ticket Type Removed.');
+        } catch (Exception $e) {
+            Logger::write($e);
+            $this->sendErrorMessage("Unable to delete ticket type.", 500);
         }
-        $this->ttService->delete(basename($uri));
-        $this->sendSuccessMessage('Ticket Type Removed.');
     }
 }
