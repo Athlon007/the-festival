@@ -3,6 +3,13 @@ require_once("../services/UserService.php");
 
 class UserController
 {
+    private $userService;
+
+    public function __construct()
+    {
+        $this->userService = new UserService();
+    }
+
     public function manageUsers()
     {
         try {
@@ -18,9 +25,8 @@ class UserController
             if ($user->getUserTypeAsString() != "Admin") {
                 header("Location: /");
             }
-
-            $userService = new UserService();
-            $users = $userService->getAllUsers();
+            
+            $users = $this->userService->getAllUsers();
             require("../views/admin/User management/manageUsers.php");
         } catch (PDOException $e) {
             echo $e->getMessage();
@@ -30,8 +36,7 @@ class UserController
     public function updateUser()
     {
         try {
-            $userService = new UserService();
-            $user = $userService->getUserById($_GET['id']);
+            $user = $this->userService->getUserById($_GET['id']);
             require("../views/admin/User management/updateUser.php");
         } catch (Exception $e) {
             echo $e->getMessage();
@@ -41,7 +46,6 @@ class UserController
     public function addUser()
     {
         try {
-            $userService = new UserService();
             require("../views/admin/addUser.php");
         } catch (PDOException $e) {
             echo $e->getMessage();
