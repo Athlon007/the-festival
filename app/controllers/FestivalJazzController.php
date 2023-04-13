@@ -28,7 +28,6 @@ class FestivalJazzController
                 return;
             }
 
-
             $events = $this->ciService->getAll("time", ["artist" => $artist->getId()]);
 
             require(__DIR__ . self::JAZZ_ARTIST_PAGE);

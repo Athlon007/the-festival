@@ -347,7 +347,6 @@ class Router
                 $restaurantController->manageRestaurants();
                 break;
             case "/manageJazz":
-                require_once("controllers/JazzController.php");
                 require('views/admin/Jazz management/manageJazz.php');
                 break;
             case "/manageHistory":

@@ -1,7 +1,5 @@
 <?php
 
-use function PHPSTORM_META\type;
-
 require_once("EventRepository.php");
 require_once("CartItemRepository.php");
 
