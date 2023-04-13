@@ -138,7 +138,10 @@ class EventRepository extends Repository
             $availableTickets = 'NULL';
         }
 
-        $sql = "UPDATE Events SET name = :name, startTime = :startTime, endTime = :endTime, festivalEventType = :eventTypeId, availableTickets = :availableTickets WHERE eventId = :id";
+        $sql = "UPDATE Events
+        SET name = :name, startTime = :startTime, endTime = :endTime,
+        festivalEventType = :eventTypeId, availableTickets = :availableTickets
+        WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
