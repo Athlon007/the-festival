@@ -22,48 +22,44 @@
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
-                    <h2 class="m-5">Shopping Cart</h2>
+                    <h2 class="">Shopping Cart</h2>
                     <button class="btn btn-secondary float-end">Order History</button>
                     <!--Pop-up message-->
                     <div id="popup">
+                    
                     </div>
 
                     <!-- Cart -->
-
-                    <?php
-                    if (!$cartItems) {
-                        echo "Your cart is empty. Go back and buy some stuff!";
-                    } else {
-                        foreach ($cartItems as $cartItem) {
-                            $id = $cartItem["cartItem"]->getId(); ?>
-                            <div id="cart-item-<?= $id ?>" class="card p-3 m-3" style="width: 60%">
-                                <div class="card-header" style="width: 100%">
-                                    <?= $cartItem['cartItem']->getEvent()->getName() ?>
-                                    <?= $cartItem['cartItem']->getTicketType()->getName() ?> - &euro; <?= $cartItem['cartItem']->getTicketType()->getPrice() ?>
-                                </div>
-                                <br>
-                                <div style="width: 100%">
-                                    <button id="cart-item-remove-<?= $id ?>" class="btn btn-light" style="width: 20%">-</button>
-                                    <span id="cart-item-counter-<?= $id ?>"><?= $cartItem['count'] ?></span>
-                                    <button id="cart-item-add-<?= $id ?>" class=" btn btn-light" style="width: 20%">+</button>
-                                    <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end"><?= $cartItem['cartItem']->getTicketType()->getPrice() ?></span>
-                                    <span id="cart-item-total-price-<?= $id ?>" class="price float-end">&euro; <?= $cartItem['price'] ?></span>
-                                </div>
-                                <br>
-                                <div style="width: 100%">
-                                    <button id="cart-item-delete-<?= $cartItem["cartItem"]->getId() ?>" class="btn btn-danger float-end">Delete</button>
-                                </div>
+                    <div class="mt-5">
+                    <?php 
+                    if(!$cartItems){
+                        echo "Your cart is empty. Go back to the Festival and buy some tickets!";
+                    }
+                    else{
+                        foreach($cartItems as $cartItem){ ?> 
+                       
+                        <div class="card p-3 m-3" style="width: 60%">
+                            <div class="card-header" style="width: 100%">
+                                <?= $cartItem['cartItem']->getEvent()->getName() ?>
+                                <?= $cartItem['cartItem']->getTicketType()->getName() ?> - &euro; <?= $cartItem['cartItem']->getTicketType()->getPrice() ?>
+                            </div>
+                            <br>
+                            <div style="width: 100%">
+                                <button class="btn btn-light" style="width: 20%">-</button>
+                                <span><?= $cartItem['count'] ?></span>
+                                <button class="btn btn-light" style="width: 20%">+</button>
+                                <span class="float-end">Total price: &euro; <?= $cartItem['price'] ?></span>
                             </div>
 
 
                     <?php }
-                    }   ?>
+                    }   ?> 
+                    </div>
                     <br>
                     <br>
-                    <h4 id="total">Total price: &euro; <?= $totalPrice ?></h4>
+                    <h4>Total price: &euro; <?= $totalPrice?></h4>
+                    <br>
                     <button class="btn btn-primary">Check out</button>
-
-
                 </div>
             </div>
         </div>

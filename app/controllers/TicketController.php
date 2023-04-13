@@ -3,7 +3,6 @@ require_once("../services/TicketService.php");
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
-
 class TicketController
 {
     public function buyTicket()
@@ -15,9 +14,11 @@ class TicketController
         }
     }
 
-    public function generateAndSendTicket()
+    //
+    public function generateAndSendTicket($id)
     {
         try {
+            //TODO: Obsolete code after order implementation, remove
             $ticketService = new TicketService();
             $ticket = $ticketService->getTicketByID(3);
             $qrCodeImage = $ticketService->generateQRCode($ticket);

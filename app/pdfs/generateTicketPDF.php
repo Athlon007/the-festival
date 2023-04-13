@@ -1,4 +1,4 @@
-<!--Ticket template by Vedat-->
+<!--Ticket template by Vedat /Edited by Joshua-->
 
 <div class="container">
     <h1>The Festival Ticket</h1>
@@ -30,7 +30,7 @@
     <div class="ticket-info">
         <label>Customer Name:</label>
         <p>
-            <?= $ticket->getCustomer()->getFirstName() . ' ' . $ticket->getCustomer()->getLastName() ?>
+            <?= $order->getCustomer()->getFirstName() . ' ' . $order->getCustomer()->getLastName() ?>
         </p>
     </div>
 
@@ -42,7 +42,7 @@
     <div class="ticket-info">
         <label>Customer Email:</label>
         <p>
-            <?= $ticket->getCustomer()->getEmail() ?>
+            <?= $order->getCustomer()->getEmail() ?>
         </p>
     </div>
 

@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../repositories/UserRepository.php';
-require_once(__DIR__ . '/../services/CustomerService.php');
+require_once(__DIR__ . '/../repositories/CustomerRepository.php');
 require_once __DIR__ . '/../models/User.php';
 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
 require_once(__DIR__ . '/../models/Exceptions/IncorrectPasswordException.php');
@@ -16,13 +16,13 @@ use PHPMailer\PHPMailer\Exception;
 
 class UserService
 {
-    protected UserRepository $repository;
-    private CustomerService $customerService;
+    protected $userRepository;
+    protected $customerRepository;
 
     public function __construct()
     {
-        $this->repository = new UserRepository();
-        $this->customerService = new CustomerService();
+        $this->userRepository = new UserRepository();
+        $this->customerRepository = new CustomerRepository();
     }
 
     public function verifyUser($data): ?User
@@ -32,12 +32,12 @@ class UserService
             $data->email = htmlspecialchars($data->email);
             $data->password = htmlspecialchars($data->password);
 
-            $user = $this->repository->getByEmail($data->email);
+            $user = $this->userRepository->getByEmail($data->email);
 
             if (password_verify($data->password, $user->getHashPassword())) {
 
                 if ($user->getUserType() == 3) {
-                    $customer = $this->customerService->getCustomerByUser($user);
+                    $customer = $this->customerRepository->getCustomerByUser($user);
                     return $customer;
                 }
 
@@ -72,7 +72,7 @@ class UserService
         $user->setHashPassword($hashedPassword);
 
         //Pass to repository
-        $this->repository->insertUser($user);
+        $this->userRepository->insertUser($user);
     }
     public function updateUserPassword($data)
     {
@@ -84,11 +84,11 @@ class UserService
             if ($newPassword != $confirmPassword) {
                 throw new Exception("New password and confirm password do not match.");
             } else {
-                $user = $this->repository->getByEmail($data->email);
+                $user = $this->userRepository->getByEmail($data->email);
                 $user->setEmail($data->email);
                 $hashedPassword = password_hash($data->newPassword, PASSWORD_DEFAULT);
                 $user->setHashPassword($hashedPassword);
-                $this->repository->updatePassword($user);
+                $this->userRepository->updatePassword($user);
             }
         } catch (Exception $ex) {
             throw ($ex);
@@ -98,8 +98,8 @@ class UserService
     public function storeResetToken($email, $reset_token)
     {
         try {
-            if ($this->repository->getByEmail($email) != null) {
-                $this->repository->storeResetToken($email, $reset_token);
+            if ($this->userRepository->getByEmail($email) != null) {
+                $this->userRepository->storeResetToken($email, $reset_token);
             } else {
                 throw new UserNotFoundException();
             }
@@ -202,7 +202,7 @@ class UserService
     public function verifyResetToken($email, $reset_token)
     {
         try {
-            $result = $this->repository->verifyResetToken($email, $reset_token);
+            $result = $this->userRepository->verifyResetToken($email, $reset_token);
 
             if ($result === null) {
                 // reset token not found or expired
@@ -229,7 +229,7 @@ class UserService
     public function getAllUsers(): array
     {
         try {
-            return $this->repository->getAllUsers();
+            return $this->userRepository->getAllUsers();
         } catch (Exception $ex) {
             throw ($ex);
         }
@@ -238,7 +238,7 @@ class UserService
     public function deleteUser($data): void
     {
         try {
-            $this->repository->deleteUser($data->id);
+            $this->userRepository->deleteUser($data->id);
         } catch (Exception $ex) {
             throw ($ex);
         }
@@ -247,7 +247,7 @@ class UserService
     public function getUserById($id): User
     {
         try {
-            return $this->repository->getById($id);
+            return $this->userRepository->getById($id);
         } catch (Exception $ex) {
             throw ($ex);
         }
@@ -259,7 +259,7 @@ class UserService
             //Sanitise user data
             $data = $this->sanitiseUserData($data);
 
-            $user = $this->repository->getById($data->id);
+            $user = $this->userRepository->getById($data->id);
             $user->setFirstName(htmlspecialchars($data->firstName));
             $user->setLastName(htmlspecialchars($data->lastName));
             $user->setEmail(htmlspecialchars($data->email));
@@ -272,7 +272,7 @@ class UserService
                 $user->setUserType(3);
             }
 
-            $this->repository->updateUser($user);
+            $this->userRepository->updateUser($user);
         } catch (Exception $ex) {
             throw ($ex);
         }
@@ -281,7 +281,7 @@ class UserService
     public function getUserByEmail($email): User
     {
         try {
-            return $this->repository->getByEmail($email);
+            return $this->userRepository->getByEmail($email);
         } catch (Exception $ex) {
             throw ($ex);
         }
@@ -290,7 +290,7 @@ class UserService
     public function emailAlreadyExists($email): bool
     {
         try {
-            return $this->repository->emailAlreadyExists($email);
+            return $this->userRepository->emailAlreadyExists($email);
         } catch (Exception $ex) {
             throw ($ex);
         }

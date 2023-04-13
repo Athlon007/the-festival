@@ -37,6 +37,16 @@ class TicketService
     $this->repository = new TicketRepository();
   }
 
+  public function getTicketByID($ticketID): Ticket
+  {
+    try {
+      $ticket = $this->repository->getTicketByID($ticketID);
+      return $ticket;
+    } catch (Exception $ex) {
+      throw ($ex);
+    }
+  }
+
   public function generateQRCode($ticket): string
   {
     //Generate a QR code image with the ticket ID as data
@@ -54,7 +64,7 @@ class TicketService
     return $qrCodeImage;
   }
 
-  public function generatePDFTicket($ticket,$qrCodeImage): Dompdf
+  public function generatePDFTicket($ticket, $qrCodeImage, $order): Dompdf
   {
       $pdfService = new PDFService();  
 
@@ -68,16 +78,6 @@ class TicketService
       $filename = "ticket.pdf";
 
       return $pdfService->generatePDF($html, $title, $filename);
-  }
-
-  public function getTicketByID($ticketID): Ticket
-  {
-    try {
-      $ticket = $this->repository->getTicketByID($ticketID);
-      return $ticket;
-    } catch (Exception $ex) {
-      throw ($ex);
-    }
   }
 
   public function sendTicketByEmail(Dompdf $dompdf, Ticket $ticket, Order $order)
@@ -104,6 +104,7 @@ class TicketService
       require_once(__DIR__ . '/../emails/ticket-email.php');
       $mail->Body = ob_get_clean();
 
+      //TODO: Hardcoded for now for testing purposes. Remove when unnecessary
       $mail->addAddress('turkvedat0911@gmail.com', $name);
       $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');
 
@@ -121,14 +122,14 @@ class TicketService
 
   }
 
-  //TODO: check if obsolete before handing in
+  //TODO: check if obsolete after payment funnel is finished
   public function addTicketToOrder($orderId, $ticketId)
   {
       
     return $this->repository->addTicketToOrder($orderId, $ticketId);
   }
 
-  //TODO: check if obsolete before handing in
+  //TODO: check if obsolete after payment funnel is finished
   public function removeTicketFromOrder($orderId, $ticketId)
   {
         
