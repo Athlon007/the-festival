@@ -7,10 +7,10 @@ require_once(__DIR__ . '/../models/Customer.php');
 require_once(__DIR__ . '/../models/User.php');
 
 class CustomerService extends UserService{
-    protected $customerRepository;
+    private $addressRepository;
 
     public function __construct(){
-        $this->customerRepository = new CustomerRepository();
+        $this->addressRepository = new AddressRepository();
     }
 
     public function registerCustomer($data)

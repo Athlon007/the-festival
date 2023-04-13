@@ -12,7 +12,7 @@ require_once(__DIR__ . '/../models/CartItem.php');
 require_once(__DIR__ . '/../repositories/TicketRepository.php');
 require_once(__DIR__ . '/../services/TicketService.php');
 require_once(__DIR__ . '/../services/InvoiceService.php');
-require_once(__DIR__ . '/../service/PDFService.php');
+require_once(__DIR__ . '/../services/PDFService.php');
 
 class OrderService
 {
