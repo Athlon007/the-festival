@@ -75,7 +75,9 @@ class CustomerService extends UserService{
             //Hash the new password and update
             $customer->setHashPassword(password_hash($data->password, PASSWORD_DEFAULT));
         }
-        //If the email has been updated, make sure it's not a duplicate, then update
+        //Send a confirmation email to the customer's email address.
+        
+        //If the email has been updated, make sure it's not a duplicate in db, then update
         if ($customer->getEmail() != $data->email)
         {
             if (parent::emailAlreadyExists($data->email))
