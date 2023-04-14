@@ -7,8 +7,8 @@ use PHPMailer\PHPMailer\Exception;
 require_once(__DIR__ . '/../repositories/OrderRepository.php');
 require_once(__DIR__ . '/../models/Order.php');
 require_once(__DIR__ . '/../models/Exceptions/OrderNotFoundException.php');
-require_once(__DIR__ . '/../repositories/CartItemRepository.php');
-require_once(__DIR__ . '/../models/CartItem.php');
+require_once(__DIR__ . '/../repositories/TicketLinkRepository.php');
+require_once(__DIR__ . '/../models/TicketLink.php');
 require_once(__DIR__ . '/../repositories/TicketRepository.php');
 require_once(__DIR__ . '/../services/TicketService.php');
 require_once(__DIR__ . '/../services/InvoiceService.php');
@@ -17,18 +17,18 @@ require_once(__DIR__ . '/../services/PDFService.php');
 class OrderService
 {
     private $orderRepository;
-    private $cartItemRepository;
+    private $ticketLinkRepository;
     private $ticketRepository;
     private $ticketService;
     private $invoiceService;
     private $pdfService;
 
-    const CART_ARRAY = 'cartItemIds';
+    const CART_ARRAY = 'ticketLinkIds';
 
     public function __construct()
     {
         $this->orderRepository = new OrderRepository();
-        $this->cartItemRepository = new CartItemRepository();
+        $this->ticketLinkRepository = new TicketLinkRepository();
         $this->ticketRepository = new TicketRepository();
         $this->ticketService = new TicketService();
         $this->invoiceService = new InvoiceService();
@@ -51,7 +51,7 @@ class OrderService
     }
 
     //To be called after payment (can't be implemented yet)
-    public function createOrder($customer, $cartItemIds)
+    public function createOrder($customer, $ticketLinkIds)
     {
     }
 
@@ -69,14 +69,14 @@ class OrderService
 
     /**
      * Returns the cart as an array of cart item arrays.
-     * @param CartItem $cartItem The cart item to add.
+     * @param TicketLink $ticketLink The cart item to add.
      * @return array The cart as an array of cart item arrays.
      * @author Konrad
      */
-    public function addItemToCart(CartItem $cartItem): array
+    public function addItemToCart(TicketLink $ticketLink): array
     {
         // Free event have no limit on tickets.
-        //if ($cartItem->getTicketType()->getPrice() > 0 && $cartItem->getEvent()->getAvailableTickets() == 0) {
+        //if ($ticketLink->getTicketType()->getPrice() > 0 && $ticketLink->getEvent()->getAvailableTickets() == 0) {
         //    throw new Exception("No tickets available for this event.");
         //}
 
@@ -91,7 +91,7 @@ class OrderService
         }
 
         // add the cart item to the array (yes, we can have multiple cart items with the same id).
-        array_push($_SESSION[OrderService::CART_ARRAY], $cartItem->getId());
+        array_push($_SESSION[OrderService::CART_ARRAY], $ticketLink->getId());
 
         // return the array.
         return $this->getCart();
@@ -99,11 +99,11 @@ class OrderService
 
     /**
      * Returns the cart as an array of cart item arrays.
-     * @param CartItem $cartItem The cart item to remove.
+     * @param TicketLink $ticketLink The cart item to remove.
      * @return array The cart as an array of cart item arrays.
      * @author Konrad
      */
-    public function removeItemFromCart(CartItem $cartItem): array
+    public function removeItemFromCart(TicketLink $ticketLink): array
     {
         // If session is not initialized anyway, we can't remove anything.
         if (session_status() == PHP_SESSION_NONE) {
@@ -116,7 +116,7 @@ class OrderService
         }
 
         // Because we can have duplicates, remove only ONE instance of the cart item, if it exists.
-        $index = array_search($cartItem->getId(), $_SESSION[OrderService::CART_ARRAY]);
+        $index = array_search($ticketLink->getId(), $_SESSION[OrderService::CART_ARRAY]);
         if ($index !== false) {
             unset($_SESSION[OrderService::CART_ARRAY][$index]);
         }
@@ -127,11 +127,11 @@ class OrderService
 
     /**
      * Counts the number of specific cart item in the cart.
-     * @param CartItem $cartItem The cart item to count.
+     * @param TicketLink $ticketLink The cart item to count.
      * @return int The number of cart items in the cart.
      * @author Konrad
      */
-    public function countItemInCart(CartItem $cartItem): int
+    public function countItemInCart(TicketLink $ticketLink): int
     {
         // If session is not initialized anyway, we can't remove anything.
         if (session_status() == PHP_SESSION_NONE) {
@@ -146,7 +146,7 @@ class OrderService
         // Because we can have duplicates, remove only ONE instance of the cart item, if it exists.
         $count = 0;
         foreach ($_SESSION[OrderService::CART_ARRAY] as $id) {
-            if ($id == $cartItem->getId()) {
+            if ($id == $ticketLink->getId()) {
                 $count++;
             }
         }
@@ -196,7 +196,7 @@ class OrderService
         $output = [];
         $idsAdded = [];
         foreach ($_SESSION[OrderService::CART_ARRAY] as $id) {
-            $ci = $this->cartItemRepository->getById($id);
+            $ci = $this->ticketLinkRepository->getById($id);
             $count = $this->countItemInCart($ci);
             $price = $ci->getTicketType()->getPrice() * $count;
 
@@ -206,7 +206,7 @@ class OrderService
             }
 
             $output[] = [
-                'cartItem' => $ci,
+                'ticketLink' => $ci,
                 'count' => $count,
                 'price' => $price,
             ];

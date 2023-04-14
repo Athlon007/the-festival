@@ -2,11 +2,12 @@
 
 require_once __DIR__ . '/../repositories/TicketRepository.php';
 require_once __DIR__ . '/../models/Ticket/Ticket.php';
-require_once(__DIR__ . '/../models/CartItem.php');
+require_once(__DIR__ . '/../models/TicketLink.php');
 require_once(__DIR__ . '/../models/Exceptions/TicketNotFoundException.php');
 require_once(__DIR__ . '/../services/PDFService.php');
 
 require_once(__DIR__ . '../../vendor/autoload.php');
+
 use Dompdf\Dompdf;
 
 require_once('../phpmailer/PHPMailer.php');
@@ -66,18 +67,18 @@ class TicketService
 
   public function generatePDFTicket($ticket, $qrCodeImage, $order): Dompdf
   {
-      $pdfService = new PDFService();  
+    $pdfService = new PDFService();
 
-      // buffer the following html with PHP so we can pass it to the PDF generator
-      ob_start();
-      $html = require_once(__DIR__ . '/../pdfs/generateTicketPDF.php');
-      // retrieve the HTML generated in our buffer and delete the buffer
-      $html = ob_get_clean();
+    // buffer the following html with PHP so we can pass it to the PDF generator
+    ob_start();
+    $html = require_once(__DIR__ . '/../pdfs/generateTicketPDF.php');
+    // retrieve the HTML generated in our buffer and delete the buffer
+    $html = ob_get_clean();
 
-      $title = "The Festival Ticket";
-      $filename = "ticket.pdf";
+    $title = "The Festival Ticket";
+    $filename = "ticket.pdf";
 
-      return $pdfService->generatePDF($html, $title, $filename);
+    return $pdfService->generatePDF($html, $title, $filename);
   }
 
   public function sendTicketByEmail(Dompdf $dompdf, Ticket $ticket, Order $order)
@@ -118,22 +119,21 @@ class TicketService
     }
   }
 
-  public function createTicketFromCartItem(CartItem $cartItem){
-
+  public function createTicketFromTicketLink(TicketLink $ticketLink)
+  {
   }
 
   //TODO: check if obsolete after payment funnel is finished
   public function addTicketToOrder($orderId, $ticketId)
   {
-      
+
     return $this->repository->addTicketToOrder($orderId, $ticketId);
   }
 
   //TODO: check if obsolete after payment funnel is finished
   public function removeTicketFromOrder($orderId, $ticketId)
   {
-        
+
     return $this->repository->removeTicketFromOrder($orderId, $ticketId);
   }
-
 }

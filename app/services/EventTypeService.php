@@ -42,7 +42,7 @@ class EventTypeService
         return $this->getById($id);
     }
 
-    public function deleteCartItem(EventType $obj): void
+    public function delete(EventType $obj): void
     {
         $id = htmlspecialchars($obj->getId());
         $this->repo->delete($id);

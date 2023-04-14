@@ -1,8 +1,8 @@
 <?php
 require_once(__DIR__ . "/APIController.php");
 require_once(__DIR__ . "/../../services/OrderService.php");
-require_once(__DIR__ . "/../../models/CartItem.php");
-require_once(__DIR__ . "/../../services/CartItemService.php");
+require_once(__DIR__ . "/../../models/TicketLink.php");
+require_once(__DIR__ . "/../../services/TicketLinkService.php");
 
 /**
  * Cart Controller, yeah...
@@ -16,7 +16,7 @@ class CartAPIController extends APIController
     public function __construct()
     {
         $this->orderService = new OrderService();
-        $this->ciService = new CartItemService();
+        $this->ciService = new TicketLinkService();
     }
 
     protected function handleGetRequest($uri)
@@ -26,8 +26,8 @@ class CartAPIController extends APIController
                 echo json_encode(["count" => $this->orderService->getCartCount()]);
                 return;
             } elseif (is_numeric(basename($uri))) {
-                $cartItem = $this->ciService->getById(basename($uri));
-                $count = $this->orderService->countItemInCart($cartItem);
+                $ticketLink = $this->ciService->getById(basename($uri));
+                $count = $this->orderService->countItemInCart($ticketLink);
                 echo json_encode(["count" => $count]);
                 return;
             }
@@ -44,14 +44,14 @@ class CartAPIController extends APIController
     {
         $ciID = basename($uri);
         try {
-            $cartItem = $this->ciService->getById($ciID);
+            $ticketLink = $this->ciService->getById($ciID);
 
-            if ($cartItem == null) {
+            if ($ticketLink == null) {
                 $this->sendErrorMessage("Cart item not found", 404);
                 return;
             }
 
-            $this->orderService->addItemToCart($cartItem);
+            $this->orderService->addItemToCart($ticketLink);
             $cart = $this->orderService->getCart();
             echo json_encode($cart);
         } catch (Throwable $e) {
@@ -71,14 +71,14 @@ class CartAPIController extends APIController
 
         $ciID = basename($uri);
         try {
-            $cartItem = $this->ciService->getById($ciID);
+            $ticketLink = $this->ciService->getById($ciID);
 
-            if ($cartItem == null) {
+            if ($ticketLink == null) {
                 $this->sendErrorMessage("Cart item not found", 404);
                 return;
             }
 
-            $this->orderService->removeItemFromCart($cartItem);
+            $this->orderService->removeItemFromCart($ticketLink);
             $cart = $this->orderService->getCart();
             echo json_encode($cart);
         } catch (Throwable $e) {
