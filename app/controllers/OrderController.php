@@ -44,6 +44,7 @@ class OrderController
 
     /**
      * Create order after completing payment or selecting "pay later"
+     * TODO: Still needs actual implementation after payment funnel redesign
      */
     public function createOrder()
     {
@@ -54,8 +55,10 @@ class OrderController
             if (!isset($_SESSION['user'])) {
                 throw new Exception("User is not logged in");
             }
+            else{
+                $customer = unserialize($_SESSION['user']);
+            }
 
-            $customer = unserialize($_SESSION['user']);
             if ($customer->getUserType() != 3) {
                 throw new Exception("Only customers can place orders");
             }
