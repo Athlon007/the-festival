@@ -3,14 +3,17 @@
 require_once(__DIR__ . '/../repositories/UserRepository.php');
 require_once(__DIR__ . '/../repositories/CustomerRepository.php');
 require_once(__DIR__ . '/../repositories/AddressRepository.php');
+require_once(__DIR__ . '/../services/MailService.php');
 require_once(__DIR__ . '/../models/Customer.php');
 require_once(__DIR__ . '/../models/User.php');
 
 class CustomerService extends UserService{
     private $addressRepository;
+    private $mailService;
 
     public function __construct(){
         $this->addressRepository = new AddressRepository();
+        $this->mailService = new MailService();
     }
 
     public function registerCustomer($data)
@@ -62,20 +65,23 @@ class CustomerService extends UserService{
         //Sanitise data
         $data = $this->sanitiseCustomerData($data);
 
-        //If a new password is given
+        //If a new password was set, the confirm password must match the password currently in DB
         if (isset($data->password) && isset($data->confirmPassword))
         {
             $data->confirmPassword = htmlspecialchars($data->confirmPassword);
             password_verify($data->confirmPassword, $customer->getHashPassword());
 
-            //Check if confirmPassword matches the customer's current password
             if (!password_verify($data->confirmPassword, $customer->getHashPassword()))
                 throw new IncorrectPasswordException();
 
-            //Hash the new password and update
+            //Hash the new password and update it
             $customer->setHashPassword(password_hash($data->password, PASSWORD_DEFAULT));
         }
-        //If the email has been updated, make sure it's not a duplicate, then update
+        
+        //Send a confirmation email to the customer's current (non-updated) email address.
+        $this->mailService->sendAccountUpdateEmail($customer);
+
+        //If the email has been updated, make sure it's not a duplicate in db, then update
         if ($customer->getEmail() != $data->email)
         {
             if (parent::emailAlreadyExists($data->email))
