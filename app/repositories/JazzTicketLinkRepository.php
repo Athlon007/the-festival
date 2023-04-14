@@ -1,9 +1,9 @@
 <?php
 
 require_once("EventRepository.php");
-require_once("CartItemRepository.php");
+require_once("TicketLinkRepository.php");
 
-class JazzCartItemRepository extends CartItemRepository
+class JazzTicketLinkRepository extends TicketLinkRepository
 {
     protected function build($arr): array
     {
@@ -15,7 +15,7 @@ class JazzCartItemRepository extends CartItemRepository
         require_once(__DIR__ . "/../models/Music/ArtistKind.php");
         require_once(__DIR__ . '/ImageRepository.php');
         require_once(__DIR__ . "/../models/Music/MusicEvent.php");
-        require_once(__DIR__ . "/../models/CartItem.php");
+        require_once(__DIR__ . "/../models/TicketLink.php");
 
         $imageRepository = new ImageRepository();
         $output = array();
@@ -81,13 +81,13 @@ class JazzCartItemRepository extends CartItemRepository
                 $item['availableTickets']
             );
 
-            $cartItem = new CartItem(
+            $ticketLink = new TicketLink(
                 $item['cartItemId'],
                 $event,
                 $ticketType
             );
 
-            array_push($output, $cartItem);
+            array_push($output, $ticketLink);
         }
 
         return $output;
@@ -137,7 +137,7 @@ class JazzCartItemRepository extends CartItemRepository
         c.cartItemId as cartItemId
         FROM jazzevents je
         JOIN events e ON e.eventId = je.eventId
-        JOIN cartitems c on e.eventId = c.eventId
+        JOIN ticketlinks c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
         join jazzartists a on a.artistId = je.artistId
         join locations l on l.locationId = je.locationId
@@ -271,7 +271,7 @@ class JazzCartItemRepository extends CartItemRepository
         c.cartItemId as cartItemId
         FROM jazzevents je
         JOIN events e ON e.eventId = je.eventId
-        JOIN cartitems c on e.eventId = c.eventId
+        JOIN ticketlinks c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
         join jazzartists a on a.artistId = je.artistId
         join locations l on l.locationId = je.locationId
@@ -290,7 +290,7 @@ class JazzCartItemRepository extends CartItemRepository
         return $output[0];
     }
 
-    public function getByEventId($id): ?CartItem
+    public function getByEventId($id): ?TicketLink
     {
         $sql = "SELECT e.eventId,
 		e.name as eventName,
@@ -334,7 +334,7 @@ class JazzCartItemRepository extends CartItemRepository
         c.cartItemId as cartItemId
         FROM jazzevents je
         JOIN events e ON e.eventId = je.eventId
-        JOIN cartitems c on e.eventId = c.eventId
+        JOIN ticketlinks c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
         join jazzartists a on a.artistId = je.artistId
         join locations l on l.locationId = je.locationId

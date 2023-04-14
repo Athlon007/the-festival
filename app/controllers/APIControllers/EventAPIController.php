@@ -7,19 +7,19 @@ require_once(__DIR__ . '/../../services/EventTypeService.php');
 require_once(__DIR__ . '/../../services/TicketTypeService.php');
 require_once("APIController.php");
 require_once(__DIR__ . '/../../models/Types/TicketType.php');
-require_once(__DIR__ . '/../../models/CartItem.php');
+require_once(__DIR__ . '/../../models/TicketLink.php');
 
-require_once(__DIR__ . '/../../services/CartItemService.php');
-require_once(__DIR__ . '/../../services/JazzCartItemService.php');
-require_once(__DIR__ . '/../../services/HistoryCartItemService.php');
-require_once(__DIR__ . '/../../services/PassCartItemService.php');
+require_once(__DIR__ . '/../../services/TicketLinkService.php');
+require_once(__DIR__ . '/../../services/JazzTicketLinkService.php');
+require_once(__DIR__ . '/../../services/HistoryTicketLinkService.php');
+require_once(__DIR__ . '/../../services/PassTicketLinkService.php');
 
 class EventAPIController extends APIController
 {
     private $eventService;
     private $ticketTypeService;
     private $eventTypeService;
-    private $cartItemService;
+    private $ticketLinkService;
     private $locationService;
 
     // Jazz Services
@@ -36,13 +36,13 @@ class EventAPIController extends APIController
         $this->ticketTypeService = new TicketTypeService();
         $this->eventTypeService = new EventTypeService();
 
-        // Load appropriate CartItemService.
+        // Load appropriate TicketLinkService.
         $request = $_SERVER['REQUEST_URI'];
         if (
             str_starts_with($request, EventAPIController::URI_JAZZ)
             || str_starts_with($request, EventAPIController::URI_DANCE)
         ) {
-            $this->cartItemService = new JazzCartItemService();
+            $this->ticketLinkService = new JazzTicketLinkService();
 
             // Jazz Services
             require_once(__DIR__ . '/../../services/JazzArtistService.php');
@@ -51,12 +51,12 @@ class EventAPIController extends APIController
             require_once(__DIR__ . '/../../services/LocationService.php');
             $this->locationService = new LocationService();
         } elseif (str_starts_with($request, EventAPIController::URI_STROLL)) {
-            $this->cartItemService = new HistoryCartItemService();
+            $this->ticketLinkService = new HistoryTicketLinkService();
         } elseif (str_starts_with($request, EventAPIController::URI_PASSES)) {
-            $this->cartItemService = new PassCartItemService();
+            $this->ticketLinkService = new PassTicketLinkService();
         } else {
-            // Load the generic CartItemService.
-            $this->cartItemService = new CartItemService();
+            // Load the generic TicketLinkService.
+            $this->ticketLinkService = new TicketLinkService();
         }
     }
 
@@ -96,10 +96,10 @@ class EventAPIController extends APIController
             }
 
             if (is_numeric(basename($uri))) {
-                echo json_encode($this->cartItemService->getByEventId(basename($uri)));
+                echo json_encode($this->ticketLinkService->getByEventId(basename($uri)));
                 return;
             }
-            echo json_encode($this->cartItemService->getAll($sort, $filters));
+            echo json_encode($this->ticketLinkService->getAll($sort, $filters));
         } catch (ObjectNotFoundException $e) {
             $this->sendErrorMessage("Event with given ID not found.", 404);
         } catch (Throwable $e) {
@@ -167,11 +167,11 @@ class EventAPIController extends APIController
                 $event->setEventType($eventType);
             }
 
-            $cartItem = new CartItem(0, $event, $ticketType);
+            $ticketLink = new TicketLink(0, $event, $ticketType);
 
-            $cartItem = $this->cartItemService->add($cartItem);
+            $ticketLink = $this->ticketLinkService->add($ticketLink);
 
-            echo json_encode($cartItem);
+            echo json_encode($ticketLink);
         } catch (Throwable $e) {
             Logger::write($e);
             $this->sendErrorMessage("Unable to retrive event(s).", 500);
@@ -188,7 +188,7 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
-            $editedCartItemID = basename($uri);
+            $editedTicketLinkID = basename($uri);
             $ticketType = $this->ticketTypeService->getById($data['ticketType']['id']);
 
             $event = null;
@@ -242,10 +242,10 @@ class EventAPIController extends APIController
                 $event->setEventType($eventType);
             }
 
-            $cartItem = new CartItem($editedCartItemID, $event, $ticketType);
-            $cartItem = $this->cartItemService->updateCartItem($cartItem);
+            $ticketLink = new TicketLink($editedTicketLinkID, $event, $ticketType);
+            $ticketLink = $this->ticketLinkService->update($ticketLink);
 
-            echo json_encode($cartItem);
+            echo json_encode($ticketLink);
         } catch (Throwable $e) {
             Logger::write($e);
             $this->sendErrorMessage("Unable to edit event.", 500);
@@ -261,8 +261,8 @@ class EventAPIController extends APIController
 
         try {
             $deleteEventId = basename($uri);
-            $ci = $this->cartItemService->getByEventId($deleteEventId);
-            $this->cartItemService->deleteCartItem($ci);
+            $ci = $this->ticketLinkService->getByEventId($deleteEventId);
+            $this->ticketLinkService->delete($ci);
 
             $ciId = $ci->getId();
             $eventId = $ci->getEvent()->getId();

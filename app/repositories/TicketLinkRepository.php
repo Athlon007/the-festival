@@ -1,11 +1,11 @@
 <?php
 
-require_once(__DIR__ . "/../models/CartItem.php");
+require_once(__DIR__ . "/../models/TicketLink.php");
 require_once(__DIR__ . "/../models/Types/TicketType.php");
 require_once(__DIR__ . "/../models/Types/EventType.php");
 require_once("Repository.php");
 
-class CartItemRepository extends Repository
+class TicketLinkRepository extends Repository
 {
     protected function build($arr): array
     {
@@ -35,9 +35,9 @@ class CartItemRepository extends Repository
                 $item['ticketTypeNrOfPeople']
             );
 
-            $cartItem = new CartItem($item['cartItemId'], $event, $ticketType);
+            $ticketLink = new TicketLink($item['cartItemId'], $event, $ticketType);
 
-            $output[] = $cartItem;
+            $output[] = $ticketLink;
         }
 
         return $output;
@@ -68,7 +68,7 @@ class CartItemRepository extends Repository
 		t.nrOfPeople as ticketTypeNrOfPeople,
         c.cartItemId as cartItemId
     FROM events e
-    JOIN cartitems c on e.eventId = c.eventId
+    JOIN ticketlinks c on e.eventId = c.eventId
     join tickettypes t on c.ticketTypeId = t.ticketTypeId
     join festivaleventtypes f on f.eventTypeId  = e.festivalEventType";
         $stmt = $this->connection->prepare($sql);
@@ -94,7 +94,7 @@ class CartItemRepository extends Repository
 		t.nrOfPeople as ticketTypeNrOfPeople,
         c.cartItemId as cartItemId
         FROM events e
-        JOIN cartitems c on e.eventId = c.eventId
+        JOIN ticketlinks c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
         join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
         WHERE cartItemId = :id";
@@ -111,7 +111,7 @@ class CartItemRepository extends Repository
         return $output[0];
     }
 
-    public function getByEventId($id): ?CartItem
+    public function getByEventId($id): ?TicketLink
     {
         $sql = "SELECT e.eventId,
 		e.name as eventName,
@@ -127,7 +127,7 @@ class CartItemRepository extends Repository
 		t.nrOfPeople as ticketTypeNrOfPeople,
         c.cartItemId as cartItemId
         FROM events e
-        JOIN cartitems c on e.eventId = c.eventId
+        JOIN ticketlinks c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
         join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
         WHERE e.eventId = :id";
@@ -143,9 +143,9 @@ class CartItemRepository extends Repository
         return $output[0];
     }
 
-    public function createCartItem($eventId, $ticketTypeId): int
+    public function insert($eventId, $ticketTypeId): int
     {
-        $sql = "INSERT INTO cartitems (eventId, ticketTypeId) VALUES (:eventId, :ticketTypeId)";
+        $sql = "INSERT INTO ticketlinks (eventId, ticketTypeId) VALUES (:eventId, :ticketTypeId)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':eventId', $eventId, PDO::PARAM_INT);
         $stmt->bindParam(':ticketTypeId', $ticketTypeId, PDO::PARAM_INT);
@@ -154,9 +154,9 @@ class CartItemRepository extends Repository
         return $this->connection->lastInsertId();
     }
 
-    public function updateCartItem($id, $eventId, $ticketTypeId)
+    public function update($id, $eventId, $ticketTypeId)
     {
-        $sql = "UPDATE cartitems SET eventId = :eventId, ticketTypeId = :ticketTypeId WHERE cartItemId = :id";
+        $sql = "UPDATE ticketlinks SET eventId = :eventId, ticketTypeId = :ticketTypeId WHERE cartItemId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':eventId', $eventId, PDO::PARAM_INT);
@@ -164,9 +164,9 @@ class CartItemRepository extends Repository
         $stmt->execute();
     }
 
-    public function deleteCartItem($id)
+    public function delete($id)
     {
-        $sql = "DELETE FROM cartitems WHERE cartItemId = :id";
+        $sql = "DELETE FROM ticketlinks WHERE cartItemId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();

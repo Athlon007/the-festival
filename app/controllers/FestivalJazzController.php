@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__ . "/../services/JazzCartItemService.php");
+require_once(__DIR__ . "/../services/JazzTicketLinkService.php");
 
 class FestivalJazzController
 {
@@ -11,7 +11,7 @@ class FestivalJazzController
 
     public function __construct()
     {
-        $this->ciService = new JazzCartItemService();
+        $this->ciService = new JazzTicketLinkService();
     }
 
     public function loadArtistPage($uri)
