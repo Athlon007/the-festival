@@ -1,14 +1,17 @@
 <?php
 
 require_once(__DIR__ . "/../services/OrderService.php");
+require_once(__DIR__ . "/../services/CartService.php");
 
 class OrderController
 {
     private $orderService;
+    private $cartService;
 
     public function __construct()
     {
         $this->orderService = new OrderService();
+        $this->cartService = new CartService();
     }
 
     /**
@@ -19,16 +22,8 @@ class OrderController
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-        if (!isset($_SESSION['cartItemIds']) || count($_SESSION['cartItemIds']) == 0) {
-            $cartItems = array();
-        } else {
-            $cartItems = $this->orderService->getCart();
-            $totalPrice = 0;
-
-            foreach ($cartItems as $cartItem) {
-                $totalPrice += $cartItem['price'];
-            }
-        }
+        $cart = $this->cartService->cart();
+        $ticketLinks = $cart['ticketLinks'];
 
         require('../views/payment-funnel/cart.php');
     }

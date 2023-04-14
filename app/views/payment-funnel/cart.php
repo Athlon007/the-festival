@@ -31,27 +31,27 @@
                     <!-- Cart -->
 
                     <?php
-                    if (!$cartItems) {
+                    if (!$ticketLinks) {
                         echo "Your cart is empty. Go back and buy some stuff!";
                     } else {
-                        foreach ($cartItems as $cartItem) {
-                            $id = $cartItem["cartItem"]->getId(); ?>
+                        foreach ($ticketLinks as $ticketLink) {
+                            $id = $ticketLink["ticketLink"]->getId(); ?>
                             <div id="cart-item-<?= $id ?>" class="card p-3 m-3" style="width: 60%">
                                 <div class="card-header" style="width: 100%">
-                                    <?= $cartItem['cartItem']->getEvent()->getName() ?>
-                                    <?= $cartItem['cartItem']->getTicketType()->getName() ?> - &euro; <?= $cartItem['cartItem']->getTicketType()->getPrice() ?>
+                                    <?= $ticketLink['ticketLink']->getEvent()->getName() ?>
+                                    <?= $ticketLink['ticketLink']->getTicketType()->getName() ?> - &euro; <?= $ticketLink['ticketLink']->getTicketType()->getPrice() ?>
                                 </div>
                                 <br>
                                 <div style="width: 100%">
                                     <button id="cart-item-remove-<?= $id ?>" class="btn btn-light" style="width: 20%">-</button>
-                                    <span id="cart-item-counter-<?= $id ?>"><?= $cartItem['count'] ?></span>
+                                    <span id="cart-item-counter-<?= $id ?>"><?= $ticketLink['amount'] ?></span>
                                     <button id="cart-item-add-<?= $id ?>" class=" btn btn-light" style="width: 20%">+</button>
-                                    <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end"><?= $cartItem['cartItem']->getTicketType()->getPrice() ?></span>
-                                    <span id="cart-item-total-price-<?= $id ?>" class="price float-end">&euro; <?= $cartItem['price'] ?></span>
+                                    <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end"><?= $ticketLink['ticketLink']->getTicketType()->getPrice() ?></span>
+                                    <span id="cart-item-total-price-<?= $id ?>" class="price float-end">&euro; <?= $ticketLink['price'] ?></span>
                                 </div>
                                 <br>
                                 <div style="width: 100%">
-                                    <button id="cart-item-delete-<?= $cartItem["cartItem"]->getId() ?>" class="btn btn-danger float-end">Delete</button>
+                                    <button id="cart-item-delete-<?= $ticketLink["ticketLink"]->getId() ?>" class="btn btn-danger float-end">Delete</button>
                                 </div>
                             </div>
 
@@ -60,7 +60,7 @@
                     }   ?>
                     <br>
                     <br>
-                    <h4 id="total">Total price: &euro; <?= $totalPrice ?></h4>
+                    <h4 id="total">Total price: &euro; <?= $cart['totalPrice'] ?></h4>
                     <button class="btn btn-primary">Check out</button>
 
 
