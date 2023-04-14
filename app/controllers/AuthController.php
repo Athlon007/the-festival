@@ -1,4 +1,7 @@
 <?php
+/**
+ * @author: Vedat
+ */
 class AuthController
 {
     public function provideEmail(): void

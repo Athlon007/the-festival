@@ -19,7 +19,7 @@
 
     <!-- Container -->
     <section class="h-100 h-custom">
-        <div class="container py-5 h-100">   
+        <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
                     <h2 class="m-5">Shopping Cart</h2>
@@ -27,53 +27,52 @@
                     <!--Pop-up message-->
                     <div id="popup">
                     </div>
-                    
+
                     <!-- Cart -->
 
-                    <?php 
-                    if(!$cartItems){
+                    <?php
+                    if (!$ticketLinks) {
                         echo "Your cart is empty. Go back and buy some stuff!";
-                    }
-                    else{
-                        foreach($cartItems as $cartItem){ ?> 
-                        
-                        <div class="card p-3 m-3" style="width: 60%">
-                            <div class="card-header" style="width: 100%">
-                                <?= $cartItem['cartItem']->getEvent()->getName() ?>
-                                <?= $cartItem['cartItem']->getTicketType()->getName() ?> - &euro; <?= $cartItem['cartItem']->getTicketType()->getPrice() ?>
+                    } else {
+                        foreach ($ticketLinks as $ticketLink) {
+                            $id = $ticketLink["ticketLink"]->getId(); ?>
+                            <div id="cart-item-<?= $id ?>" class="card p-3 m-3" style="width: 60%">
+                                <div class="card-header" style="width: 100%">
+                                    <?= $ticketLink['ticketLink']->getEvent()->getName() ?>
+                                    <?= $ticketLink['ticketLink']->getTicketType()->getName() ?> - &euro; <?= $ticketLink['ticketLink']->getTicketType()->getPrice() ?>
+                                </div>
+                                <br>
+                                <div style="width: 100%">
+                                    <button id="cart-item-remove-<?= $id ?>" class="btn btn-light" style="width: 20%">-</button>
+                                    <span id="cart-item-counter-<?= $id ?>"><?= $ticketLink['amount'] ?></span>
+                                    <button id="cart-item-add-<?= $id ?>" class=" btn btn-light" style="width: 20%">+</button>
+                                    <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end"><?= $ticketLink['ticketLink']->getTicketType()->getPrice() ?></span>
+                                    <span id="cart-item-total-price-<?= $id ?>" class="price float-end">&euro; <?= $ticketLink['price'] ?></span>
+                                </div>
+                                <br>
+                                <div style="width: 100%">
+                                    <button id="cart-item-delete-<?= $ticketLink["ticketLink"]->getId() ?>" class="btn btn-danger float-end">Delete</button>
+                                </div>
                             </div>
-                            <br>
-                            <div style="width: 100%">
-                                <button class="btn btn-light" style="width: 20%">-</button>
-                                <span><?= $cartItem['count'] ?></span>
-                                <button class="btn btn-light" style="width: 20%">+</button>
-                                <span class="float-end">Total price: &euro; <?= $cartItem['price'] ?></span>
-                            </div>
-                            <br>
-                            <div style="width: 100%">
-                                <button class="btn btn-danger float-end">Remove all</button>
-                            </div> 
-                        </div>
-                            
-                    
+
+
                     <?php }
-                    }   ?> 
+                    }   ?>
                     <br>
                     <br>
-                    <h4>Total price: &euro; <?= $totalPrice?></h4>
+                    <h4 id="total">Total price: &euro; <?= $cart['totalPrice'] ?></h4>
                     <button class="btn btn-primary">Check out</button>
-        
+
 
                 </div>
             </div>
         </div>
     </section>
-    
-    <script src="/js/accountmanager.js"></script>
+
     <footer class="foot row bottom"></footer>
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-
+    <script src="/js/cartcontroller.js"></script>
     <script type="module" src="/js/foot.js"></script>
 </body>
 

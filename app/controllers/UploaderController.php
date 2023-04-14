@@ -45,7 +45,8 @@ class UploaderController
                     break;
             }
         } catch (Throwable $e) {
-            $this->redirectToImages("", "Something went wrong: " . $e->getMessage());
+            Logger::write($e);
+            $this->redirectToImages("", "Something went wrong. Unable to upload image.");
         }
     }
 

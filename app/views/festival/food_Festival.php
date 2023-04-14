@@ -1,530 +1,151 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="initial-scale=1, width=device-width" />
-    <link rel="stylesheet" href="./global.css" />
-    <link rel="stylesheet" href="./index.css" />
-    <link rel="stylesheet" href="../../css/food_festival.css" />
 
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Open Sans:wght@400;700&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Abril Fatface:wght@400&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;900&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Rasa:wght@400&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Jost:wght@400&display=swap"
-    />
-  </head>
-  <body>
-    <div class="food-festival">
-      <div class="food-festival-child"></div>
-      <div class="food-festival-item"></div>
-      <img
-        class="wallpaperflare-1-icon"
-        alt=""
-        src="./public/wallpaperflare-1@2x.png"
-      />
-      <div class="polygon-parent">
-        <img class="group-child" alt="" src="./public/polygon-10.svg" />
-        <div class="the-festival-starts">The Festival Starts in:</div>
-        <div class="text">Yummy!</div>
-      </div>
-      <div class="food-festival-inner"></div>
-      <div class="rectangle-parent">
-        <div class="group-item"></div>
-        <div class="group-inner"></div>
-        <div class="group-child1"></div>
-        <div class="parent">
-          <div class="div">360</div>
-          <div class="days">DAYS</div>
-        </div>
-        <div class="group">
-          <div class="div">24</div>
-          <div class="days">HOURS</div>
-        </div>
-        <div class="container">
-          <div class="div">60</div>
-          <div class="days">MINUTES</div>
-        </div>
-        <div class="group-div">
-          <div class="div">60</div>
-          <div class="days">SECONDS</div>
-        </div>
-      </div>
-      <div class="content">
-        <div class="content-child"></div>
-        <div class="sort-bar">
-          <div class="sort">
-            <div class="sort1">Sort</div>
-            <div class="select-sorting">Select Sorting</div>
-            <img class="sort-child" alt="" src="./public/arrow-5.svg" />
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name=”robots” content="index, follow">
+  <link rel="stylesheet" href="/stylesheet.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/food_festival.css">
+  <title>Example</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
+  <img src="../../public/img/jpg/festival-yummy.jpg" alt="Yummy-background" width="300" height="300">
+  <div style="text-align:center">
+  <h1>Yummy!</h1>
+  <h3>One time deals can be found in these participating restaurants:</h3>
+  </div>
+
+ <div id="background">
+  <div class="row g-0 text-center">
+    <div class="card" style="width: 18rem;">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <h3>Sort</h3>
+          <div class="col-md-6 ticketOfTour" style="width: 50%; float:center;">
+            <select class="form-select" id="ticket">
+              <option selected>Select ticket</option>
+              <option value="">Assending Price</option>
+              <option value="">Dessending Price</option>
+              <option value="">Assending Rating</option>
+              <option value="">Dessending Rating</option>
+            </select>
           </div>
-          <div class="sort2">
-            <div class="type-of-food">Type of Food</div>
-            <div class="select-type-of-food">
-              <div class="select-type-of">Select type of food</div>
-              <img
-                class="select-type-of-food-child"
-                alt=""
-                src="./public/arrow-51.svg"
-              />
-            </div>
+
+        </li>
+        <li class="list-group-item">
+          <div class="col-md-6 ticketOfTour" style="width: 50%; float:center;">
+            <h3>Sort</h3>
+            <select class="form-select" id="ticket">
+            <?php foreach ($types as $type) { ?>
+              <option value="<?php $type['typeId'] ?>"> <?= $type['typeName']?></option>
+              <?php } ?>
+            </select>
           </div>
-          <div class="sort-time"><div class="time">Time</div></div>
-          <div class="sort-date">
-            <div class="div4">
-              <div class="child"></div>
-              <div class="div5">27.12.2023</div>
-              <div class="item"></div>
-            </div>
-            <div class="div6">
-              <div class="checkbox"><div class="checkbox-child"></div></div>
-              <div class="div7">28.12.2023</div>
-              <div class="item"></div>
-            </div>
-            <div class="div8">
-              <div class="child"></div>
-              <div class="div9">29.12.2023</div>
-              <div class="item"></div>
-            </div>
-            <div class="div10">
-              <div class="child"></div>
-              <div class="div7">30.12.2023</div>
-              <div class="item"></div>
-            </div>
-            <div class="date">Date</div>
-            <img
-              class="sort-date-child"
-              alt=""
-              src="./public/line-54.svg"
-            /><img class="sort-date-item" alt="" src="./public/line-55.svg" />
+        </li>
+        <li class="list-group-item">
+          <h3>Dates</h3>
+          <div class="center orangeBorder">
+            <input type="checkbox" value="date">
+            <label for="Thu">Thu 27/07/2023</label><br>
           </div>
-          <div class="for-how-many-people-wrapper">
-            <div class="for-how-many">For how many People</div>
+          <div class="center orangeBorder">
+            <input type="checkbox" value="date">
+            <label for="Fri">Fri 28/07/2023</label><br>
           </div>
-          <div class="settings">
-            <div class="sort3">
-              <div class="sort4">Sort</div>
-              <div class="listbox-main" id="listBoxMainContainer">
-                <div class="listboxbg"></div>
-                <img class="chevron-icon" alt="" src="./public/chevron.svg" />
-                <div class="placeholder-text">
-                  <div class="select-time"></div>
-                </div>
-              </div>
-            </div>
-            <div class="sort5">
-              <div class="sort4">Type of Food</div>
-              <div class="listbox-main">
-                <div class="listboxbg" id="listBoxBG1"></div>
-                <img
-                  class="chevron-icon"
-                  alt=""
-                  src="./public/chevron1.svg"
-                /><img
-                  class="chevron-icon"
-                  alt=""
-                  src="./public/chevron2.svg"
-                />
-                <div class="placeholder-text">
-                  <div class="select-time"></div>
-                </div>
-                <img class="chevron-icon" alt="" src="./public/chevron3.svg" />
-              </div>
-            </div>
-            <div class="date1">
-              <div class="title">Date</div>
-              <div class="thu-27072023">
-                <div class="radio-wrapper">
-                  <div class="controller">
-                    <div class="thumb"><img class="icon" alt="" /></div>
-                  </div>
-                  <div class="label">Thu 27/07/2023</div>
-                </div>
-              </div>
-              <div class="thu-27072023">
-                <div class="radio-wrapper">
-                  <div class="controller">
-                    <div class="thumb"><img class="icon" alt="" /></div>
-                  </div>
-                  <div class="label">Fri 28/07/2023</div>
-                </div>
-              </div>
-              <div class="thu-27072023">
-                <div class="radio-wrapper">
-                  <div class="controller">
-                    <div class="thumb"><img class="icon" alt="" /></div>
-                  </div>
-                  <div class="label">Sat 29/07/2023</div>
-                </div>
-              </div>
-              <div class="thu-27072023">
-                <div class="radio-wrapper">
-                  <div class="controller">
-                    <div class="thumb"><img class="icon" alt="" /></div>
-                  </div>
-                  <div class="label">Sun 30/07/2023</div>
-                </div>
-              </div>
-            </div>
-            <div class="number-of-poeple-parent">
-              <div class="number-of-poeple">
-                <div class="person">
-                  <div class="person-child"></div>
-                  <div class="more">2 Person</div>
-                </div>
-              </div>
-              <div class="number-of-poeple1">
-                <div class="person">
-                  <div class="person-child"></div>
-                  <div class="more">1 Person</div>
-                </div>
-              </div>
-              <div class="number-of-poeple2">
-                <div class="person">
-                  <div class="person-child"></div>
-                  <div class="more">3 Person</div>
-                </div>
-              </div>
-              <div class="number-of-poeple3">
-                <div class="person">
-                  <div class="person-child"></div>
-                  <div class="more">4 Person</div>
-                </div>
-              </div>
-              <div class="number-of-poeple4">
-                <div class="person">
-                  <div class="person-child"></div>
-                  <div class="more">More...</div>
-                </div>
-              </div>
-              <div class="number-of-people">Number of people</div>
-            </div>
-            <div class="time1">Time</div>
-            <div class="timerange">
-              <div class="time2">Time</div>
-              <div class="start-time">
-                <div class="from">From</div>
-                <div class="rectangle-group">
-                  <div class="group-child2"></div>
-                  <div class="group-child3"></div>
-                  <div class="div12">:</div>
-                  <div class="div13">00</div>
-                  <div class="div14">00</div>
-                </div>
-              </div>
-              <div class="start-time1">
-                <div class="from">To</div>
-                <div class="rectangle-group">
-                  <div class="group-child2"></div>
-                  <div class="group-child3"></div>
-                  <div class="div15">59</div>
-                  <div class="div12">:</div>
-                  <div class="div13">23</div>
-                </div>
-              </div>
-            </div>
-            <div class="start-time2">
-              <div class="from">From</div>
-              <div class="rectangle-group">
-                <div class="group-child6"></div>
-                <div class="div18">0€</div>
-              </div>
-            </div>
-            <div class="start-time3">
-              <div class="from">To</div>
-              <div class="rectangle-group">
-                <div class="group-child6"></div>
-                <div class="div19">100€</div>
-              </div>
+          <div class="center orangeBorder">
+            <input type="checkbox" value="date">
+            <label for="Sat">Sat 29/07/2023</label><br>
+          </div>
+          <div class="center orangeBorder">
+            <input type="checkbox" value="date">
+            <label for="Sun">Sun 30/07/2023</label><br>
+          </div>
+        </li>
+        <li class="list-group-item">
+          <h3>Time</h3>
+          <div class="center orangeBorder">
+            <label for="appt">Select a time:</label>
+            <input type="time" id="appt" name="appt">
+          </div>
+        </li>
+        <li class="list-group-item">
+          <h3>Price Range</h3>
+          <div class="center">
+            <label for="appt">Select a minprice:</label>
+            <input type="number" name="number" placeholder="minprice" min="5" />
+            <label for="appt">Select a maxprice:</label>
+            <input type="number" name="number" placeholder="maxprice" max="50" />
+          </div>
+        </li>
+        <li class="list-group-item">
+          <h3>Time</h3>
+          <div class="center orangeBorder">
+            <label for="appt">Select a time:</label>
+            <input type="time" id="appt" name="appt">
+          </div>
+        </li>
+        <li class="list-group-item">
+          <h3>Number of People</h3>
+          <div style="float: left; padding: 0px 50px 0px;">
+          <input type="radio" id="one" name="age" value="1">
+          <label for="1">1</label><br>
+          <input type="radio" id="two" name="age" value="2">
+          <label for="2">2</label><br>
+          <input type="radio" id="tree" name="age" value="3">
+          <label for="3">3</label><br><br>
+          </div>
+          <div style="float: right; padding: 0px 50px 0px;">
+          <input type="radio" id="four" name="age" value="4">
+          <label for="4">4</label><br>
+          <input type="radio" id="five" name="age" value="5">
+          <label for="5">5</label><br>
+          <input type="radio" id="six" name="age" value="6">
+          <label for="6">6</label><br><br>
+          </div>
+          <label for="more">More</label>
+          <input type="input" id="more" name="more" value="">
+        </li>
+        <li class="list-group-item">
+          <button type="button" class="btn btn-primary">Apply</button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="col-md-8">
+      <div class="scrolable">
+
+      <?php foreach ($restaurants as $restaurant) { ?>
+        <div class="item">
+          <div class="card">
+            <h3 class="card-header"><?= $restaurant['restaurantName'] ?></h3>
+            <div class="card-body">
+              <p class="card-title"><?= $restaurant['description'] ?></p>
+              <button class="btn btn-primary addToCartButton">Add to cart</button>
             </div>
           </div>
-          <div class="buttons">
-            <div class="clear-filter">
-              <div class="clear-filter-child"></div>
-              <div class="apply-filter">Apply Filter</div>
-            </div>
-            <div class="apply-filter1">
-              <div class="apply-filter-child"></div>
-              <div class="apply-filter">Clear All the Filters</div>
-            </div>
-          </div>
-        </div>
-        <div class="content-wrapper">
-          <div class="content1">
-            <div class="ratatouille">
-              <img
-                class="ratatouille-child"
-                alt=""
-                src="./public/rectangle-244.svg"
-              />
-              <div class="ratatouille1">Ratatouille</div>
-              <div class="group-parent">
-                <div class="location-parent">
-                  <div class="location">Location</div>
-                  <div class="spaarne-96-2011">
-                    Spaarne 96, 2011 CL Haarlem, Nederland
-                  </div>
-                  <div class="group-child8"></div>
-                  <div class="line-div"></div>
-                  <div class="group-child9"></div>
-                  <div class="group-child10"></div>
-                </div>
-                <div class="type-of-food-parent">
-                  <div class="type-of-food2">Type of Food</div>
-                  <div class="french-fish-and">
-                    French, fish and seafood, European
-                  </div>
-                  <div class="group-child8"></div>
-                </div>
-                <div class="rating-parent">
-                  <div class="rating">Rating</div>
-                  <div class="price">Price</div>
-                  <div class="div20">€45</div>
-                  <div class="out-of-5">4.0 out of 5 Stars</div>
-                  <div class="group-child8"></div>
-                </div>
-              </div>
-              <img
-                class="ratatouille-item"
-                alt=""
-                src="./public/ellipse-38@2x.png"
-              />
-              <div class="kids-2250">-12 kids = 22.50€</div>
-              <div class="btn">
-                <div class="reserve-button">
-                  <div class="reserve-button-child"></div>
-                  <div class="reserve">Reserve</div>
-                </div>
-              </div>
-              <div class="btn">
-                <div class="reserve-button">
-                  <div class="reserve-button-child"></div>
-                  <div class="reserve">Reserve</div>
-                </div>
-              </div>
-              <div class="ratatouille-inner" id="rectangle34"></div>
-              <div class="stuffaboutevent">
-                <div class="background"></div>
-                <img
-                  class="accessibility-icon"
-                  alt=""
-                  src="./public/accessibility.svg"
-                />
-                <div class="price1">
-                  <div class="cheap">
-                    <img
-                      class="cheap-child"
-                      alt=""
-                      src="./public/ellipse-17.svg"
-                    /><b class="b">€</b>
-                  </div>
-                  <div class="mediumexpesnive">
-                    <div class="ellipse-parent">
-                      <img
-                        class="ellipse-icon"
-                        alt=""
-                        src="./public/ellipse-171.svg"
-                      /><b class="b">€</b>
-                    </div>
-                    <div class="ellipse-group">
-                      <img
-                        class="ellipse-icon"
-                        alt=""
-                        src="./public/ellipse-172.svg"
-                      /><b class="b">€</b>
-                    </div>
-                  </div>
-                  <div class="expensive">
-                    <div class="ellipse-container">
-                      <img
-                        class="ellipse-icon"
-                        alt=""
-                        src="./public/ellipse-173.svg"
-                      /><b class="b">€</b>
-                    </div>
-                    <div class="ellipse-parent1">
-                      <img
-                        class="ellipse-icon"
-                        alt=""
-                        src="./public/ellipse-174.svg"
-                      /><b class="b">€</b>
-                    </div>
-                    <div class="ellipse-parent2">
-                      <img
-                        class="ellipse-icon"
-                        alt=""
-                        src="./public/ellipse-175.svg"
-                      /><b class="b">€</b>
-                    </div>
-                  </div>
-                </div>
-                <b class="age">0+</b>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="arrow" id="arrowContainer">
-        <img class="arrow-child" alt="" src="./public/arrow-6.svg" />
-        <div class="arrow-item"></div>
-      </div>
-      <div class="start-text" data-scroll-to="startTextContainer">
-        <div class="one-time-deals">
-          One time deals can be found in these participating restaurants:
+        <?php } ?>
         </div>
       </div>
     </div>
+  </div>
+  </div>
+  </div>
 
-    <div id="sortByOverlay" class="popup-overlay" style="display: none">
-      <div class="sort-by-overlay">
-        <div class="seats-available-ascending">
-          <div class="seats-available-ascending-child"></div>
-          <div class="seats-available-descending">
-            Seats available descending
-          </div>
-        </div>
-        <div class="seats-available-ascending1">
-          <div class="seats-available-ascending-child"></div>
-          <div class="seats-available-descending">
-            Seats available ascending
-          </div>
-        </div>
-        <div class="seats-available-ascending3">
-          <div class="seats-available-ascending-child"></div>
-          <div class="seats-available-descending">Price ascending</div>
-        </div>
-        <div class="seats-available-ascending4">
-          <div class="seats-available-ascending-child"></div>
-          <div class="seats-available-descending">Price descending</div>
-        </div>
-        <div class="seats-available-ascending5">
-          <div class="seats-available-ascending-child"></div>
-          <div class="seats-available-descending">By Food Type</div>
-        </div>
-      </div>
-    </div>
+  <footer class="foot row bottom"></footer>
+  <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+  <script type="module" src="/js/nav.js"></script>
+  <script type="module" src="/js/foot.js"></script>
 
-    <div id="typeOverlayContainer" class="popup-overlay" style="display: none">
-      <div class="type-overlay">
-        <div class="duch-food-type">
-          <div class="duch-food-type-child"></div>
-          <div class="dutch-food">Dutch food</div>
-        </div>
-        <div class="frensh-food-type" id="popupfrenshFoodType">
-          <div class="duch-food-type-child"></div>
-          <div class="dutch-food">French food</div>
-        </div>
-        <div class="european-food-type">
-          <div class="duch-food-type-child"></div>
-          <div class="dutch-food">European food</div>
-        </div>
-        <div class="fish-and-seafood-type">
-          <div class="duch-food-type-child"></div>
-          <div class="dutch-food">Fish and Seafood</div>
-        </div>
-        <div class="asian-type">
-          <div class="duch-food-type-child"></div>
-          <div class="asian">Asian</div>
-        </div>
-      </div>
-    </div>
+</body>
 
-    <script>
-      var popupfrenshFoodType = document.getElementById("popupfrenshFoodType");
-      if (popupfrenshFoodType) {
-        popupfrenshFoodType.addEventListener("click", function (e) {
-          // Please sync "Food Festival: Frech filter" to the project
-        });
-      }
-      
-      var listBoxMainContainer = document.getElementById("listBoxMainContainer");
-      if (listBoxMainContainer) {
-        listBoxMainContainer.addEventListener("click", function () {
-          var popup = document.getElementById("sortByOverlay");
-          if (!popup) return;
-          var popupStyle = popup.style;
-          if (popupStyle) {
-            popupStyle.display = "flex";
-            popupStyle.zIndex = 100;
-            popupStyle.backgroundColor = "rgba(113, 113, 113, 0.3)";
-            popupStyle.alignItems = "center";
-            popupStyle.justifyContent = "center";
-          }
-          popup.setAttribute("closable", "");
-      
-          var onClick =
-            popup.onClick ||
-            function (e) {
-              if (e.target === popup && popup.hasAttribute("closable")) {
-                popupStyle.display = "none";
-              }
-            };
-          popup.addEventListener("click", onClick);
-        });
-      }
-      
-      var listBoxBG1 = document.getElementById("listBoxBG1");
-      if (listBoxBG1) {
-        listBoxBG1.addEventListener("click", function () {
-          var popup = document.getElementById("typeOverlayContainer");
-          if (!popup) return;
-          var popupStyle = popup.style;
-          if (popupStyle) {
-            popupStyle.display = "flex";
-            popupStyle.zIndex = 100;
-            popupStyle.backgroundColor = "rgba(113, 113, 113, 0.3)";
-            popupStyle.alignItems = "center";
-            popupStyle.justifyContent = "center";
-          }
-          popup.setAttribute("closable", "");
-      
-          var onClick =
-            popup.onClick ||
-            function (e) {
-              if (e.target === popup && popup.hasAttribute("closable")) {
-                popupStyle.display = "none";
-              }
-            };
-          popup.addEventListener("click", onClick);
-        });
-      }
-      
-      var rectangle34 = document.getElementById("rectangle34");
-      if (rectangle34) {
-        rectangle34.addEventListener("click", function (e) {
-          // Please sync "Food Festival Detail Ratatouille" to the project
-        });
-      }
-      
-      var arrowContainer = document.getElementById("arrowContainer");
-      if (arrowContainer) {
-        arrowContainer.addEventListener("click", function () {
-          var anchor = document.querySelector(
-            "[data-scroll-to='startTextContainer']"
-          );
-          if (anchor) {
-            anchor.scrollIntoView({ block: "start", behavior: "smooth" });
-          }
-        });
-      }
-      </script>
-  </body>
 </html>

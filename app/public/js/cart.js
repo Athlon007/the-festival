@@ -28,6 +28,27 @@
         });
     };
 
+    Cart.Set = function (itemID, quantity) {
+        const url = apiUrl + '/' + itemID + '?amount=' + quantity;
+        return new Promise((resolve, reject) => {
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => response.json())
+                .then(data => {
+                    Cart.UpdateCounter();
+                    resolve(data);
+                }
+                )
+                .catch(error => {
+                    reject(error);
+                }
+                );
+        });
+    };
+
     Cart.Remove = function (itemID) {
         this.count--;
         if (this.count < 0) {
@@ -54,6 +75,28 @@
                 }
                 );
         });
+    }
+
+    Cart.Clear = function (itemID) {
+        const url = apiUrl + '/' + itemID + '/all';
+        return new Promise((resolve, reject) => {
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => response.json())
+                .then(data => {
+                    Cart.UpdateCounter();
+                    resolve(data);
+                }
+                )
+                .catch(error => {
+                    reject(error);
+                }
+                );
+        }
+        );
     }
 
     Cart.Get = function () {

@@ -1,14 +1,14 @@
 <?php
 
-require_once("../services/CartItemService.php");
+require_once("../services/TicketLinkService.php");
 
 class FestivalHistoryController
 {
     public function loadHistoryStrollPage()
     {
         try {
-            $cartItemService = new CartItemService();
-            $historyCartItems = $cartItemService->getAllHistory();
+            $cartItemService = new TicketLinkService();
+            $historyTicketLinks = $cartItemService->getAll();
 
             require("../views/festival/history-stroll.php");
         } catch (PDOException $e) {

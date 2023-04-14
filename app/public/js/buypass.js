@@ -14,6 +14,7 @@ details.classList.add('disabled');
 
 let eventTypeId = 0;
 let passTypeId = 0;
+let eventId = -1;
 
 async function load() {
     eventType.value = 0;
@@ -76,7 +77,7 @@ async function loadPassTypes() {
         .then(data => {
             console.log('Success:', data);
             data.forEach(element => {
-                passType.innerHTML += `<option value="${element.id}">${element.event.name}</option>`;
+                passType.innerHTML += `<option value="${element.id}" data-event-id="${element.event.id}" >${element.event.name}</option>`;
             });
         })
         .catch((error) => {
@@ -86,6 +87,7 @@ async function loadPassTypes() {
 
     passType.addEventListener('change', async (e) => {
         passTypeId = e.target.value;
+        eventId = e.target.options[e.target.selectedIndex].dataset.eventId;
         prepare();
     });
 
@@ -98,16 +100,17 @@ async function loadPassTypes() {
     if (passTypeIdParam) {
         passType.value = passTypeIdParam;
         passTypeId = passTypeIdParam;
+        eventId = passType.options[passType.selectedIndex].dataset.eventId;
         prepare();
     }
 }
 
 function prepare() {
-    if (passTypeId == 0 || quantity.value == 0) {
+    if (passTypeId == 0 || eventId == -1 || quantity.value == 0) {
         return;
     }
 
-    fetch('/api/events/passes/' + passTypeId, {
+    fetch('/api/events/passes/' + eventId, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -136,9 +139,7 @@ quantity.addEventListener('change', (e) => {
 
 document.getElementById('buy-pass').addEventListener('click', async (e) => {
     master.classList.add('disabled');
-    for (let i = 0; i < quantity.value; i++) {
-        await Cart.Add(passTypeId);
-    }
+    await Cart.Set(passTypeId, quantity.value);
 
     window.location.href = '/festival';
 });

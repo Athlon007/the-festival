@@ -66,6 +66,10 @@ class LocationService
         );
 
         $this->repo->updateLocation($locationId, $name, $address->getAddressId(), $locationType, $lon, $lat, $capacity);
+
+        // Jazz Events use the capacity of the location as the "availableTickets". Update that too.
+        $this->repo->updateJazzEventCapacity($locationId, $capacity);
+
         return $this->getById($locationId);
     }
 

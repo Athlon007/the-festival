@@ -10,11 +10,13 @@
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/main_no_editor.css">
     <link rel="stylesheet" href="/css/icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
     <title>Visit Haarlem - Event: <?= $event->getName(); ?></title>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
+    <nav class=" navbar navbar-expand-lg navbar-dark bg-dark">
+    </nav>
     <? if (count($event->getArtist()->getImages()) > 0) { ?>
         <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
@@ -30,9 +32,15 @@
     <? } ?>
     <div class="container">
         <div class="row col-12 py-1 justify-content-center">
-            <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $cartItem->getId() ?>)">Add ticket to cart</button>
-            <?php if ($cartItem->getTicketType()->getPrice() > 0) { ?>
-                <p class="mx-auto text-center"><?= $cartItem->getEvent()->getAvailableTickets() ?> / <?= $cartItem->getEvent()->getLocation()->getCapacity() ?></p>
+            <?php if ($cartItem->getTicketType()->getPrice() > 0) {
+                if ($cartItem->getEvent()->getAvailableTickets() > 0) { ?>
+                    <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $cartItem->getId() ?>)">Add ticket to cart</button>
+                    <p class="mx-auto text-center"><?= $cartItem->getEvent()->getAvailableTickets() ?> / <?= $cartItem->getEvent()->getLocation()->getCapacity() ?></p>
+                <?php } else { ?>
+                    <p class="mx-auto text-center">Sold out!</p>
+                <?php }
+            } else { ?>
+                <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $cartItem->getId() ?>)">Book a ticket</button>
             <?php } ?>
         </div>
         <div class="row card col-10 mx-auto p-1 my-2">
@@ -93,7 +101,11 @@
                                 </div>
                                 <div class="col-3">
                                     <h4>Seats</h4>
-                                    <p><?= $after->getEvent()->getAvailableTickets() ?> / <?= $after->getEvent()->getLocation()->getCapacity() ?></p>
+                                    <?php if ($after->getEvent()->getAvailableTickets() <= 0) { ?>
+                                        <p>Sold out!</p>
+                                    <?php } else { ?>
+                                        <p><?= $after->getEvent()->getAvailableTickets() ?> / <?= $after->getEvent()->getLocation()->getCapacity() ?></p>
+                                    <?php } ?>
                                 </div>
                                 <div class="col-3">
                                     <h4>Price</h4>

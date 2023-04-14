@@ -2,11 +2,12 @@
 
 require_once __DIR__ . '/../repositories/TicketRepository.php';
 require_once __DIR__ . '/../models/Ticket/Ticket.php';
-require_once(__DIR__ . '/../models/CartItem.php');
+require_once(__DIR__ . '/../models/TicketLink.php');
 require_once(__DIR__ . '/../models/Exceptions/TicketNotFoundException.php');
 require_once(__DIR__ . '/../services/PDFService.php');
 
 require_once(__DIR__ . '../../vendor/autoload.php');
+
 use Dompdf\Dompdf;
 
 require_once('../phpmailer/PHPMailer.php');
@@ -37,6 +38,16 @@ class TicketService
     $this->repository = new TicketRepository();
   }
 
+  public function getTicketByID($ticketID): Ticket
+  {
+    try {
+      $ticket = $this->repository->getTicketByID($ticketID);
+      return $ticket;
+    } catch (Exception $ex) {
+      throw ($ex);
+    }
+  }
+
   public function generateQRCode($ticket): string
   {
     //Generate a QR code image with the ticket ID as data
@@ -54,30 +65,20 @@ class TicketService
     return $qrCodeImage;
   }
 
-  public function generatePDFTicket($ticket,$qrCodeImage): Dompdf
+  public function generatePDFTicket($ticket, $qrCodeImage, $order): Dompdf
   {
-      $pdfService = new PDFService();  
+    $pdfService = new PDFService();
 
-      // buffer the following html with PHP so we can pass it to the PDF generator
-      ob_start();
-      $html = require_once(__DIR__ . '/../pdfs/generateTicketPDF.php');
-      // retrieve the HTML generated in our buffer and delete the buffer
-      $html = ob_get_clean();
+    // buffer the following html with PHP so we can pass it to the PDF generator
+    ob_start();
+    $html = require_once(__DIR__ . '/../pdfs/generateTicketPDF.php');
+    // retrieve the HTML generated in our buffer and delete the buffer
+    $html = ob_get_clean();
 
-      $title = "The Festival Ticket";
-      $filename = "ticket.pdf";
+    $title = "The Festival Ticket";
+    $filename = "ticket.pdf";
 
-      return $pdfService->generatePDF($html, $title, $filename);
-  }
-
-  public function getTicketByID($ticketID): Ticket
-  {
-    try {
-      $ticket = $this->repository->getTicketByID($ticketID);
-      return $ticket;
-    } catch (Exception $ex) {
-      throw ($ex);
-    }
+    return $pdfService->generatePDF($html, $title, $filename);
   }
 
   public function sendTicketByEmail(Dompdf $dompdf, Ticket $ticket, Order $order)
@@ -104,6 +105,7 @@ class TicketService
       require_once(__DIR__ . '/../emails/ticket-email.php');
       $mail->Body = ob_get_clean();
 
+      //TODO: Hardcoded for now for testing purposes. Remove when unnecessary
       $mail->addAddress('turkvedat0911@gmail.com', $name);
       $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');
 
@@ -117,22 +119,21 @@ class TicketService
     }
   }
 
-  public function createTicketFromCartItem(CartItem $cartItem){
-
+  public function createTicketFromTicketLink(TicketLink $ticketLink)
+  {
   }
 
-  //TODO: check if obsolete before handing in
+  //TODO: check if obsolete after payment funnel is finished
   public function addTicketToOrder($orderId, $ticketId)
   {
-      
+
     return $this->repository->addTicketToOrder($orderId, $ticketId);
   }
 
-  //TODO: check if obsolete before handing in
+  //TODO: check if obsolete after payment funnel is finished
   public function removeTicketFromOrder($orderId, $ticketId)
   {
-        
+
     return $this->repository->removeTicketFromOrder($orderId, $ticketId);
   }
-
 }

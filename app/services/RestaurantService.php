@@ -15,7 +15,9 @@ class RestaurantService{
     public function insertRestaurant(Restaurant $restaurant): void
     {
         try {
-            $query = "INSERT INTO restaurants (name, addressId, numOfSessions, durationOfSessions, description) VALUES (:name, :addressId, :numOfSessions, :durationOfSessions, :description)";
+            $query = "INSERT INTO development.restaurants
+            (restaurantName, addressId, numOfSessions, durationOfSessions, description, price, AvailableSeats, typeId, rating)
+             VALUES (:name, :addressId, :numOfSessions, :durationOfSessions, :description, :availableSeats, :typeId, :rating)";
             $stmt = $this->connection->prepare($query);
 
             $stmt->bindValue(":name", $restaurant->getRestaurantName());
@@ -23,6 +25,12 @@ class RestaurantService{
             $stmt->bindValue(":numOfSessions", $restaurant->getNumOfSessions());
             $stmt->bindValue(":durationOfSessions", $restaurant->getDurationOfSessions());
             $stmt->bindValue(":description", $restaurant->getDescription());
+            $stmt->bindValue(":price", $restaurant->getPrice());
+            $stmt->bindValue(":availableSeats", $restaurant->getAvailableSeats());
+            $stmt->bindValue(":typeId", $restaurant->getTypeId());
+            $stmt->bindValue(":rating", $restaurant->getRating());
+
+
 
             $stmt->execute();
         }  
@@ -30,7 +38,7 @@ class RestaurantService{
             throw ($ex);
         }
     }
-    public function createNewRestaurant(string $name, int $addressId, int $numOfSessions, string $durationOfSessions, string $description): void
+    public function createNewRestaurant(string $name, int $addressId, int $numOfSessions, string $durationOfSessions, string $description, int $price, $availableSeats, int $typeId, string $rating): void
     {
         try {
             $restaurant = new Restaurant();
@@ -39,6 +47,10 @@ class RestaurantService{
             $restaurant->setNumOfSessions($numOfSessions);
             $restaurant->setDurationOfSessions($durationOfSessions);
             $restaurant->setDescription($description);
+            $restaurant->setPrice($price);
+            $restaurant->setAvailableSeats($availableSeats);
+            $restaurant->setTypeId($typeId);
+            $restaurant->setRating($rating);
 
             $this->repository->insertRestaurant($restaurant);
         } 

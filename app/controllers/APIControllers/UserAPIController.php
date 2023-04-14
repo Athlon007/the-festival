@@ -9,6 +9,14 @@ require_once("../models/Exceptions/MissingVariableException.php");
 
 class UserAPIController extends APIController
 {
+    private $userService;
+    private $customerService;
+
+    public function __construct()
+    {
+        $this->userService = new UserService();
+        $this->customerService = new CustomerService();
+    }
 
     public function handlePostRequest($uri)
     {
@@ -70,7 +78,6 @@ class UserAPIController extends APIController
     private function login($data)
     {
         try {
-            $userService = new UserService();
 
             if (!isset($data->email)) {
                 throw new MissingVariableException("Email is required");
@@ -80,7 +87,7 @@ class UserAPIController extends APIController
             }
 
             //Fetch user (method throws error if user not found)
-            $user = $userService->verifyUser($data);
+            $user = $this->userService->verifyUser($data);
 
             //Store user in session
             if(session_status() == PHP_SESSION_NONE){
@@ -89,9 +96,9 @@ class UserAPIController extends APIController
 
             $_SESSION["user"] = serialize($user);
 
-            $this->sendSuccessMessage("Login successful.");
+            parent::sendSuccessMessage("Login successful.");
         } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -103,16 +110,15 @@ class UserAPIController extends APIController
             }
 
             $_SESSION["user"] = null;
-            $this->sendSuccessMessage("Logout successful.");
+            parent::sendSuccessMessage("Logout successful.");
         } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
     private function registerCustomer($data)
     {
         try {
-            $customerService = new CustomerService();
 
             //Check if all data is present
             if (
@@ -134,11 +140,11 @@ class UserAPIController extends APIController
             }
 
             //Register new customer
-            $customerService->registerCustomer($data);
+            $this->customerService->registerCustomer($data);
 
-            $this->sendSuccessMessage("Registration successful.");
+            parent::sendSuccessMessage("Registration successful.");
         } catch (Exception $ex) {
-            $this->sendErrorMessage($ex->getMessage());
+            parent::sendErrorMessage($ex->getMessage());
         }
     }
 
@@ -195,8 +201,6 @@ class UserAPIController extends APIController
         }
 
         try {
-            $userService = new UserService();
-
             if (
                 $data == null || !isset($data->firstName) || !isset($data->lastName)
                 || !isset($data->email) || !isset($data->password) || empty($data->firstName) ||
@@ -206,7 +210,7 @@ class UserAPIController extends APIController
             }
 
             $now = new DateTime();
-            $userService->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, $data->role, $now);
+            $this->userService->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, $data->role, $now);
             parent::sendSuccessMessage("User added.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
@@ -221,14 +225,13 @@ class UserAPIController extends APIController
         }
 
         try {
-            $userService = new UserService();
 
             if ($data == null || !isset($data->id)) {
                 throw new MissingVariableException("No data received.");
             }
             $data->id = htmlspecialchars($data->id);
 
-            $userService->deleteUser($data);
+            $this->userService->deleteUser($data);
             parent::sendSuccessMessage("User deleted.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
@@ -243,7 +246,6 @@ class UserAPIController extends APIController
         }
 
         try {
-            $userService = new UserService();
             if (
                 $data == null || !isset($data->id) || !isset($data->firstName)
                 || !isset($data->lastName) || !isset($data->email) || empty($data->firstName) ||
@@ -251,7 +253,7 @@ class UserAPIController extends APIController
             ) {
                 throw new Exception("No data received.");
             }
-            $userService->updateUser($data);
+            $this->userService->updateUser($data);
             parent::sendSuccessMessage("User updated.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
@@ -261,8 +263,6 @@ class UserAPIController extends APIController
     private function updateCustomer($data)
     {
         try {
-            $customerService = new CustomerService();
-
             if (
                 !isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->dateOfBirth)
                 || !isset($data->phoneNumber) || !isset($data->address)
@@ -271,7 +271,7 @@ class UserAPIController extends APIController
             }
             session_start();
             $customer = unserialize($_SESSION['user']);
-            $customerService->updateCustomer($customer, $data);
+            $this->customerService->updateCustomer($customer, $data);
 
             parent::sendSuccessMessage("Your account was successfully updated.");
         } catch (Exception $ex) {

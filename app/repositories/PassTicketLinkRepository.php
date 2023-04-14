@@ -1,10 +1,10 @@
 <?php
 
 require_once("EventRepository.php");
-require_once("CartItemRepository.php");
+require_once("TicketLinkRepository.php");
 require_once("TicketTypeRepository.php");
 
-class PassCartItemRepository extends CartItemRepository
+class PassTicketLinkRepository extends TicketLinkRepository
 {
     public function getAll($sort = null, $filters = [])
     {
@@ -21,9 +21,9 @@ class PassCartItemRepository extends CartItemRepository
 		t.ticketTypeName as ticketTypeName,
 		t.ticketTypePrice as ticketTypePrice,
 		t.nrOfPeople as ticketTypeNrOfPeople,
-        c.cartItemId as cartItemId
-        FROM Events e
-        JOIN cartitems c on e.eventId = c.eventId
+        c.ticketLinkId as ticketLinkId
+        FROM events e
+        JOIN ticketlinks c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
         join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
         WHERE e.availableTickets = 0";

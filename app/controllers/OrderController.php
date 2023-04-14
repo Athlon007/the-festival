@@ -1,41 +1,46 @@
 <?php
 
 require_once(__DIR__ . "/../services/OrderService.php");
+require_once(__DIR__ . "/../services/CartService.php");
 
 class OrderController
 {
-    private $service;
+    private $orderService;
+    private $cartService;
 
     public function __construct()
     {
-        $this->service = new OrderService();
+        $this->orderService = new OrderService();
+        $this->cartService = new CartService();
     }
 
+    /**
+     * Show the shopping cart
+     * @author Joshua
+     */
     public function showShoppingCart()
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-        if (!isset($_SESSION['cartItemIds']) || count($_SESSION['cartItemIds']) == 0) {
-            $cartItems = array();
-        }
-        else {
-            $cartItems = $this->service->getCart();
-            $totalPrice = 0;
-            
-            foreach ($cartItems as $cartItem) {
-                $totalPrice += $cartItem['price'];
-            }
-        }
+        $cart = $this->cartService->cart();
+        $ticketLinks = $cart['ticketLinks'];
+
         require('../views/payment-funnel/cart.php');
     }
 
+    /**
+     * Show the logged in customer's order history
+     */
     public function showOrderHistory()
     {
-
+        //TODO: Implement
     }
 
-    //Create order after completing payment or selecting "pay later"
+    /**
+     * Create order after completing payment or selecting "pay later"
+     * TODO: Still needs actual implementation after payment funnel redesign
+     */
     public function createOrder()
     {
         try {
@@ -45,15 +50,16 @@ class OrderController
             if (!isset($_SESSION['user'])) {
                 throw new Exception("User is not logged in");
             }
+            else{
+                $customer = unserialize($_SESSION['user']);
+            }
 
-            $customer = unserialize($_SESSION['user']);
             if ($customer->getUserType() != 3) {
                 throw new Exception("Only customers can place orders");
             }
 
             $cartItemIds = $_SESSION['cart'];
-            $orderService = new OrderService();
-            $order = $orderService->createOrder($customer, $cartItemIds);
+            $order = $this->orderService->createOrder($customer, $cartItemIds);
         } catch (Exception $e) {
             echo $e->getMessage();
             return;

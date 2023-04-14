@@ -1,10 +1,10 @@
 <?php
 
 require_once("EventRepository.php");
-require_once("CartItemRepository.php");
+require_once("TicketLinkRepository.php");
 require_once("TicketTypeRepository.php");
 
-class HistoryCartItemRepository extends CartItemRepository
+class HistoryTicketLinkRepository extends TicketLinkRepository
 {
     protected function build($arr): array
     {
@@ -15,7 +15,7 @@ class HistoryCartItemRepository extends CartItemRepository
         foreach ($arr as $item) {
             $event = $eventRepo->getEventById($item['eventId']);
             $ticketType = $ttRepo->getById($item['ticketTypeId']);
-            $cartItem = new CartItem($item['cartItemId'], $event, $ticketType);
+            $cartItem = new TicketLink($item['ticketLinkId'], $event, $ticketType);
             array_push($output, $cartItem);
         }
 
@@ -26,8 +26,8 @@ class HistoryCartItemRepository extends CartItemRepository
     public function getAll($sort = null, $filters = [])
     {
         try {
-            $sql = "select c.cartItemId, e.eventId, t.ticketTypeId, h.locationId
-            from cartitems c
+            $sql = "select c.ticketLinkId, e.eventId, t.ticketTypeId, h.locationId
+            from ticketlinks c
             join tickettypes t ON t.ticketTypeId = c.ticketTypeId
             join events e  on e.eventId = c.eventId
             join historyevents h on h.eventId  = e.eventId
@@ -77,7 +77,7 @@ class HistoryCartItemRepository extends CartItemRepository
 
     public function getById($id)
     {
-        $sql = "SELECT cartItemId, eventId, ticketTypeId FROM cartitems WHERE cartItemId = :id";
+        $sql = "SELECT ticketLinkId, eventId, ticketTypeId FROM ticketlinks WHERE ticketLinkId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -85,9 +85,9 @@ class HistoryCartItemRepository extends CartItemRepository
         return $this->build([$result])[0];
     }
 
-    public function getByEventId($id): ?CartItem
+    public function getByEventId($id): ?TicketLink
     {
-        $sql = "SELECT cartItemId, eventId, ticketTypeId FROM cartitems WHERE eventId = :id";
+        $sql = "SELECT ticketLinkId, eventId, ticketTypeId FROM ticketlinks WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();

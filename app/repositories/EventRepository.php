@@ -72,7 +72,7 @@ class EventRepository extends Repository
 
     public function getAll()
     {
-        $sql = "SELECT eventId, name, startTime, endTime, festivalEventType FROM Events";
+        $sql = "SELECT eventId, name, startTime, endTime, festivalEventType FROM events";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $arr = $stmt->fetchAll();
@@ -81,7 +81,7 @@ class EventRepository extends Repository
 
     public function getEventById($id): ?Event
     {
-        $sql = "SELECT eventId, name, startTime, endTime, festivalEventType, availableTickets FROM Events WHERE eventId = :id";
+        $sql = "SELECT eventId, name, startTime, endTime, festivalEventType, availableTickets FROM events WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -96,7 +96,7 @@ class EventRepository extends Repository
 
     public function deleteById($id)
     {
-        $sql = "DELETE FROM Events WHERE eventId = :id";
+        $sql = "DELETE FROM events WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(['id' => $id]);
     }
@@ -128,26 +128,34 @@ class EventRepository extends Repository
         return $this->connection->lastInsertId();
     }
 
-    public function updateEvent($id, $name, $startTime, $endTime, ?int $eventTypeId)
+    public function updateEvent($id, $name, $startTime, $endTime, ?int $eventTypeId, ?int $availableTickets)
     {
         if ($eventTypeId === null) {
             $eventTypeId = 'NULL';
         }
 
-        $sql = "UPDATE Events SET name = :name, startTime = :startTime, endTime = :endTime, festivalEventType = :eventTypeId WHERE eventId = :id";
+        if ($availableTickets === null) {
+            $availableTickets = 'NULL';
+        }
+
+        $sql = "UPDATE Events
+        SET name = :name, startTime = :startTime, endTime = :endTime,
+        festivalEventType = :eventTypeId, availableTickets = :availableTickets
+        WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
         $stmt->bindParam(':startTime', $startTime->format('Y-m-d H:i:s'), PDO::PARAM_STR);
         $stmt->bindParam(':endTime', $endTime->format('Y-m-d H:i:s'), PDO::PARAM_STR);
         $stmt->bindParam(':eventTypeId', $eventTypeId, PDO::PARAM_INT);
+        $stmt->bindParam(':availableTickets', $availableTickets, PDO::PARAM_INT);
         $stmt->execute();
     }
 
     // JAZZ
     public function isInJazzEvents($id)
     {
-        $sql = "SELECT eventId FROM JazzEvents WHERE eventId = :id";
+        $sql = "SELECT eventId FROM jazzevents WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(['id' => $id]);
         $arr = $stmt->fetchAll();
@@ -167,8 +175,8 @@ class EventRepository extends Repository
     public function getAllJazzEvents($sort, array $filters)
     {
         $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, t.ticketTypePrice, e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets " .
-            "FROM JazzEvents je " .
-            "JOIN Events e ON e.eventId = je.eventId " .
+            "FROM jazzevents je " .
+            "JOIN events e ON e.eventId = je.eventId " .
             "JOIN cartitems c on e.eventId = c.eventId " .
             "join tickettypes t on c.ticketTypeId = t.ticketTypeId ";
 
@@ -259,8 +267,8 @@ class EventRepository extends Repository
     public function getJazzEventById($id)
     {
         $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets  "
-            . "FROM JazzEvents je "
-            . "JOIN Events e ON e.eventId = je.eventId "
+            . "FROM jazzevents je "
+            . "JOIN events e ON e.eventId = je.eventId "
             . "WHERE je.eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -278,8 +286,8 @@ class EventRepository extends Repository
 
             $sql = "SELECT he.eventId as eventId, he.locationId as locationId, e.name as name,
              e.startTime as startTime, e.endTime as endTime, g.guideId as guideId, e.availableTickets as availableTickets, e.festivalEventType
-            FROM historyEvents he
-            JOIN Events e ON e.eventId = he.eventId
+            FROM historyevents he
+            JOIN events e ON e.eventId = he.eventId
             join guides g on g.guideId = he.guideId
             where he.eventId  = :id";
 
@@ -327,7 +335,7 @@ class EventRepository extends Repository
 
     public function createJazzEvent($eventId, $artistId, $locationId): int
     {
-        $sql = "INSERT INTO JazzEvents (eventId, artistId, locationId) VALUES (:eventId, :artistId, :locationId)";
+        $sql = "INSERT INTO jazzevents (eventId, artistId, locationId) VALUES (:eventId, :artistId, :locationId)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':eventId', $eventId);
         $stmt->bindParam(':artistId', $artistId);
@@ -339,7 +347,7 @@ class EventRepository extends Repository
 
     public function updateJazzEvent($eventId, $artistId, $locationId)
     {
-        $sql = "UPDATE JazzEvents SET artistId = :artistId, locationId = :locationId WHERE eventId = :eventId";
+        $sql = "UPDATE jazzevents SET artistId = :artistId, locationId = :locationId WHERE eventId = :eventId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':eventId', $eventId);
         $stmt->bindParam(':artistId', $artistId);
@@ -350,8 +358,8 @@ class EventRepository extends Repository
     public function getJazzEventsForArtist($artistId)
     {
         $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, e.availableTickets "
-            . "FROM JazzEvents je "
-            . "JOIN Events e ON e.eventId = je.eventId "
+            . "FROM jazzevents je "
+            . "JOIN events e ON e.eventId = je.eventId "
             . "WHERE artistId = :artistId";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(['artistId' => $artistId]);
@@ -361,7 +369,7 @@ class EventRepository extends Repository
 
     public function getFestivalDates(): array
     {
-        $sql = "SELECT DISTINCT DATE(startTime) as date FROM Events ORDER BY date";
+        $sql = "SELECT DISTINCT DATE(startTime) as date FROM events ORDER BY date";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $arr = $stmt->fetchAll();
@@ -372,7 +380,7 @@ class EventRepository extends Repository
     {
         // passes don't have availableTickets
         $sql = "SELECT e.eventId, e.name, e.startTime, e.endTime, e.festivalEventType
-            FROM Events e
+            FROM events e
             WHERE e.availableTickets = 0";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
