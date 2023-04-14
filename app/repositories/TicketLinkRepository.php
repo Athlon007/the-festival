@@ -35,7 +35,7 @@ class TicketLinkRepository extends Repository
                 $item['ticketTypeNrOfPeople']
             );
 
-            $ticketLink = new TicketLink($item['cartItemId'], $event, $ticketType);
+            $ticketLink = new TicketLink($item['ticketLinkId'], $event, $ticketType);
 
             $output[] = $ticketLink;
         }
@@ -66,7 +66,7 @@ class TicketLinkRepository extends Repository
 		t.ticketTypeName as ticketTypeName,
 		t.ticketTypePrice as ticketTypePrice,
 		t.nrOfPeople as ticketTypeNrOfPeople,
-        c.cartItemId as cartItemId
+        c.ticketLinkId as ticketLinkId
     FROM events e
     JOIN ticketlinks c on e.eventId = c.eventId
     join tickettypes t on c.ticketTypeId = t.ticketTypeId
@@ -92,12 +92,12 @@ class TicketLinkRepository extends Repository
 		t.ticketTypeName as ticketTypeName,
 		t.ticketTypePrice as ticketTypePrice,
 		t.nrOfPeople as ticketTypeNrOfPeople,
-        c.cartItemId as cartItemId
+        c.ticketLinkId as ticketLinkId
         FROM events e
         JOIN ticketlinks c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
         join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
-        WHERE cartItemId = :id";
+        WHERE ticketLinkId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -125,7 +125,7 @@ class TicketLinkRepository extends Repository
 		t.ticketTypeName as ticketTypeName,
 		t.ticketTypePrice as ticketTypePrice,
 		t.nrOfPeople as ticketTypeNrOfPeople,
-        c.cartItemId as cartItemId
+        c.ticketLinkId as ticketLinkId
         FROM events e
         JOIN ticketlinks c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
@@ -156,7 +156,7 @@ class TicketLinkRepository extends Repository
 
     public function update($id, $eventId, $ticketTypeId)
     {
-        $sql = "UPDATE ticketlinks SET eventId = :eventId, ticketTypeId = :ticketTypeId WHERE cartItemId = :id";
+        $sql = "UPDATE ticketlinks SET eventId = :eventId, ticketTypeId = :ticketTypeId WHERE ticketLinkId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':eventId', $eventId, PDO::PARAM_INT);
@@ -166,7 +166,7 @@ class TicketLinkRepository extends Repository
 
     public function delete($id)
     {
-        $sql = "DELETE FROM ticketlinks WHERE cartItemId = :id";
+        $sql = "DELETE FROM ticketlinks WHERE ticketLinkId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();

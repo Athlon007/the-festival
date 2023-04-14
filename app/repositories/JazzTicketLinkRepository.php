@@ -82,7 +82,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
             );
 
             $ticketLink = new TicketLink(
-                $item['cartItemId'],
+                $item['ticketLinkId'],
                 $event,
                 $ticketType
             );
@@ -134,7 +134,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
 		t.nrOfPeople as ticketTypeNrOfPeople,
 		a2.id as artistKindId,
 		a2.name as artistKindName,
-        c.cartItemId as cartItemId
+        c.ticketLinkId as ticketLinkId
         FROM jazzevents je
         JOIN events e ON e.eventId = je.eventId
         JOIN ticketlinks c on e.eventId = c.eventId
@@ -268,7 +268,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
 		t.nrOfPeople as ticketTypeNrOfPeople,
 		a2.id as artistKindId,
 		a2.name as artistKindName,
-        c.cartItemId as cartItemId
+        c.ticketLinkId as ticketLinkId
         FROM jazzevents je
         JOIN events e ON e.eventId = je.eventId
         JOIN ticketlinks c on e.eventId = c.eventId
@@ -278,7 +278,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
         join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
         join addresses ad on ad.addressId =l.addressId
         join artistkinds a2 on a2.id = a.artistKindId
-        WHERE cartItemId = :id";
+        WHERE ticketLinkId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -331,7 +331,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
 		t.nrOfPeople as ticketTypeNrOfPeople,
 		a2.id as artistKindId,
 		a2.name as artistKindName,
-        c.cartItemId as cartItemId
+        c.ticketLinkId as ticketLinkId
         FROM jazzevents je
         JOIN events e ON e.eventId = je.eventId
         JOIN ticketlinks c on e.eventId = c.eventId

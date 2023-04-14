@@ -21,7 +21,7 @@ class PassTicketLinkRepository extends TicketLinkRepository
 		t.ticketTypeName as ticketTypeName,
 		t.ticketTypePrice as ticketTypePrice,
 		t.nrOfPeople as ticketTypeNrOfPeople,
-        c.cartItemId as cartItemId
+        c.ticketLinkId as ticketLinkId
         FROM events e
         JOIN ticketlinks c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
