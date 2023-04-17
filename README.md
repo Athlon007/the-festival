@@ -11,6 +11,10 @@
 
 _**Note:** By default, project uses MySQL server hosted on Azure. You can switch to local version by setting debugMode to 'true' in Config.php. If so, please use **install.sql** inside of sql_scripts through phpMyAdmin._
 
+## Website URL
+
+http://haarlem.kfigura.nl/
+
 ## Created By
 
 - Joshua Andrea (684077)
