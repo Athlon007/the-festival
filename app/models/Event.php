@@ -7,7 +7,7 @@ class Event implements JsonSerializable
     private DateTime $startTime;
     private DateTime $endTime;
     private ?EventType $eventType;
-    private ?int $availableTickets;
+    private $availableTickets;
 
     public function jsonSerialize(): mixed
     {
