@@ -93,7 +93,6 @@ class UserAPIController extends APIController
             if(session_status() == PHP_SESSION_NONE){
                 session_start();
             }
-
             $_SESSION["user"] = serialize($user);
 
             parent::sendSuccessMessage("Login successful.");
@@ -119,7 +118,6 @@ class UserAPIController extends APIController
     private function registerCustomer($data)
     {
         try {
-
             //Check if all data is present
             if (
                 !isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password)
