@@ -34,9 +34,17 @@ class EventsList {
             script.type = 'text/javascript';
             document.getElementsByTagName('head')[0].appendChild(script);
             script.onload = () => new StrollEventList(this.container);
+        } else if (data.type === 'dance') {
+            console.log('dance events');
+            let script = document.createElement('script');
+            script.src = '/js/modules/event-viewers/dance-events.js';
+            script.type = 'text/javascript';
+            document.getElementsByTagName('head')[0].appendChild(script);
+            script.onload = () => new DanceEventList(this.container);
+        } else {
+            console.log('Default events');
+            return new EventsList(this.container);
         }
-
-        return new EventsList(this.container);
     }
 
     addEvent(event) {
