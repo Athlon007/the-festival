@@ -121,7 +121,7 @@ CREATE TABLE `customers` (
 
 LOCK TABLES `customers` WRITE;
 /*!40000 ALTER TABLE `customers` DISABLE KEYS */;
-INSERT INTO `customers` VALUES (33,'1998-04-16 00:00:00','0612312312',11),(40,'2000-03-12 00:00:00','12346789675',32);
+INSERT INTO `customers` VALUES (33,'1998-04-16 00:00:00','0612312312',11);
 /*!40000 ALTER TABLE `customers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -743,7 +743,7 @@ CREATE TABLE `users` (
   `userType` int(1) NOT NULL,
   `registrationDate` date DEFAULT NULL,
   PRIMARY KEY (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -752,7 +752,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (23,'682474@student.inholland.nl','$2y$10$H80FBpRiTBsBHkxChIgw0e051d5XYa2Akxd1WQLOZunUIPd5cYR16','Roby','Trierweiler',1,'2023-03-01'),(27,'turkvedat0911@gmail.com','$2y$10$l0A92t2H/NKDoVZOSFWl6eyqXNTsS8I4BqoFsrOOvHQ6qDuVM1UAG','Vedat','TÃ¼rk',1,'2023-03-02'),(33,'joshua.andrea@hotmail.com','$2y$10$HfB7MwtaQoFwz0kSjC6lq.WUQQ.4Q1DZJHvF6r6aeLBc5o6vVWsle','Joshua','Andrea',3,'2023-03-03'),(37,'aathlon@outlook.com','$2y$10$AA5Kbo7kJeGq0NM9PdSe5.TCsLdDVPpqGqclkRWQAUNJp6wmfBIy6','Konrad','Figura',1,'2023-04-03'),(38,'mail@example.com','$2y$10$IAHPjz.E4G7nZEQhOwykvumCoLeAWzCQtUjQJJK5FiQFcScXOAlsu','Ben','Dover',2,'2023-04-04'),(40,'2mail@example.com','$2y$10$qUGFt7BwlSkx1sYDLruWHeG4wLSE5Y9GkPF6uqQFUeyiTTM6mOHI.','A','B',3,'2023-04-11');
+INSERT INTO `users` VALUES (23,'682474@student.inholland.nl','$2y$10$H80FBpRiTBsBHkxChIgw0e051d5XYa2Akxd1WQLOZunUIPd5cYR16','Roby','Trierweiler',1,'2023-03-01'),(27,'turkvedat0911@gmail.com','$2y$10$l0A92t2H/NKDoVZOSFWl6eyqXNTsS8I4BqoFsrOOvHQ6qDuVM1UAG','Vedat','TÃ¼rk',1,'2023-03-02'),(33,'joshua.andrea@hotmail.com','$2y$10$HfB7MwtaQoFwz0kSjC6lq.WUQQ.4Q1DZJHvF6r6aeLBc5o6vVWsle','Joshua','Andrea',3,'2023-03-03'),(37,'aathlon@outlook.com','$2y$10$AA5Kbo7kJeGq0NM9PdSe5.TCsLdDVPpqGqclkRWQAUNJp6wmfBIy6','Konrad','Figura',1,'2023-04-03'),(38,'mail@example.com','$2y$10$IAHPjz.E4G7nZEQhOwykvumCoLeAWzCQtUjQJJK5FiQFcScXOAlsu','Ben','Dover',2,'2023-04-04'),(41,'admin@example.com','$2y$10$qNY54rCbeHac28z7pG2d4uU88Ro6RpdziWuUTBF8XcRXChV2nLzuW','Admin','Account',1,'2023-04-14');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -769,4 +769,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-14 14:05:52
+-- Dump completed on 2023-04-14 16:17:01
