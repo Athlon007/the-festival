@@ -38,11 +38,20 @@ class TicketService
     $this->repository = new TicketRepository();
   }
 
-  public function getTicketByID($ticketID): Ticket
-  {
+  // public function getTicketByID($ticketID): Ticket
+  // {
+  //   try {
+  //     $ticket = $this->repository->getTicketByID($ticketID);
+  //     return $ticket;
+  //   } catch (Exception $ex) {
+  //     throw ($ex);
+  //   }
+  // }
+
+  public function getAllHistoryTicketByOrderId($orderId){
     try {
-      $ticket = $this->repository->getTicketByID($ticketID);
-      return $ticket;
+      $tickets = $this->repository->getAllHistoryTicketsByOrderId($orderId);
+      return $tickets;
     } catch (Exception $ex) {
       throw ($ex);
     }
