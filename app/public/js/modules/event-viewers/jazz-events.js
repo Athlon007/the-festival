@@ -257,8 +257,12 @@ class JazzEventList extends EventsList {
         let data = await this.getData();
 
         this.clearEvents();
-        for (let event of data) {
-            this.addEvent(event);
+        if (data.length == 0) {
+            this.noEvents();
+        } else {
+            for (let event of data) {
+                this.addEvent(event);
+            }
         }
     }
 

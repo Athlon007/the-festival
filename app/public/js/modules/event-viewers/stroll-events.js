@@ -68,8 +68,12 @@ class StrollEventList extends EventsList {
         this.clearEvents();
         let data = await this.getData();
 
-        for (let event of data) {
-            this.addEvent(event);
+        if (data.length == 0) {
+            this.noEvents();
+        } else {
+            for (let event of data) {
+                this.addEvent(event);
+            }
         }
     }
 
