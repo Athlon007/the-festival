@@ -48,9 +48,9 @@ class TicketService
   //   }
   // }
 
-  public function getAllHistoryTicketByOrderId($orderId){
+  public function getAllHistoryTicketByOrderId(Order $order){
     try {
-      $tickets = $this->repository->getAllHistoryTicketsByOrderId($orderId);
+      $tickets = $this->repository->getAllHistoryTicketsByOrderId($order);
       return $tickets;
     } catch (Exception $ex) {
       throw ($ex);
@@ -80,7 +80,7 @@ class TicketService
 
     // buffer the following html with PHP so we can pass it to the PDF generator
     ob_start();
-    $html = require_once(__DIR__ . '/../pdfs/generateTicketPDF.php');
+    $html = require_once(__DIR__ . '/../pdfs/ticket-pdf.php');
     // retrieve the HTML generated in our buffer and delete the buffer
     $html = ob_get_clean();
 

@@ -49,7 +49,7 @@
     <div class="ticket-info">
         <label>Price:</label>
         <p style="color: red"><strong>€
-                <?= $ticket->getEvent()->getPrice() ?>
+                <?= $ticket->getFullPrice() ?>
             </strong></p>
     </div>
     <br>

@@ -34,8 +34,8 @@
 
 <body>
     <p>Dear
-        <?= $ticket->getCustomer()->getFirstName() ?>
-        <?= $ticket->getCustomer()->getLastName() ?>,
+        <?= $order->getCustomer()->getFirstName() ?>
+        <?= $order->getCustomer()->getLastName() ?>,
     </p>
     <p>Thank you for your purchase.</p>
     <p>Here is your ticket for the event: <strong>

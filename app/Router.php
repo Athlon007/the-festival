@@ -174,6 +174,11 @@ class Router
                 $festivalFoodController = new FestivalFoodController();
                 $festivalFoodController->loadFoodFestivalPage();
                 break;
+            case "/buyTicket":
+                require_once("controllers/TicketController.php");
+                $ticketController = new TicketController();
+                $ticketController->getAllHistoryTicketByOrderId();
+                break;
             default:
                 $this->route404($message);
                 break;
