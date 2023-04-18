@@ -15,6 +15,7 @@ class TicketLinkService
     {
         $this->repo = new TicketLinkRepository();
         $this->eventService = new EventService();
+        $this->ticketTypeService = new TicketTypeService();
     }
 
     public function getAll($sort = null, $filters = []): array

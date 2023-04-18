@@ -7,6 +7,7 @@ class HistoryTicketLinkService extends TicketLinkService
 {
     public function __construct()
     {
+        parent::__construct();
         $this->repo = new HistoryTicketLinkRepository();
     }
 

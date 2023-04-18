@@ -105,50 +105,66 @@ class AllAccessPass {
     }
 
     async getAllAccessPass(kind) {
-
+        let obj = null;
         if (kind == 'jazz') {
-            let obj = {
+            obj = {
                 name: 'All-Access Jazz Pass',
                 perks: [
                     'Pay once to access everything',
-                    'Affordable way to experience more than one artist',
-                    //'Save up to € 145'
+                    'Affordable way to experience more than one artist'
                 ],
                 passes: [
                     {
                         id: 7,
                         name: 'One-day pass',
-                        price: 35
+                        price: 0
                     },
                     {
                         id: 8,
                         name: 'All-Day Pass',
-                        price: 80
+                        price: 0
                     }
                 ]
             }
-
-            let t1 = await fetch('/api/tickettypes/7', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            let data1 = await t1.json()
-
-            let t2 = await fetch('/api/tickettypes/8', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            let data2 = await t2.json()
-
-            obj.passes[0].price = data1.price;
-            obj.passes[1].price = data2.price;
-
-            return obj;
+        } else if (kind == 'dance') {
+            obj = {
+                name: 'All-Access Dance Pass',
+                perks: [
+                    'Pay once to access everything',
+                    'Affordable way to experience more than one artist'
+                ],
+                passes: [
+                    {
+                        id: 10,
+                        name: 'Friday Pass',
+                        price: 0
+                    },
+                    {
+                        id: 11,
+                        name: 'Weekend Day Pass',
+                        price: 0
+                    },
+                    {
+                        id: 13,
+                        name: 'All Day Pass',
+                        price: 0
+                    }
+                ]
+            }
         }
+
+        for (let pass of obj.passes) {
+            let t = await fetch('/api/tickettypes/' + pass.id, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            let data = await t.json()
+            pass.price = data.price;
+        }
+
+        return obj;
     }
 
     addPassToCart(pass) {
@@ -156,6 +172,8 @@ class AllAccessPass {
         let kindId = -1;
         if (this.container.dataset.kind == 'jazz') {
             kindId = 1;
+        } else if (this.container.dataset.kind == 'dance') {
+            kindId = 4;
         }
 
         window.location.href = '/buyPass?event_type=' + kindId;
