@@ -19,8 +19,8 @@
         <h2>Terms and Conditions</h2>
 
         <p>
-            The data you enter will be stored in our secure, private database. <br> 
-            This data may be used for our own insights, but will never be shared with third parties or used for commercial or advertising purposes. 
+            The data you enter will be stored in our database. <br> 
+            This data may be used for our own insights, but will never be intentionally shared with third parties outside InHolland or used for commercial or advertising purposes. 
         </p>
 
         <footer class="foot row bottom"></footer>
