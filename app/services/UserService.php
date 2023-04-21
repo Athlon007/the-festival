@@ -258,8 +258,11 @@ class UserService
         try {
             //Sanitise user data
             $data = $this->sanitiseUserData($data);
-
+            
+            //Fetch user from db
             $user = $this->userRepository->getById($data->id);
+            
+            //Update user data
             $user->setFirstName(htmlspecialchars($data->firstName));
             $user->setLastName(htmlspecialchars($data->lastName));
             $user->setEmail(htmlspecialchars($data->email));

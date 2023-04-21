@@ -1,14 +1,24 @@
 <?php
-require_once(__DIR__ . '/../repositories/AddressRepository.php');
+require_once(__DIR__ . '/../services/UserService.php');
+require_once(__DIR__ . '/../repositories/AddressService.php');
 require_once(__DIR__ . '/../services/MailService.php');
+require_once(__DIR__ . '/../repositories/CustomerRepository.php');
+require_once(__DIR__ . '/../repositories/AddressRepository.php');
+require_once(__DIR__ . '/../repositories/UserRepository.php');
+
 require_once(__DIR__ . '/../models/Customer.php');
 
-class CustomerService extends UserService{
-    private $addressRepository;
+class CustomerService{
+    private $userService;
+    private $addressService;
     private $mailService;
+    private $customerRepository;
+    private $addressRepository;
+    private $userRepository;
 
     public function __construct(){
         $this->addressRepository = new AddressRepository();
+        $
         $this->mailService = new MailService();
     }
 
@@ -73,7 +83,7 @@ class CustomerService extends UserService{
         //If the email has been updated, make sure it's not a duplicate in db, then update
         if ($customer->getEmail() != $data->email)
         {
-            if (parent::emailAlreadyExists($data->email))
+            if ($this->userService->emailAlreadyExists($data->email))
                 throw new EmailAlreadyExistsException();
 
             $customer->setEmail($data->email);
@@ -95,7 +105,7 @@ class CustomerService extends UserService{
 
     private function sanitiseCustomerData($data){
 
-        $data = parent::sanitiseUserData($data);
+        $data = $this->userService->sanitiseUserData($data);
         $data->dateOfBirth = htmlspecialchars($data->dateOfBirth);
         $data->phoneNumber = htmlspecialchars($data->phoneNumber);
         $data->address->streetName = htmlspecialchars($data->address->streetName);

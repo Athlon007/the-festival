@@ -6,14 +6,10 @@ require_once(__DIR__ . '/../repositories/UserRepository.php');
 
 class CustomerRepository extends Repository{
 
-    private $addressRepository;
-    private $userRepository;
     
     public function __construct()
     {
         parent::__construct();
-        $this->addressRepository = new AddressRepository();
-        $this->userRepository = new UserRepository();
     }
     
     public function getCustomerByUser(User $user) : Customer
