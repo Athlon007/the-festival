@@ -1,11 +1,7 @@
 <?php
-
-require_once(__DIR__ . '/../repositories/UserRepository.php');
-require_once(__DIR__ . '/../repositories/CustomerRepository.php');
 require_once(__DIR__ . '/../repositories/AddressRepository.php');
 require_once(__DIR__ . '/../services/MailService.php');
 require_once(__DIR__ . '/../models/Customer.php');
-require_once(__DIR__ . '/../models/User.php');
 
 class CustomerService extends UserService{
     private $addressRepository;
@@ -18,18 +14,11 @@ class CustomerService extends UserService{
 
     public function registerCustomer($data)
     {
-
         //Sanitise data
         $data->userType = 3;
         $data = $this->sanitiseCustomerData($data);
 
-        //Create customer object
-        $customer = new Customer();
-
-        //Convert data to appropriate datatypes
-        $dateOfBirth = new DateTime($data->dateOfBirth);
-
-        //Convert data to address
+        //Convert address data to address object
         $streetname = $data->address->streetName;
         $housenumber = $data->address->houseNumber;
         $postalcode = $data->address->postalCode;
@@ -37,11 +26,12 @@ class CustomerService extends UserService{
         $country = $data->address->country;
         $address = new Address(-1, $streetname, $housenumber, $postalcode, $city, $country);
 
-        //Set customer properties
+        //Create customer object
+        $customer = new Customer();
         $customer->setEmail($data->email);
         $customer->setFirstName($data->firstName);
         $customer->setLastName($data->lastName);
-        $customer->setDateOfBirth($dateOfBirth);
+        $customer->setDateOfBirth(new DateTime($data->dateOfBirth));
         $customer->setPhoneNumber($data->phoneNumber);
         $customer->setAddress($address);
 
@@ -51,7 +41,6 @@ class CustomerService extends UserService{
 
         //Insert customer
         $this->customerRepository->insertCustomer($customer);
-
     }
 
     public function getCustomerByUser(User $user) : Customer
