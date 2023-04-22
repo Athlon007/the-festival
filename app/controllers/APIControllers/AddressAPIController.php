@@ -4,7 +4,7 @@ require_once(__DIR__ . "/../../services/AddressService.php");
 require_once(__DIR__ . "/../../models/Address.php");
 
 /**
- * This class is the controller for the Address API.
+ * Controller for the Address API endpoint.
  * @author Joshua
  */
 class AddressAPIController extends APIController
