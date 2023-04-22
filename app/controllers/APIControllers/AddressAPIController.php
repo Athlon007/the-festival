@@ -172,8 +172,7 @@ class AddressAPIController extends APIController
     private function fetchAddress($data)
     {
         try {
-            $addressService = new AddressService();
-            $address = $addressService->fetchAddressFromPostCodeAPI($data);
+            $address = $this->addressService->fetchAddressFromPostCodeAPI($data);
 
             header('Content-Type: application/json');
             echo json_encode([
