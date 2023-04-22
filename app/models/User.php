@@ -8,7 +8,6 @@ class User implements JsonSerializable
     protected string $lastName;
     protected string $hashPassword;
     protected int $userType;
-
     protected DateTime $registrationDate;
 
     public function jsonSerialize(): mixed

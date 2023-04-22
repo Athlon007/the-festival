@@ -9,46 +9,31 @@ require_once(__DIR__ . '/../repositories/UserRepository.php');
 require_once(__DIR__ . '/../models/Customer.php');
 
 class CustomerService{
-    private $userService;
-    private $addressService;
     private $mailService;
     private $customerRepository;
     private $addressRepository;
     private $userRepository;
 
     public function __construct(){
+        $this->customerRepository = new CustomerRepository();
         $this->addressRepository = new AddressRepository();
-        $
+        $this->userRepository = new UserRepository();
         $this->mailService = new MailService();
     }
 
-    public function registerCustomer($data)
+    public function registerCustomer($customer)
     {
-        //Sanitise data
-        $data->userType = 3;
-        $data = $this->sanitiseCustomerData($data);
-
-        //Convert address data to address object
-        $streetname = $data->address->streetName;
-        $housenumber = $data->address->houseNumber;
-        $postalcode = $data->address->postalCode;
-        $city = $data->address->city;
-        $country = $data->address->country;
-        $address = new Address(-1, $streetname, $housenumber, $postalcode, $city, $country);
-
-        //Create customer object
-        $customer = new Customer();
-        $customer->setEmail($data->email);
-        $customer->setFirstName($data->firstName);
-        $customer->setLastName($data->lastName);
-        $customer->setDateOfBirth(new DateTime($data->dateOfBirth));
-        $customer->setPhoneNumber($data->phoneNumber);
-        $customer->setAddress($address);
-
         //Hash password
-        $hashedPassword = password_hash($data->password, PASSWORD_DEFAULT);
+        $hashedPassword = password_hash($customer->getHashPassword(), PASSWORD_DEFAULT);
         $customer->setHashPassword($hashedPassword);
 
+        //Insert customer as user, then complete the customer object with the new userId
+        $user = $this->userRepository->insertUser($customer);
+        $customer->setUserId($user->getUserId());
+        
+        //Insert customer address, then complete the customer object with the new addressId
+        $address = $this->addressRepository->insertAddress($customer->getAddress());
+        $customer->setAddress($address);
         //Insert customer
         $this->customerRepository->insertCustomer($customer);
     }
@@ -61,8 +46,6 @@ class CustomerService{
 
     public function updateCustomer($customer, $data)
     {
-        //Sanitise data
-        $data = $this->sanitiseCustomerData($data);
 
         //If a new password was set, the confirm password must match the password currently in DB
         if (isset($data->password) && isset($data->confirmPassword))
@@ -83,7 +66,7 @@ class CustomerService{
         //If the email has been updated, make sure it's not a duplicate in db, then update
         if ($customer->getEmail() != $data->email)
         {
-            if ($this->userService->emailAlreadyExists($data->email))
+            if ($this->userRepository->emailAlreadyExists($data->email))
                 throw new EmailAlreadyExistsException();
 
             $customer->setEmail($data->email);
@@ -101,19 +84,5 @@ class CustomerService{
         $customer->getAddress()->setCountry($data->address->country);
 
         $this->customerRepository->updateCustomer($customer);
-    }
-
-    private function sanitiseCustomerData($data){
-
-        $data = $this->userService->sanitiseUserData($data);
-        $data->dateOfBirth = htmlspecialchars($data->dateOfBirth);
-        $data->phoneNumber = htmlspecialchars($data->phoneNumber);
-        $data->address->streetName = htmlspecialchars($data->address->streetName);
-        $data->address->houseNumber = htmlspecialchars($data->address->houseNumber);
-        $data->address->postalCode = htmlspecialchars($data->address->postalCode);
-        $data->address->city = htmlspecialchars($data->address->city);
-        $data->address->country = htmlspecialchars($data->address->country);
-
-        return $data;
     }
 }
