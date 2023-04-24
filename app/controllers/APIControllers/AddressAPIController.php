@@ -82,14 +82,14 @@ class AddressAPIController extends APIController
             echo json_encode($address);
         } catch (Throwable $e) {
             Logger::write($e);
-            $this->sendErrorMessage("unable to retrive an address.", 400);
+            $this->sendErrorMessage($e);
         }
     }
 
     protected function handlePutRequest($uri)
     {
         if (!$this->isLoggedInAsAdmin()) {
-            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            $this->sendErrorMessage('You are not logged in as admin.', 403);
             return;
         }
 

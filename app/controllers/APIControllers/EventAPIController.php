@@ -28,6 +28,7 @@ class EventAPIController extends APIController
     public const URI_JAZZ = "/api/events/jazz";
     public const URI_DANCE = "/api/events/dance";
     public const URI_STROLL = "/api/events/stroll";
+    public const URI_YUMMY = "/api/events/yummy";
     public const URI_PASSES = "/api/events/passes";
 
     public function __construct()
@@ -218,7 +219,7 @@ class EventAPIController extends APIController
                 $this->sendErrorMessage('Invalid request', 400);
                 return;
             } else {
-                // if availableTickets is not set, it is a pass.
+                // if availableTickets is not set, it is an all access pass.
                 if (isset($data['event']['availableTickets'])) {
                     $this->sendErrorMessage('Invalid request', 400);
                     return;
