@@ -33,25 +33,29 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
             join historyevents h on h.eventId  = e.eventId
             join guides g on g.guideId = h.guideId ";
 
-            foreach ($filters as $key => $value) {
-                switch ($key) {
-                    case "date":
-                        // date equals.
-                        $sql .= " WHERE DATE(e.startTime) = :$key ";
-                        break;
-                    case "language":
-                        $sql .= " WHERE g.language = :$key ";
-                        break;
-                    case "time":
-                        $sql .= " WHERE hour(e.startTime) = :$key";
-                        break;
-                    case "type":
-                        $sql .= " WHERE c.ticketTypeId = :$key";
-                        break;
-                }
+            if (!empty($filters)) {
+                $sql .= " WHERE ";
 
-                if (next($filters)) {
-                    $sql .= " AND ";
+                foreach ($filters as $key => $value) {
+                    switch ($key) {
+                        case "date":
+                            // date equals.
+                            $sql .= " DATE(e.startTime) = :$key ";
+                            break;
+                        case "language":
+                            $sql .= " g.language = :$key ";
+                            break;
+                        case "time":
+                            $sql .= " hour(e.startTime) = :$key ";
+                            break;
+                        case "type":
+                            $sql .= " c.ticketTypeId = :$key ";
+                            break;
+                    }
+
+                    if (next($filters)) {
+                        $sql .= " AND ";
+                    }
                 }
             }
 
