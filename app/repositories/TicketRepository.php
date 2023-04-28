@@ -77,6 +77,45 @@ class TicketRepository extends Repository
         }
     }
 
+    public function markTicketAsScanned(Ticket $ticket){
+        try{
+            $ticketId = $ticket->getTicketId();
+            $sql = "UPDATE tickets SET isScanned = 1 WHERE ticketId = :ticketId";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(":ticketId", $ticketId);
+            $stmt->execute();
+        }
+        catch(Exception $ex){
+            throw($ex);
+        }
+    }
+
+    public function getTicketById($ticketId){
+        try{
+            $sql = "SELECT * FROM tickets WHERE ticketId = :ticketId";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(":ticketId", $ticketId);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (is_bool($result)) {
+                throw new TicketNotFoundException("Ticket ID not found");
+            }
+
+            $ticket = new Ticket();
+            $ticket->setTicketId($result['ticketId']);
+            $ticket->setQrCodeData($result['qr_code']);
+            $ticket->setIsScanned($result['isScanned']);
+            $ticket->setBasePrice($result['basePrice']);
+            $ticket->setVat($result['vat']);
+
+            return $ticket;
+        }
+        catch(Exception $ex){
+            throw($ex);
+        }
+    }
+
     public function addTicketToOrder($orderId, $ticket)
     {
 

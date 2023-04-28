@@ -58,6 +58,11 @@ class Ticket implements JsonSerializable
         return $this->isScanned;
     }
 
+    public function getIsScanned(): bool
+    {
+        return $this->isScanned;
+    }
+
     public function setIsScanned(bool $isScanned): void
     {
         $this->isScanned = $isScanned;

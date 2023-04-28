@@ -38,15 +38,15 @@ class TicketService
     $this->repository = new TicketRepository();
   }
 
-  // public function getTicketByID($ticketID): Ticket
-  // {
-  //   try {
-  //     $ticket = $this->repository->getTicketByID($ticketID);
-  //     return $ticket;
-  //   } catch (Exception $ex) {
-  //     throw ($ex);
-  //   }
-  // }
+  public function getTicketByID($ticketID): Ticket
+  {
+    try {
+      $ticket = $this->repository->getTicketByID($ticketID);
+      return $ticket;
+    } catch (Exception $ex) {
+      throw ($ex);
+    }
+  }
 
   public function getAllHistoryTicketByOrderId(Order $order)
   {
@@ -61,7 +61,7 @@ class TicketService
   public function generateQRCode($ticket): string
   {
     //Generate a QR code image with the ticket ID as data
-    $qrCodeData = "http://localhost/ticket/" . $ticket->getTicketId();
+    $qrCodeData = "http://localhost/ticket?ticketId=" . $ticket->getTicketId();
 
     $qrCode = new QrCode($qrCodeData);
     $qrCode->setSize(150);
@@ -135,6 +135,10 @@ class TicketService
     } catch (Exception $ex) {
       throw ($ex);
     }
+  }
+
+  public function markTicketAsScanned(Ticket $ticket){
+    $this->repository->markTicketAsScanned($ticket);
   }
 
   public function createTicketFromTicketLink(TicketLink $ticketLink)
