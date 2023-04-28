@@ -1,7 +1,9 @@
 <!--Ticket template by Vedat /Edited by Joshua-->
 
 <?php
-foreach ($tickets as $ticket) { ?>
+foreach ($tickets as $index => $ticket) {
+    $qrCodeImage = $qrCodeImages[$index];
+    ?>
     <div class="container">
         <h1>The Festival Ticket</h1>
 
@@ -69,6 +71,7 @@ foreach ($tickets as $ticket) { ?>
     <?php
 }
 ?>
+
 
 
 <style>

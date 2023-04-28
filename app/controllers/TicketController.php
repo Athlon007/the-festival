@@ -19,12 +19,21 @@ class TicketController
             $order = new Order();
             $order->setOrderId(1);
             $tickets = $this->ticketService->getAllHistoryTicketByOrderId($order);
-            $this->ticketService->generatePDFTicket($tickets, $order);
+
+            $qrCodeImages = array();
+            foreach ($tickets as $ticket) {
+                $qrCodeImage = $this->ticketService->generateQRCode($ticket);
+                $qrCodeImages[] = $qrCodeImage;
+            }
+
+            $this->ticketService->generatePDFTicket($tickets, $order, $qrCodeImages);
+
             return $tickets;
         } catch (Exception $ex) {
             throw ($ex);
         }
     }
+
 
 }
 ?>

@@ -75,15 +75,13 @@ class TicketService
     return $qrCodeImage;
   }
 
-  public function generatePDFTicket($tickets, $order): Dompdf
+  public function generatePDFTicket($tickets, $order, $qrCodeImages): Dompdf
   {
     $pdfService = new PDFService();
 
     $domPdf = new Dompdf();
 
     foreach ($tickets as $ticket) {
-      $qrCodeImage = $this->generateQRCode($ticket);
-
       // buffer the following html with PHP so we can pass it to the PDF generator
       ob_start();
       $html = require_once(__DIR__ . '/../pdfs/ticket-pdf.php');
