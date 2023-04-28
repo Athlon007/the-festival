@@ -21,7 +21,7 @@ class TicketController
             foreach ($tickets as $ticket) {
                 $qrCodeImage = $this->ticketService->generateQRCode($ticket);
                 $domPdf = $this->ticketService->generatePDFTicket($ticket, $qrCodeImage,$order);
-                $this->ticketService->sendTicketByEmail($domPdf, $ticket, $order);
+                //$this->ticketService->sendTicketByEmail($domPdf, $ticket, $order);
             }
             return $tickets;
         } catch (Exception $ex) {
