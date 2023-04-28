@@ -111,13 +111,13 @@ btnSubmit.onclick = function () {
 
 document.getElementById('delete').onclick = function () {
     if (editedId === -1) {
-        msgBox.createToast('Error!', 'No page selected');
+        msgBox.createToast('Error!', 'No ticket type selected');
         return;
     }
 
-    msgBox.createYesNoDialog('Delete page', 'Are you sure you want to delete this event? This is irreversible!', function () {
+    msgBox.createYesNoDialog('Delete ticket type', 'Are you sure you want to delete this event? This is irreversible!', function () {
         // fetch with post
-        fetch('/api/events/' + editedId, {
+        fetch(baseURL + "/" + editedId, {
             method: 'DELETE',
             credentials: 'same-origin',
             headers: {
@@ -136,7 +136,7 @@ document.getElementById('delete').onclick = function () {
                         }
                     }
                     toggleEditor(masterEditor, false);
-                    msgBox.createToast('Success!', 'Page has been deleted');
+                    msgBox.createToast('Success!', 'Ticket type has been deleted');
                 } else {
                     msgBox.createToast('Something went wrong', data.error_message);
                 }

@@ -23,7 +23,7 @@ class TicketTypesAPIController extends APIController
                 $ticketTypes = $this->ttService->getAll();
                 echo json_encode($ticketTypes);
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             Logger::write($e);
             $this->sendErrorMessage("Unable to retrive ticket types.", 500);
         }
@@ -41,7 +41,7 @@ class TicketTypesAPIController extends APIController
             $ticketType = new TicketType(0, $data['name'], $data['price'], $data['nrOfPeople']);
             $ticketType = $this->ttService->create($ticketType);
             echo json_encode($ticketType);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             Logger::write($e);
             $this->sendErrorMessage("Unable to create ticket type.", 500);
         }
@@ -58,7 +58,7 @@ class TicketTypesAPIController extends APIController
             $ticketType = new TicketType(basename($uri), $data['name'], $data['price'], $data['nrOfPeople']);
             $ticketType = $this->ttService->update($ticketType);
             echo json_encode($ticketType);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             Logger::write($e);
             $this->sendErrorMessage("Unable to update ticket type.", 500);
         }
@@ -73,7 +73,7 @@ class TicketTypesAPIController extends APIController
             }
             $this->ttService->delete(basename($uri));
             $this->sendSuccessMessage('Ticket Type Removed.');
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             Logger::write($e);
             $this->sendErrorMessage("Unable to delete ticket type.", 500);
         }

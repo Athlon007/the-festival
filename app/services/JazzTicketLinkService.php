@@ -7,6 +7,7 @@ class JazzTicketLinkService extends TicketLinkService
 {
     public function __construct()
     {
+        parent::__construct();
         $this->repo = new JazzTicketLinkRepository();
     }
 }

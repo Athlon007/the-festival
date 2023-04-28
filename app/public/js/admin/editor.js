@@ -26,7 +26,7 @@ tinymce.init({
     menu: {
         custom: {
             title: 'Modules',
-            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile customIframe | customJazzOptions customStrollOptions customYummyOptions '
+            items: 'customAddButtonButton customInsertCalendar customInsertCountdown customInsertImageButton customInsertMap customInsertNavTile customIframe | customJazzOptions customStrollOptions customYummyOptions customDanceOptions '
         }
     },
     menubar: 'file edit view insert format tools table custom',
@@ -227,17 +227,7 @@ tinymce.init({
                             text: 'All Day Pass',
                             type: 'menuitem',
                             onAction: () => {
-                                // show dialog
-                                msgBox.createDialogWithInputs('Create All Day Pass', [
-                                    {
-                                        label: 'Pass Kind',
-                                        id: 'pass-kind',
-                                    }
-                                ],
-                                    () => {
-                                        let passKind = document.getElementById('pass-kind').value;
-                                        editor.insertContent(`<div id='allday-pass' data-kind='${passKind}'></div>`);
-                                    });
+                                editor.insertContent(`<div id='allday-pass' data-kind='jazz'></div>`);
                             }
                         },
                         {
@@ -320,6 +310,28 @@ tinymce.init({
                             let iframe = `<iframe src='${link}' width='${width}' height='${height}'></iframe>`;
                             editor.insertContent(iframe);
                         });
+                }
+            });
+            editor.ui.registry.addMenuItem('customDanceOptions', {
+                text: 'DANCE! Modules >',
+                type: 'nestedmenuitem',
+                getSubmenuItems: () => {
+                    return [
+                        {
+                            text: 'All Day Pass',
+                            type: 'menuitem',
+                            onAction: () => {
+                                editor.insertContent(`<div id='allday-pass' data-kind='dance'></div>`);
+                            }
+                        },
+                        {
+                            text: 'Events Viewer',
+                            type: 'menuitem',
+                            onAction: () => {
+                                editor.insertContent(`<div id='events' data-type='dance'></div>`);
+                            }
+                        }
+                    ];
                 }
             });
         } catch (error) {
