@@ -61,7 +61,8 @@ class TicketService
   public function generateQRCode($ticket): string
   {
     //Generate a QR code image with the ticket ID as data
-    $qrCodeData = $ticket->getQrCodeData();
+    $qrCodeData = "http://localhost:8080/ticket/" . $ticket->getTicketId();
+    
     $qrCode = new QrCode($qrCodeData);
     $qrCode->setSize(150);
     $qrCode->setMargin(10);
