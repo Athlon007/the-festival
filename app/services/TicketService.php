@@ -48,7 +48,8 @@ class TicketService
   //   }
   // }
 
-  public function getAllHistoryTicketByOrderId(Order $order){
+  public function getAllHistoryTicketByOrderId(Order $order)
+  {
     try {
       $tickets = $this->repository->getAllHistoryTicketsByOrderId($order);
       return $tickets;
@@ -74,21 +75,31 @@ class TicketService
     return $qrCodeImage;
   }
 
-  public function generatePDFTicket($ticket, $qrCodeImage, $order): Dompdf
+  public function generatePDFTicket($tickets, $order): Dompdf
   {
     $pdfService = new PDFService();
 
-    // buffer the following html with PHP so we can pass it to the PDF generator
-    ob_start();
-    $html = require_once(__DIR__ . '/../pdfs/ticket-pdf.php');
-    // retrieve the HTML generated in our buffer and delete the buffer
-    $html = ob_get_clean();
+    $domPdf = new Dompdf();
 
-    $title = "The Festival Ticket";
-    $filename = "ticket.pdf";
+    foreach ($tickets as $ticket) {
+      $qrCodeImage = $this->generateQRCode($ticket);
 
-    return $pdfService->generatePDF($html, $title, $filename);
+      // buffer the following html with PHP so we can pass it to the PDF generator
+      ob_start();
+      $html = require_once(__DIR__ . '/../pdfs/ticket-pdf.php');
+      // retrieve the HTML generated in our buffer and delete the buffer
+      $html = ob_get_clean();
+
+      $title = "The Festival Ticket";
+      $filename = "ticket_" . $ticket->getTicketId() . ".pdf";
+
+      $domPdf = $pdfService->generatePDF($html, $title, $filename); // Generate the PDF ticket and store it in the array
+      //TODO: Uncomment the send ticket by email function when the payment funnel is finished
+      //$this->sendTicketByEmail($domPdf, $ticket, $order);
+    }
+    return $domPdf;
   }
+
 
   public function sendTicketByEmail(Dompdf $dompdf, Ticket $ticket, Order $order)
   {
@@ -114,8 +125,7 @@ class TicketService
       require_once(__DIR__ . '/../emails/ticket-email.php');
       $mail->Body = ob_get_clean();
 
-      //TODO: Hardcoded for now for testing purposes. Remove when unnecessary
-      $mail->addAddress('turkvedat0911@gmail.com', $name);
+      $mail->addAddress($order->getCustomer()->getEmail(), $name);
       $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');
 
       if ($mail->send()) {
