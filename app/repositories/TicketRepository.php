@@ -47,6 +47,7 @@ class TicketRepository extends Repository
 
             foreach ($result as $row) {
                 $ticket = new HistoryTicket();
+                $ticket->setTicketId($row['ticketId']);
                 $ticket->setQrCodeData($row['qr_code']);
                 $ticket->setFullPrice($row['Price']);
 
@@ -70,7 +71,6 @@ class TicketRepository extends Repository
 
                 array_push($tickets, $ticket);                
             }
-
             return $tickets;
         }catch(Exception $ex){
             throw($ex);

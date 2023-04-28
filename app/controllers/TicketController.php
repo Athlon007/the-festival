@@ -13,20 +13,18 @@ class TicketController
         $this->ticketService = new TicketService();
     }
 
-    public function getAllHistoryTicketByOrderId(){
+    public function getAllHistoryTicketByOrderId()
+    {
         try {
             $order = new Order();
             $order->setOrderId(1);
             $tickets = $this->ticketService->getAllHistoryTicketByOrderId($order);
-            foreach ($tickets as $ticket) {
-                $qrCodeImage = $this->ticketService->generateQRCode($ticket);
-                $domPdf = $this->ticketService->generatePDFTicket($ticket, $qrCodeImage,$order);
-                //$this->ticketService->sendTicketByEmail($domPdf, $ticket, $order);
-            }
+            $this->ticketService->generatePDFTicket($tickets, $order);
             return $tickets;
         } catch (Exception $ex) {
             throw ($ex);
         }
     }
+
 }
 ?>
