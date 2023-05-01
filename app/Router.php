@@ -186,6 +186,12 @@ class Router
                 $ticketController = new TicketController();
                 $ticketController->getAllJazzTickets();
                 break;
+
+            case "/orderHistory":
+                require_once("controllers/OrderController.php");
+                $ticketController = new OrderController();
+                $ticketController->showOrderHistory();
+                break;
             default:
                 $this->route404($message);
                 break;

@@ -4,7 +4,8 @@ class Order implements JsonSerializable
 {
     private int $orderId;
     private array $tickets;
-    private Invoice $invoice;
+
+    private float $totalFullPrice;
     private Customer $customer;
     private DateTime $orderDate;
 
@@ -13,17 +14,15 @@ class Order implements JsonSerializable
         return [
             'orderId' => $this->orderId,
             'tickets' => $this->tickets,
-            'invoice' => $this->invoice,
             'customer' => $this->customer,
             'orderDate' => $this->orderDate,
-            'totalFullPrice' => $this->getTotalPrice(),
+            'totalFullPrice' => $this->totalFullPrice,
         ];
     }
 
     public function __construct()
     {
         $this->tickets = [];
-        $this->orderDate = new DateTime("now");
     }
 
     public function getOrderId(): int
@@ -78,12 +77,13 @@ class Order implements JsonSerializable
         $this->orderDate = $orderDate;
     }
 
-    public function getTotalPrice(): float
+    public function getTotalFullPrice(): float
     {
-        $totalPrice = 0;
-        foreach ($this->tickets as $ticket) {
-            $totalPrice += $ticket->getFullPrice();
-        }
-        return $totalPrice;
+        return $this->totalFullPrice;
+    }
+
+    public function setTotalFullPrice(float $totalFullPrice): void
+    {
+        $this->totalFullPrice = $totalFullPrice;
     }
 }
