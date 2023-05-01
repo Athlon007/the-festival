@@ -37,24 +37,15 @@
         <?= $order->getCustomer()->getFirstName() ?>
         <?= $order->getCustomer()->getLastName() ?>,
     </p>
-    <p>Thank you for your purchase.</p>
-    <p>Here is your ticket for the event: <strong>
-            <?= $ticket->getEvent()->getName() ?>
-        </strong></p>
-    <p>Event Details:</p>
-    <ul>
-        <li>Date:
-            <?= $ticket->getEvent()->getStartTime()->format('m/d/Y') ?>
-        </li>
-        <li>Time:
-            <?= $ticket->getEvent()->getStartTime()->format('H:i') ?> -
-            <?=
-                $ticket->getEvent()->getEndTime()->format('H:i') ?>
-        </li>
-        <li>Location: St. Bavo Church </li>
-    </ul>
-    <p>Please print out the attached PDF or present it on your mobile device at the event.</p>
-    <p>Kind regards,</p>
+    <p>Thank you for your purchasing tickets for the Haarlem Festival. We're excited to have you join us for this year's event</p>
+
+    <br>
+
+    <p>Please find attached a PDF of your ticket(s) for the event. You can either print it out or present it on your mobile device 
+        to enter the event. Please note that each ticket is valid for a single admission only
+    </p>
+
+    <p>Best regards,</p>
     <p>The Festival Team</p>
 </body>
 
