@@ -184,7 +184,7 @@ class Router
             case "/buyTicket":
                 require_once("controllers/TicketController.php");
                 $ticketController = new TicketController();
-                $ticketController->getAllHistoryTicketByOrderId();
+                $ticketController->getAllJazzTickets();
                 break;
             default:
                 $this->route404($message);

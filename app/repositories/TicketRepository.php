@@ -17,81 +17,90 @@ require_once(__DIR__ . '/../repositories/UserRepository.php');
 
 class TicketRepository extends Repository
 {
-    //Get all tickets by orderId
-    public function getAllHistoryTicketsByOrderId(Order $order): array
+    public function getAllTicketsByOrderIdAndEventType(Order $order, string $eventType)
     {
-        try{
-            $sql = "select t.ticketId, t.qr_code, t.eventId, t.isScanned, t.basePrice, t.vat, sum(t2.ticketTypePrice) as Price, c.userId, g.name , g.lastName , g.`language`
-            from tickets t
-            join orders o on o.orderId = t.orderId  
-            join events e on t.eventId = e.eventId
-            join historyevents h on e.eventId = h.eventId 
-            join guides g on h.guideId = g.guideId 
-            join customers c on o.customerId  = c.userId
-            join users u on u.userId = c.userId
-            join addresses a on a.addressId = c.userId
-            JOIN tickettypes t2 ON t.ticketTypeId = t2.ticketTypeId 
-            where t.orderId = :orderId
-            GROUP BY t.ticketId, t.qr_code, g.name, g.lastName, g.`language`";
+        $eventType = strtolower($eventType);
 
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bindValue(":orderId", $order->getOrderId());
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if (is_bool($result)) {
-                throw new TicketNotFoundException("Ticket ID not found");
-            }
-
-            $tickets = array();
-
-            foreach ($result as $row) {
-                $ticket = new HistoryTicket();
-                $ticket->setTicketId($row['ticketId']);
-                $ticket->setQrCodeData($row['qr_code']);
-                $ticket->setFullPrice($row['Price']);
-
-                $userRep = new UserRepository();
-                $user = $userRep->getById($row['userId']);
-                $customer = new Customer();
-                $customer->setFirstName($user->getFirstName());
-                $customer->setLastName($user->getLastName());
-                $customer->setEmail($user->getEmail());
-                $order->setCustomer($customer);
-
-                $eventRep = new EventRepository();
-                $event = $eventRep->getEventById($row['eventId']);
-                $ticket->setEvent($event);
-
-                $guide = new Guide();
-                $guide->setFirstName($row['name']);
-                $guide->setLastName($row['lastName']);
-                $guide->setLanguage($row['language']);
-                $ticket->setGuide($guide);
-
-                array_push($tickets, $ticket);                
-            }
-            return $tickets;
-        }catch(Exception $ex){
-            throw($ex);
+        switch ($eventType) {
+            case 'history':
+                $eventTable = 'historyevents';
+                break;
+            case 'jazz':
+                $eventTable = 'jazzevents';
+                break;
+            case 'yummy':
+                $eventTable = 'yummyevents';
+                break;
+            case 'dance':
+                $eventTable = 'danceevents';
+                break;
+            default:
+                throw new InvalidArgumentException('Invalid event type');
         }
+
+        $sql = "SELECT t.ticketId, t.eventId, t.isScanned, SUM(t2.ticketTypePrice) AS price, c.userId, l.name AS locationName
+            FROM tickets t
+            JOIN orders o ON o.orderId = t.orderId 
+            JOIN events e ON t.eventId = e.eventId
+            JOIN festivaleventtypes f ON e.festivalEventType = f.eventTypeId 
+            JOIN customers c ON o.customerId = c.userId
+            JOIN tickettypes t2 ON t.ticketTypeId = t2.ticketTypeId
+            JOIN $eventTable h ON e.eventId = h.eventId
+            JOIN locations l ON h.locationId = l.locationId
+            WHERE t.orderId = :orderId
+            GROUP BY t.ticketId";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderId", $order->getOrderId());
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($result)) {
+            throw new TicketNotFoundException("No tickets found for order ID: {$order->getOrderId()} and event type: {$eventType}");
+        }
+
+        $tickets = [];
+
+        foreach ($result as $row) {
+            $ticket = $this->getTicketById($row['ticketId']);
+            $ticket->setTicketId($row['ticketId']);
+            $ticket->setFullPrice($row['price']);
+
+            $userRep = new UserRepository();
+            $user = $userRep->getById($row['userId']);
+            $customer = new Customer();
+            $customer->setFirstName($user->getFirstName());
+            $customer->setLastName($user->getLastName());
+            $customer->setEmail($user->getEmail());
+            $order->setCustomer($customer);
+
+            $eventRep = new EventRepository();
+            $event = $eventRep->getEventById($row['eventId']);
+            $ticket->setEvent($event);
+
+            array_push($tickets, $ticket);
+        }
+
+        return $tickets;
     }
 
-    public function markTicketAsScanned(Ticket $ticket){
-        try{
+
+    public function markTicketAsScanned(Ticket $ticket)
+    {
+        try {
             $ticketId = $ticket->getTicketId();
             $sql = "UPDATE tickets SET isScanned = 1 WHERE ticketId = :ticketId";
             $stmt = $this->connection->prepare($sql);
             $stmt->bindValue(":ticketId", $ticketId);
             $stmt->execute();
-        }
-        catch(Exception $ex){
-            throw($ex);
+        } catch (Exception $ex) {
+            throw ($ex);
         }
     }
 
-    public function getTicketById($ticketId){
-        try{
+    public function getTicketById($ticketId)
+    {
+        try {
             $sql = "SELECT * FROM tickets WHERE ticketId = :ticketId";
             $stmt = $this->connection->prepare($sql);
             $stmt->bindValue(":ticketId", $ticketId);
@@ -110,9 +119,8 @@ class TicketRepository extends Repository
             $ticket->setVat($result['vat']);
 
             return $ticket;
-        }
-        catch(Exception $ex){
-            throw($ex);
+        } catch (Exception $ex) {
+            throw ($ex);
         }
     }
 

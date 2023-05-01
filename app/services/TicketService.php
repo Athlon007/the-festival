@@ -48,10 +48,44 @@ class TicketService
     }
   }
 
-  public function getAllHistoryTicketByOrderId(Order $order)
+  public function getAllHistoryTickets(Order $order) : array
   {
     try {
-      $tickets = $this->repository->getAllHistoryTicketsByOrderId($order);
+      $eventType = "history";
+      $tickets = $this->repository->getAllTicketsByOrderIdAndEventType($order, $eventType);
+      return $tickets;
+    } catch (Exception $ex) {
+      throw ($ex);
+    }
+  }
+
+  public function getAllJazzTickets(Order $order) : array
+  {
+    try {
+      $eventType = "jazz";
+      $tickets = $this->repository->getAllTicketsByOrderIdAndEventType($order, $eventType);
+      return $tickets;
+    } catch (Exception $ex) {
+      throw ($ex);
+    }
+  }
+
+  public function getAllYummyTickets(Order $order) : array
+  {
+    try {
+      $eventType = "yummy";
+      $tickets = $this->repository->getAllTicketsByOrderIdAndEventType($order, $eventType);
+      return $tickets;
+    } catch (Exception $ex) {
+      throw ($ex);
+    }
+  }
+
+  public function getAllDanceTickets(Order $order) : array
+  {
+    try {
+      $eventType = "dance";
+      $tickets = $this->repository->getAllTicketsByOrderIdAndEventType($order, $eventType);
       return $tickets;
     } catch (Exception $ex) {
       throw ($ex);

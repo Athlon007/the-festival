@@ -13,12 +13,33 @@ class TicketController
         $this->ticketService = new TicketService();
     }
 
-    public function getAllHistoryTicketByOrderId()
+    public function getAllHistoryTicket()
     {
         try {
             $order = new Order();
             $order->setOrderId(1);
-            $tickets = $this->ticketService->getAllHistoryTicketByOrderId($order);
+            $tickets = $this->ticketService->getAllHistoryTickets($order);
+
+            $qrCodeImages = array();
+            foreach ($tickets as $ticket) {
+                $qrCodeImage = $this->ticketService->generateQRCode($ticket);
+                $qrCodeImages[] = $qrCodeImage;
+            }
+
+            $this->ticketService->generatePDFTicket($tickets, $order, $qrCodeImages);
+
+            return $tickets;
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
+
+    public function getAllJazzTickets()
+    {
+        try {
+            $order = new Order();
+            $order->setOrderId(2);
+            $tickets = $this->ticketService->getAllJazzTickets($order);
 
             $qrCodeImages = array();
             foreach ($tickets as $ticket) {
@@ -58,10 +79,9 @@ class TicketController
                 $this->ticketService->markTicketAsScanned($ticket);
                 require_once("../views/employee/ticketScan.php");
 
-                if ($ticket->getIsScanned() == 1){
+                if ($ticket->getIsScanned() == 1) {
                     echo "<script>alert('Ticket is already scanned!')</script>";
-                }
-                else{
+                } else {
                     echo "<script>alert('Ticket is scanned!')</script>";
                 }
                 return $ticket;
