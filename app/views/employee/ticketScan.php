@@ -24,9 +24,9 @@
                         <h3 class="mb-0">Ticket Scanning Result</h3>
                     </div>
                     <div class="card-body">
-                        <div class="alert alert-<?php echo $ticket->getIsScanned() ? 'success' : 'danger'; ?> text-center"
+                        <div class="alert alert-<?php echo $ticket->getIsScanned() ? 'danger' : 'success'; ?> text-center"
                             role="alert">
-                            <?php if ($ticket->getIsScanned()): ?>
+                            <?php if ($ticket->getIsScanned() == 0): ?>
                                 <h4 class="alert-heading">Ticket Scanned!</h4>
                                 <p>The ticket with ID
                                     <?php echo $ticket->getTicketId(); ?> has been successfully scanned.
