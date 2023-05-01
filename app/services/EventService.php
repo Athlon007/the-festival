@@ -60,7 +60,10 @@ class EventService
     public function addEvent($event): Event
     {
         $event->setName(htmlspecialchars($event->getName()));
-        $event->setAvailableTickets(htmlspecialchars($event->getAvailableTickets()));
+        // Do it only if availableTickets is NOT null.
+        if ($event->getAvailableTickets() !== null) {
+            $event->setAvailableTickets(htmlspecialchars($event->getAvailableTickets()));
+        }
 
         if ($event->getStartTime() > $event->getEndTime()) {
             throw new InvalidVariableException("Start time cannot be after end time");

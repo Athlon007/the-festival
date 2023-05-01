@@ -1,35 +1,108 @@
 <?php
 require_once(__DIR__ . '/../models/Ticket/Ticket.php');
-require_once(__DIR__ . '/../models/Ticket/HistoryTicket.php');
 require_once(__DIR__ . '/../models/Event.php');
 require_once(__DIR__ . '/../models/Address.php');
 require_once(__DIR__ . '/../models/Customer.php');
 require_once(__DIR__ . '/../models/User.php');
 require_once(__DIR__ . '/../models/Guide.php');
+require_once(__DIR__ . '/../models/Order.php');
 
 require_once(__DIR__ . '/../repositories/Repository.php');
 require_once(__DIR__ . '/../models/Exceptions/TicketNotFoundException.php');
 
+require_once(__DIR__ . '/../repositories/EventRepository.php');
+require_once(__DIR__ . '/../repositories/UserRepository.php');
+
 
 class TicketRepository extends Repository
 {
-    // Get a ticket by ID, returns a ticket
-    public function getTicketByID($ticketID): HistoryTicket
+    public function getAllTicketsByOrderIdAndEventType(Order $order, string $eventType)
+    {
+        $eventType = strtolower($eventType);
+
+        switch ($eventType) {
+            case 'history':
+                $eventTable = 'historyevents';
+                break;
+            case 'jazz':
+                $eventTable = 'jazzevents';
+                break;
+            case 'yummy':
+                $eventTable = 'yummyevents';
+                break;
+            case 'dance':
+                $eventTable = 'danceevents';
+                break;
+            default:
+                throw new InvalidArgumentException('Invalid event type');
+        }
+
+        $sql = "SELECT t.ticketId, t.eventId, t.isScanned, SUM(t2.ticketTypePrice) AS price, c.userId, l.name AS locationName
+            FROM tickets t
+            JOIN orders o ON o.orderId = t.orderId 
+            JOIN events e ON t.eventId = e.eventId
+            JOIN festivaleventtypes f ON e.festivalEventType = f.eventTypeId 
+            JOIN customers c ON o.customerId = c.userId
+            JOIN tickettypes t2 ON t.ticketTypeId = t2.ticketTypeId
+            JOIN $eventTable h ON e.eventId = h.eventId
+            JOIN locations l ON h.locationId = l.locationId
+            WHERE t.orderId = :orderId
+            GROUP BY t.ticketId";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderId", $order->getOrderId());
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($result)) {
+            throw new TicketNotFoundException("No tickets found for order ID: {$order->getOrderId()} and event type: {$eventType}");
+        }
+
+        $tickets = [];
+
+        foreach ($result as $row) {
+            $ticket = $this->getTicketById($row['ticketId']);
+            $ticket->setTicketId($row['ticketId']);
+            $ticket->setFullPrice($row['price']);
+
+            $userRep = new UserRepository();
+            $user = $userRep->getById($row['userId']);
+            $customer = new Customer();
+            $customer->setFirstName($user->getFirstName());
+            $customer->setLastName($user->getLastName());
+            $customer->setEmail($user->getEmail());
+            $order->setCustomer($customer);
+
+            $eventRep = new EventRepository();
+            $event = $eventRep->getEventById($row['eventId']);
+            $ticket->setEvent($event);
+
+            array_push($tickets, $ticket);
+        }
+
+        return $tickets;
+    }
+
+
+    public function markTicketAsScanned(Ticket $ticket)
     {
         try {
-            $query = "select u.firstName , u.lastName as surname , u.email , t.qr_code, e.name as EventName ,
-            e.startTime , e.endTime , e.price as Price, g.name , g.lastName , g.`language`
-            from tickets t 
-                        inner join events e on t.eventId = e.eventId 
-                        left join strollhistoryticket sht on t.ticketId = sht.ticketId 
-                        LEFT JOIN Guides g ON sht.guideId = g.guideId
-                        LEFT JOIN Customers c ON t.customerId  = c.userId
-                        LEFT JOIN Users u ON c.userId = u.userId
-                        LEFT JOIN Addresses a ON c.addressId = a.addressId
-                        WHERE t.ticketId = :ticketID";
+            $ticketId = $ticket->getTicketId();
+            $sql = "UPDATE tickets SET isScanned = 1 WHERE ticketId = :ticketId";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(":ticketId", $ticketId);
+            $stmt->execute();
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
 
-            $stmt = $this->connection->prepare($query);
-            $stmt->bindValue(":ticketID", $ticketID);
+    public function getTicketById($ticketId)
+    {
+        try {
+            $sql = "SELECT * FROM tickets WHERE ticketId = :ticketId";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(":ticketId", $ticketId);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -37,33 +110,25 @@ class TicketRepository extends Repository
                 throw new TicketNotFoundException("Ticket ID not found");
             }
 
-            $ticket = new HistoryTicket();
-            $ticket->setQrCodeData($result['qr_code']);
-
-            $event = new Event();
-            $event->setName($result['EventName']);
-            $event->setStartTime(new DateTime($result['startTime']));
-            $event->setEndTime(new DateTime($result['endTime']));
-            $ticket->setEvent($event);
-
-            $guide = new Guide();
-            $guide->setFirstName($result['name']);
-            $guide->setLastName($result['lastName']);
-            $guide->setLanguage($result['language']);
-            $ticket->setGuide($guide);
+            $ticket = new Ticket();
+            $ticket->setTicketId($result['ticketId']);
+            $ticket->setIsScanned($result['isScanned']);
+            $ticket->setBasePrice($result['basePrice']);
+            $ticket->setVat($result['vat']);
 
             return $ticket;
-
         } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
-    public function addTicketToOrder($orderId, $ticket){
+    public function addTicketToOrder($orderId, $ticket)
+    {
 
     }
 
-    public function removeTicketFromOrder($orderId, $ticket){
+    public function removeTicketFromOrder($orderId, $ticket)
+    {
 
     }
 

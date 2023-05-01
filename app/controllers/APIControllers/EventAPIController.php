@@ -160,11 +160,7 @@ class EventAPIController extends APIController
                 $event->setStartTime(new DateTime($data['event']['startTime']));
                 $event->setEndTime(new DateTime($data['event']['endTime']));
 
-                $eventType = null;
-                if (isset($data['event']['eventType'])) {
-                    $eventType = $this->eventTypeService->getById($data['event']['eventType']['id']);
-                }
-
+                $eventType = $this->eventTypeService->getById($data['event']['eventType']['id']);
                 $event->setEventType($eventType);
             }
 
@@ -175,7 +171,7 @@ class EventAPIController extends APIController
             echo json_encode($ticketLink);
         } catch (Throwable $e) {
             Logger::write($e);
-            $this->sendErrorMessage("Unable to retrive event(s).", 500);
+            $this->sendErrorMessage("Unable to post event(s).", 500);
         }
     }
 

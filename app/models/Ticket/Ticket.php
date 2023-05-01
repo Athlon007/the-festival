@@ -3,7 +3,6 @@
 class Ticket implements JsonSerializable
 {
     protected $tickedId;
-    protected $qr_code;
     protected Event $event;
     protected bool $isScanned = false;
     protected $basePrice;
@@ -14,7 +13,6 @@ class Ticket implements JsonSerializable
     {
         return [
             'ticketId' => $this->tickedId,
-            'qr_code_data' => $this->qr_code,
             'event' => $this->event,
             'is_scanned' => $this->isScanned,
             'base_price' => $this->basePrice,
@@ -33,16 +31,6 @@ class Ticket implements JsonSerializable
         $this->tickedId = $ticketId;
     }
 
-    public function getQrCodeData(): string
-    {
-        return $this->qr_code;
-    }
-
-    public function setQrCodeData(string $qr_code): void
-    {
-        $this->qr_code = $qr_code;
-    }
-
     public function getEvent(): Event
     {
         return $this->event;
@@ -54,6 +42,11 @@ class Ticket implements JsonSerializable
     }
 
     public function isScanned(): bool
+    {
+        return $this->isScanned;
+    }
+
+    public function getIsScanned(): bool
     {
         return $this->isScanned;
     }

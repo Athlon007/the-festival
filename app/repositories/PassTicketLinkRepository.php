@@ -33,7 +33,7 @@ class PassTicketLinkRepository extends TicketLinkRepository
             foreach ($filters as $key => $value) {
                 switch ($key) {
                     case 'event_type':
-                        $sql .= "e.festivalEventType >= :$key ";
+                        $sql .= "e.festivalEventType = :$key ";
                         break;
                     default:
                         break;
