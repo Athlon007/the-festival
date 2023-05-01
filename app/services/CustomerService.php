@@ -24,30 +24,37 @@ class CustomerService{
 
     public function registerCustomer($customer)
     {
+        //Throw error if email already exists
+        if($this->userRepository->emailAlreadyExists($customer->getEmail()))
+        {
+            require_once(__DIR__ . '/../models/Exceptions/EmailAlreadyExistsException.php');
+            throw new EmailAlreadyExistsException();
+        }
+        
         //Hash password
         $hashedPassword = password_hash($customer->getHashPassword(), PASSWORD_DEFAULT);
         $customer->setHashPassword($hashedPassword);
 
-        //Insert customer as user, then complete the customer object with the new userId
+        //Insert customer as user into users table, then complete the customer object with the new userId
         $user = $this->userRepository->insertUser($customer);
         $customer->setUserId($user->getUserId());
         
-        //Insert customer address, then complete the customer object with the new addressId
+        //Insert customer address into addresses table, then complete the customer object with the new addressId
         $address = $this->addressRepository->insertAddress($customer->getAddress());
         $customer->setAddress($address);
-        //Insert customer
+        
+        //Insert customer into customers table
         $this->customerRepository->insertCustomer($customer);
     }
 
-    public function getCustomerByUser(User $user) : Customer
+    public function getCustomerById($userId) : Customer
     {
-        $customer = $this->customerRepository->getCustomerByUser($user);
-        return $customer;
+        //TODO: Fetch user data, fetch customer data, fetch address data, return customer
+        
     }
 
     public function updateCustomer($customer, $data)
     {
-
         //If a new password was set, the confirm password must match the password currently in DB
         if (isset($data->password) && isset($data->confirmPassword))
         {

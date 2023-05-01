@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . "/APIController.php");
+require_once("APIController.php");
 require_once(__DIR__ . "/../../services/AddressService.php");
 require_once(__DIR__ . "/../../models/Address.php");
 

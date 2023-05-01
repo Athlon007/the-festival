@@ -5,7 +5,7 @@ require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
 require_once(__DIR__ . '/../../services/EventTypeService.php');
 require_once(__DIR__ . '/../../services/TicketTypeService.php');
-require_once("APIController.php");
+require_once('APIController.php');
 require_once(__DIR__ . '/../../models/Types/TicketType.php');
 require_once(__DIR__ . '/../../models/TicketLink.php');
 
@@ -45,7 +45,7 @@ class EventAPIController extends APIController
         ) {
             $this->ticketLinkService = new JazzTicketLinkService();
 
-            // Jazz Services
+            // Music Services
             require_once(__DIR__ . '/../../services/JazzArtistService.php');
             $this->jazzArtistService = new JazzArtistService();
 
