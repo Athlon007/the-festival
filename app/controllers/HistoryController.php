@@ -4,37 +4,37 @@ class HistoryController
     public function manageHistory()
     {
         try{
-            require_once("../services/HistoryService.php");
-            $HistoryService = new HistoryService();
-            $History = $HistoryService->getAllTours();
+            require_once("../services/FestivalHistoryService.php");
+            $HistoryService = new FestivalHistoryService();
+            $History = $HistoryService->getAllHistoryEvents();
             require_once("../views/admin/History management/manageHistory.php");
         }
         catch (PDOException $e){
             echo $e->getMessage();
         }
     }
-    public function addLocation(){
-        try{
-            require_once("../services/HistoryService.php");
-            $HistoryService = new HistoryService();
-            $History = $HistoryService->getAllLocations();
-            require_once("../views/admin/History management/addLocation.php");
+    // public function addLocation(){
+    //     try{
+    //         require_once("../services/HistoryService.php");
+    //         $HistoryService = new HistoryService();
+    //         $History = $HistoryService->getAllLocations();
+    //         require_once("../views/admin/History management/addLocation.php");
 
-        }catch(PDOException $e){
+    //     }catch(PDOException $e){
 
-        }
-    }
-    public function addTour(){
-        try{
-            require_once("../services/HistoryService.php");
-            $HistoryService = new HistoryService();
-            $History = $HistoryService->getAllTours();
-            require_once("../views/admin/History management/addTour.php");
+    //     }
+    // }
+    // public function addTour(){
+    //     try{
+    //         require_once("../services/HistoryService.php");
+    //         $HistoryService = new HistoryService();
+    //         $History = $HistoryService->getAllTours();
+    //         require_once("../views/admin/History management/addTour.php");
 
-        }catch(PDOException $e){
+    //     }catch(PDOException $e){
             
-        }
-    }
+    //     }
+    // }
 }
 
 ?>

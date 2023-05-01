@@ -78,6 +78,13 @@ class Router
             return;
         }
 
+        if (str_starts_with($request, "/ticket")) {
+            require_once("controllers/TicketController.php");
+            $ticketController = new TicketController();
+            $ticketController->markTicketAsScanned();
+            return;
+        }
+
         // Uploader redirect.
         if (str_starts_with($request, "/uploader")) {
             require_once("controllers/UploaderController.php");
@@ -173,6 +180,11 @@ class Router
                 require_once("controllers/FestivalFoodController.php");
                 $festivalFoodController = new FestivalFoodController();
                 $festivalFoodController->loadFoodFestivalPage();
+                break;
+            case "/buyTicket":
+                require_once("controllers/TicketController.php");
+                $ticketController = new TicketController();
+                $ticketController->getAllJazzTickets();
                 break;
             default:
                 $this->route404($message);

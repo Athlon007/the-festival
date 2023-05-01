@@ -1,66 +1,90 @@
 <!--Ticket template by Vedat /Edited by Joshua-->
 
-<div class="container">
-    <h1>The Festival Ticket</h1>
+<?php
+foreach ($tickets as $index => $ticket) {
+    $qrCodeImage = $qrCodeImages[$index];
+    ?>
+    <div class="container">
+        <h1>The Festival Ticket</h1>
 
-    <p class="ticket-information">* Please have ready on your device to present for scanning.</p>
+        <p class="ticket-information">* Please have ready on your device to present for scanning.</p>
 
-    <div class="ticket-info">
-        <label>Event Name:</label>
-        <p>
-            <?= $ticket->getEvent()->getName() ?>
-        </p>
+        <div class="ticket-info">
+            <label>Ticket ID:</label>
+            <p>
+                <?= $ticket->getTicketId() ?>
+            </p>
+        </div>
+
+        <div class="ticket-info">
+            <label>Event Name:</label>
+            <p>
+                <?= $ticket->getEvent()->getName() ?>
+            </p>
+        </div>
+
+        <div class="ticket-info">
+            <label>Event Date:</label>
+            <p>
+                <?= $ticket->getEvent()->getStartTime()->format('l, m/d/Y') ?>
+            </p>
+        </div>
+
+        <div class="ticket-info">
+            <label>Event Time:</label>
+            <p>
+                <?= $ticket->getEvent()->getStartTime()->format('H:i') ?>
+                <?= $ticket->getEvent()->getEndTime()->format('H:i') ?>
+            </p>
+        </div>
+
+        <div class="ticket-info">
+            <label>Customer Name:</label>
+            <p>
+                <?= $order->getCustomer()->getFirstName() . ' ' . $order->getCustomer()->getLastName() ?>
+            </p>
+        </div>
+
+        <div class="ticket-info">
+            <label>Event Location:</label>
+            <!-- TODO: It must be retrieved from the event location table -->
+            <p>St. Bavo Church</p>
+        </div>
+
+        <div class="ticket-info">
+            <label>Customer Email:</label>
+            <p>
+                <?= $order->getCustomer()->getEmail() ?>
+            </p>
+        </div>
+
+        <div class="ticket-info">
+            <label>Price:</label>
+            <p style="color: red"><strong>€
+                    <?= $ticket->getFullPrice() ?>
+                </strong></p>
+        </div>
+        <br>
+        <hr>
+        <img src="<?= $qrCodeImage ?>" alt="Ticket QR Code" class="qr-code">
+        <hr>
     </div>
-
-    <div class="ticket-info">
-        <label>Event Date:</label>
-        <p>
-            <?= $ticket->getEvent()->getStartTime()->format('l, m/d/Y') ?>
-        </p>
-    </div>
-
-    <div class="ticket-info">
-        <label>Event Time:</label>
-        <p>
-            <?= $ticket->getEvent()->getStartTime()->format('H:i') ?>
-            <?= $ticket->getEvent()->getEndTime()->format('H:i') ?>
-        </p>
-    </div>
-
-    <div class="ticket-info">
-        <label>Customer Name:</label>
-        <p>
-            <?= $order->getCustomer()->getFirstName() . ' ' . $order->getCustomer()->getLastName() ?>
-        </p>
-    </div>
-
-    <div class="ticket-info">
-        <label>Event Location:</label>
-        <p>St. Bavo Church</p>
-    </div>
-
-    <div class="ticket-info">
-        <label>Customer Email:</label>
-        <p>
-            <?= $order->getCustomer()->getEmail() ?>
-        </p>
-    </div>
-
-    <div class="ticket-info">
-        <label>Price:</label>
-        <p style="color: red"><strong>€
-                <?= $ticket->getEvent()->getPrice() ?>
-            </strong></p>
-    </div>
-    <br>
-    <hr>
-    <img src="<?= $qrCodeImage ?>" alt="Ticket QR Code" class="qr-code">
-    <hr>
-</div>
-</div>
-
+    <?php
+    if ($index < count($tickets) - 1) {
+        ?>
+        <div class="page-break"></div>
+        <?php
+    }
+    ?>
+    <?php
+}
+?>
 
 <style>
+    .page-break {
+        page-break-after: always;
+    }
+
     body {
         background-color: #f2f2f2;
         font-family: Arial, sans-serif;

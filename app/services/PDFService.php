@@ -22,5 +22,7 @@ class PDFService{
 
         return $dompdf;
     }
+
+    
 }
 ?>
