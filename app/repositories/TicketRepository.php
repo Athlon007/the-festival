@@ -113,7 +113,6 @@ class TicketRepository extends Repository
 
             $ticket = new Ticket();
             $ticket->setTicketId($result['ticketId']);
-            $ticket->setQrCodeData($result['qr_code']);
             $ticket->setIsScanned($result['isScanned']);
             $ticket->setBasePrice($result['basePrice']);
             $ticket->setVat($result['vat']);
