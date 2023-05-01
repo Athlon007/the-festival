@@ -70,12 +70,21 @@ foreach ($tickets as $index => $ticket) {
         <hr>
     </div>
     <?php
+    if ($index < count($tickets) - 1) {
+        ?>
+        <div class="page-break"></div>
+        <?php
+    }
+    ?>
+    <?php
 }
 ?>
 
-
-
 <style>
+    .page-break {
+        page-break-after: always;
+    }
+
     body {
         background-color: #f2f2f2;
         font-family: Arial, sans-serif;
