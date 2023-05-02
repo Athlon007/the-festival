@@ -34,7 +34,15 @@ class OrderController
      */
     public function showOrderHistory()
     {
-        //TODO: Implement
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        $customer = unserialize($_SESSION['user']);
+        // $orders = $this->orderService->getOrderHistory($customer->getUserId());
+        $orders = $this->orderService->getOrderHistory(33);
+        require_once('../views/orderHistory.php');
+
+        return $orders;
     }
 
     /**
@@ -49,8 +57,7 @@ class OrderController
             }
             if (!isset($_SESSION['user'])) {
                 throw new Exception("User is not logged in");
-            }
-            else{
+            } else {
                 $customer = unserialize($_SESSION['user']);
             }
 
