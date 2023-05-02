@@ -1,28 +1,29 @@
 <?php
+require_once("Customer.php");
+require_once("OrderItem.php");
 
 class Order implements JsonSerializable
 {
     private int $orderId;
-    private array $tickets;
-    private Invoice $invoice;
+    private array $orderItems;
     private Customer $customer;
     private DateTime $orderDate;
+    private bool $isPaid;
 
     public function jsonSerialize(): mixed
     {
         return [
             'orderId' => $this->orderId,
-            'tickets' => $this->tickets,
-            'invoice' => $this->invoice,
+            'orderItems' => $this->orderItems,
             'customer' => $this->customer,
             'orderDate' => $this->orderDate,
-            'totalFullPrice' => $this->getTotalPrice(),
+            'isPaid' => $this->isPaid
         ];
     }
 
     public function __construct()
     {
-        $this->tickets = [];
+        $this->orderItems = [];
         $this->orderDate = new DateTime("now");
     }
 
@@ -36,26 +37,27 @@ class Order implements JsonSerializable
         $this->orderId = $orderId;
     }
 
-    public function getTickets(): array
+    public function getOrderItems(): array
     {
-        return $this->tickets;
+        return $this->orderItems;
     }
 
-    public function setTickets(array $tickets): void
+    public function setOrderItems(array $orderItems): void
     {
-        $this->tickets = $tickets;
+        $this->orderItems = $orderItems;
     }
 
-    public function addTicket(int $ticket): void
+    public function addOrderItem(OrderItem $orderItem): void
     {
-        $this->tickets[] = $ticket;
+        $this->orderItems[] = $orderItem;
     }
 
-    public function removeTicket(int $ticket): void
+    public function removeOrderItem(OrderItem $orderItem): void
     {
-        $this->tickets = array_filter($this->tickets, function ($t) use ($ticket) {
-            return $t !== $ticket;
-        });
+        $index = array_search($orderItem, $this->orderItems);
+        if ($index !== false) {
+            unset($this->orderItems[$index]);
+        }
     }
 
     public function getCustomer(): Customer

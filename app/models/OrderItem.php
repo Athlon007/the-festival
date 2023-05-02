@@ -1,14 +1,14 @@
 <?php
 
-class InvoiceItem implements JsonSerializable { 
+class OrderItem implements JsonSerializable { 
 
     private $eventName;
     private $ticketTypeName;
+    private $quantity;
     private $basePrice;
     private $vatPercentage;
     private $vatAmount;
     private $fullPrice;
-    private $quantity;
 
     public function jsonSerialize(){
         return [];
@@ -32,6 +32,16 @@ class InvoiceItem implements JsonSerializable {
     public function setTicketTypeName(string $ticketTypeName): void
     {
         $this->ticketTypeName = $ticketTypeName;
+    }
+
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): void
+    {
+        $this->quantity = $quantity;
     }
 
     public function getBasePrice(): float
@@ -73,21 +83,4 @@ class InvoiceItem implements JsonSerializable {
     {
         $this->fullPrice = $fullPrice;
     }
-
-    public function getQuantity(): int
-    {
-        return $this->quantity;
-    }
-
-    public function setQuantity(int $quantity): void
-    {
-        $this->quantity = $quantity;
-    }
-
-    public function getTotalPrice(): float
-    {
-        return $this->fullPrice * $this->quantity;
-    }
-
-    
 }
