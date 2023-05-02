@@ -45,19 +45,24 @@ class UserRepository extends Repository
         }
     }
 
-    public function insertUser(User $user): void
+    public function insertUser($user): User
     {
         try {
             $query = "INSERT INTO users (email, firstName, lastName, hashPassword, userType, registrationDate) VALUES (:email, :firstName, :lastName, :hashPassword, :userType, NOW())";
             $stmt = $this->connection->prepare($query);
 
-            $stmt->bindValue(":email", $user->getEmail());
-            $stmt->bindValue(":firstName", $user->getFirstName());
-            $stmt->bindValue(":lastName", $user->getLastName());
-            $stmt->bindValue(":hashPassword", $user->getHashPassword());
-            $stmt->bindValue(":userType", $user->getUserType());
+            $stmt->bindValue(":email", htmlspecialchars($user->getEmail()));
+            $stmt->bindValue(":firstName", htmlspecialchars($user->getFirstName()));
+            $stmt->bindValue(":lastName", htmlspecialchars($user->getLastName()));
+            $stmt->bindValue(":hashPassword", htmlspecialchars($user->getHashPassword()));
+            $stmt->bindValue(":userType", htmlspecialchars($user->getUserType()));
 
             $stmt->execute();
+
+            $user->setUserId($this->connection->lastInsertId());
+            $user->setRegistrationDate(new DateTime());
+
+            return $user;
         } catch (Exception $ex) {
             throw ($ex);
         }
@@ -68,8 +73,8 @@ class UserRepository extends Repository
     {
         try {
             $stmt = $this->connection->prepare("INSERT INTO resettokens (email, reset_token, sendTime) VALUES (:email, :reset_token, NOW())");
-            $stmt->bindValue(":email", $email);
-            $stmt->bindValue(":reset_token", $reset_token);
+            $stmt->bindValue(":email", htmlspecialchars($email));
+            $stmt->bindValue(":reset_token", htmlspecialchars($reset_token));
             $stmt->execute();
         } catch (Exception $ex) {
             throw ($ex);
@@ -81,7 +86,7 @@ class UserRepository extends Repository
         try {
             $stmt = $this->connection->prepare("UPDATE users SET hashPassword = :hashPassword WHERE email = :email");
             $data = [
-                ':email' => $user->getEmail(),
+                ':email' => htmlspecialchars($user->getEmail()),
                 ':hashPassword' => $user->getHashPassword()
             ];
             $stmt->execute($data);
@@ -95,8 +100,8 @@ class UserRepository extends Repository
         try {
             $stmt = $this->connection->prepare("SELECT * FROM resettokens WHERE email =:email AND reset_token =:reset_token AND sendTime >= DATE_SUB(NOW(), INTERVAL 1 DAY)");
             $data = [
-                ':email' => $email,
-                ':reset_token' => $reset_token
+                ':email' => htmlspecialchars($email),
+                ':reset_token' => htmlspecialchars($reset_token)
             ];
             $stmt->execute($data);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -201,7 +206,7 @@ class UserRepository extends Repository
     {
         try {
             $stmt = $this->connection->prepare("SELECT * FROM users WHERE email = :email");
-            $stmt->bindValue(':email', $email);
+            $stmt->bindValue(':email', htmlspecialchars($email));
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 

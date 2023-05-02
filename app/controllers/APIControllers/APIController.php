@@ -13,7 +13,6 @@ class APIController
         }
 
         try {
-            // if get
             if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 $this->handleGetRequest($request);
             } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {

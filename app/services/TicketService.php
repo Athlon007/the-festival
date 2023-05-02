@@ -114,8 +114,6 @@ class TicketService
   {
     $pdfService = new PDFService();
 
-    $domPdf = new Dompdf();
-
     foreach ($tickets as $ticket) {
       // buffer the following html with PHP so we can pass it to the PDF generator
       ob_start();

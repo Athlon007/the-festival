@@ -67,10 +67,10 @@ class TicketLinkRepository extends Repository
 		t.ticketTypePrice as ticketTypePrice,
 		t.nrOfPeople as ticketTypeNrOfPeople,
         c.ticketLinkId as ticketLinkId
-    FROM events e
-    JOIN ticketlinks c on e.eventId = c.eventId
-    join tickettypes t on c.ticketTypeId = t.ticketTypeId
-    join festivaleventtypes f on f.eventTypeId  = e.festivalEventType";
+        FROM events e
+        JOIN ticketlinks c on e.eventId = c.eventId
+        JOIN tickettypes t on c.ticketTypeId = t.ticketTypeId
+        JOIN festivaleventtypes f on f.eventTypeId  = e.festivalEventType";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
@@ -95,8 +95,8 @@ class TicketLinkRepository extends Repository
         c.ticketLinkId as ticketLinkId
         FROM events e
         JOIN ticketlinks c on e.eventId = c.eventId
-        join tickettypes t on c.ticketTypeId = t.ticketTypeId
-        join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
+        JOIN tickettypes t on c.ticketTypeId = t.ticketTypeId
+        JOIN festivaleventtypes f on f.eventTypeId  = e.festivalEventType
         WHERE ticketLinkId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -128,8 +128,8 @@ class TicketLinkRepository extends Repository
         c.ticketLinkId as ticketLinkId
         FROM events e
         JOIN ticketlinks c on e.eventId = c.eventId
-        join tickettypes t on c.ticketTypeId = t.ticketTypeId
-        join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
+        JOIN tickettypes t on c.ticketTypeId = t.ticketTypeId
+        JOIN festivaleventtypes f on f.eventTypeId  = e.festivalEventType
         WHERE e.eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);

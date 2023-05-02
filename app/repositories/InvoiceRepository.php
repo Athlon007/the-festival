@@ -1,41 +1,40 @@
 <?php
 require_once(__DIR__ . "/../repositories/Repository.php");
-require_once(__DIR__ . "/../models/Invoice.php");
-require_once(__DIR__ . "/../models/InvoiceItem.php");
+require_once(__DIR__ . "/../models/Order.php");
+require_once(__DIR__ . "/../models/OrderItem.php");
 
-class InvoiceRepository extends Repository{
+class OrderRepository extends Repository{
 
-    private function buildInvoice($row) : Invoice{
-        $invoice = new Invoice();
-        $invoice->setInvoiceId($row['invoiceId']);
-        $invoice->setInvoiceDate($row['invoiceDate']);
-        $invoice->setInvoiceDeadline($row['invoiceDeadline']);
-        $invoice->setInvoiceItems($this->getInvoiceItemsByOrderId($row['orderId']));
-        return $invoice;
+    private function buildOrder($row) : Order{
+        $order = new Order();
+        $order->setOrderId($row['orderId']);
+        $order->setOrderDate($row['orderDate']);
+        $order->setOrderItems($this->getOrderItemsByOrderId($row['orderId']));
+        return $order;
     }
 
-    private function buildInvoiceItem($row) : InvoiceItem{
-        $invoiceItem = new InvoiceItem();
-        $invoiceItem->setEventName($row['name']);
-        $invoiceItem->setTicketTypeName($row['ticketTypeName']);
-        $invoiceItem->setBasePrice($row['basePrice']);
-        $invoiceItem->setVatPercentage($row['vatPercentage']);
-        $invoiceItem->setVatAmount($row['vatAmount']);
-        $invoiceItem->setFullPrice($row['fullPrice']);
-        $invoiceItem->setQuantity($row['quantity']);
-        return $invoiceItem;
+    private function buildOrderItem($row) : OrderItem{
+        $orderItem = new OrderItem();
+        $orderItem->setEventName($row['name']);
+        $orderItem->setTicketTypeName($row['ticketTypeName']);
+        $orderItem->setBasePrice($row['basePrice']);
+        $orderItem->setVatPercentage($row['vatPercentage']);
+        $orderItem->setVatAmount($row['vatAmount']);
+        $orderItem->setFullPrice($row['fullPrice']);
+        $orderItem->setQuantity($row['quantity']);
+        return $orderItem;
     }
     
-    public function getById($invoiceId) : Invoice{
-        $sql = "select * from invoices where invoiceId = :invoiceId";
+    public function getById($orderId) : Order{
+        $sql = "select * from orders where orderId = :orderId";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(":invoiceId", $invoiceId);
+        $stmt->bindValue(":orderId", $orderId);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $this->buildInvoice($result);
+        return $this->buildOrder($result);
     }
 
-    public function getInvoiceItemsByOrderId($orderId) : array{
+    public function getOrderItemsByOrderId($orderId) : array{
         try{
             $sql = "select e.name as eventName, ti.ticketTypeName as ticketTypeName, t.basePrice as basePrice, f.VAT as vatPercentage, t.vat as vatAmount, t.fullPrice as fullPrice, count(t.eventId) as quantity " +
             "from tickets t " +
@@ -49,20 +48,20 @@ class InvoiceRepository extends Repository{
             $stmt->bindValue(":orderId", $orderId);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $invoiceItems = array();
+            $orderItems = array();
             foreach($result as $row){
-                $invoiceItem = $this->buildInvoiceItem($row);
-                array_push($invoiceItems, $invoiceItem);
+                $orderItem = $this->buildOrderItem($row);
+                array_push($orderItems, $orderItem);
             }
 
-            return $invoiceItems;
+            return $orderItems;
         }
         catch(Exception $e){
-            throw new Exception("Error while getting invoice items: " . $e->getMessage());
+            throw new Exception("Error while getting order items: " . $e->getMessage());
         }
     }
 
-    public function update($invoiceId, $invoice){
+    public function update($orderId, $order){
 
     }
 

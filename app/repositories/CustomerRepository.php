@@ -4,19 +4,19 @@ require_once(__DIR__ . '/../models/Customer.php');
 require_once(__DIR__ . '/../repositories/AddressRepository.php');
 require_once(__DIR__ . '/../repositories/UserRepository.php');
 
+/**
+ * Repository for the Customer API endpoint.
+ * @author Joshua
+ */
 class CustomerRepository extends Repository{
 
-    private $addressRepository;
-    private $userRepository;
     
     public function __construct()
     {
         parent::__construct();
-        $this->addressRepository = new AddressRepository();
-        $this->userRepository = new UserRepository();
     }
     
-    public function getCustomerByUser(User $user) : Customer
+    public function getByUser(User $user) : Customer
     {
         try{
             $query = "SELECT dateOfBirth, phoneNumber, addressId FROM customers WHERE userId = :userId";
@@ -53,16 +53,9 @@ class CustomerRepository extends Repository{
         }        
     }
     
-    public function insertCustomer(Customer $customer) : void
+    public function insertCustomer($customer) : void
     {
         try{
-            //Throw error if email already exists
-            if($this->userRepository->emailAlreadyExists($customer->getEmail()))
-            {
-                require_once(__DIR__ . '/../models/Exceptions/EmailAlreadyExistsException.php');
-                throw new EmailAlreadyExistsException();
-            }
-
             //Insert customer address into address table and retrieve the new addressId
             $this->addressRepository->insertAddress($customer->getAddress());
             $customer->getAddress()->setAddressId($this->addressRepository->connection->lastInsertId());
