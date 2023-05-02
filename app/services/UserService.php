@@ -107,7 +107,7 @@ class UserService
             throw ($ex);
         }
     }
-
+    //TODO: move this function to the mailservice 
     public function sendResetTokenToUser($email, $reset_token)
     {
         try {
@@ -256,17 +256,17 @@ class UserService
     public function updateUser($data): void
     {
         try {
-            //Sanitise user data
-            $data = $this->sanitiseUserData($data);
-
+            //Fetch user from db
             $user = $this->userRepository->getById($data->id);
-            $user->setFirstName(htmlspecialchars($data->firstName));
-            $user->setLastName(htmlspecialchars($data->lastName));
-            $user->setEmail(htmlspecialchars($data->email));
+            
+            //Update user data
+            $user->setFirstName($data->firstName);
+            $user->setLastName($data->lastName);
+            $user->setEmail($data->email);
 
-            if (htmlspecialchars($data->role == "admin")) {
+            if ($data->role == "admin") {
                 $user->setUserType(1);
-            } else if (htmlspecialchars($data->role == "employee")) {
+            } else if ($data->role == "employee") {
                 $user->setUserType(2);
             } else {
                 $user->setUserType(3);
@@ -296,24 +296,4 @@ class UserService
         }
     }
 
-    public function sanitiseUserData($data)
-    {
-        if (isset($data->email)) {
-            $data->email = htmlspecialchars($data->email);
-        }
-        if (isset($data->password)) {
-            $data->password = htmlspecialchars($data->password);
-        }
-        if (isset($data->firstName)) {
-            $data->firstName = htmlspecialchars($data->firstName);
-        }
-        if (isset($data->lastName)) {
-            $data->lastName = htmlspecialchars($data->lastName);
-        }
-        if (isset($data->userType)) {
-            $data->userType = htmlspecialchars($data->userType);
-        }
-
-        return $data;
-    }
 }

@@ -11,6 +11,7 @@ class UserAPIController extends APIController
 {
     private $userService;
     private $customerService;
+    private const CAPTCHA_SECRET = "6LfMgZwkAAAAAFs2hfXUpKQ1wNwHaic9rnZozCbH";
 
     public function __construct()
     {
@@ -119,26 +120,35 @@ class UserAPIController extends APIController
     {
         try {
             //Check if all data is present
-            if (
-                !isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password)
-                || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse)
-            ) {
-
+            if (!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password)
+            || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse)) { 
+            
                 throw new MissingVariableException("Registration data incomplete.");
             }
 
             //Verify captcha
-            $secret = "6LfMgZwkAAAAAFs2hfXUpKQ1wNwHaic9rnZozCbH";
             $response = $data->captchaResponse;
-            $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $secret . '&response=' . $response);
+            $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . self::CAPTCHA_SECRET . '&response=' . $response);
             $responseData = json_decode($verifyResponse, true);
 
             if (!$responseData["success"]) {
                 throw new Exception("Captcha verification failed.");
             }
 
-            //Register new customer
-            $this->customerService->registerCustomer($data);
+            //Create customer object from data
+            $customer = new Customer();
+            $customer->setFirstName($data->firstName);
+            $customer->setLastName($data->lastName);
+            $customer->setEmail($data->email);
+            $customer->setHashPassword($data->password);
+            $customer->setDateOfBirth($data->dateOfBirth);
+            $customer->setPhoneNumber($data->phoneNumber);
+            
+            //Create address object from data, then set for customer
+            $address = new Address(-1, $data->address->streetName, $data->address->houseNumber, $data->address->postalCode, $data->address->city, $data->address->country);
+            $customer->setAddress($address);
+            
+            $this->customerService->registerCustomer($customer);
 
             parent::sendSuccessMessage("Registration successful.");
         } catch (Exception $ex) {

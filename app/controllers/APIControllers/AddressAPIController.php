@@ -1,10 +1,10 @@
 <?php
-require_once(__DIR__ . "/APIController.php");
+require_once("APIController.php");
 require_once(__DIR__ . "/../../services/AddressService.php");
 require_once(__DIR__ . "/../../models/Address.php");
 
 /**
- * This class is the controller for the Address API.
+ * Controller for the Address API endpoint.
  * @author Joshua
  */
 class AddressAPIController extends APIController
@@ -82,14 +82,14 @@ class AddressAPIController extends APIController
             echo json_encode($address);
         } catch (Throwable $e) {
             Logger::write($e);
-            $this->sendErrorMessage("unable to retrive an address.", 400);
+            $this->sendErrorMessage($e);
         }
     }
 
     protected function handlePutRequest($uri)
     {
         if (!$this->isLoggedInAsAdmin()) {
-            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            $this->sendErrorMessage('You are not logged in as admin.', 403);
             return;
         }
 
@@ -172,8 +172,7 @@ class AddressAPIController extends APIController
     private function fetchAddress($data)
     {
         try {
-            $addressService = new AddressService();
-            $address = $addressService->fetchAddressFromPostCodeAPI($data);
+            $address = $this->addressService->fetchAddressFromPostCodeAPI($data);
 
             header('Content-Type: application/json');
             echo json_encode([

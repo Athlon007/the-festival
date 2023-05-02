@@ -1,28 +1,38 @@
 <?php
+require_once("Customer.php");
+require_once("OrderItem.php");
 
 class Order implements JsonSerializable
 {
     private int $orderId;
-    private array $tickets;
-
-    private float $totalFullPrice;
+    private array $orderItems;
     private Customer $customer;
     private DateTime $orderDate;
+    private bool $isPaid;
+    private float $totalBasePrice;
+    private float $totalVat9Amount;
+    private float $totalVat21Amount;
+    private float $totalPrice;
 
     public function jsonSerialize(): mixed
     {
         return [
-            'orderId' => $this->orderId,
-            'tickets' => $this->tickets,
-            'customer' => $this->customer,
-            'orderDate' => $this->orderDate,
-            'totalFullPrice' => $this->totalFullPrice,
+            "orderId" => $this->orderId,
+            "orderItems" => $this->orderItems,
+            "customer" => $this->customer,
+            "orderDate" => $this->orderDate,
+            "isPaid" => $this->isPaid,
+            "totalBasePrice" => $this->totalBasePrice,
+            "totalVat9Amount" => $this->totalVat9Amount,
+            "totalVat21Amount" => $this->totalVat21Amount,
+            "totalPrice" => $this->totalPrice
         ];
     }
 
     public function __construct()
     {
-        $this->tickets = [];
+        $this->orderItems = [];
+        $this->orderDate = new DateTime("now");
     }
 
     public function getOrderId(): int
@@ -35,26 +45,27 @@ class Order implements JsonSerializable
         $this->orderId = $orderId;
     }
 
-    public function getTickets(): array
+    public function getOrderItems(): array
     {
-        return $this->tickets;
+        return $this->orderItems;
     }
 
-    public function setTickets(array $tickets): void
+    public function setOrderItems(array $orderItems): void
     {
-        $this->tickets = $tickets;
+        $this->orderItems = $orderItems;
     }
 
-    public function addTicket(int $ticket): void
+    public function addOrderItem(OrderItem $orderItem): void
     {
-        $this->tickets[] = $ticket;
+        $this->orderItems[] = $orderItem;
     }
 
-    public function removeTicket(int $ticket): void
+    public function removeOrderItem(OrderItem $orderItem): void
     {
-        $this->tickets = array_filter($this->tickets, function ($t) use ($ticket) {
-            return $t !== $ticket;
-        });
+        $index = array_search($orderItem, $this->orderItems);
+        if ($index !== false) {
+            unset($this->orderItems[$index]);
+        }
     }
 
     public function getCustomer(): Customer
@@ -77,13 +88,53 @@ class Order implements JsonSerializable
         $this->orderDate = $orderDate;
     }
 
-    public function getTotalFullPrice(): float
+    public function getIsPaid(): bool
     {
-        return $this->totalFullPrice;
+        return $this->isPaid;
     }
 
-    public function setTotalFullPrice(float $totalFullPrice): void
+    public function setIsPaid(bool $isPaid): void
     {
-        $this->totalFullPrice = $totalFullPrice;
+        $this->isPaid = $isPaid;
+    }
+
+    public function getTotalBasePrice(): float
+    {
+        return $this->totalBasePrice;
+    }
+
+    public function setTotalBasePrice(float $totalBasePrice): void
+    {
+        $this->totalBasePrice = $totalBasePrice;
+    }
+
+    public function getTotalVat9Amount(): float
+    {
+        return $this->totalVat9Amount;
+    }
+
+    public function setTotalVat9Amount(float $totalVat9Amount): void
+    {
+        $this->totalVat9Amount = $totalVat9Amount;
+    }
+
+    public function getTotalVat21Amount(): float
+    {
+        return $this->totalVat21Amount;
+    }
+
+    public function setTotalVat21Amount(float $totalVat21Amount): void
+    {
+        $this->totalVat21Amount = $totalVat21Amount;
+    }
+
+    public function getTotalPrice(): float
+    {
+        return $this->totalPrice;
+    }
+
+    public function setTotalPrice(float $totalPrice): void
+    {
+        $this->totalPrice = $totalPrice;
     }
 }

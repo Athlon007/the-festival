@@ -13,4 +13,11 @@ class Repository
             echo $ex->getMessage();
         }
     }
+
+    protected function ifSetThenSpecialChars($value){
+        if(isset($value))
+            return htmlspecialchars($value);
+        else
+            return null;
+    }
 }

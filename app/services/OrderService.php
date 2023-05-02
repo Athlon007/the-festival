@@ -62,6 +62,7 @@ class OrderService
             $dompdf = $this->ticketService->generatePDFTicket($ticket, $qrCode, $order);
             $this->ticketService->sendTicketByEmail($dompdf, $ticket, $order);
         }
+        
         //Generate and email the invoice
     }
 }

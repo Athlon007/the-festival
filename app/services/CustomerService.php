@@ -1,70 +1,60 @@
 <?php
-
-require_once(__DIR__ . '/../repositories/UserRepository.php');
+require_once(__DIR__ . '/../services/MailService.php');
 require_once(__DIR__ . '/../repositories/CustomerRepository.php');
 require_once(__DIR__ . '/../repositories/AddressRepository.php');
-require_once(__DIR__ . '/../services/MailService.php');
+require_once(__DIR__ . '/../repositories/UserRepository.php');
 require_once(__DIR__ . '/../models/Customer.php');
-require_once(__DIR__ . '/../models/User.php');
 
-class CustomerService extends UserService{
-    private $addressRepository;
+/**
+ * Service for the Customer API endpoint.
+ * @author Joshua
+ */
+class CustomerService{
     private $mailService;
+    private $customerRepository;
+    private $addressRepository;
+    private $userRepository;
 
     public function __construct(){
+        $this->customerRepository = new CustomerRepository();
         $this->addressRepository = new AddressRepository();
+        $this->userRepository = new UserRepository();
         $this->mailService = new MailService();
     }
 
-    public function registerCustomer($data)
+    public function registerCustomer($customer)
     {
-
-        //Sanitise data
-        $data->userType = 3;
-        $data = $this->sanitiseCustomerData($data);
-
-        //Create customer object
-        $customer = new Customer();
-
-        //Convert data to appropriate datatypes
-        $dateOfBirth = new DateTime($data->dateOfBirth);
-
-        //Convert data to address
-        $streetname = $data->address->streetName;
-        $housenumber = $data->address->houseNumber;
-        $postalcode = $data->address->postalCode;
-        $city = $data->address->city;
-        $country = $data->address->country;
-        $address = new Address(-1, $streetname, $housenumber, $postalcode, $city, $country);
-
-        //Set customer properties
-        $customer->setEmail($data->email);
-        $customer->setFirstName($data->firstName);
-        $customer->setLastName($data->lastName);
-        $customer->setDateOfBirth($dateOfBirth);
-        $customer->setPhoneNumber($data->phoneNumber);
-        $customer->setAddress($address);
-
+        //Throw error if email already exists
+        if($this->userRepository->emailAlreadyExists($customer->getEmail()))
+        {
+            require_once(__DIR__ . '/../models/Exceptions/EmailAlreadyExistsException.php');
+            throw new EmailAlreadyExistsException();
+        }
+        
         //Hash password
-        $hashedPassword = password_hash($data->password, PASSWORD_DEFAULT);
+        $hashedPassword = password_hash($customer->getHashPassword(), PASSWORD_DEFAULT);
         $customer->setHashPassword($hashedPassword);
 
-        //Insert customer
+        //Insert customer as user into users table, then complete the customer object with the new userId
+        $user = $this->userRepository->insertUser($customer);
+        $customer->setUserId($user->getUserId());
+        
+        //Insert customer address into addresses table, then complete the customer object with the new addressId
+        $address = $this->addressRepository->insertAddress($customer->getAddress());
+        $customer->setAddress($address);
+        
+        //Insert customer into customers table
         $this->customerRepository->insertCustomer($customer);
-
     }
 
-    public function getCustomerByUser(User $user) : Customer
+    public function getCustomerById($userId) : Customer
     {
-        $customer = $this->customerRepository->getCustomerByUser($user);
-        return $customer;
+        //TODO: Fetch user data, fetch customer data, fetch address data, return customer
+        
     }
 
     public function updateCustomer($customer, $data)
     {
-        //Sanitise data
-        $data = $this->sanitiseCustomerData($data);
-
         //If a new password was set, the confirm password must match the password currently in DB
         if (isset($data->password) && isset($data->confirmPassword))
         {
@@ -84,7 +74,7 @@ class CustomerService extends UserService{
         //If the email has been updated, make sure it's not a duplicate in db, then update
         if ($customer->getEmail() != $data->email)
         {
-            if (parent::emailAlreadyExists($data->email))
+            if ($this->userRepository->emailAlreadyExists($data->email))
                 throw new EmailAlreadyExistsException();
 
             $customer->setEmail($data->email);
@@ -102,19 +92,5 @@ class CustomerService extends UserService{
         $customer->getAddress()->setCountry($data->address->country);
 
         $this->customerRepository->updateCustomer($customer);
-    }
-
-    private function sanitiseCustomerData($data){
-
-        $data = parent::sanitiseUserData($data);
-        $data->dateOfBirth = htmlspecialchars($data->dateOfBirth);
-        $data->phoneNumber = htmlspecialchars($data->phoneNumber);
-        $data->address->streetName = htmlspecialchars($data->address->streetName);
-        $data->address->houseNumber = htmlspecialchars($data->address->houseNumber);
-        $data->address->postalCode = htmlspecialchars($data->address->postalCode);
-        $data->address->city = htmlspecialchars($data->address->city);
-        $data->address->country = htmlspecialchars($data->address->country);
-
-        return $data;
     }
 }
