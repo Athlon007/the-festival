@@ -73,7 +73,7 @@ class JazzArtistRepository extends Repository
     public function getAll($sort, $filters): array
     {
         $sql = "SELECT artistId, name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, recentAlbums, artistKindId "
-            . "FROM jazzartists";
+            . "FROM artists";
 
 
         // foreach with key and value
@@ -117,7 +117,7 @@ class JazzArtistRepository extends Repository
     public function getById($id): ?Artist
     {
         $sql = "SELECT artistId, name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, recentAlbums, artistKindId "
-            . "FROM jazzartists WHERE artistId = :id";
+            . "FROM artists WHERE artistId = :id";
         $statement = $this->connection->prepare($sql);
         $statement->bindParam(":id", $id);
         $statement->execute();
@@ -145,7 +145,7 @@ class JazzArtistRepository extends Repository
         $spotifyUrl,
         $artistKindId
     ): int {
-        $sql = "INSERT INTO jazzartists "
+        $sql = "INSERT INTO artists "
             . "(name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, artistKindId) "
             . "VALUES (:name, :description, :recentAlbums, :genres, :country, :homepageUrl, :facebookUrl, :twitterUrl, :instagramUrl, :spotifyUrl, :artistKindId)";
         $statement = $this->connection->prepare($sql);
@@ -168,7 +168,7 @@ class JazzArtistRepository extends Repository
 
     public function deleteById($artistId)
     {
-        $sql = "DELETE FROM jazzartists WHERE artistId = :artistId";
+        $sql = "DELETE FROM artists WHERE artistId = :artistId";
         $statement = $this->connection->prepare($sql);
         $statement->bindParam(":artistId", $artistId);
         $statement->execute();
@@ -188,7 +188,7 @@ class JazzArtistRepository extends Repository
         $spotifyUrl,
         $artistKindId
     ) {
-        $sql = "UPDATE jazzartists SET "
+        $sql = "UPDATE artists SET "
             . "name = :name, "
             . "description = :description, "
             . "recentAlbums = :recentAlbums, "
@@ -252,7 +252,7 @@ class JazzArtistRepository extends Repository
     public function getKindOfArtist($id): ArtistKind
     {
         $sql = "SELECT a.artistId, ak.id, ak.name "
-            . "FROM jazzartists a "
+            . "FROM artists a "
             . "INNER JOIN artistkinds ak ON a.artistKindId = ak.id "
             . "WHERE a.artistId = :id";
         $stmt = $this->connection->prepare($sql);

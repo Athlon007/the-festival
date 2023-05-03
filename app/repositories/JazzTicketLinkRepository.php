@@ -139,7 +139,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
         JOIN events e ON e.eventId = je.eventId
         JOIN ticketlinks c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
-        join jazzartists a on a.artistId = je.artistId
+        join artists a on a.artistId = je.artistId
         join locations l on l.locationId = je.locationId
         join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
         join addresses ad on ad.addressId =l.addressId
@@ -273,7 +273,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
         JOIN events e ON e.eventId = je.eventId
         JOIN ticketlinks c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
-        join jazzartists a on a.artistId = je.artistId
+        join artists a on a.artistId = je.artistId
         join locations l on l.locationId = je.locationId
         join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
         join addresses ad on ad.addressId =l.addressId
@@ -336,7 +336,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
         JOIN events e ON e.eventId = je.eventId
         JOIN ticketlinks c on e.eventId = c.eventId
         join tickettypes t on c.ticketTypeId = t.ticketTypeId
-        join jazzartists a on a.artistId = je.artistId
+        join artists a on a.artistId = je.artistId
         join locations l on l.locationId = je.locationId
         join festivaleventtypes f on f.eventTypeId  = e.festivalEventType
         join addresses ad on ad.addressId =l.addressId
