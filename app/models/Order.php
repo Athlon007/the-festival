@@ -6,32 +6,27 @@ class Order implements JsonSerializable
 {
     private int $orderId;
     private array $orderItems;
+    private array $tickets;
     private Customer $customer;
     private DateTime $orderDate;
     private bool $isPaid;
-    private float $totalBasePrice;
-    private float $totalVat9Amount;
-    private float $totalVat21Amount;
-    private float $totalPrice;
 
     public function jsonSerialize(): mixed
     {
         return [
             "orderId" => $this->orderId,
             "orderItems" => $this->orderItems,
+            "tickets" => $this->tickets,
             "customer" => $this->customer,
             "orderDate" => $this->orderDate,
             "isPaid" => $this->isPaid,
-            "totalBasePrice" => $this->totalBasePrice,
-            "totalVat9Amount" => $this->totalVat9Amount,
-            "totalVat21Amount" => $this->totalVat21Amount,
-            "totalPrice" => $this->totalPrice
         ];
     }
 
     public function __construct()
     {
         $this->orderItems = [];
+        $this->tickets = [];
         $this->orderDate = new DateTime("now");
     }
 
@@ -68,6 +63,29 @@ class Order implements JsonSerializable
         }
     }
 
+    public function getTickets(): array
+    {
+        return $this->tickets;
+    }
+
+    public function setTickets(array $tickets): void
+    {
+        $this->tickets = $tickets;
+    }
+
+    public function addTicket(Ticket $ticket): void
+    {
+        $this->tickets[] = $ticket;
+    }
+
+    public function removeTicket(Ticket $ticket): void
+    {
+        $index = array_search($ticket, $this->tickets);
+        if ($index !== false) {
+            unset($this->tickets[$index]);
+        }
+    }
+
     public function getCustomer(): Customer
     {
         return $this->customer;
@@ -100,41 +118,42 @@ class Order implements JsonSerializable
 
     public function getTotalBasePrice(): float
     {
-        return $this->totalBasePrice;
-    }
-
-    public function setTotalBasePrice(float $totalBasePrice): void
-    {
-        $this->totalBasePrice = $totalBasePrice;
+        $totalBasePrice = 0;
+        foreach ($this->orderItems as $orderItem) {
+            $totalBasePrice += $orderItem->getBasePrice();
+        }
+        return $totalBasePrice;
     }
 
     public function getTotalVat9Amount(): float
     {
-        return $this->totalVat9Amount;
-    }
-
-    public function setTotalVat9Amount(float $totalVat9Amount): void
-    {
-        $this->totalVat9Amount = $totalVat9Amount;
+        $totalVat9Amount = 0;
+        foreach ($this->orderItems as $orderItem) {
+            if ($orderItem->getVatPercentage() == 0.09) {
+                $totalVat9Amount += $orderItem->getVatAmount();
+            }
+        }
+        return $totalVat9Amount;
     }
 
     public function getTotalVat21Amount(): float
     {
-        return $this->totalVat21Amount;
-    }
-
-    public function setTotalVat21Amount(float $totalVat21Amount): void
-    {
-        $this->totalVat21Amount = $totalVat21Amount;
+        $totalVat21Amount = 0;
+        foreach ($this->orderItems as $orderItem) {
+            if ($orderItem->getVatPercentage() == 0.21) {
+                $totalVat9Amount += $orderItem->getVatAmount();
+            }
+        }
+        return $totalVat21Amount;
     }
 
     public function getTotalPrice(): float
     {
-        return $this->totalPrice;
-    }
-
-    public function setTotalPrice(float $totalPrice): void
-    {
-        $this->totalPrice = $totalPrice;
+        $totalVatTotalPrice = 0;
+        foreach ($this->orderItems as $orderItem) {
+            $totalVatTotalPrice += $orderItem->getFullPrice();
+        }
+        
+        return $totalVatTotalPrice;
     }
 }
