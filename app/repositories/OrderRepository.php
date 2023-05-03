@@ -19,7 +19,8 @@ class OrderRepository extends Repository
         $this->userRepository = new UserRepository();
     }
 
-    public function getById($orderId) : Order{
+    public function getById($orderId): Order
+    {
         $sql = "select * from orders where orderId = :orderId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderId", $orderId);
@@ -28,7 +29,8 @@ class OrderRepository extends Repository
         return $this->buildOrder($result);
     }
 
-    private function buildOrder($row) : Order{
+    private function buildOrder($row): Order
+    {
         $order = new Order();
         $order->setOrderId($row['orderId']);
         $order->setOrderDate($row['orderDate']);
@@ -36,7 +38,8 @@ class OrderRepository extends Repository
         return $order;
     }
 
-    private function buildOrderItem($row) : OrderItem{
+    private function buildOrderItem($row): OrderItem
+    {
         $orderItem = new OrderItem();
         $orderItem->setEventName($row['name']);
         $orderItem->setTicketTypeName($row['ticketTypeName']);
@@ -94,34 +97,63 @@ class OrderRepository extends Repository
         return $orders;
     }
 
-    public function getOrderItemsByOrderId($orderId) : array{
-        try{
+    public function getOrderItemsByOrderId($orderId): array
+    {
+        try {
             $sql = "select e.name as eventName, ti.ticketTypeName as ticketTypeName, t.basePrice as basePrice, f.VAT as vatPercentage, t.vat as vatAmount, t.fullPrice as fullPrice, count(t.eventId) as quantity " +
-            "from tickets t " +
-            "join tickettypes ti on t.ticketTypeId = ti.ticketTypeId " +
-            "join events e on e.eventId = t.eventId " +
-            "join festivaleventtypes f on e.festivalEventType = f.eventTypeId " +
-            "where t.orderId = :orderId " +
-            "group by e.name, ti.ticketTypeName, e.startTime, t.basePrice, f.VAT, t.vat, t.fullPrice";
+                "from tickets t " +
+                "join tickettypes ti on t.ticketTypeId = ti.ticketTypeId " +
+                "join events e on e.eventId = t.eventId " +
+                "join festivaleventtypes f on e.festivalEventType = f.eventTypeId " +
+                "where t.orderId = :orderId " +
+                "group by e.name, ti.ticketTypeName, e.startTime, t.basePrice, f.VAT, t.vat, t.fullPrice";
 
             $stmt = $this->connection->prepare($sql);
             $stmt->bindValue(":orderId", $orderId);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $orderItems = array();
-            foreach($result as $row){
+            foreach ($result as $row) {
                 $orderItem = $this->buildOrderItem($row);
                 array_push($orderItems, $orderItem);
             }
 
             return $orderItems;
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             throw new Exception("Error while getting order items: " . $e->getMessage());
         }
     }
 
-    public function update($orderId, $order){
+    public function getOrdersToExport()
+    {
+        $sql = "select o.orderId, o.orderDate, o.totalFullPrice, u.firstName , u.lastName , u.email , e.name, t.ticketId from orders o
+        join users u on u.userId = o.customerId
+        join tickets t on t.orderId = t.ticketId 
+        join events e on t.eventId = e.eventId";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $orders = [];
+        foreach ($result as $row) {
+            $order = new Order();
+            $order->setOrderId($row['orderId']);
+            $order->setOrderDate($row['orderDate']);
+            $orderItems = $this->getOrderItemsByOrderId($row['orderId']);
+            $order->setOrderItems($orderItems);
+
+            $userRep = new UserRepository();
+            $user = $userRep->getById($row['customerId']);
+            $order->setCustomer($user);
+
+            array_push($orders, $order);
+        }
+        return $orders;
+    }
+
+    public function update($orderId, $order)
+    {
 
     }
 }
