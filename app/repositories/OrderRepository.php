@@ -6,58 +6,46 @@ require_once(__DIR__ . "/../models/Ticket/Ticket.php");
 require_once(__DIR__ . "/../models/Event.php");
 require_once(__DIR__ . "/../models/Address.php");
 require_once(__DIR__ . "/../models/Customer.php");
-require_once(__DIR__ . "/TicketRepository.php");
 require_once(__DIR__ . "/UserRepository.php");
 require_once(__DIR__ . "/CustomerRepository.php");
 
-
 class OrderRepository extends Repository
 {
-    private TicketRepository $ticketRepository;
     private UserRepository $userRepository;
 
     public function __construct()
     {
         parent::__construct();
-        $this->ticketRepository = new TicketRepository();
         $this->userRepository = new UserRepository();
     }
 
-    private function buildOrder($result)
-    {
-
-    }
-
-    public function getOrderById($orderId)
-    {
-        $sql = "select o.orderId, o.orderDate, o.totalFullPrice, o.customerId, t.ticketId  from orders o
-        join tickets t on o.orderId  = t.orderId 
-        WHERE orderId = :orderId";
+    public function getById($orderId) : Order{
+        $sql = "select * from orders where orderId = :orderId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderId", $orderId);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $this->buildOrder($result);
+    }
 
-        if (empty($result))
-            throw new OrderNotFoundException();
-
+    private function buildOrder($row) : Order{
         $order = new Order();
-        $order->setOrderId($result['orderId']);
-        $order->setOrderDate($result['orderDate']);
-        $order->setTotalFullPrice($result['totalFullPrice']);
-
-        $customer = $this->userRepository->getById($result['customerId']);
-        $order->setCustomer($customer);
-
-        $tickets = [];
-
-        foreach ($result as $row) {
-            $ticket = $this->ticketRepository->getTicketById($row['ticketId']);
-            $tickets[] = $ticket;
-            $order->setTickets($tickets);
-        }
-
+        $order->setOrderId($row['orderId']);
+        $order->setOrderDate($row['orderDate']);
+        $order->setOrderItems($this->getOrderItemsByOrderId($row['orderId']));
         return $order;
+    }
+
+    private function buildOrderItem($row) : OrderItem{
+        $orderItem = new OrderItem();
+        $orderItem->setEventName($row['name']);
+        $orderItem->setTicketTypeName($row['ticketTypeName']);
+        $orderItem->setBasePrice($row['basePrice']);
+        $orderItem->setVatPercentage($row['vatPercentage']);
+        $orderItem->setVatAmount($row['vatAmount']);
+        $orderItem->setFullPrice($row['fullPrice']);
+        $orderItem->setQuantity($row['quantity']);
+        return $orderItem;
     }
 
     public function getOrderHistory($customerId): array
@@ -103,19 +91,38 @@ class OrderRepository extends Repository
             $order->setTickets($tickets);
             array_push($orders, $order);
         }
-
         return $orders;
     }
 
-// public function getUnpaidOrder($customerId): Order
-// {
-//     try {
+    public function getOrderItemsByOrderId($orderId) : array{
+        try{
+            $sql = "select e.name as eventName, ti.ticketTypeName as ticketTypeName, t.basePrice as basePrice, f.VAT as vatPercentage, t.vat as vatAmount, t.fullPrice as fullPrice, count(t.eventId) as quantity " +
+            "from tickets t " +
+            "join tickettypes ti on t.ticketTypeId = ti.ticketTypeId " +
+            "join events e on e.eventId = t.eventId " +
+            "join festivaleventtypes f on e.festivalEventType = f.eventTypeId " +
+            "where t.orderId = :orderId " +
+            "group by e.name, ti.ticketTypeName, e.startTime, t.basePrice, f.VAT, t.vat, t.fullPrice";
 
-//     } catch (OrderNotFoundException $e) {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(":orderId", $orderId);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $orderItems = array();
+            foreach($result as $row){
+                $orderItem = $this->buildOrderItem($row);
+                array_push($orderItems, $orderItem);
+            }
 
-//     } catch (Exception $e) {
+            return $orderItems;
+        }
+        catch(Exception $e){
+            throw new Exception("Error while getting order items: " . $e->getMessage());
+        }
+    }
 
-//     }
-// }
+    public function update($orderId, $order){
+
+    }
 }
 ?>
