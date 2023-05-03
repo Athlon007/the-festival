@@ -4,7 +4,6 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 require_once(__DIR__ . '/../models/Customer.php');
-require_once(__DIR__ . '/../models/Invoice.php');
 require_once(__DIR__ . '/../models/Ticket/Ticket.php');
 require_once(__DIR__ . '/../models/Order.php');
 
