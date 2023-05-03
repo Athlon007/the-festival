@@ -85,6 +85,10 @@ function createNewArtist(data) {
                 // exit the new page mode
                 isInCreationMode = false;
                 btnSubmit.innerHTML = 'Save';
+
+                btnOpen.onclick = function () {
+                    setOnClick(data.id, data.kind.id);
+                }
             } else {
                 msgBox.createToast('Somethin went wrong', data.error_message);
             }
@@ -204,19 +208,10 @@ function createNewOptionItem(element) {
                         imgPicker.selectImage(image.id);
                     });
 
+                    //setOnClick(editedArtistId, data.kind.id);
                     btnOpen.onclick = function () {
-                        let link = 'http://' + window.location.hostname;
-                        if (kind.value == 1) {
-                            link += '/festival/jazz/artist/' + data.id;
-                        } else if (kind.value == 2) {
-                            link += '/festival/dance/artist/' + data.id;
-                        }
-
-                        if (link == '') {
-                            link = "http://" + window.location.hostname;
-                        }
-                        window.open(link, '_blank');
-                    };
+                        setOnClick(editedArtistId, data.kind.id);
+                    }
                 } else {
                     msgBox.createToast('Somethin went wrong', data.error_message);
                 }
@@ -227,6 +222,20 @@ function createNewOptionItem(element) {
     }
 
     return option;
+}
+
+function setOnClick(id, kind) {
+    let link = 'http://' + window.location.hostname;
+    if (kind == 1) {
+        link += '/festival/jazz/artist/' + id;
+    } else if (kind == 2) {
+        link += '/festival/dance/artist/' + id;
+    }
+
+    if (link == '') {
+        link = "http://" + window.location.hostname;
+    }
+    window.open(link, '_blank');
 }
 
 // Load text pages from '/api/admin/text-pages'

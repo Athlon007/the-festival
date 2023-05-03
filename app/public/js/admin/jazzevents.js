@@ -253,14 +253,7 @@ function createNewOptionItem(element) {
                     dateEnd = dateEnd.toISOString().slice(0, 16);
                     endTime.value = dateEnd;
 
-                    btnOpen.onclick = function () {
-                        if (baseURL.endsWith('dance')) {
-                            window.open('/festival/dance/event/' + data.event.id, '_blank');
-                        } else {
-                            window.open('/festival/jazz/event/' + data.event.id, '_blank');
-                        }
-
-                    }
+                    setOpenButton(baseURL, data.event.id);
 
                 } else {
                     msgBox.createToast('Something went wrong', data.event.error_message);
@@ -273,6 +266,17 @@ function createNewOptionItem(element) {
     }
 
     return option;
+}
+
+function setOpenButton(baseURI, eventId) {
+    btnOpen.onclick = function () {
+        if (baseURI.endsWith('dance')) {
+            window.open('/festival/dance/event/' + eventId, '_blank');
+        } else {
+            window.open('/festival/jazz/event/' + eventId, '_blank');
+        }
+
+    }
 }
 
 let isBasicStuffLoaded = false;
