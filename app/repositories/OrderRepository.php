@@ -11,12 +11,9 @@ require_once(__DIR__ . "/CustomerRepository.php");
 
 class OrderRepository extends Repository
 {
-    private UserRepository $userRepository;
-
     public function __construct()
     {
         parent::__construct();
-        $this->userRepository = new UserRepository();
     }
 
     public function getById($orderId) : Order{
@@ -25,6 +22,7 @@ class OrderRepository extends Repository
         $stmt->bindValue(":orderId", $orderId);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
         return $this->buildOrder($result);
     }
 
@@ -33,6 +31,7 @@ class OrderRepository extends Repository
         $order->setOrderId($row['orderId']);
         $order->setOrderDate($row['orderDate']);
         $order->setOrderItems($this->getOrderItemsByOrderId($row['orderId']));
+
         return $order;
     }
 
@@ -45,6 +44,7 @@ class OrderRepository extends Repository
         $orderItem->setVatAmount($row['vatAmount']);
         $orderItem->setFullPrice($row['fullPrice']);
         $orderItem->setQuantity($row['quantity']);
+
         return $orderItem;
     }
 
@@ -71,7 +71,7 @@ class OrderRepository extends Repository
         foreach ($result as $row) {
             $order = new Order();
             $order->setOrderId($row['orderId']);
-            //set order date as date object not as a string
+            //Set order date as date object not as a string
             $order->setOrderDate(DateTime::createFromFormat('Y-m-d H:i:s', $row['orderDate']));
             $order->setTotalFullPrice($row['totalFullPrice']);
 
@@ -91,6 +91,7 @@ class OrderRepository extends Repository
             $order->setTickets($tickets);
             array_push($orders, $order);
         }
+
         return $orders;
     }
 
