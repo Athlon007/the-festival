@@ -2,13 +2,13 @@
 
 class OrderItem implements JsonSerializable { 
 
-    private $eventName;
-    private $ticketTypeName;
-    private $quantity;
-    private $basePrice;
-    private $vatPercentage;
-    private $vatAmount;
-    private $fullPrice;
+    private string $eventName;
+    private string $ticketTypeName;
+    private int $quantity;
+    private float $basePrice;
+    private float $vatPercentage;
+    private float $vatAmount;
+    private float $fullPrice;
 
     public function jsonSerialize(){
         return [
