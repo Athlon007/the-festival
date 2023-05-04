@@ -90,7 +90,7 @@ class OrderController
             // }
 
             $orders = $this->orderService->getOrdersToExport();
-            require_once('../views/admin/exportOrders.php');
+            require_once('../views/admin/viewOrders.php');
 
             return $orders;
         } catch (PDOException $e) {

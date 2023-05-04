@@ -186,7 +186,7 @@ class Router
                 $ticketController = new TicketController();
                 $ticketController->getAllJazzTickets();
                 break;
-            case "/exportOrders":
+            case "/viewOrders":
                 require_once("controllers/OrderController.php");
                 $ticketController = new OrderController();
                 $ticketController->getOrdersToExport();
