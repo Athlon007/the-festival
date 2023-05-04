@@ -40,9 +40,84 @@ class OrderService
         return $this->orderRepository->getOrderHistory($customerId);
     }
 
-    public function getOrdersToExport(){
+    public function getOrdersToExport()
+    {
         return $this->orderRepository->getOrdersToExport();
     }
+
+    public function downloadOrders()
+    {
+        $orders = $this->getOrdersToExport();
+
+        if ($orders == null) {
+            echo "No orders found";
+            exit;
+        }
+
+        $fileName = "orders-data_" . date('Y-m-d') . ".xls";
+        $fields = array('ID', 'ORDER DATE', 'CUSTOMER NAME', 'CUSTOMER EMAIL', 'EVENT NAME', 'PRICE', 'QUANTITY', 'TOTAL PRICE');
+        $excelData = implode("\t", $fields) . "\n";
+
+        foreach ($orders as $order) {
+            foreach ($order->getOrderItems() as $orderItem) {
+                $lineData = array($order->getOrderId(), date_format($order->getOrderDate(), 'd/m/Y'), $order->getCustomer()->getFirstName() . " " . $order->getCustomer()->getLastName(), $order->getCustomer()->getEmail(), $orderItem->getEventName(), "€ " . $orderItem->getFullPrice(), $orderItem->getQuantity(), "€ " . $orderItem->getQuantity() * $orderItem->getFullPrice());
+                array_walk($lineData, array($this, 'filterData'));
+                $excelData .= implode("\t", $lineData) . "\n";
+            }
+        }
+
+        // Fix UTF-8 encoding issue in Microsoft Excel
+        $excelData = chr(239) . chr(187) . chr(191) . $excelData;
+
+        // Send HTTP headers
+        header("Content-type: application/vnd.ms-excel; charset=utf-8");
+        header("Content-Disposition: attachment; filename=\"$fileName\"");
+        header("Cache-Control: max-age=0");
+
+        // Output the Excel data to the output buffer and exit
+        echo $excelData;
+        exit;
+    }
+
+    private function filterData(&$str)
+    {
+        $str = preg_replace("/\t/", "\\t", $str);
+        $str = preg_replace("/\r?\n/", "\\n", $str);
+        if (strstr($str, '"'))
+            $str = '"' . str_replace('"', '""', $str) . '"';
+    }
+
+
+    // public function downloadOrders(){
+    //     $orders = $this->getOrdersToExport();
+
+    //     $fileName = "orders-data_" . date('Y-m-d') . ".csv";
+
+    //     $fields = array('ID', 'ORDER DATE', 'CUSTOMER NAME', 'CUSTOMER EMAIL', 'EVENT NAME', 'PRICE', 'QUANTITY', 'TOTAL PRICE');
+
+    //     $excelData = implode("\t", array_values($fields)) . "\n";
+
+    //     if ($orders == null) {
+    //         $excelData .= 'No orders found' . "\n";
+    //     }
+
+    //     foreach($orders as $order){
+    //         foreach($order->getOrderItems() as $orderItem){
+    //             $lineData = array($order->getOrderId(), date_format($order->getOrderDate(), 'd/m/Y'), $order->getCustomer()->getFirstName() . " " . $order->getCustomer()->getLastName(), $order->getCustomer()->getEmail(), $orderItem->getEventName(), "€ " . $orderItem->getFullPrice(), $orderItem->getQuantity(), "€ " . $orderItem->getQuantity() * $orderItem->getFullPrice());
+    //             array_walk($lineData, array($this, 'filterData'));
+    //             $excelData .= implode("\t", array_values($lineData)) . "\n";
+    //         }
+    //     }
+
+    //     header("Content-type: application/vnd.ms-excel");
+    //     header("Content-Disposition: attachment; filename=\"$fileName\"");
+    // }
+
+    // private function filterData(&$str){
+    //     $str = preg_replace("/\t/", "\\t", $str);
+    //     $str = preg_replace("/\r?\n/", "\\n", $str);
+    //     if(strstr($str, '"')) $str = '"' . str_replace('"', '""', $str) . '"';
+    // }
 
     public function getUnpaidOrder($customerId)
     {
@@ -63,7 +138,7 @@ class OrderService
             $dompdf = $this->ticketService->generatePDFTicket($ticket, $qrCode, $order);
             $this->ticketService->sendTicketByEmail($dompdf, $ticket, $order);
         }
-        
+
         //Generate and email the invoice
     }
 }
