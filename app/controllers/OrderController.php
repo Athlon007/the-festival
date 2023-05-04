@@ -73,10 +73,28 @@ class OrderController
         }
     }
 
-    public function getOrdersToExport(){
-        $orders = $this->orderService->getOrdersToExport();
-        require_once('../views/admin/exportOrders.php');
+    public function getOrdersToExport()
+    {
+        try {
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
 
-        return $orders;
+            if (!isset($_SESSION['user'])) {
+                header("Location: /");
+            }
+
+            $user = unserialize($_SESSION['user']);
+            if ($user->getUserTypeAsString() != "Admin") {
+                header("Location: /");
+            }
+
+            $orders = $this->orderService->getOrdersToExport();
+            require_once('../views/admin/exportOrders.php');
+
+            return $orders;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
     }
 }
