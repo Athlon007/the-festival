@@ -43,7 +43,7 @@ class CustomerRepository extends Repository{
             $customer->setUserType(3);
             $customer->setDateOfBirth(new DateTime($result['dateOfBirth']));
             $customer->setPhoneNumber($result['phoneNumber']);
-            $customer->setAddress($this->addressRepository->getAddressById($result['addressId']));
+            
 
             return $customer;
         }

@@ -50,6 +50,9 @@ class CustomerService{
     public function getCustomerById($userId) : Customer
     {
         //TODO: Fetch user data, fetch customer data, fetch address data, return customer
+        $customer = new Customer();
+
+        //$customer->setAddress($this->addressRepository->getAddressById());
         
     }
 
