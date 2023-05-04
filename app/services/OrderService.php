@@ -66,9 +66,9 @@ class OrderService
                     $order->getCustomer()->getFirstName() . " " . $order->getCustomer()->getLastName(),
                     $order->getCustomer()->getEmail(),
                     $orderItem->getEventName(),
-                    iconv('UTF-8', 'ISO-8859-1//TRANSLIT', "€ " . $orderItem->getFullPrice()),
+                    $orderItem->getFullPrice(),
                     $orderItem->getQuantity(),
-                    iconv('UTF-8', 'ISO-8859-1//TRANSLIT', "€ " . $orderItem->getQuantity() * $orderItem->getFullPrice())
+                    $orderItem->getQuantity() * $orderItem->getFullPrice()
                 );
                 array_walk($lineData, array($this, 'filterData'));
                 $excelData .= implode("\t", $lineData) . "\n";
@@ -84,6 +84,7 @@ class OrderService
         echo $excelData;
         exit;
     }
+
 
     private function filterData(&$str)
     {
