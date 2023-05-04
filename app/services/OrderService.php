@@ -32,7 +32,8 @@ class OrderService
 
     public function getOrderById($id)
     {
-        return $this->orderRepository->getOrderById($id);
+        $order = $this->orderRepository->getById($id);
+        
     }
 
     public function getOrderHistory($customerId)

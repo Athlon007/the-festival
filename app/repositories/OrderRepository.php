@@ -22,11 +22,16 @@ class OrderRepository extends Repository
     }
 
     public function getById($orderId) : Order{
-        $sql = "SELECT * FROM orders WHERE orderId = :orderId";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(":orderId", $orderId);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        try{
+            $sql = "SELECT * FROM orders WHERE orderId = :orderId";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(":orderId", $orderId);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        catch(Exception $ex){
+            throw $ex;
+        }
 
         return $this->buildOrder($result);
     }
@@ -122,17 +127,32 @@ class OrderRepository extends Repository
 
             return $orderItems;
         }
-        catch(Exception $e){
-            throw new Exception("Error while getting order items: " . $e->getMessage());
+        catch(Exception $ex){
+            throw new Exception("Error while getting order items: " . $ex->getMessage());
         }
     }
 
     public function update($orderId, $order){
+        try{
+            
+        }
+        catch(Exception $ex){
 
+        }
     }
 
+    //Insert a new order into the database
     public function insert($order){
+        try{
+            $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(":orderDate", $order->getOrderDate());
+            $stmt->bindValue(":customerId", $order->getCustomer()->getCustomerId());
+            $stmt->execute();
+        }
+        catch(Exception $ex){
 
+        }
     }
 }
 ?>

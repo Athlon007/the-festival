@@ -14,10 +14,6 @@ class OrderController
         $this->cartService = new CartService();
     }
 
-    /**
-     * Show the shopping cart
-     * @author Joshua
-     */
     public function showShoppingCart()
     {
         if (session_status() == PHP_SESSION_NONE) {

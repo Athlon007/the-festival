@@ -11,12 +11,10 @@ require_once(__DIR__ . "/../../services/TicketLinkService.php");
 class CartAPIController extends APIController
 {
     private $cartService;
-    private $ciService;
 
     public function __construct()
     {
         $this->cartService = new CartService();
-        $this->ciService = new TicketLinkService();
     }
 
     protected function handleGetRequest($uri)
