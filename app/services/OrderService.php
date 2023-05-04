@@ -11,7 +11,6 @@ require_once(__DIR__ . '/../repositories/TicketLinkRepository.php');
 require_once(__DIR__ . '/../models/TicketLink.php');
 require_once(__DIR__ . '/../repositories/TicketRepository.php');
 require_once(__DIR__ . '/../services/TicketService.php');
-require_once(__DIR__ . '/../services/InvoiceService.php');
 require_once(__DIR__ . '/../services/PDFService.php');
 
 class OrderService
@@ -20,7 +19,6 @@ class OrderService
     private $ticketLinkRepository;
     private $ticketRepository;
     private $ticketService;
-    private $invoiceService;
     private $pdfService;
 
     public function __construct()
@@ -29,7 +27,6 @@ class OrderService
         $this->ticketLinkRepository = new TicketLinkRepository();
         $this->ticketRepository = new TicketRepository();
         $this->ticketService = new TicketService();
-        $this->invoiceService = new InvoiceService();
         $this->pdfService = new PDFService();
     }
 
@@ -41,6 +38,10 @@ class OrderService
     public function getOrderHistory($customerId)
     {
         return $this->orderRepository->getOrderHistory($customerId);
+    }
+
+    public function getOrdersToExport(){
+        return $this->orderRepository->getOrdersToExport();
     }
 
     public function getUnpaidOrder($customerId)

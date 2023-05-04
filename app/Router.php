@@ -187,10 +187,10 @@ class Router
                 $ticketController->getAllJazzTickets();
                 break;
 
-            case "/orderHistory":
+            case "/exportOrders":
                 require_once("controllers/OrderController.php");
                 $ticketController = new OrderController();
-                $ticketController->showOrderHistory();
+                $ticketController->getOrdersToExport();
                 break;
             default:
                 $this->route404($message);

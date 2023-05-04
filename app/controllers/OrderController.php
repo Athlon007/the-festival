@@ -72,4 +72,11 @@ class OrderController
             return;
         }
     }
+
+    public function getOrdersToExport(){
+        $orders = $this->orderService->getOrdersToExport();
+        require_once('../views/admin/exportOrders.php');
+
+        return $orders;
+    }
 }
