@@ -186,11 +186,15 @@ class Router
                 $ticketController = new TicketController();
                 $ticketController->getAllJazzTickets();
                 break;
-
             case "/exportOrders":
                 require_once("controllers/OrderController.php");
                 $ticketController = new OrderController();
                 $ticketController->getOrdersToExport();
+                break;
+            case "/downloadOrders":
+                require_once("controllers/OrderController.php");
+                $ticketController = new OrderController();
+                $ticketController->downloadOrders();
                 break;
             default:
                 $this->route404($message);

@@ -97,32 +97,6 @@ class OrderRepository extends Repository
         return $orders;
     }
 
-    // public function getOrderItemsByOrderId($orderId): array
-    // {
-    //     try {
-    //         $sql = "select e.name as eventName, ti.ticketTypeName as ticketTypeName, t.basePrice as basePrice, f.VAT as vatPercentage, t.vat as vatAmount, t.fullPrice as fullPrice, count(t.eventId) as quantity " +
-    //             "from tickets t " +
-    //             "join tickettypes ti on t.ticketTypeId = ti.ticketTypeId " +
-    //             "join events e on e.eventId = t.eventId " +
-    //             "join festivaleventtypes f on e.festivalEventType = f.eventTypeId " +
-    //             "where t.orderId = :orderId " +
-    //             "group by e.name, ti.ticketTypeName, e.startTime, t.basePrice, f.VAT, t.vat, t.fullPrice";
-
-    //         $stmt = $this->connection->prepare($sql);
-    //         $stmt->bindValue(":orderId", $orderId);
-    //         $stmt->execute();
-    //         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    //         $orderItems = array();
-    //         foreach ($result as $row) {
-    //             $orderItem = $this->buildOrderItem($row);
-    //             array_push($orderItems, $orderItem);
-    //         }
-
-    //         return $orderItems;
-    //     } catch (Exception $e) {
-    //         throw new Exception("Error while getting order items: " . $e->getMessage());
-    //     }
-    // }
     public function getOrderItemsByOrderId($orderId): array
     {
         try {

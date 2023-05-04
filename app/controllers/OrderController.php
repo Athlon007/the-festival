@@ -76,18 +76,18 @@ class OrderController
     public function getOrdersToExport()
     {
         try {
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            }
+            // if (session_status() == PHP_SESSION_NONE) {
+            //     session_start();
+            // }
 
-            if (!isset($_SESSION['user'])) {
-                header("Location: /");
-            }
+            // if (!isset($_SESSION['user'])) {
+            //     header("Location: /");
+            // }
 
-            $user = unserialize($_SESSION['user']);
-            if ($user->getUserTypeAsString() != "Admin") {
-                header("Location: /");
-            }
+            // $user = unserialize($_SESSION['user']);
+            // if ($user->getUserTypeAsString() != "Admin") {
+            //     header("Location: /");
+            // }
 
             $orders = $this->orderService->getOrdersToExport();
             require_once('../views/admin/exportOrders.php');
@@ -96,5 +96,9 @@ class OrderController
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
+    }
+
+    public function downloadOrders(){
+        return $this->orderService->downloadOrders();
     }
 }
