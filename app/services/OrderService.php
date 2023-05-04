@@ -11,7 +11,6 @@ require_once(__DIR__ . '/../repositories/TicketLinkRepository.php');
 require_once(__DIR__ . '/../models/TicketLink.php');
 require_once(__DIR__ . '/../repositories/TicketRepository.php');
 require_once(__DIR__ . '/../services/TicketService.php');
-require_once(__DIR__ . '/../services/InvoiceService.php');
 require_once(__DIR__ . '/../services/PDFService.php');
 
 class OrderService
@@ -20,7 +19,6 @@ class OrderService
     private $ticketLinkRepository;
     private $ticketRepository;
     private $ticketService;
-    private $invoiceService;
     private $pdfService;
 
     public function __construct()
@@ -29,7 +27,6 @@ class OrderService
         $this->ticketLinkRepository = new TicketLinkRepository();
         $this->ticketRepository = new TicketRepository();
         $this->ticketService = new TicketService();
-        $this->invoiceService = new InvoiceService();
         $this->pdfService = new PDFService();
     }
 
@@ -49,7 +46,7 @@ class OrderService
     }
 
     //To be called after payment (can't be implemented yet)
-    public function createOrder($customer, $ticketLinkIds)
+    public function insertOrder($customer)
     {
     }
 
@@ -64,5 +61,10 @@ class OrderService
         }
         
         //Generate and email the invoice
+    }
+
+    //If the customer has an unpaid order and logs in while having created another order as a visitor, merge the two orders.
+    public function mergeOrders($order1, $order2){
+
     }
 }

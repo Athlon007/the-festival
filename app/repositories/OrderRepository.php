@@ -8,7 +8,12 @@ require_once(__DIR__ . "/../models/Address.php");
 require_once(__DIR__ . "/../models/Customer.php");
 require_once(__DIR__ . "/UserRepository.php");
 require_once(__DIR__ . "/CustomerRepository.php");
+require_once(__DIR__ . "/TicketLinkRepository.php");
 
+/**
+ * Repository for orders and orderitems
+ * @author Joshua
+ */
 class OrderRepository extends Repository
 {
     public function __construct()
@@ -17,7 +22,7 @@ class OrderRepository extends Repository
     }
 
     public function getById($orderId) : Order{
-        $sql = "select * from orders where orderId = :orderId";
+        $sql = "SELECT * FROM orders WHERE orderId = :orderId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderId", $orderId);
         $stmt->execute();
@@ -37,8 +42,8 @@ class OrderRepository extends Repository
 
     private function buildOrderItem($row) : OrderItem{
         $orderItem = new OrderItem();
-        $orderItem->setEventName($row['name']);
-        $orderItem->setTicketTypeName($row['ticketTypeName']);
+        $orderItem->setOrderItemId($row['orderItemId']);
+        
         $orderItem->setBasePrice($row['basePrice']);
         $orderItem->setVatPercentage($row['vatPercentage']);
         $orderItem->setVatAmount($row['vatAmount']);
@@ -50,7 +55,7 @@ class OrderRepository extends Repository
 
     public function getOrderHistory($customerId): array
     {
-        $sql = "SELECT o.orderId, o.orderDate, e.name AS eventName, t.ticketId, t.basePrice, t.vat, o.totalFullPrice, o.customerId  
+        $sql = "SELECT o.orderId, o.orderDate, e.name AS eventName, t.ticketId, t.basePrice, t.vat, o.totalFullPrice, o.customerId
         FROM orders o
         JOIN tickets t ON t.orderId = o.orderId
         JOIN events e ON t.eventId = e.eventId
@@ -63,7 +68,7 @@ class OrderRepository extends Repository
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-        if (empty($result))
+        if (!$result)
             throw new OrderNotFoundException();
 
         $orders = [];
@@ -123,6 +128,10 @@ class OrderRepository extends Repository
     }
 
     public function update($orderId, $order){
+
+    }
+
+    public function insert($order){
 
     }
 }

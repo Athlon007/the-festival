@@ -3,9 +3,10 @@
 require_once(__DIR__ . '/../models/Exceptions/EventSoldOutException.php');
 require_once(__DIR__ . '/../models/TicketLink.php');
 require_once(__DIR__ . '/../repositories/TicketLinkRepository.php');
+require_once(__DIR__ . '/OrderService.php');
 
 /**
- * This class handles the cart.
+ * This class handles the cart and communicates .
  * @author Konrad
  */
 class CartService

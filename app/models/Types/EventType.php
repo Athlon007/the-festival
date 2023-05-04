@@ -1,9 +1,9 @@
 <?php
 class EventType implements JsonSerializable
 {
-    private $id;
-    private $name;
-    private $vat;
+    private int $id;
+    private string $name;
+    private float $vat;
 
     public function __construct($id, $name, $vat)
     {

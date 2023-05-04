@@ -14,7 +14,7 @@ class TicketLinkRepository extends Repository
         $output = array();
 
         foreach ($arr as $item) {
-            $evenType = new EventType(
+            $eventType = new EventType(
                 $item['eventTypeId'],
                 $item['eventTypeName'],
                 $item['evenTypeVat']
@@ -26,7 +26,7 @@ class TicketLinkRepository extends Repository
             $event->setStartTime(new DateTime($item['startTime']));
             $event->setEndTime(new DateTime($item['endTime']));
             $event->setAvailableTickets($item['availableTickets']);
-            $event->setEventType($evenType);
+            $event->setEventType($eventType);
 
             $ticketType = new TicketType(
                 $item['ticketTypeId'],

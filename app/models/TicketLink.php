@@ -16,6 +16,15 @@ class TicketLink implements JsonSerializable
         $this->ticketType = $ticketType;
     }
 
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'id' => $this->getId(),
+            'event' => $this->getEvent(),
+            'ticketType' => $this->getTicketType()
+        ];
+    }
+
     public function getId(): int
     {
         return $this->id;
@@ -44,14 +53,5 @@ class TicketLink implements JsonSerializable
     public function setTicketType(TicketType $value)
     {
         $this->ticketType = $value;
-    }
-
-    public function jsonSerialize(): mixed
-    {
-        return [
-            'id' => $this->getId(),
-            'event' => $this->getEvent(),
-            'ticketType' => $this->getTicketType()
-        ];
     }
 }

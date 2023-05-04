@@ -50,19 +50,6 @@ class Order implements JsonSerializable
         $this->orderItems = $orderItems;
     }
 
-    public function addOrderItem(OrderItem $orderItem): void
-    {
-        $this->orderItems[] = $orderItem;
-    }
-
-    public function removeOrderItem(OrderItem $orderItem): void
-    {
-        $index = array_search($orderItem, $this->orderItems);
-        if ($index !== false) {
-            unset($this->orderItems[$index]);
-        }
-    }
-
     public function getTickets(): array
     {
         return $this->tickets;
@@ -153,7 +140,7 @@ class Order implements JsonSerializable
         foreach ($this->orderItems as $orderItem) {
             $totalVatTotalPrice += $orderItem->getFullPrice();
         }
-        
+
         return $totalVatTotalPrice;
     }
 }
