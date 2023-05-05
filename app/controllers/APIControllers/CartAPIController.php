@@ -5,7 +5,7 @@ require_once(__DIR__ . "/../../models/TicketLink.php");
 require_once(__DIR__ . "/../../services/TicketLinkService.php");
 
 /**
- *
+ * This API controller is specifically used to manipulate the cart in session.
  * @author Joshua
  */
 class CartAPIController extends APIController

@@ -77,7 +77,7 @@ class AddressAPIController extends APIController
 
     protected function handleGetRequest($uri)
     {
-        if (!is_numeric(basename($uri))) {
+        if (!is_numeric(basename($uri))){
             $this->sendErrorMessage("Invalid API Request. You can only request specific addresses.", 400);
             return;
         }
