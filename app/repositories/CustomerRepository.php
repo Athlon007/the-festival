@@ -9,43 +9,58 @@ require_once(__DIR__ . '/../repositories/UserRepository.php');
  * @author Joshua
  */
 class CustomerRepository extends Repository{
-
     
     public function __construct()
     {
         parent::__construct();
     }
-    
-    public function getByUser(User $user) : Customer
+
+    private function buildCustomer($result) : Customer
+    {
+        $customer = new Customer();
+        $customer->setUserId($result['userId']);
+        $customer->setEmail($result['email']);
+        //Deliberately no password
+        $customer->setFirstName($result['firstName']);
+        $customer->setLastName($result['lastName']);
+        $customer->setUserType(3);
+        $customer->setRegistrationDate(new DateTime($result['registrationDate']));
+        $customer->setDateOfBirth(new DateTime($result['dateOfBirth']));
+        $customer->setPhoneNumber($result['phoneNumber']);
+        $customer->setAddress(new Address());
+        $customer->getAddress()->setAddressId($result['addressId']);
+        $customer->getAddress()->setStreetName($result['streetName']);
+        $customer->getAddress()->setHouseNumber($result['houseNumber']);
+        $customer->getAddress()->setPostalCode($result['postalCode']);
+        $customer->getAddress()->setCity($result['city']);
+        $customer->getAddress()->setCountry($result['country']);
+
+        return $customer;
+    }
+
+    public function getById($id) : Customer
     {
         try{
-            $query = "SELECT dateOfBirth, phoneNumber, addressId FROM customers WHERE userId = :userId";
+            $query = "SELECT *
+                        from customers c
+                        join users u on u.userId = c.userId 
+                        join addresses a on a.addressId = c.addressId
+                        where c.userId = :userId";
+
             $stmt = $this->connection->prepare($query);
-            
-            $stmt->bindValue(":userId", $user->getUserId());
+            $stmt->bindValue(":userId", htmlspecialchars($id));
             $stmt->execute();
-            $result = $stmt->fetchAll();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$result){
                 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
                 throw new UserNotFoundException();
             }
 
-            $result = $result[0];
+            //Build customer from the result and return it
+            return $this->buildCustomer($result);
 
-            //Create customer from the user object and the result from the query
-            $customer = new Customer();
-            $customer->setUserId($user->getUserId());
-            $customer->setFirstName($user->getFirstName());
-            $customer->setLastName($user->getLastName());
-            $customer->setEmail($user->getEmail());
-            $customer->setHashPassword($user->getHashPassword());
-            $customer->setUserType(3);
-            $customer->setDateOfBirth(new DateTime($result['dateOfBirth']));
-            $customer->setPhoneNumber($result['phoneNumber']);
-            
-
-            return $customer;
         }
         catch(Exception $ex)
         {

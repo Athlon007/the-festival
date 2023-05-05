@@ -42,13 +42,16 @@ class AddressRepository extends Repository
                 throw new AddressNotFoundException();
             }
             
-            //Build and return address object
-            $streetName = $result['streetName'];
-            $houseNumber = $result['houseNumber'];
-            $postalCode = $result['postalCode'];
-            $city = $result['city'];
-            $country = $result['country'];
-            return new Address($addressId, $streetName, $houseNumber, $postalCode, $city, $country);
+            //Build and return Address object
+            $address = new Address();
+            $address->setAddressId($addressId);
+            $address->setStreetName($result['streetName']);
+            $address->setHouseNumber($result['houseNumber']);
+            $address->setPostalCode($result['postalCode']);
+            $address->setCity($result['city']);
+            $address->setCountry($result['country']);
+
+            return $address;
 
         } catch (Exception $ex) {
             throw ($ex);

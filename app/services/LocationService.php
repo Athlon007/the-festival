@@ -34,7 +34,13 @@ class LocationService
 
     public function insertLocation($name, $streetName, $houseNumber, $postalCode, $city, $country, $locationType, $lon, $lat, $capacity): Location
     {
-        $address = $this->addressService->insertAddress($streetName, $houseNumber, $postalCode, $city, $country);
+        $address = new Address();
+        $address->setStreetName($streetName);
+        $address->setHouseNumber($houseNumber);
+        $address->setPostalCode($postalCode);
+        $address->setCity($city);
+        $address->setCountry($country);
+        $address = $this->addressService->insertAddress($address);
 
         $name = htmlspecialchars($name);
         $locationType = htmlspecialchars($locationType);
@@ -56,14 +62,14 @@ class LocationService
         $capacity = htmlspecialchars($capacity);
         $addressId = htmlspecialchars($addressId);
 
-        $address = $this->addressService->updateAddress(
-            $addressId,
-            $streetName,
-            $houseNumber,
-            $postalCode,
-            $city,
-            $country
-        );
+        $address = new Address();
+        $address->setStreetName($streetName);
+        $address->setHouseNumber($houseNumber);
+        $address->setPostalCode($postalCode);
+        $address->setCity($city);
+        $address->setCountry($country);
+
+        $address = $this->addressService->updateAddress($addressId, $address);
 
         $this->repo->updateLocation($locationId, $name, $address->getAddressId(), $locationType, $lon, $lat, $capacity);
 

@@ -20,14 +20,14 @@ class JazzTicketLinkRepository extends TicketLinkRepository
         $imageRepository = new ImageRepository();
         $output = array();
         foreach ($arr as $item) {
-            $address = new Address(
-                $item['addressId'],
-                $item['addressStreetName'],
-                $item['addressHouseNumber'],
-                $item['addressPostalCode'],
-                $item['addressCity'],
-                $item['addressCountry']
-            );
+            $address = new Address();
+            $address->setAddressId($item['addressId']);
+            $address->setStreetName($item['addressStreetName']);
+            $address->setHouseNumber($item['addressHouseNumber']);
+            $address->setPostalCode($item['addressPostalCode']);
+            $address->setCity($item['addressCity']);
+            $address->setCountry($item['addressCountry']);
+            
             $location = new Location(
                 $item['locationId'],
                 $item['locationName'],

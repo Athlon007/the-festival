@@ -25,13 +25,13 @@ class UserRepository extends Repository
         }
     }
 
-    public function getByEmail($email): ?User
+    public function getByEmail($email): User
     {
         try {
             $query = "SELECT * FROM users WHERE email = :email";
             $stmt = $this->connection->prepare($query);
 
-            $stmt->bindValue(":email", $email);
+            $stmt->bindValue(":email", htmlspecialchars($email));
             $stmt->execute();
 
             $result = $stmt->fetch();

@@ -47,13 +47,9 @@ class CustomerService{
         $this->customerRepository->insertCustomer($customer);
     }
 
-    public function getCustomerById($userId) : Customer
+    public function getCustomerById($id) : Customer
     {
-        //TODO: Fetch user data, fetch customer data, fetch address data, return customer
-        $customer = new Customer();
-
-        //$customer->setAddress($this->addressRepository->getAddressById());
-        
+        return $this->customerRepository->getById($id);
     }
 
     public function updateCustomer($customer, $data)

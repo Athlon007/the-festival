@@ -4,25 +4,27 @@ require_once("TicketLink.php");
 class OrderItem implements JsonSerializable { 
 
     private int $orderItemId;
-    private TicketLink $ticketLink;
+    private int $ticketLinkId;
+    private string $eventName;
+    private string $ticketName;
+    private string $vatPercentage;
+    private float $fullTicketPrice;
     private int $quantity;
 
     public function jsonSerialize(){
         return [
-            "orderItemId" => $this->orderItemId,
-            "ticketLink" => $this->ticketLink,
-            "quantity" => $this->quantity,
+            "orderItemId" => $this->getOrderItemId(),
+            "ticketLinkId" => $this->getTicketLinkId(),
+            "eventName" => $this->getEventName(),
+            "ticketName" => $this->getTicketName(),
+            "vatPercentage" => $this->getVatPercentage(),
+            "fullTicketPrice" => $this->getFullTicketPrice(),
+            "quantity" => $this->getQuantity(),
             "totalBasePrice" => $this->getTotalBasePrice(),
             "bvatPercentage" => $this->getVatPercentage(),
             "totalVatAmount" => $this->getTotalVatAmount(),
             "totalFullPrice" => $this->getTotalFullPrice(),
         ];
-    }
-
-    public function __construct($id, TicketLink $ticketLink){
-        $this->orderItemId = $id;
-        $this->ticketLink = $ticketLink;
-        $this->quantity = 1;
     }
 
     public function getOrderItemId(): int
@@ -35,14 +37,14 @@ class OrderItem implements JsonSerializable {
         $this->orderItemId = $orderItemId;
     }
 
-    public function getTicketLink(): TicketLink
+    public function getTicketLinkId(): int
     {
-        return $this->ticketLink;
+        return $this->ticketLinkId;
     }
 
-    public function setTicketLink(TicketLink $ticketLink): void
+    public function setTicketLinkId(int $ticketLinkId): void
     {
-        $this->ticketLink = $ticketLink;
+        $this->ticketLinkId = $ticketLinkId;
     }
 
     public function getQuantity(): int
@@ -58,39 +60,20 @@ class OrderItem implements JsonSerializable {
     //
     //Calculated getters and getter-shortcuts from ticket link
     //
-    public function getEventName(){
-        return $this->ticketLink->getEvent()->getName();
-    }
 
-    public function getTicketTypeName(){
-        return $this->ticketLink->getTicketType()->getName();
-    }
-
-    //Full price incl VAT for one ticket, retrieved from ticketlink
-    public function getTicketFullPrice(): float
-    {
-        return $this->ticketLink->getTicketType()->getPrice();
-    }
-
-    //VAT percentage retrieved from the event type as a float e.g. "0.21"
-    public function getVatPercentage(): float
-    {
-        return $this->ticketLink->getEvent()->getEventType()->getVat();
-    }
-
-    //Base price excl VAT for one ticket multiplied by quantity
+    //Base price excl VAT for one ticket multiplied by the quantity
     public function getTotalBasePrice(): float
     {
         return $this->ticketLink->getTicketType()->getPrice() * $this->quantity;
     }
 
-    //VAT value that is multiplied by quantity
+    //VAT value that is multiplied by the quantity
     public function getTotalVatAmount(): float
     {
         return $this->ticketLink->getEvent()->getEventType()->getVat() * $this->getBasePrice() * $this->quantity;
     }
     
-    //Full price that is multiplied by quantity
+    //Full price that is multiplied by the quantity
     public function getTotalFullPrice(): float
     {
         return $this->getTicketFullPrice() * $this->quantity;

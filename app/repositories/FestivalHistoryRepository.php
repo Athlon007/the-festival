@@ -91,7 +91,6 @@ class FestivalHistoryRepository extends Repository
         }
     }
 
-
     // TODO: remove this method
     public function getGuideByID($id)
     {
@@ -111,31 +110,6 @@ class FestivalHistoryRepository extends Repository
             }
 
             return $guide;
-        } catch (Exception $ex) {
-            throw ($ex);
-        }
-    }
-
-
-    public function getAddressById($addressId): ?Address
-    {
-        try {
-            $query = "SELECT * FROM Addresses WHERE addressId = :addressId";
-            $stmt = $this->connection->prepare($query);
-
-            $stmt->bindValue(":addressId", $addressId);
-            $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (is_bool($result))
-                throw new AddressNotFoundException();
-            else
-                $streetName = $result['streetName'];
-            $houseNumber = $result['houseNumber'];
-            $postalCode = $result['postalCode'];
-            $city = $result['city'];
-            $country = $result['country'];
-            return new Address($addressId, $streetName, $houseNumber, $postalCode, $city, $country);
         } catch (Exception $ex) {
             throw ($ex);
         }

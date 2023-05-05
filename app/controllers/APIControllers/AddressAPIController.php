@@ -54,14 +54,14 @@ class AddressAPIController extends APIController
             if (!isset($data->country)) {
                 throw new MissingVariableException("Country is required");
             }
+            $address = new Address();
+            $address->setStreetName($data->streetName);
+            $address->setHouseNumber($data->houseNumber);
+            $address->setPostalCode($data->postalCode);
+            $address->setCity($data->city);
+            $address->setCountry($data->country);
+            $address = $this->addressService->insertAddress($address);
 
-            $streetName = $data->streetName;
-            $houseNumber = $data->houseNumber;
-            $postalCode = $data->postalCode;
-            $city = $data->city;
-            $country = $data->country;
-
-            $address = $this->addressService->insertAddress($streetName, $houseNumber, $postalCode, $city, $country);
             echo json_encode($address);
         } catch (Throwable $e) {
             Logger::write($e);

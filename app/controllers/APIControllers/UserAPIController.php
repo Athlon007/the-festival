@@ -145,7 +145,13 @@ class UserAPIController extends APIController
             $customer->setPhoneNumber($data->phoneNumber);
             
             //Create address object from data, then set for customer
-            $address = new Address(-1, $data->address->streetName, $data->address->houseNumber, $data->address->postalCode, $data->address->city, $data->address->country);
+            $address = new Address();
+            $address->setStreetName($data->address->streetName);
+            $address->setHouseNumber($data->address->houseNumber);
+            $address->setPostalCode($data->address->postalCode);
+            $address->setCity($data->address->city);
+            $address->setCountry($data->address->country);
+            
             $customer->setAddress($address);
             
             $this->customerService->registerCustomer($customer);
