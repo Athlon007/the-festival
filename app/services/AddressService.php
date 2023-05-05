@@ -21,17 +21,9 @@ class AddressService
         return $this->repo->insertAddress($address);
     }
 
-    public function updateAddress($id, $addressId): Address
+    public function updateAddress($id, $address): Address
     {
-        $address = new Address();
-        $address->setAddressId($addressId);
-        $address->setStreetName($streetName);
-        $address->setHouseNumber($houseNumber);
-        $address->setPostalCode($postalCode);
-        $address->setCity($city);
-        $address->setCountry($country);
-
-        return $this->repo->updateAddress($address);
+        return $this->repo->updateAddress($id, $address);
     }
 
     public function deleteAddress($addressId): void

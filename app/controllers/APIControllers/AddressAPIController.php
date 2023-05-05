@@ -16,6 +16,16 @@ class AddressAPIController extends APIController
         $this->addressService = new AddressService();
     }
 
+    private function buildAddressFromPostedJson($streetName, $houseNumber, $postalCode, $city, $country){
+        $address = new Address();
+        $address->setStreetName($streetName);
+        $address->setHouseNumber($houseNumber);
+        $address->setPostalCode($postalCode);
+        $address->setCity($city);
+        $address->setCountry($country);
+        return $address;
+    }
+
     protected function handlePostRequest($uri)
     {
         if (!$this->isLoggedInAsAdmin()) {
@@ -54,12 +64,8 @@ class AddressAPIController extends APIController
             if (!isset($data->country)) {
                 throw new MissingVariableException("Country is required");
             }
-            $address = new Address();
-            $address->setStreetName($data->streetName);
-            $address->setHouseNumber($data->houseNumber);
-            $address->setPostalCode($data->postalCode);
-            $address->setCity($data->city);
-            $address->setCountry($data->country);
+            
+            $address = $this->buildAddressFromPostedJson($data->streetName, $data->houseNumber, $data->postalCode, $data->city, $data->country);
             $address = $this->addressService->insertAddress($address);
 
             echo json_encode($address);
@@ -78,8 +84,7 @@ class AddressAPIController extends APIController
 
         try {
             $addressId = basename($uri);
-            $address = $this->addressService->getAddressById($addressId);
-            echo json_encode($address);
+            echo json_encode($this->addressService->getAddressById($addressId));
         } catch (Throwable $e) {
             Logger::write($e);
             $this->sendErrorMessage($e);
@@ -126,20 +131,9 @@ class AddressAPIController extends APIController
                 throw new MissingVariableException("Country is required");
             }
 
-            $streetName =   $data->streetName;
-            $houseNumber =  $data->houseNumber;
-            $postalCode =   $data->postalCode;
-            $city =         $data->city;
-            $country =      $data->country;
-
-            $address = $this->addressService->updateAddress(
-                $addressId,
-                $streetName,
-                $houseNumber,
-                $postalCode,
-                $city,
-                $country
-            );
+            $address = $this->buildAddressFromPostedJson($data->streetName, $data->houseNumber, $data->postalCode, $data->city, $data->country);
+            $address = $this->addressService->updateAddress($addressId, $address);
+                
             echo json_encode($address);
         } catch (Throwable $e) {
             Logger::write($e);
