@@ -14,22 +14,24 @@ class OrderAPIController extends APIController
 
     public function handlePostRequest($uri)
     {
-       
+       //api/orders
     }
     
     public function handleGetRequest($uri)
     {
-        
+        //api/orders
+
+        //api/orders/{id}
     }
 
     public function handleDeleteRequest($uri)
     {
-       
+       //api/orders/{id}
     }
 
     public function handlePutRequest($uri)
     {
-        
+        //api/orders/{id}
     }
 }
 ?>

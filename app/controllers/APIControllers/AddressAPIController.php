@@ -16,31 +16,9 @@ class AddressAPIController extends APIController
         $this->addressService = new AddressService();
     }
 
-    private function buildAddressFromPostedJson($streetName, $houseNumber, $postalCode, $city, $country){
-        $address = new Address();
-        $address->setStreetName($streetName);
-        $address->setHouseNumber($houseNumber);
-        $address->setPostalCode($postalCode);
-        $address->setCity($city);
-        $address->setCountry($country);
-        return $address;
-    }
-
-    protected function handlePostRequest($uri)
-    {
-        if (!$this->isLoggedInAsAdmin()) {
-            $this->sendErrorMessage('You are not logged in as admin.', 401);
-            return;
-        }
-
-        if (str_starts_with($uri, "/api/address/fetch-address")) {
-            $data = json_decode(file_get_contents("php://input"));
-            $this->fetchAddress($data);
-            return;
-        }
-
+    private function buildAddressFromPostedJson(){
+        
         $json = file_get_contents('php://input');
-
         $data = json_decode($json);
 
         if ($data == null) {
@@ -48,24 +26,49 @@ class AddressAPIController extends APIController
             return;
         }
 
-        try {
-            if (!isset($data->streetName)) {
-                throw new MissingVariableException("Street name is required");
-            }
-            if (!isset($data->houseNumber)) {
-                throw new MissingVariableException("House number is required");
-            }
-            if (!isset($data->postalCode)) {
-                throw new MissingVariableException("Postal code is required");
-            }
-            if (!isset($data->city)) {
-                throw new MissingVariableException("City is required");
-            }
-            if (!isset($data->country)) {
-                throw new MissingVariableException("Country is required");
-            }
-            
-            $address = $this->buildAddressFromPostedJson($data->streetName, $data->houseNumber, $data->postalCode, $data->city, $data->country);
+        if (!isset($data->streetName)) {
+            throw new MissingVariableException("Street name is required");
+        }
+        if (!isset($data->houseNumber)) {
+            throw new MissingVariableException("House number is required");
+        }
+        if (!isset($data->postalCode)) {
+            throw new MissingVariableException("Postal code is required");
+        }
+        if (!isset($data->city)) {
+            throw new MissingVariableException("City is required");
+        }
+        if (!isset($data->country)) {
+            throw new MissingVariableException("Country is required");
+        }
+
+        $address = new Address();
+        $address->setStreetName($data->streetName);
+        $address->setHouseNumber($data->houseNumber);
+        $address->setPostalCode($data->postalCode);
+        $address->setCity($data->city);
+        $address->setCountry($data->country);
+
+        return $address;
+    }
+
+    protected function handlePostRequest($uri)
+    {
+        // This is a special case, we need to fetch the address from the external API.
+        if (str_starts_with($uri, "/api/address/fetch-address")) {
+            $data = json_decode(file_get_contents("php://input"));
+            $this->fetchAddress($data);
+            return;
+        }
+
+        //For other post requests, admin authentication is required.
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage('You are not logged in as admin.', 401);
+            return;
+        }
+
+        try {    
+            $address = $this->buildAddressFromPostedJson();
             $address = $this->addressService->insertAddress($address);
 
             echo json_encode($address);
@@ -105,33 +108,8 @@ class AddressAPIController extends APIController
 
         $addressId = basename($uri);
 
-        $json = file_get_contents('php://input');
-
-        $data = json_decode($json);
-
-        if ($data == null) {
-            $this->sendErrorMessage("Invalid JSON", 400);
-            return;
-        }
-
         try {
-            if (!isset($data->streetName)) {
-                throw new MissingVariableException("Street name is required");
-            }
-            if (!isset($data->houseNumber)) {
-                throw new MissingVariableException("House number is required");
-            }
-            if (!isset($data->postalCode)) {
-                throw new MissingVariableException("Postal code is required");
-            }
-            if (!isset($data->city)) {
-                throw new MissingVariableException("City is required");
-            }
-            if (!isset($data->country)) {
-                throw new MissingVariableException("Country is required");
-            }
-
-            $address = $this->buildAddressFromPostedJson($data->streetName, $data->houseNumber, $data->postalCode, $data->city, $data->country);
+            $address = $this->buildAddressFromPostedJson();
             $address = $this->addressService->updateAddress($addressId, $address);
                 
             echo json_encode($address);

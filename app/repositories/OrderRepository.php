@@ -48,12 +48,10 @@ class OrderRepository extends Repository
     private function buildOrderItem($row) : OrderItem{
         $orderItem = new OrderItem();
         $orderItem->setOrderItemId($row['orderItemId']);
-        
-        $orderItem->setBasePrice($row['basePrice']);
-        $orderItem->setVatPercentage($row['vatPercentage']);
-        $orderItem->setVatAmount($row['vatAmount']);
-        $orderItem->setFullPrice($row['fullPrice']);
+        $orderItem->setTicketLinkId($row['ticketLinkId']);
         $orderItem->setQuantity($row['quantity']);
+        
+        
 
         return $orderItem;
     }
@@ -107,18 +105,21 @@ class OrderRepository extends Repository
 
     public function getOrderItemsByOrderId($orderId) : array{
         try{
-            $sql = "select e.name as eventName, ti.ticketTypeName as ticketTypeName, t.basePrice as basePrice, f.VAT as vatPercentage, t.vat as vatAmount, t.fullPrice as fullPrice, count(t.eventId) as quantity " +
-            "from tickets t " +
-            "join tickettypes ti on t.ticketTypeId = ti.ticketTypeId " +
-            "join events e on e.eventId = t.eventId " +
-            "join festivaleventtypes f on e.festivalEventType = f.eventTypeId " +
-            "where t.orderId = :orderId " +
-            "group by e.name, ti.ticketTypeName, e.startTime, t.basePrice, f.VAT, t.vat, t.fullPrice";
+            $sql = "select o.orderItemId, tl.ticketLinkId, e.name as eventName, tt.ticketTypeName as ticketName, e.startTime, tt.ticketTypePrice, f.VAT, o.quantity 
+                    from orderitems o
+                    join ticketlinks tl on tl.ticketLinkId = o.ticketLinkId 
+                    join tickettypes tt on tt.ticketTypeId = tl.ticketTypeId
+                    join events e on e.eventId = tl.eventId
+                    join festivaleventtypes f on f.eventTypeId = e.festivalEventType
+                    where o.orderId = :orderId";
 
             $stmt = $this->connection->prepare($sql);
-            $stmt->bindValue(":orderId", $orderId);
+            $stmt->bindValue(":orderId", htmlspecialchars($orderId));
             $stmt->execute();
+            
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            //Build order item array
             $orderItems = array();
             foreach($result as $row){
                 $orderItem = $this->buildOrderItem($row);
@@ -146,13 +147,17 @@ class OrderRepository extends Repository
         try{
             $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
             $stmt = $this->connection->prepare($sql);
-            $stmt->bindValue(":orderDate", $order->getOrderDate());
-            $stmt->bindValue(":customerId", $order->getCustomer()->getCustomerId());
+            $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDate()));
+            $stmt->bindValue(":customerId", htmlspecialchars($order->getCustomer()->getCustomerId()));
             $stmt->execute();
         }
         catch(Exception $ex){
 
         }
+    }
+
+    public function insertOrderItem($orderItem, $orderId){
+
     }
 }
 ?>
