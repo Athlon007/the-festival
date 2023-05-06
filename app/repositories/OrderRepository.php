@@ -40,7 +40,8 @@ class OrderRepository extends Repository
         $order = new Order();
         $order->setOrderId($row['orderId']);
         $order->setOrderDate($row['orderDate']);
-        $order->setOrderItems($this->getOrderItemsByOrderId($row['orderId']));
+        //Load order items into the order
+        $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
 
         return $order;
     }
@@ -49,9 +50,11 @@ class OrderRepository extends Repository
         $orderItem = new OrderItem();
         $orderItem->setOrderItemId($row['orderItemId']);
         $orderItem->setTicketLinkId($row['ticketLinkId']);
+        $orderItem->setEventName($row['eventName']);
+        $orderItem->setTicketName($row['ticketName']);
+        $orderItem->setVatPercentage($row['VAT']);
+        $orderItem->setFullTicketPrice($row['fullTicketPrice']);
         $orderItem->setQuantity($row['quantity']);
-        
-        
 
         return $orderItem;
     }
