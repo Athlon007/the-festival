@@ -30,24 +30,24 @@ class OrderService
         $this->pdfService = new PDFService();
     }
 
-    public function getOrderById($id)
+    public function getOrderById($id) : Order
     {
         $order = $this->orderRepository->getById($id);
         
     }
 
-    public function getOrderHistory($customerId)
+    public function getOrderHistory($customerId) : array
     {
         return $this->orderRepository->getOrderHistory($customerId);
     }
 
-    public function getUnpaidOrder($customerId)
+    public function getUnpaidOrder($customerId) : Order
     {
         return $this->orderRepository->getUnpaidOrder($customerId);
     }
 
-    //To be called after payment (can't be implemented yet)
-    public function insertOrder($customer)
+    
+    public function insertOrder($customer) 
     {
     }
 

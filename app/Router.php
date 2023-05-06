@@ -243,8 +243,11 @@ class Router
             require_once("controllers/APIControllers/TicketTypesAPIController.php");
             $controller = new TicketTypesAPIController();
         } elseif (str_starts_with($request, "/api/cart")) {
-            require_once("controllers/APIControllers/CartAPIController.php");
+            require_once("controllers/APIControllers/PaymentFunnel/CartAPIController.php");
             $controller = new CartAPIController();
+        } elseif (str_starts_with($request, "/api/orders")) {
+            require_once("controllers/APIControllers/PaymentFunnel/OrderAPIController.php");
+            $controller = new EventTypeAPIController();
         } elseif (str_starts_with($request, "/api/eventtypes")) {
             require_once("controllers/APIControllers/EventTypeAPIController.php");
             $controller = new EventTypeAPIController();

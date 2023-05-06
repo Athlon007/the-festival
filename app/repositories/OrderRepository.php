@@ -21,27 +21,30 @@ class OrderRepository extends Repository
         parent::__construct();
     }
 
+    
+
     public function getById($orderId) : Order{
         try{
             $sql = "SELECT * FROM orders WHERE orderId = :orderId";
             $stmt = $this->connection->prepare($sql);
-            $stmt->bindValue(":orderId", $orderId);
+            $stmt->bindValue(":orderId", htmlspecialchars($orderId));
             $stmt->execute();
+
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $order = $this->buildOrder($result);
+            $order->setOrderItems($this->getOrderItemsByOrderId($orderId));
         }
         catch(Exception $ex){
             throw $ex;
         }
-
-        return $this->buildOrder($result);
     }
 
     private function buildOrder($row) : Order{
         $order = new Order();
         $order->setOrderId($row['orderId']);
         $order->setOrderDate($row['orderDate']);
-        //Load order items into the order
-        $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
+        $order->getCustomer()->setUserId($row['customerId']);
+        $order->setIsPaid($row['isPaid']);
 
         return $order;
     }
@@ -146,7 +149,7 @@ class OrderRepository extends Repository
     }
 
     //Insert a new order into the database
-    public function insert($order){
+    public function insertOrder($order){
         try{
             $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
             $stmt = $this->connection->prepare($sql);
@@ -160,6 +163,11 @@ class OrderRepository extends Repository
     }
 
     public function insertOrderItem($orderItem, $orderId){
+
+    }
+
+    //This method is used to remove old orders that were never linked to an account.
+    private function cleanseOrders(){
 
     }
 }
