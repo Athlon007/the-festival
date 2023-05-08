@@ -242,18 +242,18 @@ class Router
         } elseif (str_starts_with($request, "/api/tickettypes")) {
             require_once("controllers/APIControllers/TicketTypesAPIController.php");
             $controller = new TicketTypesAPIController();
-        } elseif (str_starts_with($request, "/api/cart")) {
-            require_once("controllers/APIControllers/PaymentFunnel/CartAPIController.php");
-            $controller = new CartAPIController();
-        } elseif (str_starts_with($request, "/api/orders")) {
-            require_once("controllers/APIControllers/PaymentFunnel/OrderAPIController.php");
-            $controller = new OrderAPIController();
         } elseif (str_starts_with($request, "/api/eventtypes")) {
             require_once("controllers/APIControllers/EventTypeAPIController.php");
             $controller = new EventTypeAPIController();
         } elseif (str_starts_with($request, "/api/pages")) {
             require_once("controllers/APIControllers/PagesAPIController.php");
             $controller = new PagesAPIController();
+        } elseif (str_starts_with($request, "/api/cart")) {
+            require_once("controllers/APIControllers/PaymentFunnel/CartAPIController.php");
+            $controller = new CartAPIController();
+        } elseif (str_starts_with($request, "/api/orders")) {
+            require_once("controllers/APIControllers/PaymentFunnel/OrderAPIController.php");
+            $controller = new OrderAPIController();
         } else {
             http_response_code(400);
             // send json
