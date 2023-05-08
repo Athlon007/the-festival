@@ -21,65 +21,63 @@ class CartService
 
     /**
      * Adds one instance of specific cart item to the cart and returns the cart as an array of cart item arrays.
-     * @param TicketLink $ticketLink The ticket link to add.
-     * @return array The cart as an array of cart item arrays.
-     * @author Konrad
+     * @param $ticketLinkId The item to add.
+     * @return Order returns the order object.
+     * @author Joshua
      */
-    public function add($orderId, $ticketLinkId): array
+    public function getCart(): Order
     {
-        // Check if the cart item already exists in the cart.
-        // If so, update the amount.
-        if (isset($_SESSION[CartService::CART_ARRAY])) {
-            $index = $this->findIndex($ticketLink);
-
-            if ($index !== false) {
-                $_SESSION[CartService::CART_ARRAY][$index]['amount']++;
-                return $this->cart();
-            }
+        //Check if the cart is initialized.
+        if (!isset($_SESSION["cartId"])) {
+            return null;
         }
+        //Retrieve the order from the cart and db
 
-        return $this->set($ticketLink, 1);
+        //Return the order
     }
-
-    public function remove($orderId, $ticketLinkId): array
+    
+    /**
+     * Adds one instance of specific cart item to the cart and returns the cart as an array of cart item arrays.
+     * @param $ticketLinkId The item to add.
+     * @return Order returns the order object.
+     * @author Joshua
+     */
+    public function addItem($ticketLinkId): Order
     {
-        // check if array of cart item arrays is initialized.
-        if (!isset($_SESSION[CartService::CART_ARRAY])) {
+        //Check if the cart is initialized.
+        if (!isset($_SESSION["cartId"])) {
             return [];
         }
+        
+        //Retrieve the order from the cart
 
-        // Find the index of the cart item in the cart.
-        $index = $this->findIndex($ticketLink);
-        // Remove it.
-        unset($_SESSION[CartService::CART_ARRAY][$index]);
+        //Check if an orderitem with the same ticketlinkid exists in the order
 
-        // return the array.
-        return $this->cart();
+        //If so, add to quantity
+
+        //Else, add new orderitem to order
+
+        //Update the order in the database
+
+        //Return the order
     }
 
-    /**
-     * Subtracts one instance of specific cart item from the cart and returns the cart as an array of cart item arrays.
-     * @param TicketLink $ticketLink The cart item to add.
-     * @return array The cart as an array of cart item arrays.
-     * @author Konrad
-     */
-    public function subtract($orderId, $ticketLinkId): array
+    public function removeItem($ticketLinkId): Order
     {
-        // Check if the cart item already exists in the cart.
-        // If so, update the amount.
-        if (isset($_SESSION[CartService::CART_ARRAY])) {
-            $index = $this->findIndex($ticketLink);
-            if ($index !== false) {
-                $_SESSION[CartService::CART_ARRAY][$index]['amount']--;
-
-                // If the amount is 0, remove the cart item from the cart.
-                if ($_SESSION[CartService::CART_ARRAY][$index]['amount'] == 0) {
-                    unset($_SESSION[CartService::CART_ARRAY][$index]);
-                }
-            }
+        //Check if the cart is initialized.
+        if (!isset($_SESSION["cartId"])) {
+            return [];
         }
+        
+        //Retrieve the order from the cart
 
-        return $this->cart();
+        //Check for the orderitem that contains the ticketlinkId
+
+        //If so, subtract from quantity
+
+        //Update the order in the database
+
+        //Return the order
     }
 
     /**
@@ -89,7 +87,7 @@ class CartService
      * @return array The cart as an array of cart item arrays.
      * @throws EventSoldOutException If the event is sold out.
      */
-    public function set(TicketLink $ticketLink, int $amount): array
+    public function set(TicketLink $ticketLink, int $amount): Order
     {
         $amountOfTicketsAfterAdding = $ticketLink->getEvent()->getAvailableTickets() - $amount;
 
@@ -138,20 +136,8 @@ class CartService
         // return the array.
         return $this->cart();
     }
-
-    /**
-     * Returns the cart as an array of cart item arrays.
-     * @param TicketLink $ticketLink The cart item to remove.
-     * @return array The cart as an array of cart item arrays.
-     * @author Konrad
-     */
     
-
-    /**
-     * Returns the number of items in the cart.
-     * @return int The number of items in the cart.
-     * @author Konrad
-     */
+    
     public function totalCount(): int
     {
         // check if array of cart item arrays is initialized.
@@ -168,70 +154,15 @@ class CartService
     }
 
     /**
-     * Returns the cart as an array of cart items and their count.
-     * @return array The cart as an array of cart items and their count.
-     * @author Konrad
+     * Clears the cart by removing all order items from the order in db.
+     * @author Joshua
      */
-    public function cart(): array
+    public function clear(): Order
     {
         // check if array of cart item arrays is initialized.
         if (!isset($_SESSION[CartService::CART_ARRAY])) {
             return [];
         }
 
-        $tls = [];
-        $count = 0;
-        $totalPrice = 0;
-        foreach ($_SESSION[CartService::CART_ARRAY] as $entry) {
-            $tl = $this->ticketLinkRepository->getById($entry['ticketLinkId']);
-            $price = $tl->getTicketType()->getPrice() * $entry['amount'];
-
-            $tls[] = [
-                'ticketLink' => $tl,
-                'amount' => $entry['amount'],
-                'price' => $price,
-            ];
-
-            $count += $entry['amount'];
-            $totalPrice += $price;
-        }
-
-        return [
-            'count' => $count,
-            'totalPrice' => $totalPrice,
-            'ticketLinks' => $tls
-        ];
-    }
-
-    /**
-     * Clears the cart.
-     * @author Konrad
-     */
-    public function clear(): array
-    {
-        // check if array of cart item arrays is initialized.
-        if (!isset($_SESSION[CartService::CART_ARRAY])) {
-            return [];
-        }
-
-        $_SESSION[CartService::CART_ARRAY] = [];
-        return $this->cart();
-    }
-
-    /**
-     * Returns the index of the cart item in the cart.
-     * @param TicketLink $ticketLink The cart item to find.
-     * @return int The index of the cart item in the cart.
-     * @author Konrad
-     */
-    private function findIndex(TicketLink $ticketLink)
-    {
-        // check if array of cart item arrays is initialized.
-        if (!isset($_SESSION[CartService::CART_ARRAY])) {
-            return false;
-        }
-
-        // Find the index of the cart item in the cart.
-        return array_search($ticketLink->getId(), array_column($_SESSION[CartService::CART_ARRAY], 'ticketLinkId'));
     }
 }

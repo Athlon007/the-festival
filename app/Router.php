@@ -247,7 +247,7 @@ class Router
             $controller = new CartAPIController();
         } elseif (str_starts_with($request, "/api/orders")) {
             require_once("controllers/APIControllers/PaymentFunnel/OrderAPIController.php");
-            $controller = new EventTypeAPIController();
+            $controller = new OrderAPIController();
         } elseif (str_starts_with($request, "/api/eventtypes")) {
             require_once("controllers/APIControllers/EventTypeAPIController.php");
             $controller = new EventTypeAPIController();

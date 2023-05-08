@@ -143,4 +143,12 @@ class Order implements JsonSerializable
 
         return $totalVatTotalPrice;
     }
+
+    public function getTotalItemCount(){
+        $totalItemCount = 0;
+        foreach ($this->orderItems as $orderItem) {
+            $totalItemCount += $orderItem->getQuantity();
+        }
+        return $totalItemCount;
+    }
 }

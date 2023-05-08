@@ -1,21 +1,26 @@
 <?php
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-
+//Repositories
 require_once(__DIR__ . '/../repositories/OrderRepository.php');
-require_once(__DIR__ . '/../models/Order.php');
-require_once(__DIR__ . '/../models/Exceptions/OrderNotFoundException.php');
 require_once(__DIR__ . '/../repositories/TicketLinkRepository.php');
-require_once(__DIR__ . '/../models/TicketLink.php');
 require_once(__DIR__ . '/../repositories/TicketRepository.php');
+require_once(__DIR__ . '/../repositories/CustomerRepository.php');
+
+//Services
 require_once(__DIR__ . '/../services/TicketService.php');
 require_once(__DIR__ . '/../services/PDFService.php');
+
+//Models
+require_once(__DIR__ . '/../models/Order.php');
+require_once(__DIR__ . '/../models/TicketLink.php');
+require_once(__DIR__ . '/../models/Exceptions/OrderNotFoundException.php');
+
+
 
 class OrderService
 {
     private $orderRepository;
+    private $customerRepository;
     private $ticketLinkRepository;
     private $ticketRepository;
     private $ticketService;
@@ -26,19 +31,23 @@ class OrderService
         $this->orderRepository = new OrderRepository();
         $this->ticketLinkRepository = new TicketLinkRepository();
         $this->ticketRepository = new TicketRepository();
+        $this->customerRepository = new CustomerRepository();
         $this->ticketService = new TicketService();
         $this->pdfService = new PDFService();
     }
 
     public function getOrderById($id) : Order
     {
+        //Get the order object
         $order = $this->orderRepository->getById($id);
+        //Get the customer object attached in order
+        $order->setCustomer($this->customerRepository->getById($order->getCustomer()->getUserId()));
         
     }
 
     public function getOrderHistory($customerId) : array
     {
-        return $this->orderRepository->getOrderHistory($customerId);
+        $orders = $this->orderRepository->getOrderHistory($customerId);
     }
 
     public function getUnpaidOrder($customerId) : Order
@@ -47,8 +56,9 @@ class OrderService
     }
 
     
-    public function insertOrder($customer) 
+    public function insertOrder($order)
     {
+
     }
 
     public function sendInvoiceAndTicketsByEmail($order)

@@ -1,4 +1,7 @@
 <?php
+require_once(__DIR__ . "/../APIController.php");
+require_once(__DIR__ . "/../../../services/OrderService.php");
+require_once(__DIR__ . "/../../../models/Order.php");
 /**
  * This class is the controller for the Order API.
  * @author Joshua

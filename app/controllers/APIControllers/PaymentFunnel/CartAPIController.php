@@ -28,7 +28,7 @@ class CartAPIController extends APIController
                 return;
             }
 
-            $cart = $this->cartService->cart();
+            $cart = $this->cartService->getCart();
             echo json_encode($cart);
         } catch (Throwable $e) {
             Logger::write($e);
