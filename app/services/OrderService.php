@@ -56,7 +56,7 @@ class OrderService
     }
 
     
-    public function insertOrder($order)
+    public function createOrder($ticketLinkId, $customer=NULL)
     {
 
     }

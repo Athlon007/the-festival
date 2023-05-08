@@ -20,19 +20,11 @@ class CartAPIController extends APIController
     protected function handleGetRequest($uri)
     {
         try {
-            if (basename($uri) == 'count') {
-                echo json_encode(["count" => $this->cartService->totalCount()]);
-                return;
-            } elseif (is_numeric(basename($uri))) {
-                echo json_encode($this->ciService->getById(basename($uri)));
-                return;
-            }
-
-            $cart = $this->cartService->getCart();
-            echo json_encode($cart);
+            $cartOrder = $this->cartService->getCart();
+            echo json_encode($cartOrder);
         } catch (Throwable $e) {
             Logger::write($e);
-            $this->sendErrorMessage("Unable to retrive cart.", 500);
+            $this->sendErrorMessage("Unable to retrieve the cart.", 500);
         }
     }
 

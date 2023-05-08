@@ -1,8 +1,6 @@
 <?php
 
 require_once(__DIR__ . '/../models/Exceptions/EventSoldOutException.php');
-require_once(__DIR__ . '/../models/TicketLink.php');
-require_once(__DIR__ . '/../repositories/TicketLinkRepository.php');
 require_once('OrderService.php');
 
 /**
@@ -11,12 +9,15 @@ require_once('OrderService.php');
  */
 class CartService
 {
+    private $orderService;
+
     public function __construct()
     {
         //Start/continue session
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
+        $this->orderService = new OrderService();
     }
 
     /**
@@ -29,9 +30,11 @@ class CartService
     {
         //Check if the cart is initialized.
         if (!isset($_SESSION["cartId"])) {
-            return null;
+            throw new Exception("Cart not initialized.");
         }
+
         //Retrieve the order from the cart and db
+        $cartOrder = $this->orderService->getOrderById($_SESSION["cartId"]);
 
         //Return the order
     }
@@ -46,7 +49,9 @@ class CartService
     {
         //Check if the cart is initialized.
         if (!isset($_SESSION["cartId"])) {
-            return [];
+            //If not, create a new order and insert the order item.
+            $this->orderService->createOrder($ticketLinkId);
+
         }
         
         //Retrieve the order from the cart
@@ -66,7 +71,7 @@ class CartService
     {
         //Check if the cart is initialized.
         if (!isset($_SESSION["cartId"])) {
-            return [];
+            throw new Exception("Cart not initialized.");
         }
         
         //Retrieve the order from the cart
