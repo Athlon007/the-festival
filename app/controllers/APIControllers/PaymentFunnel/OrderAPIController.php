@@ -25,6 +25,10 @@ class OrderAPIController extends APIController
         //api/orders
 
         //api/orders/{id}
+
+        //api/orders/unpaid/{customerId}
+
+        //api/orders/paid/{customerId}
     }
 
     public function handleDeleteRequest($uri)

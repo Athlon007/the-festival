@@ -21,8 +21,6 @@ class OrderRepository extends Repository
         parent::__construct();
     }
 
-    
-
     public function getById($orderId) : Order{
         try{
             $sql = "SELECT * FROM orders WHERE orderId = :orderId";
@@ -33,76 +31,53 @@ class OrderRepository extends Repository
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             $order = $this->buildOrder($result);
             $order->setOrderItems($this->getOrderItemsByOrderId($orderId));
+
+            return $order;
         }
         catch(Exception $ex){
             throw $ex;
         }
     }
 
-    private function buildOrder($row) : Order{
-        $order = new Order();
-        $order->setOrderId($row['orderId']);
-        $order->setOrderDate($row['orderDate']);
-        $order->getCustomer()->setUserId($row['customerId']);
-        $order->setIsPaid($row['isPaid']);
+    public function getAll(){
+
+    }
+
+    public function getCartOrder(int $customerId) : ?Order{
+        $sql = "SELECT * FROM orders WHERE customerId = :customerId AND isPaid = 0";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":customerId", htmlspecialchars($customerId));
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if(!$result)
+            return null;
+
+        $order = $this->buildOrder($result);
+        $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
 
         return $order;
     }
 
-    private function buildOrderItem($row) : OrderItem{
-        $orderItem = new OrderItem();
-        $orderItem->setOrderItemId($row['orderItemId']);
-        $orderItem->setTicketLinkId($row['ticketLinkId']);
-        $orderItem->setEventName($row['eventName']);
-        $orderItem->setTicketName($row['ticketName']);
-        $orderItem->setVatPercentage($row['VAT']);
-        $orderItem->setFullTicketPrice($row['fullTicketPrice']);
-        $orderItem->setQuantity($row['quantity']);
-
-        return $orderItem;
-    }
+    
 
     public function getOrderHistory($customerId): array
     {
-        $sql = "SELECT o.orderId, o.orderDate, e.name AS eventName, t.ticketId, t.basePrice, t.vat, o.totalFullPrice, o.customerId
-        FROM orders o
-        JOIN tickets t ON t.orderId = o.orderId
-        JOIN events e ON t.eventId = e.eventId
-        WHERE o.customerId = :customerId
-        ORDER BY o.orderId, t.ticketId";
+        $sql = "SELECT * FROM orders WHERE customerId = :customerId AND isPaid = 1";
 
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":customerId", $customerId);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
         if (!$result)
             throw new OrderNotFoundException();
 
-        $orders = [];
-        $tickets = [];
+        $orders = array();
         foreach ($result as $row) {
-            $order = new Order();
-            $order->setOrderId($row['orderId']);
-            //Set order date as date object not as a string
-            $order->setOrderDate(DateTime::createFromFormat('Y-m-d H:i:s', $row['orderDate']));
-            $order->setTotalFullPrice($row['totalFullPrice']);
-
-            $ticketRep = new TicketRepository();
-            $ticket = $ticketRep->getTicketById($row['ticketId']);
-            $ticket->setBasePrice($row['basePrice']);
-            $ticket->setVat($row['vat']);
-
-            $userRep = new UserRepository();
-            $customerRep = new CustomerRepository();
-            $user = $userRep->getById($row['customerId']);
-            $customer = $customerRep->getCustomerByUser($user);
-            $order->setCustomer($customer);
-
-            array_push($tickets, $ticket);
-
-            $order->setTickets($tickets);
+            $order = $this->buildOrder($row);
+            $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
             array_push($orders, $order);
         }
 
@@ -139,13 +114,12 @@ class OrderRepository extends Repository
         }
     }
 
-    public function update($orderId, $order){
-        try{
-            
-        }
-        catch(Exception $ex){
+    public function updateOrder($orderId, $order){
+        
+    }
 
-        }
+    public function updateOrderItem($orderItemId, $orderItem){
+
     }
 
     //Insert a new order into the database
@@ -163,12 +137,47 @@ class OrderRepository extends Repository
     }
 
     public function insertOrderItem($orderItem, $orderId){
-
+        $sql = "INSERT INTO orderitems (ticketLinkId, orderId, quantity) VALUES (:ticketLinkId, :orderId, :quantity)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":ticketLinkId", htmlspecialchars($orderItem->getTicketLinkId()));
+        $stmt->bindValue(":orderId", htmlspecialchars($orderId));
+        $stmt->bindValue(":quantity", htmlspecialchars($orderItem->getQuantity()));
+        $stmt->execute();
     }
 
-    //This method is used to remove old orders that were never linked to an account.
-    private function cleanseOrders(){
+    //This method is used to remove orders that were never linked to an account and that are 7 days old.
+    private function cleanseOldOrders(){
+        try{
+            $sql = "DELETE FROM orders WHERE customerId IS NULL AND orderDate < DATE_SUB(NOW(), INTERVAL 7 DAYS)";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute();
+        }
+        catch(Exception $ex){
 
+        }
+    }
+
+    private function buildOrder($row) : Order{
+        $order = new Order();
+        $order->setOrderId($row['orderId']);
+        $order->setOrderDate($row['orderDate']);
+        $order->getCustomer()->setUserId($row['customerId']);
+        $order->setIsPaid($row['isPaid']);
+
+        return $order;
+    }
+
+    private function buildOrderItem($row) : OrderItem{
+        $orderItem = new OrderItem();
+        $orderItem->setOrderItemId($row['orderItemId']);
+        $orderItem->setTicketLinkId($row['ticketLinkId']);
+        $orderItem->setEventName($row['eventName']);
+        $orderItem->setTicketName($row['ticketName']);
+        $orderItem->setVatPercentage($row['VAT']);
+        $orderItem->setFullTicketPrice($row['fullTicketPrice']);
+        $orderItem->setQuantity($row['quantity']);
+
+        return $orderItem;
     }
 }
 ?>

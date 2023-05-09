@@ -22,6 +22,7 @@ class CartAPIController extends APIController
         try {
             $cartOrder = $this->cartService->getCart();
             echo json_encode($cartOrder);
+
         } catch (Throwable $e) {
             Logger::write($e);
             $this->sendErrorMessage("Unable to retrieve the cart.", 500);
@@ -30,76 +31,25 @@ class CartAPIController extends APIController
 
     protected function handlePostRequest($uri)
     {
-        $ciID = basename($uri);
-        try {
-            $ticketLink = $this->ciService->getById($ciID);
+        $this->sendErrorMessage("Bad request.", 400);
+    }
 
-            if ($ticketLink == null) {
-                $this->sendErrorMessage("Cart item not found", 404);
-                return;
-            }
+    protected function handlePutRequest($uri){
+        if(str_starts_with($uri, "/api/cart/add/") && is_numeric(basename($uri))){
+            $data = json_decode(file_get_contents("php://input"));
+            $cart = $this->cartService->addItem($data);
+        }
 
-            $cart = null;
-
-            // Check if in the GET has amount.
-            if (isset($_GET['amount'])) {
-                $amount = $_GET['amount'];
-                $cart = $this->cartService->set($ticketLink, $amount);
-            } else {
-                $cart = $this->cartService->add($ticketLink);
-            }
-
-            echo json_encode($cart);
-        } catch (EventSoldOutException $e) {
-            $this->sendErrorMessage($e->getMessage(), 400);
-        } catch (Throwable $e) {
-            Logger::write($e);
-            $this->sendErrorMessage("Unable to add item into cart.", 500);
+        if(str_starts_with($uri, "/api/cart/remove/") && is_numeric(basename($uri))){
+            $data = json_decode(file_get_contents("php://input"));
+            $cart = $this->cartService->removeItem($data);
             return;
+
         }
     }
 
     protected function handleDeleteRequest($uri)
     {
-        if (basename($uri) == 'clear') {
-            $cart = $this->cartService->clear();
-            echo json_encode($cart);
-            return;
-        }
-
-        $tlID = -1;
-        $deleteAllOfTicket = false;
-        if (basename($uri) == 'all') {
-            // Get the tlID from the second last part of the URI.
-            $uriParts = explode('/', $uri);
-            $tlID = $uriParts[count($uriParts) - 2];
-            $deleteAllOfTicket = true;
-        } else {
-            $tlID = basename($uri);
-        }
-
-        try {
-            $ticketLink = $this->ciService->getById($tlID);
-
-            if ($ticketLink == null) {
-                $this->sendErrorMessage("Cart item not found", 404);
-                return;
-            }
-
-            $cart = null;
-
-            if ($deleteAllOfTicket) {
-                $cart = $this->cartService->remove($ticketLink);
-            } else {
-                $cart = $this->cartService->subtract($ticketLink);
-            }
-
-            echo json_encode($cart);
-            return;
-        } catch (Throwable $e) {
-            Logger::write($e);
-            $this->sendErrorMessage("Unable to remove item from cart.", 500);
-            return;
-        }
+        $this->sendErrorMessage("Bad request.", 400);
     }
 }

@@ -36,29 +36,48 @@ class OrderService
         $this->pdfService = new PDFService();
     }
 
-    public function getOrderById($id) : Order
+    public function getOrderById(int $id) : Order
     {
         //Get the order object
         $order = $this->orderRepository->getById($id);
         //Get the customer object attached in order
         $order->setCustomer($this->customerRepository->getById($order->getCustomer()->getUserId()));
-        
+        return $order;
     }
 
-    public function getOrderHistory($customerId) : array
+    public function getOrderHistory(int $customerId) : array
     {
         $orders = $this->orderRepository->getOrderHistory($customerId);
+        foreach ($orders as $order) {
+            $order->setCustomer($this->customerRepository->getById($order->getCustomer()->getUserId()));
+        }
+        return $orders;
     }
 
-    public function getUnpaidOrder($customerId) : Order
+    public function getCartOrder(int $customerId) : Order
     {
-        return $this->orderRepository->getUnpaidOrder($customerId);
+        return $this->orderRepository->getCartOrder($customerId);
     }
-
     
-    public function createOrder($ticketLinkId, $customer=NULL)
+    public function createOrder(int $ticketLinkId, int $customerId = NULL) : Order
     {
+        $order = new Order();
+        $order->setOrderDate(new DateTime());
+        $order->setIsPaid(false);
 
+        $firstOrderItem = new OrderItem();
+        $firstOrderItem->setTicketLinkId($ticketLinkId);
+
+        $this->orderRepository->insertOrder($order);
+    }
+
+    public function createOrderItem(int $orderId, int $ticketLinkId) : OrderItem
+    {
+        $orderItem = new OrderItem();
+        $orderItem->setTicketLinkId($ticketLinkId);
+        $orderItem->setQuantity(1);
+
+        $this->orderRepository->insertOrderItem($orderItem, $orderId);
     }
 
     public function sendInvoiceAndTicketsByEmail($order)

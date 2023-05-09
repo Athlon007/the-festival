@@ -4,8 +4,8 @@ require_once(__DIR__ . '/../models/Exceptions/EventSoldOutException.php');
 require_once('OrderService.php');
 
 /**
- * This class handles the cart and uses orderservice to communicate with db.
- * @author Konrad
+ * This class handles the cart session and uses OrderService to communicate with the database.
+ * @author Joshua
  */
 class CartService
 {
@@ -13,60 +13,105 @@ class CartService
 
     public function __construct()
     {
-        //Start/continue session
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
         $this->orderService = new OrderService();
     }
+    
+    /**
+     * Is called to create a new cart order if there is none in session when it's required to be.
+     * @return Order
+     */
+    private function initialiseCart($ticketLinkId) : Order{
+        
+        if (isset($_SESSION["cartId"])) {
+            throw new Exception("Cart already initialised.");
+        }
+
+        //If a customer is logged in then we use their id, else we don't pass a customer id.
+        if (isset($_SESSION["user"])) {
+            $user = unserialize($_SESSION["user"]);
+            
+            //Only customers are able to buy tickets, not admins or staff.
+            if ($user->getUserTypeAsString() == "Customer") {
+                $customerId = $user->getUserId();
+            }
+            else{
+                throw new Exception("User is not a customer.");
+            }
+
+            $order = $this->orderService->createOrder($ticketLinkId, $customerId);
+        }
+        else
+            $order = $this->orderService->createOrder($ticketLinkId);
+        
+
+        $_SESSION["cartId"] = $order->getOrderId();
+        return $order;
+    }
 
     /**
-     * Adds one instance of specific cart item to the cart and returns the cart as an array of cart item arrays.
-     * @param $ticketLinkId The item to add.
-     * @return Order returns the order object.
-     * @author Joshua
+     * Gets the cart using the session.
+     * @return Order
      */
     public function getCart(): Order
     {
-        //Check if the cart is initialized.
+        //Check if the cart is initialised.
         if (!isset($_SESSION["cartId"])) {
-            throw new Exception("Cart not initialized.");
+            throw new Exception("Cart not initialised.");
         }
 
-        //Retrieve the order from the cart and db
-        $cartOrder = $this->orderService->getOrderById($_SESSION["cartId"]);
-
-        //Return the order
+        //Retrieve the order that is in cart from the db and return it.
+        $orderId = $_SESSION["cartId"];
+        return $this->orderService->getOrderById($orderId);
     }
     
     /**
-     * Adds one instance of specific cart item to the cart and returns the cart as an array of cart item arrays.
-     * @param $ticketLinkId The item to add.
-     * @return Order returns the order object.
-     * @author Joshua
+     * Adds one item to the cart.
+     * @param $ticketLinkId The ID of the ticketlink to add.
+     * @return Order
      */
     public function addItem($ticketLinkId): Order
     {
         //Check if the cart is initialized.
         if (!isset($_SESSION["cartId"])) {
-            //If not, create a new order and insert the order item.
-            $this->orderService->createOrder($ticketLinkId);
-
+            //If not, then a new order must be created to fill the cart.
+            return $this->initialiseCart($ticketLinkId);
         }
+        else{
+            //Retrieve the order that is in cart from the db.
+            $order = $this->orderService->getOrderById($_SESSION["cartId"]);
+
+            //Check if an orderitem with the same ticketlinkid exists in the order
+            foreach ($order->getOrderItems() as $orderItem){
+                if ($orderItem->getTicketLink()->getTicketLinkId() == $ticketLinkId){
+                    //If so, add to quantity of the orderItem, update the orderItem in the db, and return the updated order.    
+                    $orderItem->setQuantity($orderItem->getQuantity() + 1);
+                    return $this->orderService->updateOrderItem($orderItem->getId(), $orderItem);
+                }
+            }
+
+            //If not, then a new orderitem must be created and added to the order.
+            $this->orderService->addOrderItem($order, $ticketLinkId);
+        }
+
         
-        //Retrieve the order from the cart
-
-        //Check if an orderitem with the same ticketlinkid exists in the order
-
-        //If so, add to quantity
 
         //Else, add new orderitem to order
 
         //Update the order in the database
 
         //Return the order
+        return $order;
     }
-
+    
+    /**
+     * Removes one item from the cart.
+     * @param $ticketLinkId The ID of the item to remove.
+     * @return Order returns the order object.
+     * @author Joshua
+     */
     public function removeItem($ticketLinkId): Order
     {
         //Check if the cart is initialized.
@@ -74,7 +119,10 @@ class CartService
             throw new Exception("Cart not initialized.");
         }
         
-        //Retrieve the order from the cart
+        //Retrieve the order that is in cart from the db.
+        $cartOrder = $this->orderService->getOrderById($_SESSION["cartId"]);
+        
+        
 
         //Check for the orderitem that contains the ticketlinkId
 
@@ -85,89 +133,7 @@ class CartService
         //Return the order
     }
 
-    /**
-     * Sets the amount of specific cart item in the cart and returns the cart as an array of cart item arrays.
-     * @param TicketLink $ticketLink The cart item to add.
-     * @param int $amount The amount of cart items to add.
-     * @return array The cart as an array of cart item arrays.
-     * @throws EventSoldOutException If the event is sold out.
-     */
-    public function set(TicketLink $ticketLink, int $amount): Order
-    {
-        $amountOfTicketsAfterAdding = $ticketLink->getEvent()->getAvailableTickets() - $amount;
-
-        // Free event have no limit on tickets.
-        // Same goes for the passes.
-        if (
-            $ticketLink->getTicketType()->getPrice() > 0
-            && $ticketLink->getEvent()->getAvailableTickets() != null
-            && $amountOfTicketsAfterAdding < 0
-        ) {
-            $eventName = $ticketLink->getEvent()->getName();
-            $availableTickets = $ticketLink->getEvent()->getAvailableTickets();
-            throw new EventSoldOutException(
-                "Not enough tickets left for event '$eventName'. Available tickets: $availableTickets"
-            );
-        }
-
-
-        // If array is not initialized, initialize it.
-        if (!isset($_SESSION[CartService::CART_ARRAY])) {
-            $_SESSION[CartService::CART_ARRAY] = array();
-        }
-
-        // add the cart item to the array (yes, we can have multiple cart items with the same id).
-        $object = [
-            'ticketLinkId' => $ticketLink->getId(),
-            'amount' => $amount,
-        ];
-
-        // Check if the cart item already exists in the cart.
-        // If so, update the amount.
-        $index = $this->findIndex($ticketLink);
-
-        if ($index !== false) {
-            $_SESSION[CartService::CART_ARRAY][$index]['amount'] = $amount;
-        } else {
-            array_push($_SESSION[CartService::CART_ARRAY], $object);
-        }
-
-        // Amount is set to 0?
-        // If so, remove the cart item from the cart.
-        if ($amount == 0) {
-            $this->remove($ticketLink);
-        }
-
-        // return the array.
-        return $this->cart();
-    }
-    
-    
-    public function totalCount(): int
-    {
-        // check if array of cart item arrays is initialized.
-        if (!isset($_SESSION[CartService::CART_ARRAY])) {
-            return 0;
-        }
-
-        $count = 0;
-        foreach ($_SESSION[CartService::CART_ARRAY] as $cartItem) {
-            $count += $cartItem['amount'];
-        }
-
-        return $count;
-    }
-
-    /**
-     * Clears the cart by removing all order items from the order in db.
-     * @author Joshua
-     */
-    public function clear(): Order
-    {
-        // check if array of cart item arrays is initialized.
-        if (!isset($_SESSION[CartService::CART_ARRAY])) {
-            return [];
-        }
+    public function checkoutCart(){
 
     }
 }
