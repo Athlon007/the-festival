@@ -12,10 +12,8 @@ require_once(__DIR__ . '/../services/PDFService.php');
 
 //Models
 require_once(__DIR__ . '/../models/Order.php');
-require_once(__DIR__ . '/../models/TicketLink.php');
+require_once(__DIR__ . '/../models/Ticket.php');
 require_once(__DIR__ . '/../models/Exceptions/OrderNotFoundException.php');
-
-
 
 class OrderService
 {
@@ -56,7 +54,7 @@ class OrderService
 
     public function getCartOrder(int $customerId) : Order
     {
-        return $this->orderRepository->getCartOrder($customerId);
+        return $this->orderRepository->getCartOrderForCustomer($customerId);
     }
     
     public function createOrder(int $ticketLinkId, int $customerId = NULL) : Order
@@ -68,16 +66,16 @@ class OrderService
         $firstOrderItem = new OrderItem();
         $firstOrderItem->setTicketLinkId($ticketLinkId);
 
-        $this->orderRepository->insertOrder($order);
+        return $this->orderRepository->insertOrder($order);
     }
 
-    public function createOrderItem(int $orderId, int $ticketLinkId) : OrderItem
+    public function createOrderItem(int $ticketLinkId, int $orderId) : OrderItem
     {
         $orderItem = new OrderItem();
         $orderItem->setTicketLinkId($ticketLinkId);
         $orderItem->setQuantity(1);
 
-        $this->orderRepository->insertOrderItem($orderItem, $orderId);
+        return $this->orderRepository->insertOrderItem($orderItem, $orderId);
     }
 
     public function sendInvoiceAndTicketsByEmail($order)

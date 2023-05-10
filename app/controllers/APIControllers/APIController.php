@@ -57,7 +57,15 @@ class APIController
     final protected function sendSuccessMessage($message)
     {
         header('Content-Type: application/json');
+        http_response_code(200);
         echo json_encode(["success_message" => $message]);
+    }
+
+    final protected function sendResponse($body, $code = 200)
+    {
+        header('Content-Type: application/json');
+        http_response_code($code);
+        echo json_encode($body);
     }
 
     /**

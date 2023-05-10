@@ -100,7 +100,7 @@ function fetchAddress(){
     }
 
     fetch("/api/address/fetch-address", {
-        method: "POST",
+        method: "GET",
         body: JSON.stringify(data)
     })
     .then(response => response.json())

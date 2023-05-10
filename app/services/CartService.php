@@ -33,7 +33,7 @@ class CartService
         if (isset($_SESSION["user"])) {
             $user = unserialize($_SESSION["user"]);
             
-            //Only customers are able to buy tickets, not admins or staff.
+            //Only visitors or customers are able to buy tickets, not admins or staff.
             if ($user->getUserTypeAsString() == "Customer") {
                 $customerId = $user->getUserId();
             }
@@ -74,35 +74,28 @@ class CartService
      */
     public function addItem($ticketLinkId): Order
     {
-        //Check if the cart is initialized.
+        //If cart wasn't initialised, we create a new cart order with the item.
         if (!isset($_SESSION["cartId"])) {
-            //If not, then a new order must be created to fill the cart.
             return $this->initialiseCart($ticketLinkId);
         }
         else{
+            
             //Retrieve the order that is in cart from the db.
             $order = $this->orderService->getOrderById($_SESSION["cartId"]);
 
-            //Check if an orderitem with the same ticketlinkid exists in the order
+            //Check if an orderitem with the same ticketlinkid already exists in the order
             foreach ($order->getOrderItems() as $orderItem){
                 if ($orderItem->getTicketLink()->getTicketLinkId() == $ticketLinkId){
-                    //If so, add to quantity of the orderItem, update the orderItem in the db, and return the updated order.    
+                    //If so, add to quantity of the orderItem and update the orderItem.
                     $orderItem->setQuantity($orderItem->getQuantity() + 1);
-                    return $this->orderService->updateOrderItem($orderItem->getId(), $orderItem);
+                    $this->orderService->updateOrderItem($orderItem->getId(), $orderItem);
                 }
             }
-
-            //If not, then a new orderitem must be created and added to the order.
-            $this->orderService->addOrderItem($order, $ticketLinkId);
+            //If not, then we create a new orderitem with the ticketlinkid and add it to the order.
+            $orderItem = $this->orderService->createOrderItem($ticketLinkId, $order->getOrderId());
+            $order->addOrderItem($orderItem);
         }
 
-        
-
-        //Else, add new orderitem to order
-
-        //Update the order in the database
-
-        //Return the order
         return $order;
     }
     

@@ -2,6 +2,7 @@
 require_once("APIController.php");
 require_once(__DIR__ . "/../../services/AddressService.php");
 require_once(__DIR__ . "/../../models/Address.php");
+require_once(__DIR__ . "/../../models/Exceptions/MissingVariableException.php");
 
 /**
  * Controller for the Address API endpoint.
@@ -54,12 +55,7 @@ class AddressAPIController extends APIController
 
     protected function handlePostRequest($uri)
     {
-        // This is a special case, we need to fetch the address from the external API.
-        if (str_starts_with($uri, "/api/address/fetch-address")) {
-            $data = json_decode(file_get_contents("php://input"));
-            $this->fetchAddress($data);
-            return;
-        }
+        
 
         //For other post requests, admin authentication is required.
         if (!$this->isLoggedInAsAdmin()) {
@@ -74,12 +70,19 @@ class AddressAPIController extends APIController
             echo json_encode($address);
         } catch (Throwable $e) {
             Logger::write($e);
-            $this->sendErrorMessage("Unable to post address.", 400);
+            $this->sendErrorMessage($e->getMessage(), 400);
         }
     }
 
     protected function handleGetRequest($uri)
     {
+        // This is a special case, we need to fetch the address from the external API.
+        if (str_starts_with($uri, "/api/address/fetch-address")) {
+            $data = json_decode(file_get_contents("php://input"));
+            $this->fetchAddress($data);
+            return;
+        }
+        
         if (!is_numeric(basename($uri))){
             $this->sendErrorMessage("Invalid API Request. You can only request specific addresses.", 400);
             return;
@@ -149,7 +152,7 @@ class AddressAPIController extends APIController
             header('Content-Type: application/json');
             echo json_encode([
                 "street" => $address->street,
-                "city" => $address->city,
+                "city" => $address->city
             ]);
         } catch (Throwable $ex) {
             Logger::write($ex);
