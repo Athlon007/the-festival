@@ -129,4 +129,12 @@ class CartService
     public function checkoutCart(){
 
     }
+
+    public function getCartAfterLogin($customerId){
+        //Check if there is a cart in session.
+
+        //If so, then we have to merge the two orders. The one that is in session and the one that the customer saved in the database.
+
+        //If not, then we just retrieve the customer's order from the database and store it in session.
+    }
 }

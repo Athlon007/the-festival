@@ -2,21 +2,24 @@
 
 use function PHPSTORM_META\type;
 
-require_once(__DIR__ . "/APIController.php");
+require_once("APIController.php");
 require_once("../services/UserService.php");
 require_once("../services/CustomerService.php");
+require_once("../services/CartService.php");
 require_once("../models/Exceptions/MissingVariableException.php");
 
 class UserAPIController extends APIController
 {
     private $userService;
     private $customerService;
+    private $cartService;
     private const CAPTCHA_SECRET = "6LfMgZwkAAAAAFs2hfXUpKQ1wNwHaic9rnZozCbH";
 
     public function __construct()
     {
         $this->userService = new UserService();
         $this->customerService = new CustomerService();
+        $this->cartService = new CartService();
     }
 
     public function handlePostRequest($uri)
@@ -66,14 +69,17 @@ class UserAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
+        parent::sendErrorMessage("Method not allowed.", 405);
     }
 
     public function handlePutRequest($uri)
     {
+        parent::sendErrorMessage("Method not allowed.", 405);
     }
 
     public function handleDeleteRequest($uri)
     {
+        parent::sendErrorMessage("Method not allowed.", 405);
     }
 
     private function login($data)
@@ -81,10 +87,10 @@ class UserAPIController extends APIController
         try {
 
             if (!isset($data->email)) {
-                throw new MissingVariableException("Email is required");
+                throw new MissingVariableException("Email is required", 400);
             }
             if (!isset($data->password)) {
-                throw new MissingVariableException("Password is required");
+                throw new MissingVariableException("Password is required", 400);
             }
 
             //Fetch user (method throws error if user not found)
@@ -95,6 +101,11 @@ class UserAPIController extends APIController
                 session_start();
             }
             $_SESSION["user"] = serialize($user);
+
+            //If the user is a customer, try to fetch the cart they might have saved during an earlier visit.
+            if ($user->getUserTypeAsString() == "Customer") {
+                $this->cartService->getCartAfterLogin($user->getUserId());
+            }
 
             parent::sendSuccessMessage("Login successful.");
         } catch (Exception $ex) {

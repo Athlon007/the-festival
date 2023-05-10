@@ -31,25 +31,29 @@ class CartAPIController extends APIController
 
     protected function handlePostRequest($uri)
     {
-        $this->sendErrorMessage("Bad request.", 400);
+        $this->sendErrorMessage("Method not allowed.", 405);
     }
 
     protected function handlePutRequest($uri){
         if(str_starts_with($uri, "/api/cart/add/") && is_numeric(basename($uri))){
             $data = json_decode(file_get_contents("php://input"));
-            $cart = $this->cartService->addItem($data);
+            $cartOrder = $this->cartService->addItem($data);
+            $this->sendResponse($cartOrder);
+            return;
         }
 
         if(str_starts_with($uri, "/api/cart/remove/") && is_numeric(basename($uri))){
             $data = json_decode(file_get_contents("php://input"));
-            $cart = $this->cartService->removeItem($data);
+            $cartOrder = $this->cartService->removeItem($data);
+            $this->sendResponse($cartOrder);
             return;
-
         }
+        
+
     }
 
     protected function handleDeleteRequest($uri)
     {
-        $this->sendErrorMessage("Bad request.", 400);
+        $this->sendErrorMessage("Method not allowed.", 405);
     }
 }
