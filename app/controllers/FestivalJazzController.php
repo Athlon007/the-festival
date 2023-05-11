@@ -16,10 +16,10 @@ class FestivalJazzController
 
     public function loadArtistPage($uri)
     {
-        require_once(__DIR__ . "/../services/JazzArtistService.php");
+        require_once(__DIR__ . "/../services/ArtistService.php");
 
         try {
-            $artistService = new JazzArtistService();
+            $artistService = new ArtistService();
             $artist = $artistService->getById(basename($uri));
 
             if ($artist === null) {

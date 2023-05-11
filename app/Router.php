@@ -228,8 +228,8 @@ class Router
             require_once("controllers/APIControllers/ImageAPIController.php");
             $controller = new ImageAPIController();
         } elseif (str_starts_with($request, "/api/artists")) {
-            require_once("controllers/APIControllers/Jazz/JazzArtistAPIController.php");
-            $controller = new JazzArtistAPIController();
+            require_once("controllers/APIControllers/ArtistAPIController.php");
+            $controller = new ArtistAPIController();
         } elseif (str_starts_with($request, "/api/addresses")) {
             require_once("controllers/APIControllers/AddressAPIController.php");
             $controller = new AddressAPIController();

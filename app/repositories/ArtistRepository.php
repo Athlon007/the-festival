@@ -5,7 +5,7 @@ require_once("ImageRepository.php");
 require_once("../models/Music/Artist.php");
 require_once("../models/Music/ArtistKind.php");
 
-class JazzArtistRepository extends Repository
+class ArtistRepository extends Repository
 {
     private $imageRepo;
 
