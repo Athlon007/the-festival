@@ -85,6 +85,10 @@ class OrderService
         exit;
     }
 
+    public function sendInvoice(){
+        
+    }
+
 
     private function filterData(&$str)
     {
@@ -94,38 +98,6 @@ class OrderService
             $str = '"' . str_replace('"', '""', $str) . '"';
     }
 
-
-    // public function downloadOrders(){
-    //     $orders = $this->getOrdersToExport();
-
-    //     $fileName = "orders-data_" . date('Y-m-d') . ".csv";
-
-    //     $fields = array('ID', 'ORDER DATE', 'CUSTOMER NAME', 'CUSTOMER EMAIL', 'EVENT NAME', 'PRICE', 'QUANTITY', 'TOTAL PRICE');
-
-    //     $excelData = implode("\t", array_values($fields)) . "\n";
-
-    //     if ($orders == null) {
-    //         $excelData .= 'No orders found' . "\n";
-    //     }
-
-    //     foreach($orders as $order){
-    //         foreach($order->getOrderItems() as $orderItem){
-    //             $lineData = array($order->getOrderId(), date_format($order->getOrderDate(), 'd/m/Y'), $order->getCustomer()->getFirstName() . " " . $order->getCustomer()->getLastName(), $order->getCustomer()->getEmail(), $orderItem->getEventName(), "€ " . $orderItem->getFullPrice(), $orderItem->getQuantity(), "€ " . $orderItem->getQuantity() * $orderItem->getFullPrice());
-    //             array_walk($lineData, array($this, 'filterData'));
-    //             $excelData .= implode("\t", array_values($lineData)) . "\n";
-    //         }
-    //     }
-
-    //     header("Content-type: application/vnd.ms-excel");
-    //     header("Content-Disposition: attachment; filename=\"$fileName\"");
-    // }
-
-    // private function filterData(&$str){
-    //     $str = preg_replace("/\t/", "\\t", $str);
-    //     $str = preg_replace("/\r?\n/", "\\n", $str);
-    //     if(strstr($str, '"')) $str = '"' . str_replace('"', '""', $str) . '"';
-    // }
-
     public function getUnpaidOrder($customerId)
     {
         return $this->orderRepository->getUnpaidOrder($customerId);
@@ -134,18 +106,5 @@ class OrderService
     //To be called after payment (can't be implemented yet)
     public function createOrder($customer, $ticketLinkIds)
     {
-    }
-
-    public function sendInvoiceAndTicketsByEmail($order)
-    {
-        //Generate and email the tickets
-        foreach ($order->getTickets() as $ticket) {
-            //Generate a PDF for the ticket and send it by email.
-            $qrCode = $this->ticketService->generateQRCode($ticket);
-            $dompdf = $this->ticketService->generatePDFTicket($ticket, $qrCode, $order);
-            $this->ticketService->sendTicketByEmail($dompdf, $ticket, $order);
-        }
-
-        //Generate and email the invoice
     }
 }
