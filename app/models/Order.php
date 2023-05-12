@@ -120,7 +120,7 @@ class Order implements JsonSerializable
     {
         $totalBasePrice = 0;
         foreach ($this->orderItems as $orderItem) {
-            $totalBasePrice += $orderItem->getBasePrice();
+            $totalBasePrice += $orderItem->getBasePrice() * $orderItem->getQuantity();
         }
         return $totalBasePrice;
     }
@@ -141,7 +141,7 @@ class Order implements JsonSerializable
         $totalVat21Amount = 0;
         foreach ($this->orderItems as $orderItem) {
             if ($orderItem->getVatPercentage() == 0.21) {
-                $totalVat9Amount += $orderItem->getVatAmount();
+                $totalVat21Amount += $orderItem->getVatAmount() * $orderItem->getQuantity();
             }
         }
         return $totalVat21Amount;
@@ -151,7 +151,7 @@ class Order implements JsonSerializable
     {
         $totalVatTotalPrice = 0;
         foreach ($this->orderItems as $orderItem) {
-            $totalVatTotalPrice += $orderItem->getFullPrice();
+            $totalVatTotalPrice += $orderItem->getFullPrice() * $orderItem->getQuantity();
         }
         
         return $totalVatTotalPrice;

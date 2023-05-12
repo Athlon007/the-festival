@@ -74,7 +74,8 @@ class OrderItem implements JsonSerializable {
 
     public function getVatAmount(): float
     {
-        return $this->vatAmount;
+        // Vat amount is calculated by multiplying the base price with the vat percentage
+        return $this->basePrice * $this->vatPercentage;
     }
 
     public function setVatAmount(float $vatAmount): void

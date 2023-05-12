@@ -32,9 +32,10 @@ class InvoiceService
     }
 
     public function sendInvoiceEmail(){
-        $orders = $this->orderRepository->getOrdersToExport();
+        $orderID = 1;
+        $order = $this->orderRepository->getOrderForInvoice($orderID);
 
-        if ($orders == null) {
+        if ($order == null) {
             echo "No orders found";
             exit;
         }

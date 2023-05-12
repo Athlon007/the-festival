@@ -154,6 +154,34 @@ class OrderRepository extends Repository
         return $orders;
     }
 
+    public function getOrderForInvoice($orderId)
+    {
+        $sql = "select o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId from orders o
+        join users u on u.userId = o.customerId
+        join tickets t on t.orderId = t.ticketId 
+        join events e on t.eventId = e.eventId
+        where o.orderId = :orderId ";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderId", $orderId);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $order = new Order();
+        $order->setOrderId($orderId);
+        $order->setOrderDate(DateTime::createFromFormat('Y-m-d H:i:s', $result['orderDate']));
+        $orderItems = $this->getOrderItemsByOrderId($orderId);
+        $order->setOrderItems($orderItems);
+
+        $userRep = new UserRepository();
+        $customerRep = new CustomerRepository();
+        $user = $userRep->getById($result['customerId']);
+        $customer = $customerRep->getByUser($user);
+        $order->setCustomer($customer);
+
+        return $order;
+    }
+
     public function update($orderId, $order)
     {
 
