@@ -41,11 +41,11 @@ class OrderRepository extends Repository
 
     private function getOrderItemById($orderItemId) : OrderItem{
         $sql = "select o.orderItemId, tl.ticketLinkId, e.name as eventName, tt.ticketTypeName as ticketName, e.startTime, tt.ticketTypePrice, f.VAT, o.quantity 
-                from orderitems o
+                from orderitems o 
                 join ticketlinks tl on tl.ticketLinkId = o.ticketLinkId 
-                join tickettypes tt on tt.ticketTypeId = tl.ticketTypeId
-                join events e on e.eventId = tl.eventId
-                join festivaleventtypes f on f.eventTypeId = e.festivalEventType
+                join tickettypes tt on tt.ticketTypeId = tl.ticketTypeId 
+                join events e on e.eventId = tl.eventId 
+                join festivaleventtypes f on f.eventTypeId = e.festivalEventType 
                 where o.orderItemId = :orderItemId";
 
         $stmt = $this->connection->prepare($sql);

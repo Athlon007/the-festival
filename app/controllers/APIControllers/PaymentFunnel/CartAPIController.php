@@ -21,7 +21,7 @@ class CartAPIController extends APIController
     {
         try {
             $cartOrder = $this->cartService->getCart();
-           parent::sendResponse($cartOrder, 200);
+            parent::sendResponse($cartOrder);
 
         } catch (Throwable $e) {
             Logger::write($e);

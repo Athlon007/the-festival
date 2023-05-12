@@ -37,7 +37,7 @@ class OrderService
     public function getOrderById(int $id) : Order
     {
         //Get the order object
-        $order = $this->orderRepository->getById($id);
+        $order = $this->orderRepository->getOrderById($id);
         //Get the customer object attached in order
         $order->setCustomer($this->customerRepository->getById($order->getCustomer()->getUserId()));
         return $order;
@@ -52,9 +52,9 @@ class OrderService
         return $orders;
     }
 
-    public function getCartOrder(int $customerId) : Order
+    public function getUnpaidOrderForCustomer(int $customerId) : Order
     {
-        return $this->orderRepository->getCartOrderForCustomer($customerId);
+        return $this->orderRepository->getUnpaidOrderForCustomer($customerId);
     }
     
     public function createOrder(int $ticketLinkId, int $customerId = NULL) : Order
@@ -62,11 +62,10 @@ class OrderService
         $order = new Order();
         $order->setOrderDate(new DateTime());
         $order->setIsPaid(false);
-
-        $firstOrderItem = new OrderItem();
-        $firstOrderItem->setTicketLinkId($ticketLinkId);
-
-        return $this->orderRepository->insertOrder($order);
+        $order = $this->orderRepository->insertOrder($order);
+        //Create and insert the first order item that will be linked to the new order.
+        $this->createOrderItem($ticketLinkId, $order->getOrderId());
+        return $order;
     }
 
     public function createOrderItem(int $ticketLinkId, int $orderId) : OrderItem

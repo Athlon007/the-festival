@@ -83,7 +83,7 @@ class CartService
             //Retrieve the order that is in cart from the db.
             $order = $this->orderService->getOrderById($_SESSION["cartId"]);
 
-            //Check if an orderitem with the same ticketlinkid already exists in the order
+            //Check if an orderitem with the same ticketlinkid already exists in the order.
             foreach ($order->getOrderItems() as $orderItem){
                 if ($orderItem->getTicketLink()->getTicketLinkId() == $ticketLinkId){
                     //If so, add to quantity of the orderItem and update the orderItem.
@@ -114,8 +114,6 @@ class CartService
         
         //Retrieve the order that is in cart from the db.
         $cartOrder = $this->orderService->getOrderById($_SESSION["cartId"]);
-        
-        
 
         //Check for the orderitem that contains the ticketlinkId
 
@@ -124,6 +122,7 @@ class CartService
         //Update the order in the database
 
         //Return the order
+
     }
 
     public function checkoutCart(){
