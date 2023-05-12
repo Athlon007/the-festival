@@ -98,7 +98,21 @@ class OrderController
         }
     }
 
-    public function downloadOrders(){
+    public function downloadOrders()
+    {
+        // if (session_status() == PHP_SESSION_NONE) {
+        //     session_start();
+        // }
+
+        // if (!isset($_SESSION['user'])) {
+        //     header("Location: /");
+        // }
+
+        // $user = unserialize($_SESSION['user']);
+        // if ($user->getUserTypeAsString() != "Admin") {
+        //     header("Location: /");
+        // }
+        
         return $this->orderService->downloadOrders();
     }
 }
