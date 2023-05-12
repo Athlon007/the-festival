@@ -2,16 +2,19 @@
 
 require_once(__DIR__ . "/../services/OrderService.php");
 require_once(__DIR__ . "/../services/CartService.php");
+require_once(__DIR__ . "/../services/InvoiceService.php");
 
 class OrderController
 {
     private $orderService;
     private $cartService;
+    private $invoiceService;
 
     public function __construct()
     {
         $this->orderService = new OrderService();
         $this->cartService = new CartService();
+        $this->invoiceService = new InvoiceService();
     }
 
     /**
@@ -112,7 +115,25 @@ class OrderController
         // if ($user->getUserTypeAsString() != "Admin") {
         //     header("Location: /");
         // }
-        
+
         return $this->orderService->downloadOrders();
     }
+
+    public function sendInvoiceEmail()
+    {
+        // if (session_status() == PHP_SESSION_NONE) {
+        //     session_start();
+        // }
+
+        // if (!isset($_SESSION['user'])) {
+        //     header("Location: /");
+        // }
+
+        // $user = unserialize($_SESSION['user']);
+        // if ($user->getUserTypeAsString() != "Admin") {
+        //     header("Location: /");
+        // }
+
+        return $this->invoiceService->sendInvoiceEmail();
+    }   
 }
