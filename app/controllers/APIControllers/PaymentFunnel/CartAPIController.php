@@ -21,39 +21,39 @@ class CartAPIController extends APIController
     {
         try {
             $cartOrder = $this->cartService->getCart();
-            echo json_encode($cartOrder);
+           parent::sendResponse($cartOrder, 200);
 
         } catch (Throwable $e) {
             Logger::write($e);
-            $this->sendErrorMessage("Unable to retrieve the cart.", 500);
+            parent::sendErrorMessage("Unable to retrieve the cart.", 500);
         }
     }
 
     protected function handlePostRequest($uri)
     {
-        $this->sendErrorMessage("Method not allowed.", 405);
-    }
-
-    protected function handlePutRequest($uri){
+        //api/cart/add/{ticketlinkId} method
         if(str_starts_with($uri, "/api/cart/add/") && is_numeric(basename($uri))){
             $data = json_decode(file_get_contents("php://input"));
             $cartOrder = $this->cartService->addItem($data);
-            $this->sendResponse($cartOrder);
-            return;
-        }
-
-        if(str_starts_with($uri, "/api/cart/remove/") && is_numeric(basename($uri))){
-            $data = json_decode(file_get_contents("php://input"));
-            $cartOrder = $this->cartService->removeItem($data);
-            $this->sendResponse($cartOrder);
+            parent::sendResponse($cartOrder);
             return;
         }
         
+        //api/cart/remove/{ticketlinkId} method
+        if(str_starts_with($uri, "/api/cart/remove/") && is_numeric(basename($uri))){
+            $data = json_decode(file_get_contents("php://input"));
+            $cartOrder = $this->cartService->removeItem($data);
+            parent::sendResponse($cartOrder);
+            return;
+        }
+    }
 
+    protected function handlePutRequest($uri){
+        parent::sendErrorMessage("Method not allowed.", 405);
     }
 
     protected function handleDeleteRequest($uri)
     {
-        $this->sendErrorMessage("Method not allowed.", 405);
+        parent::sendErrorMessage("Method not allowed.", 405);
     }
 }

@@ -22,7 +22,7 @@ class EventAPIController extends APIController
     private $ticketLinkService;
     private $locationService;
 
-    // Jazz Services
+    // Music services
     private $artistService;
 
     public const URI_JAZZ = "/api/events/jazz";
@@ -126,7 +126,7 @@ class EventAPIController extends APIController
                 str_starts_with($uri, EventAPIController::URI_JAZZ)
                 || str_starts_with($uri, EventAPIController::URI_DANCE)
             ) {
-                $artist = $this->jazzArtistService->getById($data['event']['artist']['id']);
+                $artist = $this->artistService->getById($data['event']['artist']['id']);
                 $location = $this->locationService->getById($data['event']['location']['id']);
 
                 // In terms of music events, the capacity is the number of available seats.
@@ -194,7 +194,7 @@ class EventAPIController extends APIController
                 str_starts_with($uri, EventAPIController::URI_JAZZ)
                 || str_starts_with($uri, EventAPIController::URI_DANCE)
             ) {
-                $artist = $this->jazzArtistService->getById($data['event']['artist']['id']);
+                $artist = $this->artistService->getById($data['event']['artist']['id']);
                 $location = $this->locationService->getById($data['event']['location']['id']);
 
                 $availableSeats = $location->getCapacity();
@@ -264,7 +264,7 @@ class EventAPIController extends APIController
             $ciId = $ci->getId();
             $eventId = $ci->getEvent()->getId();
 
-            $this->sendSuccessMessage("Cart Item $ciId and event $eventId deleted.", 200);
+            $this->sendSuccessMessage("Cart Item $ciId and event $eventId deleted.");
         } catch (Throwable $e) {
             Logger::write($e);
             $this->sendErrorMessage("Unable to delete the event.", 500);

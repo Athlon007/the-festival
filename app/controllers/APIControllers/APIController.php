@@ -54,7 +54,7 @@ class APIController
         echo json_encode(["error_message" => $message]);
     }
 
-    final protected function sendSuccessMessage($message)
+    final protected function sendSuccessMessage($message, $code = 200)
     {
         header('Content-Type: application/json');
         http_response_code(200);

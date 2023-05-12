@@ -23,21 +23,12 @@ class OrderAPIController extends APIController
     public function handleGetRequest($uri)
     {
         //api/orders
-        if (basename($uri) == "orders") {
-            $this->sendResponse($this->orderService->getAllOrders());
-        }
-
-        
-        
 
         //api/orders/unpaid/{customerId}
 
         //api/orders/paid/{customerId}
 
         //api/orders/{id}
-        if (str_starts_with($uri, "api/orders/") && is_numeric(basename($uri))) {
-            
-        }
     }
 
     public function handleDeleteRequest($uri)
