@@ -76,14 +76,17 @@
         <p>Email: <a href="mailto:infohaarlemfestival5@gmail.com">infohaarlemfestival5@gmail.com</a></p>
     </div>
     <h1>Invoice of Haarlem Festival</h1>
-    <h2>Order #
-        <?php echo $order->getOrderId(); ?>
+    <h2><u>Order:</u>
+        #<?php echo $order->getOrderId(); ?>
     </h2>
-    <p>Date:
+    <p><u>Date:</u>
         <?php echo $order->getOrderDate()->format('l, m/d/Y'); ?>
     </p>
-    <p>Customer:
+    <p><u>Customer:</u>
         <?php echo $order->getCustomer()->getFullName(); ?>
+    </p>
+    <p><u>Customer Email:</u>
+        <?php echo $order->getCustomer()->getEmail(); ?>
     </p>
     <table>
         <thead>
@@ -108,44 +111,44 @@
                         <?php echo $orderItem->getQuantity(); ?>
                     </td>
                     <td> €
-                        <?php echo $orderItem->getBasePrice(); ?>
+                        <?php echo number_format($orderItem->getBasePrice(),2); ?>
                     </td>
-                    <td> %
-                        <?php echo $orderItem->getVatPercentage(); ?>
-                    </td>
-                    <td> €
-                        <?php echo $orderItem->getVatAmount() * $orderItem->getQuantity(); ?>
+                    <td> 
+                    %<?php echo $orderItem->getVatPercentage(); ?>
                     </td>
                     <td> €
-                        <?php echo $orderItem->getFullPrice() * $orderItem->getQuantity(); ?>
+                        <?php echo number_format($orderItem->getVatAmount() * $orderItem->getQuantity(),2); ?>
                     </td>
                     <td> €
-                        <?php echo $orderItem->getBasePrice() * $orderItem->getQuantity(); ?>
+                        <?php echo number_format($orderItem->getFullPrice() * $orderItem->getQuantity(),2); ?>
                     </td>
                     <td> €
-                        <?php echo $orderItem->getFullPrice() * $orderItem->getQuantity(); ?>
+                        <?php echo number_format($orderItem->getBasePrice() * $orderItem->getQuantity(),2); ?>
+                    </td>
+                    <td> €
+                        <?php echo number_format($orderItem->getFullPrice() * $orderItem->getQuantity(),2); ?>
                     </td>
                 </tr>
             <?php } ?>
             <tr>
-                <td colspan="3" class="total">Subtotal:</td>
+                <td colspan="7" class="total">Subtotal:</td>
                 <td>
                     €
-                    <?php echo $order->getTotalBasePrice(); ?>
+                    <?php echo number_format($order->getTotalBasePrice(),2); ?>
                 </td>
             </tr>
             <tr>
-                <td colspan="3" class="total">Tax:</td>
+                <td colspan="7" class="total">Tax:</td>
                 <td>
                     €
-                    <?php echo $order->getTotalVat21Amount() ?>
+                    <?php echo number_format($order->getTotalVat21Amount(),2) ?>
                 </td>
             </tr>
             <tr>
-                <td colspan="3" class="total">Total:</td>
+                <td colspan="7" class="total">Total:</td>
                 <td>
                     €
-                    <?php echo $order->getTotalPrice(); ?>
+                    <?php echo number_format($order->getTotalPrice(),2); ?>
                 </td>
             </tr>
         </tbody>
