@@ -33,15 +33,7 @@ class MailService{
         $this->mailer->Password = 'zznalnrljktsitri';
     }
 
-    public function sendTicketEmail(){
-
-    }
-
     public function sendInvoiceEmail($order, $invoicepdf){
-
-    }
-
-    public function sendPasswordResetEmail(){
 
     }
 

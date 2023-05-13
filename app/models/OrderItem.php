@@ -118,5 +118,4 @@ class OrderItem implements JsonSerializable {
     {
         return $this->fullTicketPrice * $this->quantity;
     }
-
 }

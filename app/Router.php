@@ -184,13 +184,22 @@ class Router
             case "/buyTicket":
                 require_once("controllers/TicketController.php");
                 $ticketController = new TicketController();
-                $ticketController->getAllJazzTickets();
+                $ticketController->getAllTickets();
                 break;
-
-            case "/orderHistory":
+            case "/viewOrders":
                 require_once("controllers/OrderController.php");
                 $ticketController = new OrderController();
-                $ticketController->showOrderHistory();
+                $ticketController->getOrdersToExport();
+                break;
+            case "/downloadOrders":
+                require_once("controllers/OrderController.php");
+                $ticketController = new OrderController();
+                $ticketController->downloadOrders();
+                break;
+            case "/invoicepdf":
+                require_once("controllers/OrderController.php");
+                $ticketController = new OrderController();
+                $ticketController->sendInvoiceEmail();
                 break;
             default:
                 $this->route404($message);

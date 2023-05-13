@@ -2,16 +2,19 @@
 
 require_once(__DIR__ . "/../services/OrderService.php");
 require_once(__DIR__ . "/../services/CartService.php");
+require_once(__DIR__ . "/../services/InvoiceService.php");
 
 class OrderController
 {
     private $orderService;
     private $cartService;
+    private $invoiceService;
 
     public function __construct()
     {
         $this->orderService = new OrderService();
         $this->cartService = new CartService();
+        $this->invoiceService = new InvoiceService();
     }
 
     public function showShoppingCart()
@@ -68,4 +71,65 @@ class OrderController
             return;
         }
     }
+
+    public function getOrdersToExport()
+    {
+        try {
+            // if (session_status() == PHP_SESSION_NONE) {
+            //     session_start();
+            // }
+
+            // if (!isset($_SESSION['user'])) {
+            //     header("Location: /");
+            // }
+
+            // $user = unserialize($_SESSION['user']);
+            // if ($user->getUserTypeAsString() != "Admin") {
+            //     header("Location: /");
+            // }
+
+            $orders = $this->orderService->getOrdersToExport();
+            require_once('../views/admin/viewOrders.php');
+
+            return $orders;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function downloadOrders()
+    {
+        // if (session_status() == PHP_SESSION_NONE) {
+        //     session_start();
+        // }
+
+        // if (!isset($_SESSION['user'])) {
+        //     header("Location: /");
+        // }
+
+        // $user = unserialize($_SESSION['user']);
+        // if ($user->getUserTypeAsString() != "Admin") {
+        //     header("Location: /");
+        // }
+
+        return $this->orderService->downloadOrders();
+    }
+
+    public function sendInvoiceEmail()
+    {
+        // if (session_status() == PHP_SESSION_NONE) {
+        //     session_start();
+        // }
+
+        // if (!isset($_SESSION['user'])) {
+        //     header("Location: /");
+        // }
+
+        // $user = unserialize($_SESSION['user']);
+        // if ($user->getUserTypeAsString() != "Admin") {
+        //     header("Location: /");
+        // }
+
+        return $this->invoiceService->sendInvoiceEmail();
+    }   
 }

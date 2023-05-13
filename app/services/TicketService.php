@@ -20,14 +20,10 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 use Endroid\QrCode\Color\Color;
-use Endroid\QrCode\Encoding\Encoding;
-use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Label\Label;
-use Endroid\QrCode\Logo\Logo;
-use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
-use Endroid\QrCode\Writer\ValidationException;
+
 
 class TicketService
 {
@@ -147,7 +143,7 @@ class TicketService
 
       $mail->Username = "infohaarlemfestival5@gmail.com";
       $mail->Password = 'zznalnrljktsitri';
-      $mail->Subject = 'Your Ticket for the Event: ' . $ticket->getEvent()->getName();
+      $mail->Subject = 'Your Ticket for the The Festival';
 
       $recipentEmail = $order->getCustomer()->getEmail();
       $name = $order->getCustomer()->getFullName();

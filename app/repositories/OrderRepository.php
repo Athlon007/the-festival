@@ -118,7 +118,7 @@ class OrderRepository extends Repository
             
             //Build order item array
             $orderItems = array();
-            foreach($result as $row){
+            foreach ($result as $row) {
                 $orderItem = $this->buildOrderItem($row);
                 array_push($orderItems, $orderItem);
             }
@@ -135,6 +135,71 @@ class OrderRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":customerId", htmlspecialchars($customerId));
         $stmt->execute();
+        } catch (Exception $e) {
+            throw new Exception("Error while getting order items: " . $e->getMessage());
+        }
+    }
+
+    public function getOrdersToExport()
+    {
+        $sql = "select o.orderId, o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId from orders o
+        join users u on u.userId = o.customerId
+        join tickets t on t.orderId = t.ticketId 
+        join events e on t.eventId = e.eventId";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $orders = [];
+        foreach ($result as $row) {
+            $order = new Order();
+            $order->setOrderId($row['orderId']);
+            $order->setOrderDate(DateTime::createFromFormat('Y-m-d H:i:s', $row['orderDate']));
+            $orderItems = $this->getOrderItemsByOrderId($row['orderId']);
+            $order->setOrderItems($orderItems);
+
+            $userRep = new UserRepository();
+            $customerRep = new CustomerRepository();
+            $user = $userRep->getById($row['customerId']);
+            $customer = $customerRep->getByUser($user);
+            $order->setCustomer($customer);
+
+            array_push($orders, $order);
+        }
+        return $orders;
+    }
+
+    public function getOrderForInvoice($orderId)
+    {
+        $sql = "select o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId from orders o
+        join users u on u.userId = o.customerId
+        join tickets t on t.orderId = t.ticketId 
+        join events e on t.eventId = e.eventId
+        where o.orderId = :orderId ";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderId", $orderId);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $order = new Order();
+        $order->setOrderId($orderId);
+        $order->setOrderDate(DateTime::createFromFormat('Y-m-d H:i:s', $result['orderDate']));
+        $orderItems = $this->getOrderItemsByOrderId($orderId);
+        $order->setOrderItems($orderItems);
+
+        $userRep = new UserRepository();
+        $customerRep = new CustomerRepository();
+        $user = $userRep->getById($result['customerId']);
+        $customer = $customerRep->getByUser($user);
+        $order->setCustomer($customer);
+
+        return $order;
+    }
+
+    public function update($orderId, $order)
+    {
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
