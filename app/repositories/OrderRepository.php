@@ -22,21 +22,20 @@ class OrderRepository extends Repository
     }
 
     public function getOrderById($orderId) : Order{
-        try{
-            $sql = "SELECT * FROM orders WHERE orderId = :orderId";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bindValue(":orderId", htmlspecialchars($orderId));
-            $stmt->execute();
+        $sql = "SELECT * FROM orders WHERE orderId = :orderId";
 
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            $order = $this->buildOrder($result);
-            $order->setOrderItems($this->getOrderItemsByOrderId($orderId));
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderId", htmlspecialchars($orderId));
+        $stmt->execute();
 
-            return $order;
-        }
-        catch(Exception $ex){
-            throw $ex;
-        }
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if(!$result)
+            throw new OrderNotFoundException();
+        $order = $this->buildOrder($result);
+        $order->setOrderItems($this->getOrderItemsByOrderId($orderId));
+
+        return $order;
     }
 
     private function getOrderItemById($orderItemId) : OrderItem{
@@ -58,76 +57,66 @@ class OrderRepository extends Repository
     }
 
     public function getAllOrders($limit = null, $offset = null, $isPaid = null){
-        try{
-            $sql = "SELECT * FROM orders";
-            
-            if($isPaid != null){
-                $sql .= " WHERE isPaid = :isPaid";
-            }
-            if($limit != null){
-                $sql .= " LIMIT :limit";
-            }
-            if($offset != null){
-                $sql .= " OFFSET :offset";
-            }
-
-            $stmt = $this->connection->prepare($sql);
-
-            if($isPaid != null){
-                $stmt->bindValue(":isPaid", htmlspecialchars($isPaid));
-            }
-            if($limit != null){
-                $stmt->bindValue(":limit", htmlspecialchars($limit), PDO::PARAM_INT);
-            }
-            if($offset != null){
-                $stmt->bindValue(":offset", htmlspecialchars($offset), PDO::PARAM_INT);
-            }
-            $stmt->execute();
-
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $orders = array();
-
-            foreach($result as $row){
-                $order = $this->buildOrder($row);
-                $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
-                array_push($orders, $order);
-            }
-
-            return $orders;
+        $sql = "SELECT * FROM orders";
+        
+        if($isPaid != null){
+            $sql .= " WHERE isPaid = :isPaid";
         }
-        catch(Exception $ex){
-            throw $ex;
-        }   
+        if($limit != null){
+            $sql .= " LIMIT :limit";
+        }
+        if($offset != null){
+            $sql .= " OFFSET :offset";
+        }
+
+        $stmt = $this->connection->prepare($sql);
+
+        if($isPaid != null){
+            $stmt->bindValue(":isPaid", htmlspecialchars($isPaid));
+        }
+        if($limit != null){
+            $stmt->bindValue(":limit", htmlspecialchars($limit), PDO::PARAM_INT);
+        }
+        if($offset != null){
+            $stmt->bindValue(":offset", htmlspecialchars($offset), PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $orders = array();
+
+        foreach($result as $row){
+            $order = $this->buildOrder($row);
+            $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
+            array_push($orders, $order);
+        }
+
+        return $orders;
     }
 
     public function getOrderItemsByOrderId($orderId) : array{
-        try{
-            $sql = "select o.orderItemId, tl.ticketLinkId, e.name as eventName, tt.ticketTypeName as ticketName, e.startTime, tt.ticketTypePrice as fullTicketPrice, f.VAT, o.quantity 
-                    from orderitems o
-                    join ticketlinks tl on tl.ticketLinkId = o.ticketLinkId 
-                    join tickettypes tt on tt.ticketTypeId = tl.ticketTypeId
-                    join events e on e.eventId = tl.eventId
-                    join festivaleventtypes f on f.eventTypeId = e.festivalEventType
-                    where o.orderId = :orderId";
+        $sql = "select o.orderItemId, tl.ticketLinkId, e.name as eventName, tt.ticketTypeName as ticketName, e.startTime, tt.ticketTypePrice as fullTicketPrice, f.VAT, o.quantity 
+                from orderitems o
+                join ticketlinks tl on tl.ticketLinkId = o.ticketLinkId 
+                join tickettypes tt on tt.ticketTypeId = tl.ticketTypeId
+                join events e on e.eventId = tl.eventId
+                join festivaleventtypes f on f.eventTypeId = e.festivalEventType
+                where o.orderId = :orderId";
 
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bindValue(":orderId", htmlspecialchars($orderId));
-            $stmt->execute();
-            
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            //Build order item array
-            $orderItems = array();
-            foreach ($result as $row) {
-                $orderItem = $this->buildOrderItem($row);
-                array_push($orderItems, $orderItem);
-            }
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderId", htmlspecialchars($orderId));
+        $stmt->execute();
+        
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        //Build order item array
+        $orderItems = array();
+        foreach ($result as $row) {
+            $orderItem = $this->buildOrderItem($row);
+            array_push($orderItems, $orderItem);
+        }
 
-            return $orderItems;
-        }
-        catch(Exception $ex){
-            throw new Exception("Error while getting order items: " . $ex->getMessage());
-        }
+        return $orderItems;
     }
 
     public function getCartOrderForCustomer(int $customerId) : ?Order{
@@ -135,6 +124,12 @@ class OrderRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":customerId", htmlspecialchars($customerId));
         $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $order = $this->buildOrder($result);
+        $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
+
+        return $order;
     }
 
     public function getOrdersToExport()

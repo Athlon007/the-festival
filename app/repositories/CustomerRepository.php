@@ -70,56 +70,33 @@ class CustomerRepository extends Repository{
     
     public function insertCustomer($customer) : void
     {
-        try{
-            //Insert customer address into address table and retrieve the new addressId
-            $this->addressRepository->insertAddress($customer->getAddress());
-            $customer->getAddress()->setAddressId($this->addressRepository->connection->lastInsertId());
-
-            //Insert customer into user table (inheritance parent) and retrieve the new userId
-            $this->userRepository->insertUser($customer);
-            $customer->setUserId($this->userRepository->connection->lastInsertId());
-            
-            $query = "INSERT INTO customers (dateOfBirth, phoneNumber, addressId, userId) " .
-                                "VALUES (:dateOfBirth, :phoneNumber, :addressId, :userId)";
-            $stmt = $this->connection->prepare($query);
-            
-            $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirthAsString());
-            $stmt->bindValue(":phoneNumber", $customer->getPhoneNumber());
-            $stmt->bindValue(":addressId", $customer->getAddress()->getAddressId());
-            $stmt->bindValue(":userId", $customer->getUserId());
-            
-            $stmt->execute();
-        }
-        catch(Exception $ex)
-        {
-            throw ($ex);
-        }
+        $query = "INSERT INTO customers (dateOfBirth, phoneNumber, addressId, userId) " .
+                            "VALUES (:dateOfBirth, :phoneNumber, :addressId, :userId)";
+        $stmt = $this->connection->prepare($query);
+        
+        $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirthAsString());
+        $stmt->bindValue(":phoneNumber", $customer->getPhoneNumber());
+        $stmt->bindValue(":addressId", $customer->getAddress()->getAddressId());
+        $stmt->bindValue(":userId", $customer->getUserId());
+        
+        $stmt->execute();
+        
     }
 
     public function updateCustomer(Customer $customer) : void
     {
-        try{
-            //Update customer address
-            $this->addressRepository->updateAddress($customer->getAddress());
-
-            //Update customer in user table (inheritance parent)
-            $this->userRepository->updateUser($customer);
-            
-            $query =    "UPDATE customers SET dateOfBirth = :dateOfBirth, phoneNumber = :phoneNumber, addressId = :addressId " .
-                        "WHERE userId = :userId";
-            $stmt = $this->connection->prepare($query);
-            
-            $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirthAsString());
-            $stmt->bindValue(":phoneNumber", $customer->getPhoneNumber());
-            $stmt->bindValue(":addressId", $customer->getAddress()->getAddressId());
-            $stmt->bindValue(":userId", $customer->getUserId());
-            
-            $stmt->execute();
-        }
-        catch(Exception $ex)
-        {
-            throw ($ex);
-        }
+        $query =    "UPDATE customers SET dateOfBirth = :dateOfBirth, phoneNumber = :phoneNumber, addressId = :addressId " .
+                    "WHERE userId = :userId";
+        $stmt = $this->connection->prepare($query);
+        
+        $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirthAsString());
+        $stmt->bindValue(":phoneNumber", $customer->getPhoneNumber());
+        $stmt->bindValue(":addressId", $customer->getAddress()->getAddressId());
+        $stmt->bindValue(":userId", $customer->getUserId());
+        
+        $stmt->execute();
     }
+       
+    
 }
 ?>

@@ -110,9 +110,9 @@ class OrderService
             $str = '"' . str_replace('"', '""', $str) . '"';
     }
 
-    public function getUnpaidOrder($customerId)
+    public function getCartOrderForCustomer($customerId)
     {
-        return $this->orderRepository->getUnpaidOrderForCustomer($customerId);
+        return $this->orderRepository->getCartOrderForCustomer($customerId);
     }
     
     public function createOrder(int $ticketLinkId, int $customerId = NULL) : Order
@@ -156,7 +156,7 @@ class OrderService
     }
 
     //If the customer has an unpaid order and logs in while having created another order as a visitor, merge the two orders.
-    public function mergeOrders($order1, $order2){
+    public function mergeOrders($customerOrder, $sessionOrder) : Order{
 
     }
 }

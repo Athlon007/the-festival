@@ -1,10 +1,12 @@
 <?php
 
 require_once(__DIR__ . '/../models/Exceptions/EventSoldOutException.php');
+require_once(__DIR__ . '/../models/Exceptions/CartException.php');
 require_once('OrderService.php');
 
+
 /**
- * This class handles the cart session and uses OrderService to communicate with the database.
+ * Handles the cart session and uses OrderService to communicate with the database.
  * @author Joshua
  */
 class CartService
@@ -25,9 +27,8 @@ class CartService
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-
         if (isset($_SESSION["cartId"])) {
-            throw new Exception("Cart already initialised.");
+            throw new CartException("Cart already initialised.");
         }
 
         //If a customer is logged in then we use their id, else we don't pass a customer id.
@@ -53,19 +54,12 @@ class CartService
     }
 
     /**
-     * Gets the cart using the session.
+     * Gets the cart from the session.
      * @return Order
      */
     public function getCart(): Order
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        
-        //Check if the cart is initialised.
-        if (!isset($_SESSION["cartId"])) {
-            throw new Exception("Cart not initialised.");
-        }
+        $this->checkCartStatus();
 
         //Retrieve the order that is in cart from the db and return it.
         $orderId = $_SESSION["cartId"];
@@ -77,7 +71,7 @@ class CartService
      * @param $ticketLinkId The ID of the ticketlink to add.
      * @return Order
      */
-    public function addItem($ticketLinkId): Order //TODO: make
+    public function addItem($ticketLinkId): Order
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
@@ -102,7 +96,6 @@ class CartService
             $orderItem = $this->orderService->createOrderItem($ticketLinkId, $order->getOrderId());
             $order->addOrderItem($orderItem);
         }
-
         return $order;
     }
     
@@ -114,13 +107,7 @@ class CartService
      */
     public function removeItem($ticketLinkId): Order //TODO: make
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        //Check if the cart is initialized.
-        if (!isset($_SESSION["cartId"])) {
-            throw new Exception("Cart not initialized.");
-        }
+        $this->checkCartStatus();
         
         //Retrieve the order that is in cart from the db.
         $order = $this->orderService->getOrderById($_SESSION["cartId"]);
@@ -137,36 +124,52 @@ class CartService
                     $order->removeOrderItem($orderItem);
                 }
                 else{
-                    //If not, then we update the orderitem.
+                    //If not, then we only update the orderitem with the new quantity.
                     $this->orderService->updateOrderItem($orderItem->getId(), $orderItem);
                 }
-                
             }
         }
-
-        //Update the order in the database
-
-        //Return the order
-
+        return $order;
     }
 
-    public function checkoutCart(){ //TODO: make
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
+    public function checkoutCart(){ //TODO: part of payment
+        $this->checkCartStatus();
+        $cartOrder = $this->orderService->getOrderById($_SESSION["cartId"]);
 
 
     }
 
-    public function getCartAfterLogin($customerId){ //TODO: make
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
+    public function getCartAfterLogin($customerId) { //TODO: make
+        $this->checkCartStatus();
+        
+        $customerOrder = $this->orderService->getCartOrderForCustomer($customerId);
+        
+        if(!$customerOrder){
+            //If there is no cart order saved for the customer, then this method has no further purpose.
+            return;
         }
         
         //Check if there is an active cart in session.
+        if (!isset($_SESSION["cartId"])) {
+            //If so, then we have to merge the two orders. The one that is in session and the one that the customer saved in the database during an earlier visit.
+            $sessionOrder = $this->orderService->getOrderById($_SESSION["cartId"]);
+            $mergedOrder = $this->orderService->mergeOrders($customerOrder, $sessionOrder);
+            
+            //Overwrite the session cart with the merged order.
+            $_SESSION["cartId"] = $mergedOrder->getOrderId();
+        }
 
-        //If so, then we have to merge the two orders. The one that is in session and the one that the customer saved in the database.
+        //If not, then we store the saved customer cart into the session so they can pick up where they left off.
+        $_SESSION["cartId"] = $customerOrder->getOrderId();
+    }
 
-        //If not, then we just retrieve the customer's order from the database and store it in session.
+    private function checkCartStatus() : void{
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        //Check if the cart is initialised.
+        if(isset($_SESSION["cartId"])){
+            throw new CartException("Cart not initialised.");
+        };
     }
 }
