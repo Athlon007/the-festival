@@ -102,7 +102,7 @@ class OrderRepository extends Repository
 
     public function getOrderItemsByOrderId($orderId) : array{
         try{
-            $sql = "select o.orderItemId, tl.ticketLinkId, e.name as eventName, tt.ticketTypeName as ticketName, e.startTime, tt.ticketTypePrice, f.VAT, o.quantity 
+            $sql = "select o.orderItemId, tl.ticketLinkId, e.name as eventName, tt.ticketTypeName as ticketName, e.startTime, tt.ticketTypePrice as fullTicketPrice, f.VAT, o.quantity 
                     from orderitems o
                     join ticketlinks tl on tl.ticketLinkId = o.ticketLinkId 
                     join tickettypes tt on tt.ticketTypeId = tl.ticketTypeId
@@ -135,9 +135,6 @@ class OrderRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":customerId", htmlspecialchars($customerId));
         $stmt->execute();
-        } catch (Exception $e) {
-            throw new Exception("Error while getting order items: " . $e->getMessage());
-        }
     }
 
     public function getOrdersToExport()
@@ -172,6 +169,7 @@ class OrderRepository extends Repository
 
     public function getOrderForInvoice($orderId)
     {
+        // TODO: Communicate with order service from the invoice service and use getOrderById method. so you can get the order items, and customer as well.
         $sql = "select o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId from orders o
         join users u on u.userId = o.customerId
         join tickets t on t.orderId = t.ticketId 
@@ -189,10 +187,8 @@ class OrderRepository extends Repository
         $orderItems = $this->getOrderItemsByOrderId($orderId);
         $order->setOrderItems($orderItems);
 
-        $userRep = new UserRepository();
         $customerRep = new CustomerRepository();
-        $user = $userRep->getById($result['customerId']);
-        $customer = $customerRep->getByUser($user);
+        $customer = $customerRep->getById($result['customerId']);
         $order->setCustomer($customer);
 
         return $order;
@@ -200,16 +196,6 @@ class OrderRepository extends Repository
 
     public function update($orderId, $order)
     {
-
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if(!$result)
-            return null;
-
-        $order = $this->buildOrder($result);
-        $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
-
-        return $order;
     }
     
     public function getOrderHistory($customerId): array

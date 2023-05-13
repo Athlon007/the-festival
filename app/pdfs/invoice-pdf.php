@@ -111,7 +111,7 @@
                         <?php echo $orderItem->getQuantity(); ?>
                     </td>
                     <td> €
-                        <?php echo number_format($orderItem->getBasePrice(),2); ?>
+                        <?php echo number_format($orderItem->getTotalBasePrice,2); ?>
                     </td>
                     <td> 
                     %<?php echo ($orderItem->getVatPercentage() * 100); ?>
