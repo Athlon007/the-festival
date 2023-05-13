@@ -153,7 +153,6 @@ class Order implements JsonSerializable
         foreach ($this->orderItems as $orderItem) {
             $totalPrice += $orderItem->getTotalFullPrice();
         }
-
         return $totalPrice;
     }
 
