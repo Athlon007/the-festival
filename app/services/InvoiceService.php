@@ -42,7 +42,7 @@ class InvoiceService
 
         // buffer the following html into a variable
         ob_start();
-        $html = require_once(__DIR__ . '/../pdfs/invoice2-pdf.php');
+        $html = require_once(__DIR__ . '/../pdfs/invoice-pdf.php');
         $html = ob_get_clean();
 
         $title = "Invoice";
