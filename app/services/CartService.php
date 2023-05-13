@@ -13,9 +13,6 @@ class CartService
 
     public function __construct()
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
         $this->orderService = new OrderService();
     }
     
@@ -23,8 +20,12 @@ class CartService
      * Is called to create a new cart order if there is none in session when it's required to be.
      * @return Order
      */
-    private function initialiseCart($ticketLinkId) : Order{
-        
+    private function initialiseCart($ticketLinkId) : Order
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
         if (isset($_SESSION["cartId"])) {
             throw new Exception("Cart already initialised.");
         }
@@ -57,6 +58,10 @@ class CartService
      */
     public function getCart(): Order
     {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
         //Check if the cart is initialised.
         if (!isset($_SESSION["cartId"])) {
             throw new Exception("Cart not initialised.");
@@ -72,21 +77,23 @@ class CartService
      * @param $ticketLinkId The ID of the ticketlink to add.
      * @return Order
      */
-    public function addItem($ticketLinkId): Order
+    public function addItem($ticketLinkId): Order //TODO: make
     {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
         //If cart wasn't initialised, we create a new cart order with the item.
         if (!isset($_SESSION["cartId"])) {
             return $this->initialiseCart($ticketLinkId);
         }
         else{
-            
             //Retrieve the order that is in cart from the db.
             $order = $this->orderService->getOrderById($_SESSION["cartId"]);
 
             //Check if an orderitem with the same ticketlinkid already exists in the order.
             foreach ($order->getOrderItems() as $orderItem){
                 if ($orderItem->getTicketLink()->getTicketLinkId() == $ticketLinkId){
-                    //If so, add to quantity of the orderItem and update the orderItem.
+                    //If so, add to the quantity of the orderItem and update the orderItem.
                     $orderItem->setQuantity($orderItem->getQuantity() + 1);
                     $this->orderService->updateOrderItem($orderItem->getId(), $orderItem);
                 }
@@ -105,19 +112,37 @@ class CartService
      * @return Order returns the order object.
      * @author Joshua
      */
-    public function removeItem($ticketLinkId): Order
+    public function removeItem($ticketLinkId): Order //TODO: make
     {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
         //Check if the cart is initialized.
         if (!isset($_SESSION["cartId"])) {
             throw new Exception("Cart not initialized.");
         }
         
         //Retrieve the order that is in cart from the db.
-        $cartOrder = $this->orderService->getOrderById($_SESSION["cartId"]);
+        $order = $this->orderService->getOrderById($_SESSION["cartId"]);
 
         //Check for the orderitem that contains the ticketlinkId
-
-        //If so, subtract from quantity
+        foreach ($order->getOrderItems() as $orderItem){
+            if ($orderItem->getTicketLink()->getTicketLinkId() == $ticketLinkId){
+                //If so, subtract 1 from the quantity of the orderItem.
+                $orderItem->setQuantity($orderItem->getQuantity() - 1);
+                
+                if ($orderItem->getQuantity() == 0){
+                    //If the quantity is 0, then we remove the orderitem from the order.
+                    $this->orderService->deleteOrderItem($orderItem->getId());
+                    $order->removeOrderItem($orderItem);
+                }
+                else{
+                    //If not, then we update the orderitem.
+                    $this->orderService->updateOrderItem($orderItem->getId(), $orderItem);
+                }
+                
+            }
+        }
 
         //Update the order in the database
 
@@ -125,12 +150,20 @@ class CartService
 
     }
 
-    public function checkoutCart(){
+    public function checkoutCart(){ //TODO: make
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
 
     }
 
-    public function getCartAfterLogin($customerId){
-        //Check if there is a cart in session.
+    public function getCartAfterLogin($customerId){ //TODO: make
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        //Check if there is an active cart in session.
 
         //If so, then we have to merge the two orders. The one that is in session and the one that the customer saved in the database.
 

@@ -19,6 +19,7 @@ class CartAPIController extends APIController
 
     protected function handleGetRequest($uri)
     {
+        //api/cart GET - returns the cart order as an order object
         try {
             $cartOrder = $this->cartService->getCart();
             parent::sendResponse($cartOrder);
@@ -31,24 +32,25 @@ class CartAPIController extends APIController
 
     protected function handlePostRequest($uri)
     {
-        //api/cart/add/{ticketlinkId} method
+        //api/cart/add/{ticketlinkId} POST method - adds the ticket link to the cart order
         if(str_starts_with($uri, "/api/cart/add/") && is_numeric(basename($uri))){
-            $data = json_decode(file_get_contents("php://input"));
-            $cartOrder = $this->cartService->addItem($data);
+            $ticketLinkId = basename($uri);
+            $cartOrder = $this->cartService->addItem($ticketLinkId);
             parent::sendResponse($cartOrder);
             return;
         }
         
-        //api/cart/remove/{ticketlinkId} method
+        //api/cart/remove/{ticketlinkId} POST method - removes the ticket link from the cart order
         if(str_starts_with($uri, "/api/cart/remove/") && is_numeric(basename($uri))){
-            $data = json_decode(file_get_contents("php://input"));
-            $cartOrder = $this->cartService->removeItem($data);
+            $ticketLinkId = basename($uri);
+            $cartOrder = $this->cartService->removeItem($ticketLinkId);
             parent::sendResponse($cartOrder);
             return;
         }
     }
 
-    protected function handlePutRequest($uri){
+    protected function handlePutRequest($uri)
+    {
         parent::sendErrorMessage("Method not allowed.", 405);
     }
 

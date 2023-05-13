@@ -77,6 +77,28 @@ class OrderService
         return $this->orderRepository->insertOrderItem($orderItem, $orderId);
     }
 
+    public function updateOrder($orderId, $order) : Order
+    {
+        $this->orderRepository->updateOrder($orderId, $order);
+    }
+
+    public function updateOrderItem($orderItemId, $orderItem) : OrderItem
+    {
+        $this->orderRepository->updateOrderItem($orderItemId, $orderItem);
+    }
+
+    public function deleteOrder($orderId) : void
+    {
+        $this->orderRepository->deleteOrder($orderId);
+    }
+
+    public function deleteOrderItem($orderItemId) : void
+    {
+        $this->orderRepository->deleteOrderItem($orderItemId);
+    }
+
+
+
     public function sendInvoiceAndTicketsByEmail($order)
     {
         //Generate and email the tickets
