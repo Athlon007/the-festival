@@ -12,7 +12,7 @@ require_once(__DIR__ . '/../services/PDFService.php');
 
 //Models
 require_once(__DIR__ . '/../models/Order.php');
-require_once(__DIR__ . '/../models/Ticket.php');
+require_once(__DIR__ . '/../models/Ticket/Ticket.php');
 require_once(__DIR__ . '/../models/Exceptions/OrderNotFoundException.php');
 
 class OrderService

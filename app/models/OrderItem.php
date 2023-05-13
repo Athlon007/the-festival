@@ -99,12 +99,22 @@ class OrderItem implements JsonSerializable {
     //
     //Calculated getters
     //
+    //Get base price for one
+    public function getBasePrice()
+    {
+        return $this->fullTicketPrice / (1 + $this->vatPercentage);
+    }
+
+    //Get VAT amount for one
+    public function getVatAmount()
+    {
+        return $this->vatPercentage * $this->getBasePrice();
+    }
+
     //Base price excl VAT for one ticket multiplied by the quantity
     public function getTotalBasePrice(): float
     {
-        $basePrice = $this->fullTicketPrice / (1 + $this->vatPercentage);
-        return $basePrice * $this->quantity;
-        
+        return ($this->getBasePrice() * $this->quantity);
     }
 
     //VAT value that is multiplied by the quantity
