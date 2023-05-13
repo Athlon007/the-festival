@@ -184,7 +184,7 @@ class Router
             case "/buyTicket":
                 require_once("controllers/TicketController.php");
                 $ticketController = new TicketController();
-                $ticketController->getAllHistoryTicket();
+                $ticketController->getAllTickets();
                 break;
             case "/viewOrders":
                 require_once("controllers/OrderController.php");

@@ -54,9 +54,9 @@ class TicketRepository extends Repository
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if (empty($result)) {
-            throw new TicketNotFoundException("No tickets found for order ID: {$order->getOrderId()} and event type: {$eventType}");
-        }
+        // if (empty($result)) {
+        //     throw new TicketNotFoundException("No tickets found for order ID: {$order->getOrderId()} and event type: {$eventType}");
+        // }
 
         $tickets = [];
 
