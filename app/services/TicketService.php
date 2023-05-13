@@ -143,7 +143,7 @@ class TicketService
 
       $mail->Username = "infohaarlemfestival5@gmail.com";
       $mail->Password = 'zznalnrljktsitri';
-      $mail->Subject = 'Your Ticket for the Event: ' . $ticket->getEvent()->getName();
+      $mail->Subject = 'Your Ticket for the The Festival';
 
       $recipentEmail = $order->getCustomer()->getEmail();
       $name = $order->getCustomer()->getFullName();
