@@ -300,13 +300,19 @@ class OrderRepository extends Repository
         $orderItem = new OrderItem();
         $orderItem->setOrderItemId($row['orderItemId']);
         $orderItem->setTicketLinkId($row['ticketLinkId']);
-        $orderItem->setEventName($row['eventName']);
         $orderItem->setTicketName($row['ticketName']);
         $orderItem->setVatPercentage($row['VAT']);
         $orderItem->setFullTicketPrice($row['fullTicketPrice']);
         $orderItem->setQuantity($row['quantity']);
+        $orderItem->setEventName($this->formatEventName($row['eventName'], $row['startTime']));
 
         return $orderItem;
+    }
+
+    private function formatEventName($eventName, $startTime){
+        $date = date_create($startTime);
+        $formattedDate = date_format($date, 'd-m-Y H:i');
+        return $eventName . " - " . $formattedDate;
     }
 }
 ?>
