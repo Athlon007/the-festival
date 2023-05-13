@@ -149,12 +149,12 @@ class Order implements JsonSerializable
 
     public function getTotalPrice(): float
     {
-        $totalVatTotalPrice = 0;
+        $totalTotalPrice = 0;
         foreach ($this->orderItems as $orderItem) {
-            $totalVatTotalPrice += $orderItem->getFullPrice() * $orderItem->getQuantity();
+            $totalTotalPrice += $orderItem->getTotalFullPrice();
         }
 
-        return $totalVatTotalPrice;
+        return $totalTotalPrice;
     }
 
     public function getTotalItemCount(){

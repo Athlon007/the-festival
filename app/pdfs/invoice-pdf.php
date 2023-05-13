@@ -111,22 +111,22 @@
                         <?php echo $orderItem->getQuantity(); ?>
                     </td>
                     <td> €
-                        <?php echo number_format($orderItem->getTotalBasePrice,2); ?>
+                        <?php echo number_format($orderItem->getBasePrice(),2); ?>
                     </td>
                     <td> 
                     %<?php echo ($orderItem->getVatPercentage() * 100); ?>
                     </td>
                     <td> €
-                        <?php echo number_format($orderItem->getVatAmount() * $orderItem->getQuantity(),2); ?>
+                        <?php echo number_format($orderItem->getVatAmount(),2); ?>
                     </td>
                     <td> €
-                        <?php echo number_format($orderItem->getFullPrice() * $orderItem->getQuantity(),2); ?>
+                        <?php echo number_format($orderItem->getFullTicketPrice(),2); ?>
                     </td>
                     <td> €
-                        <?php echo number_format($orderItem->getBasePrice() * $orderItem->getQuantity(),2); ?>
+                        <?php echo number_format($orderItem->getTotalBasePrice(),2); ?>
                     </td>
                     <td> €
-                        <?php echo number_format($orderItem->getFullPrice() * $orderItem->getQuantity(),2); ?>
+                        <?php echo number_format($orderItem->getTotalFullPrice() ,2); ?>
                     </td>
                 </tr>
             <?php } ?>
