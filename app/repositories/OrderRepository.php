@@ -169,6 +169,7 @@ class OrderRepository extends Repository
 
     public function getOrderForInvoice($orderId)
     {
+        // TODO: Communicate with order service from the invoice service and use getOrderById method. so you can get the order items, and customer as well.
         $sql = "select o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId from orders o
         join users u on u.userId = o.customerId
         join tickets t on t.orderId = t.ticketId 
