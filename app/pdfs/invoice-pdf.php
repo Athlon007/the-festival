@@ -114,7 +114,7 @@
                         <?php echo number_format($orderItem->getBasePrice(),2); ?>
                     </td>
                     <td> 
-                    %<?php echo $orderItem->getVatPercentage(); ?>
+                    %<?php echo ($orderItem->getVatPercentage() * 100); ?>
                     </td>
                     <td> €
                         <?php echo number_format($orderItem->getVatAmount() * $orderItem->getQuantity(),2); ?>
@@ -138,7 +138,14 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="7" class="total">Tax:</td>
+                <td colspan="7" class="total">Tax %9:</td>
+                <td>
+                    €
+                    <?php echo number_format($order->getTotalVat9Amount(),2) ?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="7" class="total">Tax %21:</td>
                 <td>
                     €
                     <?php echo number_format($order->getTotalVat21Amount(),2) ?>
