@@ -188,11 +188,6 @@ class OrderRepository extends Repository
 
         return $order;
     }
-
-    public function update($orderId, $order)
-    {
-
-    }
     
     public function getOrderHistory($customerId): array
     {
@@ -229,11 +224,11 @@ class OrderRepository extends Repository
     }
 
     public function updateOrderItem($orderItemId, $orderItem) : OrderItem{
-        $sql = "UPDATE orderitems SET ticketLinkId = :ticketLinkId, orderId = :orderId, quantity = :quantity WHERE orderItemId = :orderItemId";
+        $sql = "UPDATE orderitems SET ticketLinkId = :ticketLinkId, quantity = :quantity WHERE orderItemId = :orderItemId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":ticketLinkId", htmlspecialchars($orderItem->getTicketLinkId()));
-        $stmt->bindValue(":orderId", htmlspecialchars($orderItemId));
         $stmt->bindValue(":quantity", htmlspecialchars($orderItem->getQuantity()));
+        $stmt->bindValue(":orderItemId", htmlspecialchars($orderItemId));
 
         $stmt->execute();
         return $this->getOrderItemById($orderItemId);
@@ -270,7 +265,7 @@ class OrderRepository extends Repository
     
 
     //This method is used to remove orders that were never linked to an account and that are 7 days old.
-    private function cleanseOldOrders(){
+    private function removeOldOrders(){
         try{
             $sql = "DELETE FROM orders WHERE customerId IS NULL AND orderDate < DATE_SUB(NOW(), INTERVAL 7 DAYS)";
             $stmt = $this->connection->prepare($sql);
