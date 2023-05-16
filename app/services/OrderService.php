@@ -139,12 +139,12 @@ class OrderService
 
     public function updateOrder($orderId, $order) : Order
     {
-        $this->orderRepository->updateOrder($orderId, $order);
+        return $this->orderRepository->updateOrder($orderId, $order);
     }
 
     public function updateOrderItem($orderItemId, $orderItem) : OrderItem
     {
-        $this->orderRepository->updateOrderItem($orderItemId, $orderItem);
+        return $this->orderRepository->updateOrderItem($orderItemId, $orderItem);
     }
 
     public function deleteOrder($orderId) : void

@@ -211,7 +211,8 @@ class OrderRepository extends Repository
         return $orders;
     }
 
-    public function updateOrder($orderId, $order) : Order{
+    public function updateOrder($orderId, $order) : Order
+    {
         $sql = "UPDATE orders SET orderDate = :orderDate, customerId = :customerId, isPaid = :isPaid WHERE orderId = :orderId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDate()));
@@ -223,7 +224,8 @@ class OrderRepository extends Repository
         return $this->getOrderById($orderId);
     }
 
-    public function updateOrderItem($orderItemId, $orderItem) : OrderItem{
+    public function updateOrderItem($orderItemId, $orderItem) : OrderItem
+    {
         $sql = "UPDATE orderitems SET ticketLinkId = :ticketLinkId, quantity = :quantity WHERE orderItemId = :orderItemId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":ticketLinkId", htmlspecialchars($orderItem->getTicketLinkId()));
@@ -236,22 +238,19 @@ class OrderRepository extends Repository
     }
 
     //Insert a new order into the database
-    public function insertOrder($order) : Order{
-        try{
-            $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDate()));
-            $stmt->bindValue(":customerId", htmlspecialchars($order->getCustomer()->getCustomerId()));
-            $stmt->execute();
+    public function insertOrder($order) : Order
+    {
+        $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDate()));
+        $stmt->bindValue(":customerId", htmlspecialchars($order->getCustomer()->getCustomerId()));
+        $stmt->execute();
 
-            return $this->getOrderById($this->connection->lastInsertId());
-        }
-        catch(Exception $ex){
-
-        }
+        return $this->getOrderById($this->connection->lastInsertId());
     }
 
-    public function insertOrderItem($orderItem, $orderId) : OrderItem{
+    public function insertOrderItem($orderItem, $orderId) : OrderItem
+    {
         $sql = "INSERT INTO orderitems (ticketLinkId, orderId, quantity) VALUES (:ticketLinkId, :orderId, :quantity)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":ticketLinkId", htmlspecialchars($orderItem->getTicketLinkId()));
@@ -262,10 +261,28 @@ class OrderRepository extends Repository
         return $this->getOrderItemById($this->connection->lastInsertId());
     }
 
+    public function deleteOrder(int $orderId)
+    {
+        //Deletes one order. BEWARE: CASCADES, so it deletes ALL LINKED ORDERITEMS as well.
+        $sql = "DELETE FROM orders WHERE orderId = :orderId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderId", $orderId);
+
+    }
+
+    public function deleteOrderItem(int $orderItemId)
+    {
+        //Deletes one order item.
+        $sql = "DELETE FROM orderitems WHERE orderItemId = :orderItemId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderItemId", $orderItemId);
+        $stmt->execute();
+    }
     
 
     //This method is used to remove orders that were never linked to an account and that are 7 days old.
-    private function removeOldOrders(){
+    private function removeOldOrders()
+    {
         try{
             $sql = "DELETE FROM orders WHERE customerId IS NULL AND orderDate < DATE_SUB(NOW(), INTERVAL 7 DAYS)";
             $stmt = $this->connection->prepare($sql);
