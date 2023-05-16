@@ -135,6 +135,8 @@ class CartService
     public function checkoutCart(){ //TODO: part of payment
         $this->checkCartStatus();
         $cartOrder = $this->orderService->getOrderById($_SESSION["cartId"]);
+        $cartOrder->setIsPaid(true);
+        $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
 
 
     }
@@ -168,7 +170,7 @@ class CartService
             session_start();
         }
         //Check if the cart is initialised.
-        if(isset($_SESSION["cartId"])){
+        if(!isset($_SESSION["cartId"])){
             throw new CartException("Cart not initialised.");
         };
     }
