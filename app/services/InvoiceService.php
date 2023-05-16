@@ -5,6 +5,7 @@ require_once __DIR__ . '/../models/Ticket/Ticket.php';
 require_once(__DIR__ . '/../models/TicketLink.php');
 require_once(__DIR__ . '/../models/Exceptions/TicketNotFoundException.php');
 require_once(__DIR__ . '/../services/PDFService.php');
+require_once(__DIR__ . '/../services/OrderService.php');
 
 require_once(__DIR__ . '../../vendor/autoload.php');
 
@@ -21,7 +22,7 @@ use PHPMailer\PHPMailer\Exception;
 
 class InvoiceService
 {
-    private OrderRepository $orderRepository;
+    private OrderService $orderService;
 
     private PDFService $pdfService;
 
@@ -33,7 +34,7 @@ class InvoiceService
 
     public function sendInvoiceEmail(){
         $orderID = 1;
-        $order = $this->orderRepository->getOrderForInvoice($orderID);
+        $order = $this->orderService->getOrderById($orderID);
 
         if ($order == null) {
             echo "No orders found";
