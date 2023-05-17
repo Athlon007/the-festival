@@ -31,9 +31,10 @@ class InvoiceService
         $this->pdfService = new PDFService();
     }
 
-    public function sendInvoiceEmail(){
-        $orderID = 1;
-        $order = $this->orderRepository->getOrderForInvoice($orderID);
+    public function sendInvoiceEmail(Order $order){
+        // $orderID = $order->getId();
+        $order->setOrderId(1);   
+        $order = $this->orderRepository->getOrderForInvoice($order->getOrderId());
 
         if ($order == null) {
             echo "No orders found";
