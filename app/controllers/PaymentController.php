@@ -19,9 +19,6 @@ class PaymentController
         $order = new Order();
         $order->setOrderId(1);
 
-        // Get all tickets and send them to the user
-        // $this->ticketController->getAllTickets($order);
-
         //Send invoice via email
         $this->invoiceService->sendInvoiceEmail($order);
 
