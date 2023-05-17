@@ -10,6 +10,7 @@
     <a class="flex-sm-fill text-sm-center nav-link" href="/manageTicketTypes">Ticket Types</a>
     <a class="flex-sm-fill text-sm-center nav-link" href="/managePasses">Passes</a>
     <a class="flex-sm-fill text-sm-center nav-link" href="/manageNavBar">Nav Bar</a>
+    <a class="flex-sm-fill text-sm-center nav-link" href="/manageLocations">Locations</a>
 </nav>
 
 <script>
