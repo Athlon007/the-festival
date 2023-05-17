@@ -98,27 +98,7 @@
         }
         );
     }
-
-    Cart.Get = function () {
-        const url = apiUrl;
-        return new Promise((resolve, reject) => {
-            fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => response.json())
-                .then(data => {
-                    resolve(data);
-                }
-                )
-                .catch(error => {
-                    reject(error);
-                }
-                );
-        });
-    }
-
+    
     Cart.Clear = function () {
         this.count = 0;
         document.getElementById('shopping-circle').classList.add('d-none');
@@ -142,6 +122,28 @@
                 );
         });
     }
+
+    Cart.Get = function () {
+        const url = apiUrl;
+        return new Promise((resolve, reject) => {
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => response.json())
+                .then(data => {
+                    resolve(data);
+                }
+                )
+                .catch(error => {
+                    reject(error);
+                }
+                );
+        });
+    }
+
+    
 
     Cart.Count = function () {
         const url = apiUrl + '/count';

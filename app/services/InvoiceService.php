@@ -28,7 +28,7 @@ class InvoiceService
 
     public function __construct()
     {
-        $this->orderRepository = new OrderRepository();
+        $this->orderService = new OrderService();
         $this->pdfService = new PDFService();
     }
 

@@ -65,6 +65,15 @@ class CartService
         $orderId = $_SESSION["cartId"];
         return $this->orderService->getOrderById($orderId);
     }
+
+    public function getCount() : int{
+        $this->checkCartStatus();
+
+        $orderId = $_SESSION["cartId"];
+        $order = $this->orderService->getOrderById($orderId);
+        //Returns the total number of items in the order
+        return $order->getTotalItemCount();
+    }
     
     /**
      * Adds one item to the cart.
