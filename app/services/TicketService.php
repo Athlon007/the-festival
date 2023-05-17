@@ -44,7 +44,7 @@ class TicketService
     }
   }
 
-  public function getAllHistoryTickets(Order $order) : array
+  public function getAllHistoryTickets(Order $order): array
   {
     try {
       $eventType = "history";
@@ -55,7 +55,7 @@ class TicketService
     }
   }
 
-  public function getAllJazzTickets(Order $order) : array
+  public function getAllJazzTickets(Order $order): array
   {
     try {
       $eventType = "jazz";
@@ -66,7 +66,7 @@ class TicketService
     }
   }
 
-  public function getAllYummyTickets(Order $order) : array
+  public function getAllYummyTickets(Order $order): array
   {
     try {
       $eventType = "yummy";
@@ -77,7 +77,7 @@ class TicketService
     }
   }
 
-  public function getAllDanceTickets(Order $order) : array
+  public function getAllDanceTickets(Order $order): array
   {
     try {
       $eventType = "dance";
@@ -109,30 +109,22 @@ class TicketService
   public function generatePDFTicket($tickets, $order, $qrCodeImages): Dompdf
   {
     $pdfService = new PDFService();
+    ob_start();
+    $html = require_once(__DIR__ . '/../pdfs/ticket-pdf.php');
+    $html = ob_get_clean();
+    $title = "The Festival Ticket";
+    $filename = "ticket_" . $ticket->getTicketId() . ".pdf";
 
     foreach ($tickets as $ticket) {
-      // buffer the following html with PHP so we can pass it to the PDF generator
-      ob_start();
-      $html = require_once(__DIR__ . '/../pdfs/ticket-pdf.php');
-      // retrieve the HTML generated in our buffer and delete the buffer
-      $html = ob_get_clean();
-
-      $title = "The Festival Ticket";
-      $filename = "ticket_" . $ticket->getTicketId() . ".pdf";
-
-      $domPdf = $pdfService->generatePDF($html, $title, $filename); // Generate the PDF ticket and store it in the array
-      //TODO: Uncomment the send ticket by email function when the payment funnel is finished
-      $this->sendTicketByEmail($domPdf, $ticket, $order);
+      $domPdf = $pdfService->generatePDF($html, $title, $filename);
     }
     return $domPdf;
   }
 
 
-  public function sendTicketByEmail(Dompdf $dompdf, Ticket $ticket, Order $order)
+  public function sendTicketByEmail(Dompdf $dompdf, Order $order)
   {
     try {
-      $pdfContents = $dompdf->output();
-
       $mail = new PHPMailer(true);
       $mail->isSMTP();
       $mail->isHTML(true);
@@ -154,7 +146,10 @@ class TicketService
 
       // $mail->addAddress($order->getCustomer()->getEmail(), $name);
       $mail->addAddress("turkvedat0911@gmail.com", $name);
-      $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');
+      foreach ($order->getTickets() as $ticket) {
+        $pdfContents = $dompdf->output();
+        $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');
+      }
 
       if ($mail->send()) {
         echo "Mail sent";
@@ -166,7 +161,8 @@ class TicketService
     }
   }
 
-  public function markTicketAsScanned(Ticket $ticket){
+  public function markTicketAsScanned(Ticket $ticket)
+  {
     $this->repository->markTicketAsScanned($ticket);
   }
 

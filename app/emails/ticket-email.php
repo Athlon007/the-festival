@@ -3,8 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Your Ticket for the Event:
-        <?= $ticket->getEvent()->getName() ?>
+    <title>Your Tickets for the Haarlem Festival
     </title>
     <style type="text/css">
         /* Add some styles for the email body */

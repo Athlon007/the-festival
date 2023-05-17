@@ -197,9 +197,14 @@ class Router
                 $ticketController->downloadOrders();
                 break;
             case "/invoicepdf":
-                require_once("controllers/OrderController.php");
-                $ticketController = new OrderController();
-                $ticketController->sendInvoiceEmail();
+                require_once("controllers/PaymentController.php");
+                $ticketController = new PaymentController();
+                $ticketController->sendTicketsAndInvoice();
+                break;
+            case "/paymentSuccess":
+                require_once("controllers/PaymentController.php");
+                $ticketController = new PaymentController();
+                $ticketController->sendTicketsAndInvoice();
                 break;
             default:
                 $this->route404($message);
