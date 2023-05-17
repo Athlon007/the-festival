@@ -181,11 +181,6 @@ class Router
                 $festivalFoodController = new FestivalFoodController();
                 $festivalFoodController->loadFoodFestivalPage();
                 break;
-            case "/buyTicket":
-                require_once("controllers/TicketController.php");
-                $ticketController = new TicketController();
-                $ticketController->getAllTickets();
-                break;
             case "/viewOrders":
                 require_once("controllers/OrderController.php");
                 $ticketController = new OrderController();
@@ -195,11 +190,6 @@ class Router
                 require_once("controllers/OrderController.php");
                 $ticketController = new OrderController();
                 $ticketController->downloadOrders();
-                break;
-            case "/invoicepdf":
-                require_once("controllers/PaymentController.php");
-                $ticketController = new PaymentController();
-                $ticketController->sendTicketsAndInvoice();
                 break;
             case "/paymentSuccess":
                 require_once("controllers/PaymentController.php");

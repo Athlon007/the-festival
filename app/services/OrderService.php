@@ -67,7 +67,7 @@ class OrderService
         }
 
         $fileName = "orders-data_" . date('Y-m-d') . ".xls";
-        $fields = array('ID', 'ORDER DATE', 'CUSTOMER NAME', 'CUSTOMER EMAIL', 'EVENT NAME', 'PRICE', 'QUANTITY', 'TOTAL PRICE');
+        $fields = array('ID', 'ORDER DATE', 'CUSTOMER NAME', 'CUSTOMER EMAIL', 'EVENT NAME','BASE PRICE', 'PRICE', 'QUANTITY','TOTAL BASE PRICE' , 'TOTAL PRICE');
         $excelData = implode("\t", $fields) . "\n";
 
         foreach ($orders as $order) {
@@ -78,9 +78,11 @@ class OrderService
                     $order->getCustomer()->getFirstName() . " " . $order->getCustomer()->getLastName(),
                     $order->getCustomer()->getEmail(),
                     $orderItem->getEventName(),
-                    $orderItem->getFullPrice(),
+                    number_format($orderItem->getBasePrice(),2),
+                    number_format($orderItem->getFullTicketPrice(),2),
                     $orderItem->getQuantity(),
-                    $orderItem->getQuantity() * $orderItem->getFullPrice()
+                    number_format($orderItem->getTotalBasePrice(),2),
+                    number_format($orderItem->getTotalFullPrice(),2)
                 );
                 array_walk($lineData, array($this, 'filterData'));
                 $excelData .= implode("\t", $lineData) . "\n";

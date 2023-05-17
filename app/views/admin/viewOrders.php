@@ -29,8 +29,10 @@
                     <th>Customer Name</th>
                     <th>Customer Email</th>
                     <th>Event Name</th>
+                    <th>Base Price</th>
                     <th>Price</th>
                     <th>Quantity</th>
+                    <th>Total Base Price</th>
                     <th>Total Price</th>
                 </tr>
             </thead>
@@ -55,13 +57,19 @@
                                 <?= $orderItem->getEventName() ?>
                             </td>
                             <td>
-                                <?= "€ " . $orderItem->getFullPrice() ?>
+                                <?= "€ " . number_format($orderItem->getBasePrice(),2) ?>
+                            </td>
+                            <td>
+                                <?= "€ " . $orderItem->getFullTicketPrice() ?>
                             </td>
                             <td>
                                 <?= $orderItem->getQuantity() ?>
                             </td>
                             <td>
-                                <?= "€ " . $orderItem->getQuantity() * $orderItem->getFullPrice() ?>
+                                <?= "€ " . number_format($orderItem->getTotalBasePrice(),2) ?>
+                            </td>
+                            <td>
+                                <?= "€ " . $orderItem->getTotalFullPrice() ?>
                             </td>
 
                         </tr>
