@@ -28,52 +28,36 @@
                     <th>Order Date</th>
                     <th>Customer Name</th>
                     <th>Customer Email</th>
-                    <th>Event Name</th>
-                    <th>Base Price</th>
-                    <th>Price</th>
+                    <th>Total excl VAT</th>
                     <th>Quantity</th>
-                    <th>Total Base Price</th>
-                    <th>Total Price</th>
+                    <th>Total inc VAT</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($orders as $order): ?>
-                    <?php foreach ($order->getOrderItems() as $orderItem): ?>
-                        <tr>
-                            <td>
-                                <?= $order->getOrderId() ?>
-                            </td>
-                            <td>
-                                <?= date_format($order->getOrderDate(), 'd/m/Y') ?>
-                            </td>
-                            <td>
-                                <?= $order->getCustomer()->getFirstName() ?>
-                                <?= $order->getCustomer()->getLastName() ?>
-                            </td>
-                            <td>
-                                <?= $order->getCustomer()->getEmail() ?>
-                            </td>
-                            <td>
-                                <?= $orderItem->getEventName() ?>
-                            </td>
-                            <td>
-                                <?= "€ " . number_format($orderItem->getBasePrice(),2) ?>
-                            </td>
-                            <td>
-                                <?= "€ " . $orderItem->getFullTicketPrice() ?>
-                            </td>
-                            <td>
-                                <?= $orderItem->getQuantity() ?>
-                            </td>
-                            <td>
-                                <?= "€ " . number_format($orderItem->getTotalBasePrice(),2) ?>
-                            </td>
-                            <td>
-                                <?= "€ " . $orderItem->getTotalFullPrice() ?>
-                            </td>
-
-                        </tr>
-                    <?php endforeach; ?>
+                <tr>
+                    <td>
+                        <?= $order->getOrderId() ?>
+                    </td>
+                    <td>
+                        <?= $order->getOrderDateAsDMY(); ?>
+                    </td>
+                    <td>
+                        <?= $order->getCustomer()->getFirstName() . " " . $order->getCustomer()->getLastName() ?>
+                    </td>
+                    <td>
+                        <?= $order->getCustomer()->getEmail() ?>
+                    </td>
+                    <td>
+                        <?= "€ " . number_format($order->getTotalBasePrice(),2) ?>
+                    </td>
+                    <td>
+                        <?= $order->getTotalItemCount(); ?>
+                    </td>
+                    <td>
+                        <?= "€ " . number_format($order->getTotalPrice(),2) ?>
+                    </td>
+                </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>

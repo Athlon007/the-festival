@@ -34,7 +34,7 @@ class OrderService
         $this->pdfService = new PDFService();
     }
 
-    public function getOrderById(int $id) : Order
+    public function getOrderById(int $id): Order
     {
         //Get the order object
         $order = $this->orderRepository->getOrderById($id);
@@ -43,7 +43,8 @@ class OrderService
         return $order;
     }
 
-    public function getOrderHistory(int $customerId){
+    public function getOrderHistory(int $customerId)
+    {
         return $this->orderRepository->getOrderHistory($customerId);
     }
 
@@ -62,26 +63,21 @@ class OrderService
         }
 
         $fileName = "orders-data_" . date('Y-m-d') . ".xls";
-        $fields = array('ID', 'ORDER DATE', 'CUSTOMER NAME', 'CUSTOMER EMAIL', 'EVENT NAME','BASE PRICE', 'PRICE', 'QUANTITY','TOTAL BASE PRICE' , 'TOTAL PRICE');
+        $fields = array('ID', 'ORDER DATE', 'CUSTOMER NAME', 'CUSTOMER EMAIL', 'TOTAL EXCL VAT', 'NUMBER OF ITEM', 'TOTAL INC VAT');
         $excelData = implode("\t", $fields) . "\n";
 
         foreach ($orders as $order) {
-            foreach ($order->getOrderItems() as $orderItem) {
-                $lineData = array(
-                    $order->getOrderId(),
-                    date_format($order->getOrderDate(), 'd/m/Y'),
-                    $order->getCustomer()->getFirstName() . " " . $order->getCustomer()->getLastName(),
-                    $order->getCustomer()->getEmail(),
-                    $orderItem->getEventName(),
-                    number_format($orderItem->getBasePrice(),2),
-                    number_format($orderItem->getFullTicketPrice(),2),
-                    $orderItem->getQuantity(),
-                    number_format($orderItem->getTotalBasePrice(),2),
-                    number_format($orderItem->getTotalFullPrice(),2)
-                );
-                array_walk($lineData, array($this, 'filterData'));
-                $excelData .= implode("\t", $lineData) . "\n";
-            }
+            $lineData = array(
+                $order->getOrderId(),
+                date_format($order->getOrderDate(), 'd/m/Y'),
+                $order->getCustomer()->getFirstName() . " " . $order->getCustomer()->getLastName(),
+                $order->getCustomer()->getEmail(),
+                number_format($order->getTotalBasePrice(), 2),
+                $order->getTotalItemCount(),
+                number_format($order->getTotalPrice(), 2)
+            );
+            array_walk($lineData, array($this, 'filterData'));
+            $excelData .= implode("\t", $lineData) . "\n";
         }
 
         // Send HTTP headers
@@ -94,8 +90,9 @@ class OrderService
         exit;
     }
 
-    public function sendInvoice(){
-        
+    public function sendInvoice()
+    {
+
     }
 
 
@@ -111,16 +108,16 @@ class OrderService
     {
         return $this->orderRepository->getCartOrderForCustomer($customerId);
     }
-    
-    public function createOrder(int $ticketLinkId, int $customerId = NULL) : Order
+
+    public function createOrder(int $ticketLinkId, int $customerId = NULL): Order
     {
         $order = new Order();
         $order->setOrderDate(new DateTime());
         $order->setIsPaid(false);
-        
-        if(isset($customerId))
-        $order->setCustomer($this->customerRepository->getById($customerId));
-        
+
+        if (isset($customerId))
+            $order->setCustomer($this->customerRepository->getById($customerId));
+
         $order = $this->orderRepository->insertOrder($order);
 
         //After we created the order, we can create the first orderItem that will be linked to the new order.
@@ -128,7 +125,7 @@ class OrderService
         return $order;
     }
 
-    public function createOrderItem(int $ticketLinkId, int $orderId) : OrderItem
+    public function createOrderItem(int $ticketLinkId, int $orderId): OrderItem
     {
         $orderItem = new OrderItem();
         $orderItem->setTicketLinkId($ticketLinkId);
@@ -137,39 +134,40 @@ class OrderService
         return $this->orderRepository->insertOrderItem($orderItem, $orderId);
     }
 
-    public function updateOrder($orderId, $order) : Order
+    public function updateOrder($orderId, $order): Order
     {
         return $this->orderRepository->updateOrder($orderId, $order);
     }
 
-    public function updateOrderItem($orderItemId, $orderItem) : OrderItem
+    public function updateOrderItem($orderItemId, $orderItem): OrderItem
     {
         return $this->orderRepository->updateOrderItem($orderItemId, $orderItem);
     }
 
-    public function deleteOrder($orderId) : void
+    public function deleteOrder($orderId): void
     {
         $this->orderRepository->deleteOrder($orderId);
     }
 
-    public function deleteOrderItem($orderItemId) : void
+    public function deleteOrderItem($orderItemId): void
     {
         $this->orderRepository->deleteOrderItem($orderItemId);
     }
 
     //If the customer has an unpaid order and logs in while having created another order as a visitor, merge the two orders.
-    public function mergeOrders($customerOrder, $sessionOrder) : Order{
-        
+    public function mergeOrders($customerOrder, $sessionOrder): Order
+    {
+
         //Nested loop that checks if there are orderitems that represent the same ticket
-        foreach($customerOrder->getOrderItems() as $customerOrderItem){
-            foreach($sessionOrder->getOrderItems() as $sessionOrderItem){
+        foreach ($customerOrder->getOrderItems() as $customerOrderItem) {
+            foreach ($sessionOrder->getOrderItems() as $sessionOrderItem) {
                 //If there is a match in ticketlink then add the quantity of the sessionOrderItem to the customerOrderItem and update
-                if($sessionOrderItem->getTicketLinkId() == $customerOrderItem->getTicketLinkId()){
+                if ($sessionOrderItem->getTicketLinkId() == $customerOrderItem->getTicketLinkId()) {
                     $customerOrderItem->setQuantity($customerOrderItem->getQuantity() + $sessionOrderItem->getQuantity());
                     $this->updateOrderItem($customerOrderItem->getOrderItemId(), $customerOrderItem);
                 }
                 //If the orderItem is unique then we add it to the customerOrder and update it
-                else{
+                else {
                     $sessionOrderItem->setOrderId($customerOrder->getOrderId());
                     $customerOrder->addOrderItem($this->updateOrderItem($customerOrderItem->getOrderItemId(), $customerOrderItem));
                 }

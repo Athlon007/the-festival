@@ -218,7 +218,7 @@ class OrderRepository extends Repository
             $customer = $customerRep->getById($row['customerId']);
             $order->setCustomer($customer);
 
-            array_push($orders, $order);
+            $orders [] = $order;
         }
         return $orders;
     }
