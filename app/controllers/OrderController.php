@@ -2,29 +2,30 @@
 
 require_once(__DIR__ . "/../services/OrderService.php");
 require_once(__DIR__ . "/../services/CartService.php");
+require_once(__DIR__ . "/../services/InvoiceService.php");
 
 class OrderController
 {
     private $orderService;
     private $cartService;
+    private $invoiceService;
 
     public function __construct()
     {
         $this->orderService = new OrderService();
         $this->cartService = new CartService();
+        $this->invoiceService = new InvoiceService();
     }
 
-    /**
-     * Show the shopping cart
-     * @author Joshua
-     */
     public function showShoppingCart()
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
+        try{
+            $cartOrder = $this->cartService->getCart();
         }
-        $cart = $this->cartService->cart();
-        $ticketLinks = $cart['ticketLinks'];
+        catch(Throwable $e){
+            Logger::write($e);
+            $cartOrder = null;
+        }
 
         require('../views/payment-funnel/cart.php');
     }
@@ -34,15 +35,18 @@ class OrderController
      */
     public function showOrderHistory()
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
+        try{
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+            $customer = unserialize($_SESSION['user']);
+            $orders = $this->orderService->getOrderHistory($customer->getUserId());
+            //$orders = $this->orderService->getOrderHistory(33);
+            require_once('../views/orderHistory.php');
         }
-        $customer = unserialize($_SESSION['user']);
-        // $orders = $this->orderService->getOrderHistory($customer->getUserId());
-        $orders = $this->orderService->getOrderHistory(33);
-        require_once('../views/orderHistory.php');
-
-        return $orders;
+        catch(Throwable $e){
+            Logger::write($e);
+        }
     }
 
     /**
@@ -71,5 +75,70 @@ class OrderController
             echo $e->getMessage();
             return;
         }
+    }
+
+    public function getOrdersToExport()
+    {
+        try {
+            // if (session_status() == PHP_SESSION_NONE) {
+            //     session_start();
+            // }
+
+            // if (!isset($_SESSION['user'])) {
+            //     header("Location: /");
+            // }
+
+            // $user = unserialize($_SESSION['user']);
+            // if ($user->getUserTypeAsString() != "Admin") {
+            //     header("Location: /");
+            // }
+
+            $orders = $this->orderService->getOrdersToExport();
+            require_once('../views/admin/viewOrders.php');
+
+            return $orders;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function downloadOrders()
+    {
+        try {
+            // if (session_status() == PHP_SESSION_NONE) {
+            //     session_start();
+            // }
+
+            // if (!isset($_SESSION['user'])) {
+            //     header("Location: /");
+            // }
+
+            // $user = unserialize($_SESSION['user']);
+            // if ($user->getUserTypeAsString() != "Admin") {
+            //     header("Location: /");
+            // }
+
+            return $this->orderService->downloadOrders();
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function sendInvoiceEmail()
+    {
+        // if (session_status() == PHP_SESSION_NONE) {
+        //     session_start();
+        // }
+
+        // if (!isset($_SESSION['user'])) {
+        //     header("Location: /");
+        // }
+
+        // $user = unserialize($_SESSION['user']);
+        // if ($user->getUserTypeAsString() != "Admin") {
+        //     header("Location: /");
+        // }
+        $order = new Order();
+        return $this->invoiceService->sendInvoiceEmail($order);
     }
 }

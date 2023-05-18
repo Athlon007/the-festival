@@ -1,16 +1,15 @@
 <?php
-
 require_once(__DIR__ . "/../APIController.php");
-require_once(__DIR__ . "/../../../services/JazzArtistService.php");
+require_once(__DIR__ . "/../../../services/ArtistService.php");
 require_once(__DIR__ . "/../../../models/Exceptions/MissingVariableException.php");
 
-class JazzArtistAPIController extends APIController
+class ArtistAPIController extends APIController
 {
     private $service;
 
     public function __construct()
     {
-        $this->service = new JazzArtistService();
+        $this->service = new ArtistService();
     }
 
     public function handleGetRequest($uri)

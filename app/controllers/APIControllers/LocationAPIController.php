@@ -53,7 +53,7 @@ class LocationAPIController extends APIController
 
             if (str_starts_with($uri, "/api/locations/type/")) {
                 $base = basename($uri);
-                // remove stuf after ?
+                // remove stuff after "?"
                 $base = explode("?", $base)[0];
                 echo json_encode($this->locationService->getLocationsByType($base, $sort));
                 return;

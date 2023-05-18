@@ -9,80 +9,47 @@ require_once("../models/Address.php");
 
 require_once("AddressRepository.php");
 require_once("LocationRepository.php");
+require_once("EventTypeRepository.php");
 
 class FestivalHistoryRepository extends Repository
 {
+    private $eventTypeRepository;
+    private $locationRepository;
 
-    // public function getAllHistoryEvents()
-    // {
-    //     try {
-    //         $query = "SELECT e.eventId AS eventId, e.name AS name, e.startTime AS startTime,
-    //         e.endTime AS endTime, h.guideId AS guideId, h.locationId AS locationId,
-    //         t2.ticketTypePrice as Price, g.`language` as Lang, l.name as LocationName,
-    //         e.availableTickets as Capacity
-    //         FROM historyevents h
-    //                 JOIN events e ON e.eventId = h.eventId
-    //                 join ticketlinks t on e.eventId = t.eventId 
-    //                 join tickettypes t2 on t2.ticketTypeId = t.ticketTypeId
-    //                 join guides g ON g.guideId = h.guideId
-    //                 join locations l ON h.locationId = l.locationId";
-
-    //         $stmt = $this->connection->prepare($query);
-    //         $stmt->execute();
-
-    //         $historyEvents = [];
-    //         // fetch results as HistoryEvent objects
-    //         while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    //             $guide = $this->getGuideByID($result['guideId']);
-    //             $locationRep = new LocationRepository();
-    //             $location = $locationRep->getById($result['locationId']);
-    //             $startTime = new DateTime($result['startTime']);
-    //             $endTime = new DateTime($result['endTime']);
-
-    //             $historyEvent = new HistoryEvent($result['eventId'], $result['name'], 0, $startTime, $endTime, $guide, $location);
-    //             $historyEvents[] = $historyEvent;
-    //         }
-
-    //         if (count($historyEvents) === 0) {
-    //             throw new Exception("No history events found");
-    //         }
-
-    //         return $historyEvents;
-    //     } catch (Exception $ex) {
-    //         throw $ex;
-    //     }
-    // }
-
+    public function __construct()
+    {
+        parent::__construct();
+        $this->locationRepository = new LocationRepository();
+        $this->eventTypeRepository = new EventTypeRepository();
+    }
     public function getAllHistoryEvents()
     {
         try {
-            $query = "SELECT e.eventId AS eventId, f.name  AS name, e.startTime AS startTime,
-            e.endTime AS endTime, h.guideId AS guideId, h.locationId AS locationId,
-            g.`language` as Lang, l.name as LocationName,
-            e.availableTickets as Capacity
-            FROM historyevents h
-                    JOIN events e ON e.eventId = h.eventId
+            $query = "            SELECT he.eventId as eventId, he.locationId as locationId, e.name as name,
+            e.startTime as startTime, e.endTime as endTime, g.guideId as guideId, e.availableTickets as availableTickets, e.festivalEventType
+            FROM historyevents he
+            JOIN events e ON e.eventId = he.eventId
                     join ticketlinks t on e.eventId = t.eventId 
-                    join guides g ON g.guideId = h.guideId
-                    join locations l ON h.locationId = l.locationId
+                    join guides g ON g.guideId = he.guideId
+                    join locations l ON he.locationId = l.locationId
                     join festivaleventtypes f on f.eventTypeId = e.festivalEventType";
 
             $stmt = $this->connection->prepare($query);
             $stmt->execute();
 
-            $historyEvents = [];
-            while ($results = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $guide = $this->getGuideByID($results['guideId']);
-                $locationRep = new LocationRepository();
-                $location = $locationRep->getById($results['locationId']);
-                $startTime = new DateTime($results['startTime']);
-                $endTime = new DateTime($results['endTime']);
-                $availableTickets = $results['Capacity'];
-                $eventType = $results['name'];
-            }
-
-            if (count($historyEvents) === 0) {
-                throw new Exception("No history events found");
+            $historyEvents = array();
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $historyEvent = new HistoryEvent(
+                    $row['eventId'],
+                    $row['locationId'],
+                    $row['name'],
+                    new DateTime($row['startTime']),
+                    new DateTime($row['endTime']),
+                    $this->getGuideByID($row['guideId']),
+                    $this->locationRepository->getById($row['locationId']),
+                    $this->eventTypeRepository->getById($row['festivalEventType'])
+                );
+                $historyEvents[] = $historyEvent;
             }
 
             return $historyEvents;
@@ -90,7 +57,6 @@ class FestivalHistoryRepository extends Repository
             throw $ex;
         }
     }
-
 
     // TODO: remove this method
     public function getGuideByID($id)
@@ -111,31 +77,6 @@ class FestivalHistoryRepository extends Repository
             }
 
             return $guide;
-        } catch (Exception $ex) {
-            throw ($ex);
-        }
-    }
-
-
-    public function getAddressById($addressId): ?Address
-    {
-        try {
-            $query = "SELECT * FROM Addresses WHERE addressId = :addressId";
-            $stmt = $this->connection->prepare($query);
-
-            $stmt->bindValue(":addressId", $addressId);
-            $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (is_bool($result))
-                throw new AddressNotFoundException();
-            else
-                $streetName = $result['streetName'];
-            $houseNumber = $result['houseNumber'];
-            $postalCode = $result['postalCode'];
-            $city = $result['city'];
-            $country = $result['country'];
-            return new Address($addressId, $streetName, $houseNumber, $postalCode, $city, $country);
         } catch (Exception $ex) {
             throw ($ex);
         }

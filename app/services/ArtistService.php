@@ -1,16 +1,16 @@
 <?php
 
-require_once(__DIR__ . "/../repositories/JazzArtistRepository.php");
+require_once(__DIR__ . "/../repositories/ArtistRepository.php");
 require_once("ImageService.php");
 require_once(__DIR__ . "/../models/Exceptions/InvalidVariableException.php");
 
-class JazzArtistService
+class ArtistService
 {
     private $repo;
 
     public function __construct()
     {
-        $this->repo = new JazzArtistRepository();
+        $this->repo = new ArtistRepository();
     }
 
     public function getAll($sort, $filters): array

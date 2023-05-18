@@ -1,25 +1,49 @@
 <?php
+require_once("TicketLink.php");
 
 class OrderItem implements JsonSerializable { 
 
+    private int $orderItemId;
+    private int $ticketLinkId;
     private string $eventName;
-    private string $ticketTypeName;
+    private string $ticketName;
+    private string $vatPercentage;
+    private float $fullTicketPrice;
     private int $quantity;
-    private float $basePrice;
-    private float $vatPercentage;
-    private float $vatAmount;
-    private float $fullPrice;
 
     public function jsonSerialize(){
         return [
+            "orderItemId" => $this->orderItemId,
+            "ticketLinkId" => $this->ticketLinkId,
             "eventName" => $this->eventName,
-            "ticketTypeName" => $this->ticketTypeName,
-            "quantity" => $this->quantity,
-            "basePrice" => $this->basePrice,
+            "ticketName" => $this->ticketName,
             "vatPercentage" => $this->vatPercentage,
-            "vatAmount" => $this->vatAmount,
-            "fullPrice" => $this->fullPrice
+            "fullTicketPrice" => $this->fullTicketPrice,
+            "quantity" => $this->quantity,
+            "totalBasePrice" => $this->getTotalBasePrice(),
+            "totalVatAmount" => $this->getTotalVatAmount(),
+            "totalFullPrice" => $this->getTotalFullPrice(),
         ];
+    }
+
+    public function getOrderItemId(): int
+    {
+        return $this->orderItemId;
+    }
+
+    public function setOrderItemId(int $orderItemId): void
+    {
+        $this->orderItemId = $orderItemId;
+    }
+
+    public function getTicketLinkId(): int
+    {
+        return $this->ticketLinkId;
+    }
+
+    public function setTicketLinkId(int $ticketLinkId): void
+    {
+        $this->ticketLinkId = $ticketLinkId;
     }
 
     public function getEventName(): string
@@ -32,14 +56,34 @@ class OrderItem implements JsonSerializable {
         $this->eventName = $eventName;
     }
 
-    public function getTicketTypeName(): string
+    public function getTicketName(): string
     {
-        return $this->ticketTypeName;
+        return $this->ticketName;
     }
 
-    public function setTicketTypeName(string $ticketTypeName): void
+    public function setTicketName(string $ticketName): void
     {
-        $this->ticketTypeName = $ticketTypeName;
+        $this->ticketName = $ticketName;
+    }
+
+    public function getVatPercentage(): string
+    {
+        return $this->vatPercentage;
+    }
+
+    public function setVatPercentage(string $vatPercentage): void
+    {
+        $this->vatPercentage = $vatPercentage;
+    }
+
+    public function getFullTicketPrice(): float
+    {
+        return $this->fullTicketPrice;
+    }
+
+    public function setFullTicketPrice(float $fullTicketPrice): void
+    {
+        $this->fullTicketPrice = $fullTicketPrice;
     }
 
     public function getQuantity(): int
@@ -52,43 +96,36 @@ class OrderItem implements JsonSerializable {
         $this->quantity = $quantity;
     }
 
-    public function getBasePrice(): float
+    //
+    //Calculated getters
+    //
+    //Get base price for one
+    public function getBasePrice()
     {
-        return $this->basePrice;
+        return $this->fullTicketPrice / (1 + $this->vatPercentage);
     }
 
-    public function setBasePrice(float $basePrice): void
+    //Get VAT amount for one
+    public function getVatAmount()
     {
-        $this->basePrice = $basePrice;
+        return $this->vatPercentage * $this->getBasePrice();
     }
 
-    public function getVatPercentage(): float
+    //Base price excl VAT for one ticket multiplied by the quantity
+    public function getTotalBasePrice(): float
     {
-        return $this->vatPercentage;
+        return ($this->getBasePrice() * $this->quantity);
     }
 
-    public function setVatPercentage(float $vatPercentage): void
+    //VAT value that is multiplied by the quantity
+    public function getTotalVatAmount(): float
     {
-        $this->vatPercentage = $vatPercentage;
+        return $this->vatPercentage * $this->getTotalBasePrice();
     }
-
-    public function getVatAmount(): float
+    
+    //Full price that is multiplied by the quantity
+    public function getTotalFullPrice(): float
     {
-        return $this->vatAmount;
-    }
-
-    public function setVatAmount(float $vatAmount): void
-    {
-        $this->vatAmount = $vatAmount;
-    }
-
-    public function getFullPrice(): float
-    {
-        return $this->fullPrice;
-    }
-
-    public function setFullPrice(float $fullPrice): void
-    {
-        $this->fullPrice = $fullPrice;
+        return $this->fullTicketPrice * $this->quantity;
     }
 }

@@ -5,7 +5,7 @@ require_once(__DIR__ . "/../models/History/HistoryEvent.php");
 require_once(__DIR__ . "/../models/Music/MusicEvent.php");
 require_once("Repository.php");
 require_once("LocationRepository.php");
-require_once("JazzArtistRepository.php");
+require_once("ArtistRepository.php");
 require_once("EventTypeRepository.php");
 
 class EventRepository extends Repository
@@ -42,7 +42,7 @@ class EventRepository extends Repository
     {
         $events = [];
         $locationRepo = new LocationRepository();
-        $artistRepo = new JazzArtistRepository();
+        $artistRepo = new ArtistRepository();
         $eventTypeRepo = new EventTypeRepository();
         foreach ($arr as $event) {
             $event = new MusicEvent(

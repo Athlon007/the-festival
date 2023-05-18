@@ -16,38 +16,18 @@ class AddressService
         return $this->repo->getAddressById($id);
     }
 
-    public function insertAddress($streetName, $houseNumber, $postalCode, $city, $country): Address
+    public function insertAddress($address): Address
     {
-        $streetName = htmlspecialchars($streetName);
-        $houseNumber = htmlspecialchars($houseNumber);
-        $postalCode = htmlspecialchars($postalCode);
-        $city = htmlspecialchars($city);
-        $country = htmlspecialchars($country);
-
-        $address = new Address(-1, $streetName, $houseNumber, $postalCode, $city, $country);
-
-        $addressId = $this->repo->insertAddress($address);
-        return $this->getAddressById($addressId);
+        return $this->repo->insertAddress($address);
     }
 
-    public function updateAddress($addressId, $streetName, $houseNumber, $postalCode, $city, $country): Address
+    public function updateAddress($id, $address): Address
     {
-        $addressId = htmlspecialchars($addressId);
-        $streetName = htmlspecialchars($streetName);
-        $houseNumber = htmlspecialchars($houseNumber);
-        $postalCode = htmlspecialchars($postalCode);
-        $city = htmlspecialchars($city);
-        $country = htmlspecialchars($country);
-
-        $address = new Address($addressId, $streetName, $houseNumber, $postalCode, $city, $country);
-
-        $this->repo->updateAddress($address);
-        return $this->getAddressById($addressId);
+        return $this->repo->updateAddress($id, $address);
     }
 
     public function deleteAddress($addressId): void
     {
-        $addressId = htmlspecialchars($addressId);
         $this->repo->deleteAddress($addressId);
     }
 

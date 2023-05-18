@@ -165,32 +165,31 @@ class Router
                 $festivalHistoryController = new FestivalHistoryController();
                 $festivalHistoryController->loadHistoryStrollPage();
                 break;
-            case "/addLocation":
-                require_once("controllers/HistoryController.php");
-                $historyController = new HistoryController();
-                $historyController->addLocation();
-                break;
-            case "/addTour":
-                require_once("controllers/HistoryController.php");
-                $historyController = new HistoryController();
-                $historyController->addTour();
-                break;
             case "/festival/yummy":
             case "/foodfestival":
                 require_once("controllers/FestivalFoodController.php");
                 $festivalFoodController = new FestivalFoodController();
                 $festivalFoodController->loadFoodFestivalPage();
                 break;
-            case "/buyTicket":
-                require_once("controllers/TicketController.php");
-                $ticketController = new TicketController();
-                $ticketController->getAllJazzTickets();
+            case "/addTour":
+                require_once("controllers/FestivalHistoryController.php");
+                $historyController = new FestivalHistoryController();
+                $historyController->addTour();
                 break;
-
-            case "/orderHistory":
+            case "/viewOrders":
                 require_once("controllers/OrderController.php");
                 $ticketController = new OrderController();
-                $ticketController->showOrderHistory();
+                $ticketController->getOrdersToExport();
+                break;
+            case "/downloadOrders":
+                require_once("controllers/OrderController.php");
+                $ticketController = new OrderController();
+                $ticketController->downloadOrders();
+                break;
+            case "/paymentSuccess":
+                require_once("controllers/PaymentController.php");
+                $ticketController = new PaymentController();
+                $ticketController->sendTicketsAndInvoice();
                 break;
             default:
                 $this->route404($message);
@@ -228,8 +227,8 @@ class Router
             require_once("controllers/APIControllers/ImageAPIController.php");
             $controller = new ImageAPIController();
         } elseif (str_starts_with($request, "/api/artists")) {
-            require_once("controllers/APIControllers/Jazz/JazzArtistAPIController.php");
-            $controller = new JazzArtistAPIController();
+            require_once("controllers/APIControllers/ArtistAPIController.php");
+            $controller = new ArtistAPIController();
         } elseif (str_starts_with($request, "/api/addresses")) {
             require_once("controllers/APIControllers/AddressAPIController.php");
             $controller = new AddressAPIController();
@@ -242,15 +241,18 @@ class Router
         } elseif (str_starts_with($request, "/api/tickettypes")) {
             require_once("controllers/APIControllers/TicketTypesAPIController.php");
             $controller = new TicketTypesAPIController();
-        } elseif (str_starts_with($request, "/api/cart")) {
-            require_once("controllers/APIControllers/CartAPIController.php");
-            $controller = new CartAPIController();
         } elseif (str_starts_with($request, "/api/eventtypes")) {
             require_once("controllers/APIControllers/EventTypeAPIController.php");
             $controller = new EventTypeAPIController();
         } elseif (str_starts_with($request, "/api/pages")) {
             require_once("controllers/APIControllers/PagesAPIController.php");
             $controller = new PagesAPIController();
+        } elseif (str_starts_with($request, "/api/cart")) {
+            require_once("controllers/APIControllers/PaymentFunnel/CartAPIController.php");
+            $controller = new CartAPIController();
+        } elseif (str_starts_with($request, "/api/orders")) {
+            require_once("controllers/APIControllers/PaymentFunnel/OrderAPIController.php");
+            $controller = new OrderAPIController();
         } else {
             http_response_code(400);
             // send json
@@ -311,6 +313,9 @@ class Router
 
     private function routeAdminManage($request)
     {
+        require_once("controllers/FestivalHistoryController.php");
+        $historyController = new FestivalHistoryController();
+
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
@@ -371,9 +376,7 @@ class Router
                 require('views/admin/Jazz management/manageJazz.php');
                 break;
             case "/manageHistory":
-                require_once("controllers/HistoryController.php");
-                $historyController = new HistoryController();
-                $historyController->manageHistory();
+                $historyController->getAllHistoryEvents();
                 break;
         }
     }

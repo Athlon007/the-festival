@@ -13,42 +13,24 @@ class TicketController
         $this->ticketService = new TicketService();
     }
 
-    public function getAllHistoryTicket()
+    public function getAllTickets(Order $order)
     {
-        try {
-            $order = new Order();
-            $order->setOrderId(1);
-            $tickets = $this->ticketService->getAllHistoryTickets($order);
-
+        try {    
+            // get all history, jazz tickets (for now, later we will get all tickets for yummy and dance)
+            $tickets = array_merge(
+                $this->ticketService->getAllHistoryTickets($order),
+                $this->ticketService->getAllJazzTickets($order)
+            );
+    
             $qrCodeImages = array();
             foreach ($tickets as $ticket) {
                 $qrCodeImage = $this->ticketService->generateQRCode($ticket);
                 $qrCodeImages[] = $qrCodeImage;
             }
-
-            $this->ticketService->generatePDFTicket($tickets, $order, $qrCodeImages);
-
-            return $tickets;
-        } catch (Exception $ex) {
-            throw ($ex);
-        }
-    }
-
-    public function getAllJazzTickets()
-    {
-        try {
-            $order = new Order();
-            $order->setOrderId(2);
-            $tickets = $this->ticketService->getAllJazzTickets($order);
-
-            $qrCodeImages = array();
-            foreach ($tickets as $ticket) {
-                $qrCodeImage = $this->ticketService->generateQRCode($ticket);
-                $qrCodeImages[] = $qrCodeImage;
-            }
-
-            $this->ticketService->generatePDFTicket($tickets, $order, $qrCodeImages);
-
+    
+            $dompdf =  $this->ticketService->generatePDFTicket($tickets, $order, $qrCodeImages);
+            $order->setTickets($tickets);
+            $this->ticketService->sendTicketByEmail($dompdf, $order);
             return $tickets;
         } catch (Exception $ex) {
             throw ($ex);

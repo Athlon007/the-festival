@@ -101,6 +101,16 @@ class Order implements JsonSerializable
         return $this->orderDate;
     }
 
+    public function getOrderDateAsString() : string
+    {
+        return $this->orderDate->format('Y-m-d');
+    }
+
+    public function getOrderDateAsDMY() : string
+    {
+        return $this->orderDate->format('d-m-Y');
+    }
+
     public function setOrderDate(DateTime $orderDate): void
     {
         $this->orderDate = $orderDate;
@@ -120,7 +130,7 @@ class Order implements JsonSerializable
     {
         $totalBasePrice = 0;
         foreach ($this->orderItems as $orderItem) {
-            $totalBasePrice += $orderItem->getBasePrice();
+            $totalBasePrice += $orderItem->getBasePrice() * $orderItem->getQuantity();
         }
         return $totalBasePrice;
     }
@@ -141,7 +151,7 @@ class Order implements JsonSerializable
         $totalVat21Amount = 0;
         foreach ($this->orderItems as $orderItem) {
             if ($orderItem->getVatPercentage() == 0.21) {
-                $totalVat9Amount += $orderItem->getVatAmount();
+                $totalVat21Amount += $orderItem->getVatAmount() * $orderItem->getQuantity();
             }
         }
         return $totalVat21Amount;
@@ -149,11 +159,18 @@ class Order implements JsonSerializable
 
     public function getTotalPrice(): float
     {
-        $totalVatTotalPrice = 0;
+        $totalPrice = 0;
         foreach ($this->orderItems as $orderItem) {
-            $totalVatTotalPrice += $orderItem->getFullPrice();
+            $totalPrice += $orderItem->getTotalFullPrice();
         }
-        
-        return $totalVatTotalPrice;
+        return $totalPrice;
+    }
+
+    public function getTotalItemCount(){
+        $totalItemCount = 0;
+        foreach ($this->orderItems as $orderItem) {
+            $totalItemCount += $orderItem->getQuantity();
+        }
+        return $totalItemCount;
     }
 }

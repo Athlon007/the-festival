@@ -9,16 +9,6 @@ class Address implements JsonSerializable
     private string $city;
     private string $country;
 
-    public function __construct($addressId, $streetName, $houseNumber, $postalCode, $city, $country)
-    {
-        $this->addressId = $addressId;
-        $this->streetName = $streetName;
-        $this->houseNumber = $houseNumber;
-        $this->postalCode = $postalCode;
-        $this->city = $city;
-        $this->country = $country;
-    }
-
     public function jsonSerialize(): mixed
     {
         return [

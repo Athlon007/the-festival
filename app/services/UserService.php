@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../repositories/UserRepository.php';
-require_once(__DIR__ . '/../repositories/CustomerRepository.php');
+require_once('CustomerService.php');
 require_once __DIR__ . '/../models/User.php';
 require_once(__DIR__ . '/../models/Exceptions/UserNotFoundException.php');
 require_once(__DIR__ . '/../models/Exceptions/IncorrectPasswordException.php');
@@ -17,41 +17,43 @@ use PHPMailer\PHPMailer\Exception;
 class UserService
 {
     protected $userRepository;
-    protected $customerRepository;
+    protected $customerService;
 
     public function __construct()
     {
         $this->userRepository = new UserRepository();
-        $this->customerRepository = new CustomerRepository();
+        $this->customerService = new CustomerService();
     }
 
     public function verifyUser($data): ?User
     {
-        try {
-            //Sanitise data
-            $data->email = htmlspecialchars($data->email);
-            $data->password = htmlspecialchars($data->password);
+        //Sanitise data
+        $data->email = htmlspecialchars($data->email);
+        $data->password = htmlspecialchars($data->password);
 
-            $user = $this->userRepository->getByEmail($data->email);
+        $user = $this->userRepository->getByEmail($data->email);
 
-            if (password_verify($data->password, $user->getHashPassword())) {
-
-                if ($user->getUserType() == 3) {
-                    $customer = $this->customerRepository->getCustomerByUser($user);
-                    return $customer;
-                }
-
-                return $user;
-            } else {
-                throw new IncorrectPasswordException();
-            }
-        } catch (Exception $ex) {
-            throw ($ex);
+        if (!password_verify(htmlspecialchars($data->password), $user->getHashPassword())) {
+            throw new IncorrectPasswordException();
         }
+
+        //Nullify password, don't send that back to client.
+        //$user->setHashPassword(null);
+
+        //If the user is a customer, return a customer object instead of a user object.
+        if ($user->getUserType() == 3) {
+            $customer = $this->customerService->getCustomerById($user->getUserId());
+            return $customer;
+        }
+
+        return $user;
     }
 
     public function createNewUser(string $email, string $firstName, string $lastName, string $password, $usertype, DateTime $registrationDate): void
     {
+        if($this->emailAlreadyExists($email))
+            throw new Exception("Email already exists.", 409);
+        
         //Create user object
         $user = new User();
         $user->setEmail($email);
