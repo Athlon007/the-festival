@@ -120,7 +120,10 @@ class OrderService
         $order = new Order();
         $order->setOrderDate(new DateTime());
         $order->setIsPaid(false);
+        
+        if(isset($customerId))
         $order->setCustomer($this->customerRepository->getById($customerId));
+        
         $order = $this->orderRepository->insertOrder($order);
 
         //After we created the order, we can create the first orderItem that will be linked to the new order.

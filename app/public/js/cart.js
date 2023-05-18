@@ -1,14 +1,11 @@
 (function () {
-    const apiUrl = '/api/cart';
     var Cart = {};
-    let count = 0;
-
+    //Adds one item to the cart order
     Cart.Add = function (itemID) {
-        this.count++;
         document.getElementById('shopping-circle').classList.remove('d-none');
         document.getElementById('shopping-circle-text').innerHTML = this.count;
 
-        const url = apiUrl + '/add/' + itemID;
+        const url = "/api/cart/add/" + itemID;
         return new Promise((resolve, reject) => {
             fetch(url, {
                 method: 'POST',
@@ -27,35 +24,8 @@
                 );
         });
     };
-
-    Cart.Set = function (itemID, quantity) {
-        const url = apiUrl + '/' + itemID + '?amount=' + quantity;
-        return new Promise((resolve, reject) => {
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => response.json())
-                .then(data => {
-                    Cart.UpdateCounter();
-                    resolve(data);
-                }
-                )
-                .catch(error => {
-                    reject(error);
-                }
-                );
-        });
-    };
-
+    //Removes one item from the cart order
     Cart.Remove = function (itemID) {
-        this.count--;
-        if (this.count < 0) {
-            this.count = 0;
-            document.getElementById('shopping-circle').classList.add('d-none');
-        }
-        document.getElementById('shopping-circle-text').innerHTML = this.count;
 
         const url = apiUrl + '/remove/' + itemID;
         return new Promise((resolve, reject) => {
@@ -76,53 +46,7 @@
                 );
         });
     }
-
-    Cart.Clear = function (itemID) {
-        const url = apiUrl + '/' + itemID + '/all';
-        return new Promise((resolve, reject) => {
-            fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => response.json())
-                .then(data => {
-                    Cart.UpdateCounter();
-                    resolve(data);
-                }
-                )
-                .catch(error => {
-                    reject(error);
-                }
-                );
-        }
-        );
-    }
-    
-    Cart.Clear = function () {
-        this.count = 0;
-        document.getElementById('shopping-circle').classList.add('d-none');
-
-        const url = apiUrl + '/clear';
-        return new Promise((resolve, reject) => {
-            fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => response.json())
-                .then(data => {
-                    Cart.UpdateCounter();
-                    resolve(data);
-                }
-                )
-                .catch(error => {
-                    reject(error);
-                }
-                );
-        });
-    }
-
+    //Gets the cart order from the server
     Cart.Get = function () {
         const url = apiUrl;
         return new Promise((resolve, reject) => {
@@ -143,50 +67,8 @@
         });
     }
 
-    
-
-    Cart.Count = function () {
-        const url = apiUrl + '/count';
-        return new Promise((resolve, reject) => {
-            fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => response.json())
-                .then(data => {
-                    resolve(data);
-                }
-                )
-                .catch(error => {
-                    reject(error);
-                }
-                );
-        });
-    }
-
-    Cart.CountItem = function (itemID) {
-        const url = apiUrl + '/count/' + itemID;
-        return new Promise((resolve, reject) => {
-            fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => response.json())
-                .then(data => {
-                    resolve(data);
-                }
-                )
-                .catch(error => {
-                    reject(error);
-                }
-                );
-        });
-    }
-
+    //Updates the counter in the nav bar by getting the count from the cart order from the server
     Cart.UpdateCounter = function () {
-        // get count
         fetch('/api/cart/count',
             {
                 method: 'GET',

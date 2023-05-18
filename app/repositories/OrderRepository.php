@@ -220,7 +220,7 @@ class OrderRepository extends Repository
     {
         $sql = "UPDATE orders SET orderDate = :orderDate, customerId = :customerId, isPaid = :isPaid WHERE orderId = :orderId";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDate()));
+        $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDateAsString()));
         $stmt->bindValue(":customerId", htmlspecialchars($order->getCustomer()->getCustomerId()));
         $stmt->bindValue(":isPaid", htmlspecialchars($order->getIsPaid()));
         $stmt->bindValue(":orderId", htmlspecialchars($orderId));
@@ -247,7 +247,7 @@ class OrderRepository extends Repository
     {
         $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDate()));
+        $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDateAsString()));
         $stmt->bindValue(":customerId", htmlspecialchars($order->getCustomer()->getCustomerId()));
         $stmt->execute();
 

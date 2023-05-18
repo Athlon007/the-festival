@@ -52,13 +52,15 @@ class CartAPIController extends APIController
                 parent::sendResponse($cartOrder);
                 return;
             }
-        
             //api/cart/remove/{ticketlinkId} POST method - removes the ticket link from the cart order
-            if(str_starts_with($uri, "/api/cart/remove/") && is_numeric(basename($uri))){
+            else if(str_starts_with($uri, "/api/cart/remove/") && is_numeric(basename($uri))){
                 $ticketLinkId = basename($uri);
                 $cartOrder = $this->cartService->removeItem($ticketLinkId);
                 parent::sendResponse($cartOrder);
                 return;
+            }
+            else{
+                throw new Exception("Bad request.", 400);
             }
         }
         catch(Throwable $e)
@@ -66,8 +68,6 @@ class CartAPIController extends APIController
             Logger::write($e);
             parent::sendErrorMessage($e->getMessage(), $e->getCode());
         }
-        
-        
     }
 
     protected function handlePutRequest($uri)
