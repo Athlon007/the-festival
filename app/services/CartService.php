@@ -24,11 +24,8 @@ class CartService
      */
     private function initialiseCart($ticketLinkId) : Order
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        if (isset($_SESSION["cartId"])) {
-            throw new CartException("Cart already initialised.");
+        if ($this->cartIsInitialised()) {
+            throw new CartException("Cart is already initialised.");
         }
 
         //If a customer is logged in then we use their id, else we don't pass a customer id.
@@ -59,20 +56,30 @@ class CartService
      */
     public function getCart(): Order
     {
-        $this->checkCartStatus();
+        if (!$this->cartIsInitialised()) {
+            throw new CartException("Cart is not initialised.");
+        }
 
         //Retrieve the order that is in cart from the db and return it.
         $orderId = $_SESSION["cartId"];
         return $this->orderService->getOrderById($orderId);
     }
 
-    public function getCount() : int{
-        $this->checkCartStatus();
-
-        $orderId = $_SESSION["cartId"];
-        $order = $this->orderService->getOrderById($orderId);
-        //Returns the total number of items in the order
-        return $order->getTotalItemCount();
+    /**
+     * Gets the total item count from the session.
+     * @return Order
+     */
+    public function getCount() : int{   
+        
+        if (!$this->cartIsInitialised()) {
+            return 0;
+        }
+        else{
+            $orderId = $_SESSION["cartId"];
+            $order = $this->orderService->getOrderById($orderId);
+            //Returns the total number of items in the order
+            return $order->getTotalItemCount();
+        }
     }
     
     /**
@@ -85,7 +92,7 @@ class CartService
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-        //If cart wasn't initialised, we create a new cart order with the item.
+        //If cart wasn't initialised, we initialise it using the ticket.
         if (!isset($_SESSION["cartId"])) {
             return $this->initialiseCart($ticketLinkId);
         }
@@ -114,12 +121,10 @@ class CartService
      * @return Order returns the order object.
      * @author Joshua
      */
-    public function removeItem($ticketLinkId): Order //TODO: make
+    public function removeItem($ticketLinkId): Order
     {
-        $this->checkCartStatus();
-        
         //Retrieve the order that is in cart from the db.
-        $order = $this->orderService->getOrderById($_SESSION["cartId"]);
+        $order = $this->getCart();
 
         //Check for the orderitem that contains the ticketlinkId
         foreach ($order->getOrderItems() as $orderItem){
@@ -141,17 +146,17 @@ class CartService
         return $order;
     }
 
-    public function checkoutCart(){ //TODO: part of payment
-        $this->checkCartStatus();
-        $cartOrder = $this->orderService->getOrderById($_SESSION["cartId"]);
+    public function checkoutCart(){
+        //Retrieve the order that is in cart from the db.
+        $cartOrder = $this->getCart();
         $cartOrder->setIsPaid(true);
         $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
 
 
     }
 
-    public function getCartAfterLogin($customerId) { //TODO: make
-        $this->checkCartStatus();
+    public function getCartAfterLogin($customerId) {
+        $this->cartIsInitialised();
         
         $customerOrder = $this->orderService->getCartOrderForCustomer($customerId);
         
@@ -174,13 +179,13 @@ class CartService
         $_SESSION["cartId"] = $customerOrder->getOrderId();
     }
 
-    private function checkCartStatus() : void{
+    private function cartIsInitialised() : bool 
+    {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
+
         //Check if the cart is initialised.
-        if(!isset($_SESSION["cartId"])){
-            throw new CartException("Cart not initialised.");
-        };
+        return (isset($_SESSION["cartId"]));
     }
 }

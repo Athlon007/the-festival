@@ -85,13 +85,9 @@ class UserAPIController extends APIController
     private function login($data)
     {
         try {
-
-            if (!isset($data->email)) {
-                throw new MissingVariableException("Email is required", 400);
-            }
-            if (!isset($data->password)) {
-                throw new MissingVariableException("Password is required", 400);
-            }
+            if (!isset($data->email) || !isset($data->password))
+                throw new MissingVariableException("Email and password are required", 400);
+            
 
             //Fetch user (method throws error if user not found)
             $user = $this->userService->verifyUser($data);
@@ -109,7 +105,7 @@ class UserAPIController extends APIController
 
             parent::sendSuccessMessage("Login successful.");
         } catch (Exception $ex) {
-            parent::sendErrorMessage($ex->getMessage());
+            parent::sendErrorMessage($ex->getMessage(), $ex->getCode());
         }
     }
 

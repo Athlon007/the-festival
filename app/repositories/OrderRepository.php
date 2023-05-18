@@ -126,10 +126,15 @@ class OrderRepository extends Repository
         $stmt->execute();
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $order = $this->buildOrder($result);
-        $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
-
-        return $order;
+        
+        if(!$result)
+            return null;
+        else{
+            $order = $this->buildOrder($result);
+            $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
+            return $order;
+        }
+        
     }
 
     public function getOrdersToExport()

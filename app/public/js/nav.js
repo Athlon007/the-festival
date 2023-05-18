@@ -1,13 +1,13 @@
 import { isCurrentLink, getNavbarItems } from './utils.js';
 
-// Check if /js/cart.js is loaded.
-//if (typeof Cart === 'undefined') {
+//Check if /js/cart.js is loaded.
+if (typeof Cart === 'undefined') {
     //console.error('cart.js is not loaded!');
-    // load it.
-    //let script = document.createElement('script');
-    //script.src = '/js/cart.js';
-    //document.head.appendChild(script);
-//}
+    //load it.
+    let script = document.createElement('script');
+    script.src = '/js/cart.js';
+    document.head.appendChild(script);
+}
 
 // Creates a nav link for the navbar.
 function createNavLink(collapseLi, element) {

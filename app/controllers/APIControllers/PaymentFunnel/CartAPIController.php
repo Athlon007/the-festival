@@ -26,7 +26,6 @@ class CartAPIController extends APIController
                 $count = $this->cartService->getCount();
                 $response = ["count" => $count];
                 parent::sendResponse($response);
-                return;
             }
             else if($uri == "/api/cart"){
                 //api/cart GET - returns the cart order as an order object
@@ -35,7 +34,7 @@ class CartAPIController extends APIController
             }
             else
                 throw new Exception("Bad request.", 400);
-        } 
+        }
         catch (Throwable $e) {
             Logger::write($e);
             parent::sendErrorMessage($e->getMessage(), $e->getCode());
