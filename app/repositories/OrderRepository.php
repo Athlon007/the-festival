@@ -22,21 +22,20 @@ class OrderRepository extends Repository
     }
 
     public function getOrderById($orderId) : Order{
-        try{
-            $sql = "SELECT * FROM orders WHERE orderId = :orderId";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bindValue(":orderId", htmlspecialchars($orderId));
-            $stmt->execute();
+        $sql = "SELECT * FROM orders WHERE orderId = :orderId";
 
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            $order = $this->buildOrder($result);
-            $order->setOrderItems($this->getOrderItemsByOrderId($orderId));
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderId", htmlspecialchars($orderId));
+        $stmt->execute();
 
-            return $order;
-        }
-        catch(Exception $ex){
-            throw $ex;
-        }
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if(!$result)
+            throw new OrderNotFoundException();
+        $order = $this->buildOrder($result);
+        $order->setOrderItems($this->getOrderItemsByOrderId($orderId));
+
+        return $order;
     }
 
     private function getOrderItemById($orderItemId) : OrderItem{
@@ -58,76 +57,66 @@ class OrderRepository extends Repository
     }
 
     public function getAllOrders($limit = null, $offset = null, $isPaid = null){
-        try{
-            $sql = "SELECT * FROM orders";
-            
-            if($isPaid != null){
-                $sql .= " WHERE isPaid = :isPaid";
-            }
-            if($limit != null){
-                $sql .= " LIMIT :limit";
-            }
-            if($offset != null){
-                $sql .= " OFFSET :offset";
-            }
-
-            $stmt = $this->connection->prepare($sql);
-
-            if($isPaid != null){
-                $stmt->bindValue(":isPaid", htmlspecialchars($isPaid));
-            }
-            if($limit != null){
-                $stmt->bindValue(":limit", htmlspecialchars($limit), PDO::PARAM_INT);
-            }
-            if($offset != null){
-                $stmt->bindValue(":offset", htmlspecialchars($offset), PDO::PARAM_INT);
-            }
-            $stmt->execute();
-
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $orders = array();
-
-            foreach($result as $row){
-                $order = $this->buildOrder($row);
-                $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
-                array_push($orders, $order);
-            }
-
-            return $orders;
+        $sql = "SELECT * FROM orders";
+        
+        if($isPaid != null){
+            $sql .= " WHERE isPaid = :isPaid";
         }
-        catch(Exception $ex){
-            throw $ex;
-        }   
+        if($limit != null){
+            $sql .= " LIMIT :limit";
+        }
+        if($offset != null){
+            $sql .= " OFFSET :offset";
+        }
+
+        $stmt = $this->connection->prepare($sql);
+
+        if($isPaid != null){
+            $stmt->bindValue(":isPaid", htmlspecialchars($isPaid));
+        }
+        if($limit != null){
+            $stmt->bindValue(":limit", htmlspecialchars($limit), PDO::PARAM_INT);
+        }
+        if($offset != null){
+            $stmt->bindValue(":offset", htmlspecialchars($offset), PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $orders = array();
+
+        foreach($result as $row){
+            $order = $this->buildOrder($row);
+            $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
+            array_push($orders, $order);
+        }
+
+        return $orders;
     }
 
     public function getOrderItemsByOrderId($orderId) : array{
-        try{
-            $sql = "select o.orderItemId, tl.ticketLinkId, e.name as eventName, tt.ticketTypeName as ticketName, e.startTime, tt.ticketTypePrice as fullTicketPrice, f.VAT, o.quantity 
-                    from orderitems o
-                    join ticketlinks tl on tl.ticketLinkId = o.ticketLinkId 
-                    join tickettypes tt on tt.ticketTypeId = tl.ticketTypeId
-                    join events e on e.eventId = tl.eventId
-                    join festivaleventtypes f on f.eventTypeId = e.festivalEventType
-                    where o.orderId = :orderId";
+        $sql = "select o.orderItemId, tl.ticketLinkId, e.name as eventName, tt.ticketTypeName as ticketName, e.startTime, tt.ticketTypePrice as fullTicketPrice, f.VAT, o.quantity 
+                from orderitems o
+                join ticketlinks tl on tl.ticketLinkId = o.ticketLinkId 
+                join tickettypes tt on tt.ticketTypeId = tl.ticketTypeId
+                join events e on e.eventId = tl.eventId
+                join festivaleventtypes f on f.eventTypeId = e.festivalEventType
+                where o.orderId = :orderId";
 
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bindValue(":orderId", htmlspecialchars($orderId));
-            $stmt->execute();
-            
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            //Build order item array
-            $orderItems = array();
-            foreach ($result as $row) {
-                $orderItem = $this->buildOrderItem($row);
-                array_push($orderItems, $orderItem);
-            }
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderId", htmlspecialchars($orderId));
+        $stmt->execute();
+        
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        //Build order item array
+        $orderItems = array();
+        foreach ($result as $row) {
+            $orderItem = $this->buildOrderItem($row);
+            array_push($orderItems, $orderItem);
+        }
 
-            return $orderItems;
-        }
-        catch(Exception $ex){
-            throw new Exception("Error while getting order items: " . $ex->getMessage());
-        }
+        return $orderItems;
     }
 
     public function getCartOrderForCustomer(int $customerId) : ?Order{
@@ -135,6 +124,17 @@ class OrderRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":customerId", htmlspecialchars($customerId));
         $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if(!$result)
+            return null;
+        else{
+            $order = $this->buildOrder($result);
+            $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
+            return $order;
+        }
+        
     }
 
     public function getOrdersToExport()
@@ -191,11 +191,6 @@ class OrderRepository extends Repository
 
         return $order;
     }
-
-    public function update($orderId, $order)
-    {
-
-    }
     
     public function getOrderHistory($customerId): array
     {
@@ -219,10 +214,11 @@ class OrderRepository extends Repository
         return $orders;
     }
 
-    public function updateOrder($orderId, $order) : Order{
+    public function updateOrder($orderId, $order) : Order
+    {
         $sql = "UPDATE orders SET orderDate = :orderDate, customerId = :customerId, isPaid = :isPaid WHERE orderId = :orderId";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDate()));
+        $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDateAsString()));
         $stmt->bindValue(":customerId", htmlspecialchars($order->getCustomer()->getCustomerId()));
         $stmt->bindValue(":isPaid", htmlspecialchars($order->getIsPaid()));
         $stmt->bindValue(":orderId", htmlspecialchars($orderId));
@@ -231,12 +227,13 @@ class OrderRepository extends Repository
         return $this->getOrderById($orderId);
     }
 
-    public function updateOrderItem($orderItemId, $orderItem) : OrderItem{
-        $sql = "UPDATE orderitems SET ticketLinkId = :ticketLinkId, orderId = :orderId, quantity = :quantity WHERE orderItemId = :orderItemId";
+    public function updateOrderItem($orderItemId, $orderItem) : OrderItem
+    {
+        $sql = "UPDATE orderitems SET ticketLinkId = :ticketLinkId, quantity = :quantity WHERE orderItemId = :orderItemId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":ticketLinkId", htmlspecialchars($orderItem->getTicketLinkId()));
-        $stmt->bindValue(":orderId", htmlspecialchars($orderItemId));
         $stmt->bindValue(":quantity", htmlspecialchars($orderItem->getQuantity()));
+        $stmt->bindValue(":orderItemId", htmlspecialchars($orderItemId));
 
         $stmt->execute();
         return $this->getOrderItemById($orderItemId);
@@ -244,22 +241,19 @@ class OrderRepository extends Repository
     }
 
     //Insert a new order into the database
-    public function insertOrder($order) : Order{
-        try{
-            $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDate()));
-            $stmt->bindValue(":customerId", htmlspecialchars($order->getCustomer()->getCustomerId()));
-            $stmt->execute();
+    public function insertOrder($order) : Order
+    {
+        $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDateAsString()));
+        $stmt->bindValue(":customerId", htmlspecialchars($order->getCustomer()->getCustomerId()));
+        $stmt->execute();
 
-            return $this->getOrderById($this->connection->lastInsertId());
-        }
-        catch(Exception $ex){
-
-        }
+        return $this->getOrderById($this->connection->lastInsertId());
     }
 
-    public function insertOrderItem($orderItem, $orderId) : OrderItem{
+    public function insertOrderItem($orderItem, $orderId) : OrderItem
+    {
         $sql = "INSERT INTO orderitems (ticketLinkId, orderId, quantity) VALUES (:ticketLinkId, :orderId, :quantity)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":ticketLinkId", htmlspecialchars($orderItem->getTicketLinkId()));
@@ -270,10 +264,28 @@ class OrderRepository extends Repository
         return $this->getOrderItemById($this->connection->lastInsertId());
     }
 
+    public function deleteOrder(int $orderId)
+    {
+        //Deletes one order. BEWARE: CASCADES, so it deletes ALL LINKED ORDERITEMS as well.
+        $sql = "DELETE FROM orders WHERE orderId = :orderId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderId", $orderId);
+
+    }
+
+    public function deleteOrderItem(int $orderItemId)
+    {
+        //Deletes one order item.
+        $sql = "DELETE FROM orderitems WHERE orderItemId = :orderItemId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderItemId", $orderItemId);
+        $stmt->execute();
+    }
     
 
     //This method is used to remove orders that were never linked to an account and that are 7 days old.
-    private function cleanseOldOrders(){
+    private function removeOldOrders()
+    {
         try{
             $sql = "DELETE FROM orders WHERE customerId IS NULL AND orderDate < DATE_SUB(NOW(), INTERVAL 7 DAYS)";
             $stmt = $this->connection->prepare($sql);

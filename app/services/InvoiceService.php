@@ -6,7 +6,6 @@ require_once(__DIR__ . '/../models/TicketLink.php');
 require_once(__DIR__ . '/../models/Exceptions/TicketNotFoundException.php');
 require_once(__DIR__ . '/../services/PDFService.php');
 require_once(__DIR__ . '/../repositories/OrderRepository.php');
-
 require_once(__DIR__ . '../../vendor/autoload.php');
 
 use Dompdf\Dompdf;
@@ -22,15 +21,16 @@ use PHPMailer\PHPMailer\Exception;
 
 class InvoiceService
 {
-    private OrderRepository $orderRepository;
+    private OrderService $orderService;
 
     private PDFService $pdfService;
 
     public function __construct()
     {
-        $this->orderRepository = new OrderRepository();
+        $this->orderService = new OrderService();
         $this->pdfService = new PDFService();
     }
+
 
     public function sendInvoiceEmail(Order $order){
         // $orderID = $order->getId();
@@ -79,8 +79,9 @@ class InvoiceService
         require_once(__DIR__ . '/../emails/invoice-email.php');
         $mail->Body = ob_get_clean();
   
-        // $mail->addAddress($order->getCustomer()->getEmail(), $name);
-        $mail->addAddress("turkvedat0911@gmail.com", $name);
+        $mail->addAddress($order->getCustomer()->getEmail(), $name);
+        //Debugging
+        //$mail->addAddress("turkvedat0911@gmail.com", $name);
         $mail->addStringAttachment($pdfContents, 'invoice.pdf', 'base64', 'application/pdf');
   
         if ($mail->send()) {

@@ -112,9 +112,9 @@ class OrderService
             $str = '"' . str_replace('"', '""', $str) . '"';
     }
 
-    public function getUnpaidOrder($customerId)
+    public function getCartOrderForCustomer($customerId)
     {
-        return $this->orderRepository->getUnpaidOrderForCustomer($customerId);
+        return $this->orderRepository->getCartOrderForCustomer($customerId);
     }
     
     public function createOrder(int $ticketLinkId, int $customerId = NULL) : Order
@@ -122,8 +122,13 @@ class OrderService
         $order = new Order();
         $order->setOrderDate(new DateTime());
         $order->setIsPaid(false);
+        
+        if(isset($customerId))
+        $order->setCustomer($this->customerRepository->getById($customerId));
+        
         $order = $this->orderRepository->insertOrder($order);
-        //Create and insert the first order item that will be linked to the new order.
+
+        //After we created the order, we can create the first orderItem that will be linked to the new order.
         $this->createOrderItem($ticketLinkId, $order->getOrderId());
         return $order;
     }
@@ -139,12 +144,12 @@ class OrderService
 
     public function updateOrder($orderId, $order) : Order
     {
-        $this->orderRepository->updateOrder($orderId, $order);
+        return $this->orderRepository->updateOrder($orderId, $order);
     }
 
     public function updateOrderItem($orderItemId, $orderItem) : OrderItem
     {
-        $this->orderRepository->updateOrderItem($orderItemId, $orderItem);
+        return $this->orderRepository->updateOrderItem($orderItemId, $orderItem);
     }
 
     public function deleteOrder($orderId) : void
@@ -158,7 +163,27 @@ class OrderService
     }
 
     //If the customer has an unpaid order and logs in while having created another order as a visitor, merge the two orders.
-    public function mergeOrders($order1, $order2){
+    public function mergeOrders($customerOrder, $sessionOrder) : Order{
+        
+        //Nested loop that checks if there are orderitems that represent the same ticket
+        foreach($customerOrder->getOrderItems() as $customerOrderItem){
+            foreach($sessionOrder->getOrderItems() as $sessionOrderItem){
+                //If there is a match in ticketlink then add the quantity of the sessionOrderItem to the customerOrderItem and update
+                if($sessionOrderItem->getTicketLinkId() == $customerOrderItem->getTicketLinkId()){
+                    $customerOrderItem->setQuantity($customerOrderItem->getQuantity() + $sessionOrderItem->getQuantity());
+                    $this->updateOrderItem($customerOrderItem->getOrderItemId(), $customerOrderItem);
+                }
+                //If the orderItem is unique then we add it to the customerOrder and update it
+                else{
+                    $sessionOrderItem->setOrderId($customerOrder->getOrderId());
+                    $customerOrder->addOrderItem($this->updateOrderItem($customerOrderItem->getOrderItemId(), $customerOrderItem));
+                }
+            }
+        }
 
+        //Delete the sessionOrder from db
+        $this->deleteOrder($sessionOrder->getOrderId());
+
+        return $customerOrder;
     }
 }

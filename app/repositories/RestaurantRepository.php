@@ -38,7 +38,30 @@ class RestaurantRepository extends Repository
         }
     }
 
+    public function insertRestaurant(Restaurant $restaurant): void
+    {
+        try {
+            $query = "INSERT INTO development.restaurants
+            (restaurantName, addressId, numOfSessions, durationOfSessions, description, price, AvailableSeats, typeId, rating)
+             VALUES (:name, :addressId, :numOfSessions, :durationOfSessions, :description, :availableSeats, :typeId, :rating)";
+            $stmt = $this->connection->prepare($query);
 
+            $stmt->bindValue(":name", $restaurant->getRestaurantName());
+            $stmt->bindValue(":addressId", $restaurant->getAddressId());
+            $stmt->bindValue(":numOfSessions", $restaurant->getNumOfSessions());
+            $stmt->bindValue(":durationOfSessions", $restaurant->getDurationOfSessions());
+            $stmt->bindValue(":description", $restaurant->getDescription());
+            $stmt->bindValue(":price", $restaurant->getPrice());
+            $stmt->bindValue(":availableSeats", $restaurant->getAvailableSeats());
+            $stmt->bindValue(":typeId", $restaurant->getTypeId());
+            $stmt->bindValue(":rating", $restaurant->getRating());
+            
+            $stmt->execute();
+        }  
+        catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
 
 
 }

@@ -27,35 +27,33 @@ class UserService
 
     public function verifyUser($data): ?User
     {
-        try {
-            //Sanitise data
-            $data->email = htmlspecialchars($data->email);
-            $data->password = htmlspecialchars($data->password);
+        //Sanitise data
+        $data->email = htmlspecialchars($data->email);
+        $data->password = htmlspecialchars($data->password);
 
-            $user = $this->userRepository->getByEmail($data->email);
+        $user = $this->userRepository->getByEmail($data->email);
 
-            if (!password_verify(htmlspecialchars($data->password), $user->getHashPassword())) {
-                throw new IncorrectPasswordException();
-            }
-
-            //Nullify password, don't send that back to client.
-            $user->setHashPassword(null);
-
-            //If the user is a customer, return a customer object instead of a user object.
-            if ($user->getUserType() == 3) {
-                $customer = $this->customerService->getCustomerById($user->getUserId());
-                return $customer;
-            }
-
-            return $user;
-        } 
-        catch (Exception $ex) {
-            throw ($ex);
+        if (!password_verify(htmlspecialchars($data->password), $user->getHashPassword())) {
+            throw new IncorrectPasswordException();
         }
+
+        //Nullify password, don't send that back to client.
+        //$user->setHashPassword(null);
+
+        //If the user is a customer, return a customer object instead of a user object.
+        if ($user->getUserType() == 3) {
+            $customer = $this->customerService->getCustomerById($user->getUserId());
+            return $customer;
+        }
+
+        return $user;
     }
 
     public function createNewUser(string $email, string $firstName, string $lastName, string $password, $usertype, DateTime $registrationDate): void
     {
+        if($this->emailAlreadyExists($email))
+            throw new Exception("Email already exists.", 409);
+        
         //Create user object
         $user = new User();
         $user->setEmail($email);

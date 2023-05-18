@@ -101,6 +101,16 @@ class Order implements JsonSerializable
         return $this->orderDate;
     }
 
+    public function getOrderDateAsString() : string
+    {
+        return $this->orderDate->format('Y-m-d');
+    }
+
+    public function getOrderDateAsDMY() : string
+    {
+        return $this->orderDate->format('d-m-Y');
+    }
+
     public function setOrderDate(DateTime $orderDate): void
     {
         $this->orderDate = $orderDate;

@@ -22,45 +22,45 @@
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
-                    <h2 class="m-5">Shopping Cart</h2>
-                    <button class="btn btn-secondary float-end">Order History</button>
+                    <h2 class="mb-5 mt-5">Shopping Cart</h2>
+                    <button class="btn btn-secondary float-end">My Order History</button>
                     <!--Pop-up message-->
                     <div id="popup">
                     </div>
 
                     <!-- Cart -->
-
                     <?php
-                    if (!$ticketLinks) {
-                        echo "Your cart is empty. Go back and buy some stuff!";
+                    if (!$cartOrder) {
+                        echo "<h4>Your cart is empty. Go buy some stuff!</h4>";
                     } else {
-                        foreach ($ticketLinks as $ticketLink) {
-                            $id = $ticketLink["ticketLink"]->getId(); ?>
+                        foreach ($cartOrder->getOrderItems as $orderItem) {
+                            $id = $orderItem->getOrderItemId(); ?>
                             <div id="cart-item-<?= $id ?>" class="card p-3 m-3" style="width: 60%">
                                 <div class="card-header" style="width: 100%">
-                                    <?= $ticketLink['ticketLink']->getEvent()->getName() ?>
-                                    <?= $ticketLink['ticketLink']->getTicketType()->getName() ?> - &euro; <?= $ticketLink['ticketLink']->getTicketType()->getPrice() ?>
+                                    <?= $orderItem->getEventName() ?>
+                                    <?= $orderItem->getTicketName() ?> - &euro; <?= $orderItem->getBasePrice() ?>
                                 </div>
                                 <br>
                                 <div style="width: 100%">
                                     <button id="cart-item-remove-<?= $id ?>" class="btn btn-light" style="width: 20%">-</button>
                                     <span id="cart-item-counter-<?= $id ?>"><?= $ticketLink['amount'] ?></span>
                                     <button id="cart-item-add-<?= $id ?>" class=" btn btn-light" style="width: 20%">+</button>
-                                    <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end"><?= $ticketLink['ticketLink']->getTicketType()->getPrice() ?></span>
-                                    <span id="cart-item-total-price-<?= $id ?>" class="price float-end">&euro; <?= $ticketLink['price'] ?></span>
+                                    <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end"><?= $orderItem->getBasePrice() ?></span>
+                                    <span id="cart-item-total-price-<?= $id ?>" class="price float-end">&euro; <?= $orderItem->getTotalBasePrice() ?></span>
                                 </div>
                                 <br>
                                 <div style="width: 100%">
-                                    <button id="cart-item-delete-<?= $ticketLink["ticketLink"]->getId() ?>" class="btn btn-danger float-end">Delete</button>
+                                    <button id="cart-item-delete-<?= $orderItem->getOrderItemId() ?>" class="btn btn-danger float-end">Delete</button>
                                 </div>
                             </div>
-
-
-                    <?php }
+                        <?php }
                     }   ?>
                     <br>
                     <br>
-                    <h4 id="total">Total price: &euro; <?= $cart['totalPrice'] ?></h4>
+                    <?php if(isset($cartOrder)) 
+                        echo "<h4 id='total'>Total price: &euro; <?= $cartOrder->getTotalFullPrice() ?></h4>"
+                    ?>
+                    
                     <button class="btn btn-primary">Check out</button>
 
 

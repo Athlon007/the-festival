@@ -19,11 +19,13 @@ class OrderController
 
     public function showShoppingCart()
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
+        try{
+            $cartOrder = $this->cartService->getCart();
         }
-        $cart = $this->cartService->cart();
-        $ticketLinks = $cart['ticketLinks'];
+        catch(Throwable $e){
+            Logger::write($e);
+            $cartOrder = null;
+        }
 
         require('../views/payment-funnel/cart.php');
     }
@@ -33,15 +35,18 @@ class OrderController
      */
     public function showOrderHistory()
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
+        try{
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+            $customer = unserialize($_SESSION['user']);
+            $orders = $this->orderService->getOrderHistory($customer->getUserId());
+            //$orders = $this->orderService->getOrderHistory(33);
+            require_once('../views/orderHistory.php');
         }
-        $customer = unserialize($_SESSION['user']);
-        // $orders = $this->orderService->getOrderHistory($customer->getUserId());
-        $orders = $this->orderService->getOrderHistory(33);
-        require_once('../views/orderHistory.php');
-
-        return $orders;
+        catch(Throwable $e){
+            Logger::write($e);
+        }
     }
 
     /**

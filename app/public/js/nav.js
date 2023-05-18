@@ -1,9 +1,9 @@
 import { isCurrentLink, getNavbarItems } from './utils.js';
 
-// Check if /js/cart.js is loaded.
+//Check if /js/cart.js is loaded.
 if (typeof Cart === 'undefined') {
-    console.error('cart.js is not loaded!');
-    // load it.
+    //console.error('cart.js is not loaded!');
+    //load it.
     let script = document.createElement('script');
     script.src = '/js/cart.js';
     document.head.appendChild(script);
