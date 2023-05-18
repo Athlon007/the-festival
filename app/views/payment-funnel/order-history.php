@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#fffbfa">
     <meta name="robots" content="noindex, nofollow">
-    <title>Order History</title>
+    <title>Visit Haarlem Cart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/icons.css">
@@ -18,22 +18,11 @@
     <script type="module" src="/js/nav.js"></script>
 
     <!-- Container -->
-    <section class="h-100 h-custom">
-        <div class="container py-5 h-100">   
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-10">
-                    <h2 class="m-5">Order History</h2>
-
-                    <!--Pop-up message-->
-                    <div id="popup">
-                    </div>
-                    
-                    <!-- Order List -->
-
-                </div>
-            </div>
-        </div>
-    </section>
+    <?php 
+    foreach ($orders as $order){
+        
+    }
+    ?>
     
     <script src="/js/accountmanager.js"></script>
     <footer class="foot row bottom"></footer>

@@ -43,13 +43,8 @@ class OrderService
         return $order;
     }
 
-    public function getOrderHistory(int $customerId) : array
-    {
-        $orders = $this->orderRepository->getOrderHistory($customerId);
-        foreach ($orders as $order) {
-            $order->setCustomer($this->customerRepository->getById($order->getCustomer()->getUserId()));
-        }
-        return $orders;
+    public function getOrderHistory(int $customerId){
+        return $this->orderRepository->getOrderHistory($customerId);
     }
 
     public function getOrdersToExport()

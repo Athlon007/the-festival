@@ -23,7 +23,7 @@
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
                     <h2 class="mb-5 mt-5">Shopping Cart</h2>
-                    <button class="btn btn-secondary float-end">My Order History</button>
+                    <a href="/order-history" class="btn btn-success btn-lg float-end">My Order History</a>
                     <!--Pop-up message-->
                     <div id="popup">
                     </div>

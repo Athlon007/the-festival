@@ -19,10 +19,9 @@ class OrderController
 
     public function showShoppingCart()
     {
-        try{
+        try {
             $cartOrder = $this->cartService->getCart();
-        }
-        catch(Throwable $e){
+        } catch (Throwable $e) {
             Logger::write($e);
             $cartOrder = null;
         }
@@ -35,16 +34,17 @@ class OrderController
      */
     public function showOrderHistory()
     {
-        try{
+        try {
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
             $customer = unserialize($_SESSION['user']);
+
             $orders = $this->orderService->getOrderHistory($customer->getUserId());
-            //$orders = $this->orderService->getOrderHistory(33);
-            require_once('../views/orderHistory.php');
-        }
-        catch(Throwable $e){
+            require_once('../views/payment-funnel/order-history.php');
+
+            return $orders;
+        } catch (Throwable $e) {
             Logger::write($e);
         }
     }
