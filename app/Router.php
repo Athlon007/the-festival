@@ -349,6 +349,9 @@ class Router
             case "/manageTicketTypes":
                 require("views/admin/manageTicketTypes.php");
                 return;
+            case "/manageLocations":
+                require("views/admin/manageLocations.php");
+                return;
             case "/managePasses":
                 require("views/admin/managePasses.php");
                 return;
