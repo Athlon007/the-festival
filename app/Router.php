@@ -165,21 +165,16 @@ class Router
                 $festivalHistoryController = new FestivalHistoryController();
                 $festivalHistoryController->loadHistoryStrollPage();
                 break;
-            case "/addLocation":
-                require_once("controllers/HistoryController.php");
-                $historyController = new HistoryController();
-                $historyController->addLocation();
-                break;
-            case "/addTour":
-                require_once("controllers/HistoryController.php");
-                $historyController = new HistoryController();
-                $historyController->addTour();
-                break;
             case "/festival/yummy":
             case "/foodfestival":
                 require_once("controllers/FestivalFoodController.php");
                 $festivalFoodController = new FestivalFoodController();
                 $festivalFoodController->loadFoodFestivalPage();
+                break;
+            case "/addTour":
+                require_once("controllers/FestivalHistoryController.php");
+                $historyController = new FestivalHistoryController();
+                $historyController->addTour();
                 break;
             case "/viewOrders":
                 require_once("controllers/OrderController.php");
@@ -318,6 +313,9 @@ class Router
 
     private function routeAdminManage($request)
     {
+        require_once("controllers/FestivalHistoryController.php");
+        $historyController = new FestivalHistoryController();
+
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
@@ -378,9 +376,7 @@ class Router
                 require('views/admin/Jazz management/manageJazz.php');
                 break;
             case "/manageHistory":
-                require_once("controllers/HistoryController.php");
-                $historyController = new HistoryController();
-                $historyController->manageHistory();
+                $historyController->getAllHistoryEvents();
                 break;
         }
     }
