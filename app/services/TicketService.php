@@ -145,6 +145,7 @@ class TicketService
       $mail->Body = ob_get_clean();
 
       // $mail->addAddress($order->getCustomer()->getEmail(), $name);
+      //Debugging
       $mail->addAddress("turkvedat0911@gmail.com", $name);
       foreach ($order->getTickets() as $ticket) {
         $pdfContents = $dompdf->output();

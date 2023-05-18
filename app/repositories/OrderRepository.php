@@ -175,8 +175,8 @@ class OrderRepository extends Repository
         // TODO: Communicate with order service from the invoice service and use getOrderById method. so you can get the order items, and customer as well.
         $sql = "select o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId from orders o
         join users u on u.userId = o.customerId
-        join tickets t on t.orderId = t.ticketId 
-        join events e on t.eventId = e.eventId
+        join tickets t on o.orderId  = t.orderId
+        join events e on t.eventId = e.eventId 
         where o.orderId = :orderId ";
 
         $stmt = $this->connection->prepare($sql);
