@@ -104,20 +104,24 @@ class OrderController
 
     public function downloadOrders()
     {
-        // if (session_status() == PHP_SESSION_NONE) {
-        //     session_start();
-        // }
+        try {
+            // if (session_status() == PHP_SESSION_NONE) {
+            //     session_start();
+            // }
 
-        // if (!isset($_SESSION['user'])) {
-        //     header("Location: /");
-        // }
+            // if (!isset($_SESSION['user'])) {
+            //     header("Location: /");
+            // }
 
-        // $user = unserialize($_SESSION['user']);
-        // if ($user->getUserTypeAsString() != "Admin") {
-        //     header("Location: /");
-        // }
+            // $user = unserialize($_SESSION['user']);
+            // if ($user->getUserTypeAsString() != "Admin") {
+            //     header("Location: /");
+            // }
 
-        return $this->orderService->downloadOrders();
+            return $this->orderService->downloadOrders();
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
     }
 
     public function sendInvoiceEmail()
@@ -134,7 +138,7 @@ class OrderController
         // if ($user->getUserTypeAsString() != "Admin") {
         //     header("Location: /");
         // }
-
-        return $this->invoiceService->sendInvoiceEmail();
-    }   
+        $order = new Order();
+        return $this->invoiceService->sendInvoiceEmail($order);
+    }
 }

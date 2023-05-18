@@ -18,7 +18,7 @@ class PDFService{
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
         $dompdf->addInfo('Title', $title);
-        $dompdf->stream($filename, array("Attachment" => false));
+        //$dompdf->stream($filename, array("Attachment" => false));
 
         return $dompdf;
     }

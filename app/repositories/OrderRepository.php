@@ -156,10 +156,8 @@ class OrderRepository extends Repository
             $orderItems = $this->getOrderItemsByOrderId($row['orderId']);
             $order->setOrderItems($orderItems);
 
-            $userRep = new UserRepository();
             $customerRep = new CustomerRepository();
-            $user = $userRep->getById($row['customerId']);
-            $customer = $customerRep->getByUser($user);
+            $customer = $customerRep->getById($row['customerId']);
             $order->setCustomer($customer);
 
             array_push($orders, $order);

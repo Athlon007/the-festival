@@ -32,64 +32,60 @@
         </select>
     </div>
 
-    <?php
-    var_dump($historyEvents)
-    ?>
-
-
     <div class="content">
         <div id="Tour" class="data">
             <table class="table">
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Price</th>
-                    <th>Language</th>
-                    <th>Time</th>
-                </tr>
                 <tbody>
-                    <?php foreach ($historyEvents as $event): ?>
+                    <tr>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Language</th>
+                        <th>Guide</th>
+                        <th>Available Tickets</th>
+                    </tr>
+                    <?php foreach ($historyEvents as $historyEvent) { ?>
                         <tr>
                             <td>
-                                <?= $event['eventName'] ?>
+                                <?php echo $historyEvent->getName(); ?>
                             </td>
                             <td>
-                                <?= $event['locationName'] ?>
+                                <?php echo $historyEvent->getLocation()->getName(); ?>
                             </td>
                             <td>
-                                <?= $event['price'] ?>
+                                <?php echo $historyEvent->getStartTime()->format('Y-m-d H:i:s'); ?>
                             </td>
                             <td>
-                                <?= $event['language'] ?>
+                                <?php echo $historyEvent->getEndTime()->format('Y-m-d H:i:s'); ?>
                             </td>
                             <td>
-                                <?= $event['startTime']->format('Y-m-d H:i:s') ?>
+                                <?php echo $historyEvent->getGuide()->getLanguage(); ?>
+                            </td>
+                            <td>
+                                <?php echo $historyEvent->getGuide()->getFirstName() . " " . $historyEvent->getGuide()->getLastName(); ?>
+                            </td>
+                            <td>
+                                <?php echo $historyEvent->getAvailableTickets(); ?>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </tbody>
             </table>
-            <!-- Add button -->
-            <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
-                <div class="col-12 text-right">
-                    <a href="/addTour" class="btn btn-success btn-lg">Add Tours</a>
-                </div>
-            </div>
         </div>
-        <div id="Location" class="data">
-            <table class="table">
-                <tr>
-                    <th>Locations</th>
+    </div>
 
-                </tr>
-            </table>
-            <!-- Add button -->
-            <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
-                <div class="col-12 text-right">
-                    <a href="/addLocation" class="btn btn-success btn-lg">Add Location</a>
-                </div>
-            </div>
+    <!-- Add button -->
+    <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
+        <div class="col-12 text-right">
+            <a href="/addHistoryTour" class="btn btn-success btn-lg">Add Tours</a>
         </div>
+    </div>
+    </div>
+    <div id="Location" class="data">
+        <iframe id="iframe" src="/admin/locations" data-locations="2"
+            style="width: 100%; height: 900px; border: none; margin-left:1em; margin-right:1em;"></iframe>
+    </div>
 
     </div>
     <br>

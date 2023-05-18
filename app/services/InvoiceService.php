@@ -5,8 +5,7 @@ require_once __DIR__ . '/../models/Ticket/Ticket.php';
 require_once(__DIR__ . '/../models/TicketLink.php');
 require_once(__DIR__ . '/../models/Exceptions/TicketNotFoundException.php');
 require_once(__DIR__ . '/../services/PDFService.php');
-require_once(__DIR__ . '/../services/OrderService.php');
-
+require_once(__DIR__ . '/../repositories/OrderRepository.php');
 require_once(__DIR__ . '../../vendor/autoload.php');
 
 use Dompdf\Dompdf;
@@ -32,9 +31,11 @@ class InvoiceService
         $this->pdfService = new PDFService();
     }
 
-    public function sendInvoiceEmail(){
-        $orderID = 1;
-        $order = $this->orderService->getOrderById($orderID);
+
+    public function sendInvoiceEmail(Order $order){
+        // $orderID = $order->getId();
+        $order->setOrderId(1);   
+        $order = $this->orderRepository->getOrderForInvoice($order->getOrderId());
 
         if ($order == null) {
             echo "No orders found";

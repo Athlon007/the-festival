@@ -165,26 +165,16 @@ class Router
                 $festivalHistoryController = new FestivalHistoryController();
                 $festivalHistoryController->loadHistoryStrollPage();
                 break;
-            case "/addLocation":
-                require_once("controllers/HistoryController.php");
-                $historyController = new HistoryController();
-                $historyController->addLocation();
-                break;
-            case "/addTour":
-                require_once("controllers/HistoryController.php");
-                $historyController = new HistoryController();
-                $historyController->addTour();
-                break;
             case "/festival/yummy":
             case "/foodfestival":
                 require_once("controllers/FestivalFoodController.php");
                 $festivalFoodController = new FestivalFoodController();
                 $festivalFoodController->loadFoodFestivalPage();
                 break;
-            case "/buyTicket":
-                require_once("controllers/TicketController.php");
-                $ticketController = new TicketController();
-                $ticketController->getAllTickets();
+            case "/addTour":
+                require_once("controllers/FestivalHistoryController.php");
+                $historyController = new FestivalHistoryController();
+                $historyController->addTour();
                 break;
             case "/viewOrders":
                 require_once("controllers/OrderController.php");
@@ -196,10 +186,10 @@ class Router
                 $ticketController = new OrderController();
                 $ticketController->downloadOrders();
                 break;
-            case "/invoicepdf":
-                require_once("controllers/OrderController.php");
-                $ticketController = new OrderController();
-                $ticketController->sendInvoiceEmail();
+            case "/paymentSuccess":
+                require_once("controllers/PaymentController.php");
+                $ticketController = new PaymentController();
+                $ticketController->sendTicketsAndInvoice();
                 break;
             default:
                 $this->route404($message);
@@ -323,6 +313,9 @@ class Router
 
     private function routeAdminManage($request)
     {
+        require_once("controllers/FestivalHistoryController.php");
+        $historyController = new FestivalHistoryController();
+
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
@@ -361,6 +354,9 @@ class Router
             case "/manageTicketTypes":
                 require("views/admin/manageTicketTypes.php");
                 return;
+            case "/manageLocations":
+                require("views/admin/manageLocations.php");
+                return;
             case "/managePasses":
                 require("views/admin/managePasses.php");
                 return;
@@ -380,9 +376,7 @@ class Router
                 require('views/admin/Jazz management/manageJazz.php');
                 break;
             case "/manageHistory":
-                require_once("controllers/HistoryController.php");
-                $historyController = new HistoryController();
-                $historyController->manageHistory();
+                $historyController->getAllHistoryEvents();
                 break;
         }
     }
