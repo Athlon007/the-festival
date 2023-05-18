@@ -22,8 +22,8 @@
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
-                    <h2 class="m-5">Shopping Cart</h2>
-                    <button class="btn btn-secondary float-end">Order History</button>
+                    <h2 class="mb-5 mt-5">Shopping Cart</h2>
+                    <button class="btn btn-secondary float-end">My Order History</button>
                     <!--Pop-up message-->
                     <div id="popup">
                     </div>
@@ -57,7 +57,10 @@
                     }   ?>
                     <br>
                     <br>
-                    <h4 id="total">Total price: &euro; <?= $cartOrder->getTotalFullPrice() ?></h4>
+                    <?php if(isset($cartOrder)) 
+                        echo "<h4 id='total'>Total price: &euro; <?= $cartOrder->getTotalFullPrice() ?></h4>"
+                    ?>
+                    
                     <button class="btn btn-primary">Check out</button>
 
 

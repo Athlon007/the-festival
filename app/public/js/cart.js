@@ -8,7 +8,7 @@
         document.getElementById('shopping-circle').classList.remove('d-none');
         document.getElementById('shopping-circle-text').innerHTML = this.count;
 
-        const url = apiUrl + '/' + itemID;
+        const url = apiUrl + '/add/' + itemID;
         return new Promise((resolve, reject) => {
             fetch(url, {
                 method: 'POST',
@@ -57,10 +57,10 @@
         }
         document.getElementById('shopping-circle-text').innerHTML = this.count;
 
-        const url = apiUrl + '/' + itemID;
+        const url = apiUrl + '/remove/' + itemID;
         return new Promise((resolve, reject) => {
             fetch(url, {
-                method: 'DELETE',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 }
