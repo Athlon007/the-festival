@@ -1,11 +1,11 @@
 (function () {
     var Cart = {};
     //Adds one item to the cart order
-    Cart.Add = function (itemID) {
+    Cart.Add = function (ticketLinkId) {
         document.getElementById('shopping-circle').classList.remove('d-none');
         document.getElementById('shopping-circle-text').innerHTML = this.count;
 
-        const url = "/api/cart/add/" + itemID;
+        const url = "/api/cart/add/" + ticketLinkId;
         return new Promise((resolve, reject) => {
             fetch(url, {
                 method: 'POST',
@@ -25,9 +25,9 @@
         });
     };
     //Removes one item from the cart order
-    Cart.Remove = function (itemID) {
+    Cart.Remove = function (ticketLinkId) {
 
-        const url = apiUrl + '/remove/' + itemID;
+        const url = "/api/cart/add/" + ticketLinkId;
         return new Promise((resolve, reject) => {
             fetch(url, {
                 method: 'POST',

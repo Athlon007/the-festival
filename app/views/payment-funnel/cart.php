@@ -34,23 +34,24 @@
                         echo "<h4>Your cart is empty. Go buy some stuff!</h4>";
                     } else {
                         foreach ($cartOrder->getOrderItems as $orderItem) {
-                            $id = $orderItem->getOrderItemId(); ?>
-                            <div id="cart-item-<?= $id ?>" class="card p-3 m-3" style="width: 60%">
+                            $orderItemId = $orderItem->getOrderItemId();
+                            $ticketLinkId = $orderItem->getTicketLinkId(); ?>
+                            <div id="order-item-<?= $orderItemId ?>" class="card p-3 m-3" style="width: 60%">
                                 <div class="card-header" style="width: 100%">
                                     <?= $orderItem->getEventName() ?>
                                     <?= $orderItem->getTicketName() ?> - &euro; <?= $orderItem->getBasePrice() ?>
                                 </div>
                                 <br>
                                 <div style="width: 100%">
-                                    <button id="cart-item-remove-<?= $id ?>" class="btn btn-light" style="width: 20%">-</button>
-                                    <span id="cart-item-counter-<?= $id ?>"><?= $ticketLink['amount'] ?></span>
-                                    <button id="cart-item-add-<?= $id ?>" class=" btn btn-light" style="width: 20%">+</button>
-                                    <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end"><?= $orderItem->getBasePrice() ?></span>
-                                    <span id="cart-item-total-price-<?= $id ?>" class="price float-end">&euro; <?= $orderItem->getTotalBasePrice() ?></span>
+                                    <button id="cart-item-remove-<?= $orderItemId ?>" class="btn btn-light" style="width: 20%" onclick="removeTicket($orderItemId, $ticketLinkId)">-</button>
+                                    <span id="cart-item-counter-<?= $orderItemId ?>"><?= $orderItem->getQuantity() ?></span>
+                                    <button id="cart-item-add-<?= $orderItemId ?>" class=" btn btn-light" style="width: 20%" onclick="addTicket($orderItemId, $ticketLinkId)">+</button>
+                                    <span id="cart-item-unit-price-<?= $orderItemId ?>" class=" d-none float-end"><?= $orderItem->getBasePrice() ?></span>
+                                    <span id="cart-item-total-price-<?= $orderItemId ?>" class="price float-end">&euro; <?= $orderItem->getTotalBasePrice() ?></span>
                                 </div>
                                 <br>
                                 <div style="width: 100%">
-                                    <button id="cart-item-delete-<?= $orderItem->getOrderItemId() ?>" class="btn btn-danger float-end">Delete</button>
+                                    <button id="cart-item-delete-<?= $orderItemId ?>" class="btn btn-danger float-end">Delete</button>
                                 </div>
                             </div>
                         <?php }
@@ -58,12 +59,10 @@
                     <br>
                     <br>
                     <?php if(isset($cartOrder)) 
-                        echo "<h4 id='total'>Total price: &euro; <?= $cartOrder->getTotalFullPrice() ?></h4>"
+                        echo "<h4 id='total'>Total price: &euro; " . $cartOrder->getTotalFullPrice() . "</h4>"
                     ?>
-                    
+
                     <button class="btn btn-primary">Check out</button>
-
-
                 </div>
             </div>
         </div>

@@ -1,35 +1,13 @@
-// Find spans with following id pattern: cart-counter-*
-
 const total = document.getElementById('total');
 
-const cartCounterSpans = document.querySelectorAll('span[id^="cart-item-counter-"]');
-for (let counter of cartCounterSpans) {
-    // get the ID part.
-    const id = counter.id.split('-')[3];
+function removeTicket(orderItemId, ticketLinkId){
+    const counter = document.getElementById('cart-counter-' + orderItemId);
+    const cartItemUnitPrice = document.getElementById('order-item-unit-price-' + orderItemId);
+    const cartItemTotalPrice = document.getElementById('order-item-total-price-' + orderItemId);
 
-    const btnAdd = document.getElementById('cart-item-add-' + id);
-    const btnRemove = document.getElementById('cart-item-remove-' + id);
-    const btnDelete = document.getElementById('cart-item-delete-' + id);
-
-    const cartItemUnitPrice = document.getElementById('cart-item-unit-price-' + id);
-    const cartItemTotalPrice = document.getElementById('cart-item-total-price-' + id);
-
-    btnAdd.addEventListener('click', function () {
-        const count = parseInt(counter.innerHTML);
-        counter.innerHTML = count + 1;
-        Cart.Add(id);
-
-        const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
-        cartItemTotalPrice.innerHTML = "&euro; " + ((count + 1) * unitPrice);
-
-        const totalAmount = parseFloat(total.innerHTML.split('€')[1]);
-        total.innerHTML = "Total price: &euro; " + (totalAmount + unitPrice);
-    });
-
-    btnRemove.addEventListener('click', function () {
-        const count = parseInt(counter.innerHTML);
+    const count = parseInt(counter.innerHTML);
         counter.innerHTML = count - 1;
-        Cart.Remove(id);
+        Cart.Remove(ticketLinkId);
 
         const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
         cartItemTotalPrice.innerHTML = "&euro; " + ((count - 1) * unitPrice);
@@ -39,23 +17,22 @@ for (let counter of cartCounterSpans) {
 
         if (count - 1 <= 0) {
             // remove the div.
-            const div = document.getElementById('cart-item-' + id);
+            const div = document.getElementById('order-item-' + orderItemId);
             div.parentNode.removeChild(div);
         }
-    });
+}
 
-    btnDelete.addEventListener('click', function () {
-        const count = parseInt(counter.innerHTML);
-        for (let i = 0; i < count; i++) {
-            Cart.Remove(id);
-        }
+function addTicket(orderItemId, ticketLinkId){
+    const counter = document.getElementById('order-counter-' + orderItemId);
+    const cartItemUnitPrice = document.getElementById('order-item-unit-price-' + orderItemId);
+    const cartItemTotalPrice = document.getElementById('order-item-total-price-' + orderItemId);
 
-        const div = document.getElementById('cart-item-' + id);
-        div.parentNode.removeChild(div);
-        Cart.Remove(id);
+    const count = parseInt(counter.innerHTML);
+    counter.innerHTML = count + 1;
+    Cart.Add(ticketLinkId);
+    const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
+    cartItemTotalPrice.innerHTML = "&euro; " + ((count + 1) * unitPrice);
 
-        const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
-        const totalAmount = parseFloat(total.innerHTML.split('€')[1]);
-        total.innerHTML = "Total price: &euro; " + (totalAmount - unitPrice * count);
-    });
+    const totalAmount = parseFloat(total.innerHTML.split('€')[1]);
+    total.innerHTML = "Total price: &euro; " + (totalAmount + unitPrice);
 }
