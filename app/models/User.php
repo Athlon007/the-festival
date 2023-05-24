@@ -90,9 +90,9 @@ class User implements JsonSerializable
             case 1:
                 return "Admin";
             case 2:
-                return "Employee";
-            case 3:
                 return "Customer";
+            case 3:
+                return "Employee";
             default:
                 return "Unknown";
         }
