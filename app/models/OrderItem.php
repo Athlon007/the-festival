@@ -1,7 +1,8 @@
 <?php
 require_once("TicketLink.php");
 
-class OrderItem implements JsonSerializable { 
+class OrderItem implements JsonSerializable
+{
 
     private int $orderItemId;
     private int $ticketLinkId;
@@ -11,7 +12,8 @@ class OrderItem implements JsonSerializable {
     private float $fullTicketPrice;
     private int $quantity;
 
-    public function jsonSerialize(){
+    public function jsonSerialize()
+    {
         return [
             "orderItemId" => $this->orderItemId,
             "ticketLinkId" => $this->ticketLinkId,
@@ -114,15 +116,15 @@ class OrderItem implements JsonSerializable {
     //Base price excl VAT for one ticket multiplied by the quantity
     public function getTotalBasePrice(): float
     {
-        return ($this->getBasePrice() * $this->quantity);
+        return round($this->getBasePrice() * $this->quantity, 2, PHP_ROUND_HALF_UP);
     }
 
     //VAT value that is multiplied by the quantity
     public function getTotalVatAmount(): float
     {
-        return $this->vatPercentage * $this->getTotalBasePrice();
+        return round($this->vatPercentage * $this->getTotalBasePrice(), 2, PHP_ROUND_HALF_UP);
     }
-    
+
     //Full price that is multiplied by the quantity
     public function getTotalFullPrice(): float
     {
