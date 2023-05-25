@@ -168,8 +168,9 @@ class CartService
             return;
         }
 
+
         //Check if there is an active cart in session.
-        if (!isset($_SESSION["cartId"])) {
+        if (isset($_SESSION["cartId"])) {
             //If so, then we have to merge the two orders. The one that is in session and the one that the customer saved in the database during an earlier visit.
             $sessionOrder = $this->orderService->getOrderById($_SESSION["cartId"]);
             $mergedOrder = $this->orderService->mergeOrders($customerOrder, $sessionOrder);
