@@ -1,11 +1,12 @@
 (function () {
+    const apiUrl = '/api/cart';
     var Cart = {};
     //Adds one item to the cart order
     Cart.Add = function (itemID) {
         document.getElementById('shopping-circle').classList.remove('d-none');
         document.getElementById('shopping-circle-text').innerHTML = this.count;
 
-        const url = "/api/cart/add/" + itemID;
+        const url = apiUrl + "/add/" + itemID;
         return new Promise((resolve, reject) => {
             fetch(url, {
                 method: 'POST',
@@ -69,7 +70,7 @@
 
     //Updates the counter in the nav bar by getting the count from the cart order from the server
     Cart.UpdateCounter = function () {
-        fetch('/api/cart/count',
+        fetch(apiUrl + '/count',
             {
                 method: 'GET',
                 headers: {

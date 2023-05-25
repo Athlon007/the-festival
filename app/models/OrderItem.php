@@ -110,7 +110,7 @@ class OrderItem implements JsonSerializable
     //Get VAT amount for one
     public function getVatAmount()
     {
-        return $this->vatPercentage * $this->getBasePrice();
+        return round($this->vatPercentage * $this->getBasePrice(), 2, PHP_ROUND_HALF_UP);
     }
 
     //Base price excl VAT for one ticket multiplied by the quantity

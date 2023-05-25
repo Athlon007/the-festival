@@ -104,21 +104,18 @@ class CartService
             //Retrieve the order that is in cart from the db.
             $order = $this->orderService->getOrderById($_SESSION["cartId"]);
 
-            $instanceFound = false;
             //Check if an orderitem with the same ticketlinkid already exists in the order.
             foreach ($order->getOrderItems() as $orderItem) {
                 if ($orderItem->getTicketLinkId() == $ticketLinkId) {
                     //If so, add to the quantity of the orderItem and update the orderItem.
                     $orderItem->setQuantity($orderItem->getQuantity() + 1);
                     $this->orderService->updateOrderItem($orderItem->getOrderItemId(), $orderItem);
-                    $instanceFound = true;
+                    return $order;
                 }
             }
-            if (!$instanceFound) {
-                //If not, then we create a new orderitem with the ticketlinkid and add it to the order.
-                $orderItem = $this->orderService->createOrderItem($ticketLinkId, $order->getOrderId());
-                $order->addOrderItem($orderItem);
-            }
+            //If not, then we create a new orderitem with the ticketlinkid and add it to the order.
+            $orderItem = $this->orderService->createOrderItem($ticketLinkId, $order->getOrderId());
+            $order->addOrderItem($orderItem);
         }
         return $order;
     }
