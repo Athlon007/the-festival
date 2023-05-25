@@ -249,8 +249,16 @@ class OrderRepository extends Repository
         $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDateAsString()));
-        $customerId = $order->getCustomer()->getUserId();
-        $stmt->bindValue(":customerId", htmlspecialchars($customerId));
+        //$customerId = $order->getCustomer()->getUserId();
+        //$stmt->bindValue(":customerId", htmlspecialchars($customerId));
+
+        if ($order->getCustomer() != null) {
+            $customerId = $order->getCustomer()->getUserId();
+            $stmt->bindValue(":customerId", htmlspecialchars($customerId));
+        } else {
+            $stmt->bindValue(":customerId", null);
+        }
+
         $stmt->execute();
 
         return $this->getOrderById($this->connection->lastInsertId());
@@ -302,8 +310,12 @@ class OrderRepository extends Repository
         $order = new Order();
         $order->setOrderId($row['orderId']);
         $order->setOrderDate(DateTime::createFromFormat('Y-m-d H:i:s', $row['orderDate']));
-        $order->setCustomer(new Customer());
-        $order->getCustomer()->setUserId($row['customerId']);
+        if ($row['customerId'] != null) {
+            $order->setCustomer(new Customer());
+            $order->getCustomer()->setUserId($row['customerId']);
+        } else {
+            $order->setCustomer(null);
+        }
         $order->setIsPaid($row['isPaid']);
 
         return $order;

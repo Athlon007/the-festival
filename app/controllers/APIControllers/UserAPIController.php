@@ -86,6 +86,7 @@ class UserAPIController extends APIController
     private function login($data)
     {
         try {
+            echo " ";
             if (!isset($data->email) || !isset($data->password))
                 throw new MissingVariableException("Email and password are required", 400);
 
