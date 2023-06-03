@@ -33,34 +33,35 @@
                     if (!$cartOrder) {
                         echo "<h4>Your cart is empty. Go buy some stuff!</h4>";
                     } else {
-                        foreach ($cartOrder->getOrderItems as $orderItem) {
-                            $id = $orderItem->getOrderItemId(); ?>
+                        $orderItems = $cartOrder->getOrderItems();
+                        foreach ($orderItems as $orderItem) {
+                            $id = $orderItem->getTicketLinkId(); ?>
                             <div id="cart-item-<?= $id ?>" class="card p-3 m-3" style="width: 60%">
                                 <div class="card-header" style="width: 100%">
                                     <?= $orderItem->getEventName() ?>
-                                    <?= $orderItem->getTicketName() ?> - &euro; <?= $orderItem->getBasePrice() ?>
+                                    <?= $orderItem->getTicketName() ?> - &euro; <?= $orderItem->getBasePrice() ?> + &euro; <?= $orderItem->getVatAmount() ?> VAT
                                 </div>
                                 <br>
                                 <div style="width: 100%">
                                     <button id="cart-item-remove-<?= $id ?>" class="btn btn-light" style="width: 20%">-</button>
-                                    <span id="cart-item-counter-<?= $id ?>"><?= $ticketLink['amount'] ?></span>
+                                    <span id="cart-item-counter-<?= $id ?>"><?= $orderItem->getQuantity() ?></span>
                                     <button id="cart-item-add-<?= $id ?>" class=" btn btn-light" style="width: 20%">+</button>
-                                    <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end"><?= $orderItem->getBasePrice() ?></span>
-                                    <span id="cart-item-total-price-<?= $id ?>" class="price float-end">&euro; <?= $orderItem->getTotalBasePrice() ?></span>
+                                    <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end"><?= $orderItem->getBasePrice() + $orderItem->getVatAmount() ?></span>
+                                    <span id="cart-item-total-price-<?= $id ?>" class="price float-end">&euro; <?= $orderItem->getTotalFullPrice() ?></span>
                                 </div>
                                 <br>
-                                <div style="width: 100%">
-                                    <button id="cart-item-delete-<?= $orderItem->getOrderItemId() ?>" class="btn btn-danger float-end">Delete</button>
-                                </div>
                             </div>
-                        <?php }
+                    <?php }
                     }   ?>
                     <br>
                     <br>
-                    <?php if(isset($cartOrder)) 
-                        echo "<h4 id='total'>Total price: &euro; <?= $cartOrder->getTotalFullPrice() ?></h4>"
+                    <?php if (isset($cartOrder)) {
                     ?>
-                    
+                        <h4 id="total">Total price: &euro; <?= $fullPrice ?></h4>
+                    <?php
+                    }
+                    ?>
+
                     <button class="btn btn-primary">Check out</button>
 
 

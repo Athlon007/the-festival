@@ -7,7 +7,7 @@ class Order implements JsonSerializable
     private int $orderId;
     private array $orderItems;
     private array $tickets;
-    private Customer $customer;
+    private ?Customer $customer;
     private DateTime $orderDate;
     private bool $isPaid;
 
@@ -86,12 +86,15 @@ class Order implements JsonSerializable
         }
     }
 
-    public function getCustomer(): Customer
+    public function getCustomer(): ?Customer
     {
+        if (!isset($this->customer)) {
+            return null;
+        }
         return $this->customer;
     }
 
-    public function setCustomer(Customer $customer): void
+    public function setCustomer(?Customer $customer): void
     {
         $this->customer = $customer;
     }
@@ -101,12 +104,12 @@ class Order implements JsonSerializable
         return $this->orderDate;
     }
 
-    public function getOrderDateAsString() : string
+    public function getOrderDateAsString(): string
     {
         return $this->orderDate->format('Y-m-d');
     }
 
-    public function getOrderDateAsDMY() : string
+    public function getOrderDateAsDMY(): string
     {
         return $this->orderDate->format('d-m-Y');
     }
@@ -166,7 +169,8 @@ class Order implements JsonSerializable
         return $totalPrice;
     }
 
-    public function getTotalItemCount(){
+    public function getTotalItemCount()
+    {
         $totalItemCount = 0;
         foreach ($this->orderItems as $orderItem) {
             $totalItemCount += $orderItem->getQuantity();
