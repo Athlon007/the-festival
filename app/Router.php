@@ -253,6 +253,9 @@ class Router
         } elseif (str_starts_with($request, "/api/orders")) {
             require_once("controllers/APIControllers/PaymentFunnel/OrderAPIController.php");
             $controller = new OrderAPIController();
+        }elseif(str_starts_with($request, "/api/foodfestival")){
+            require_once("controllers/APIControllers/YummyController.php");
+            $controller = new FoodFestivalController();
         } else {
             http_response_code(400);
             // send json
