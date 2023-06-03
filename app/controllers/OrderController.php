@@ -19,15 +19,11 @@ class OrderController
 
     public function showShoppingCart()
     {
-
         $fullPrice = 0;
         try {
             $cartOrder = $this->cartService->getCart();
             if ($cartOrder) {
-                $orderItems = $cartOrder->getOrderItems();
-                foreach ($orderItems as $orderItem) {
-                    $fullPrice += $orderItem->getTotalFullPrice();
-                }
+                $fullPrice = $cartOrder->getTotalPrice();
             }
         } catch (Throwable $e) {
             Logger::write($e);
