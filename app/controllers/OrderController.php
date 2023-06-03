@@ -19,10 +19,17 @@ class OrderController
 
     public function showShoppingCart()
     {
-        try{
+
+        $fullPrice = 0;
+        try {
             $cartOrder = $this->cartService->getCart();
-        }
-        catch(Throwable $e){
+            if ($cartOrder) {
+                $orderItems = $cartOrder->getOrderItems();
+                foreach ($orderItems as $orderItem) {
+                    $fullPrice += $orderItem->getTotalFullPrice();
+                }
+            }
+        } catch (Throwable $e) {
             Logger::write($e);
             $cartOrder = null;
         }
@@ -35,7 +42,7 @@ class OrderController
      */
     public function showOrderHistory()
     {
-        try{
+        try {
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
@@ -43,8 +50,7 @@ class OrderController
             $orders = $this->orderService->getOrderHistory($customer->getUserId());
             //$orders = $this->orderService->getOrderHistory(33);
             require_once('../views/orderHistory.php');
-        }
-        catch(Throwable $e){
+        } catch (Throwable $e) {
             Logger::write($e);
         }
     }
