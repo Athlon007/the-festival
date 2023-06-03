@@ -15,6 +15,7 @@
 </head>
 
 <body>
+
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
   <img src="/img/jpg/festival-yummy.jpg" alt="Yummy-background" width="300" height="300">
   <div style="text-align:center">
@@ -29,12 +30,12 @@
         <li class="list-group-item">
           <h3>Sort</h3>
           <div class="col-md-6 ticketOfTour" style="width: 50%; float:center;">
-            <select class="form-select" id="ticket">
+            <select class="form-select" id="sort">
               <option selected>Select ticket</option>
-              <option value="">Assending Price</option>
-              <option value="">Dessending Price</option>
-              <option value="">Assending Rating</option>
-              <option value="">Dessending Rating</option>
+              <option value="asc_pr">Assending Price</option>
+              <option value="des_pr">Dessending Price</option>
+              <option value="asc_rat">Assending Rating</option>
+              <option value="des_rat">Dessending Rating</option>
             </select>
           </div>
 
@@ -50,23 +51,14 @@
           </div>
         </li>
         <li class="list-group-item">
-          <h3>Dates</h3>
-          <div class="center orangeBorder">
-            <input type="checkbox" value="date">
-            <label for="Thu">Thu 27/07/2023</label><br>
-          </div>
-          <div class="center orangeBorder">
-            <input type="checkbox" value="date">
-            <label for="Fri">Fri 28/07/2023</label><br>
-          </div>
-          <div class="center orangeBorder">
-            <input type="checkbox" value="date">
-            <label for="Sat">Sat 29/07/2023</label><br>
-          </div>
-          <div class="center orangeBorder">
-            <input type="checkbox" value="date">
-            <label for="Sun">Sun 30/07/2023</label><br>
-          </div>
+        <h3>Dates</h3>
+          <select class="form-select" id="date" oninput="filterByDate()">
+            <option selected>Select ticket</option>
+            <option value="27/07/2023">Thu 27/07/2023</option>
+            <option value="28/07/2023">Fri 28/07/2023</option>
+            <option value="29/07/2023">Sat 29/07/2023</option>
+            <option value="30/07/2023">Sun 30/07/2023</option>
+          </select>
         </li>
         <li class="list-group-item">
           <h3>Time</h3>
@@ -119,24 +111,62 @@
     </div>
 
     <div class="col-md-8">
-      <div class="scrolable">
+      <div class="scrolable" id="restaurants">
 
-      <?php foreach ($restaurants as $restaurant) { ?>
-        <div class="item">
-          <div class="card">
-            <h3 class="card-header"><?= $restaurant['restaurantName'] ?></h3>
-            <div class="card-body">
-              <p class="card-title"><?= $restaurant['description'] ?></p>
-              <button class="btn btn-primary addToCartButton">Add to cart</button>
-            </div>
-          </div>
-        <?php } ?>
-        </div>
+      </div>
       </div>
     </div>
   </div>
   </div>
   </div>
+
+  <script>
+    loadData();
+    function loadData(){
+      const restDiv = document.getElementById('restaurants');
+      restDiv.innerHTML = '';
+
+      fetch('http://localhost:80/api/restaurants')
+      .then(response => response.json())
+      .then((events)=> {
+        appendData(events);
+      })
+    }
+
+    function appendData(events){
+      const restDiv = document.getElementById('restaurants');
+      events.forEach(event => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+        <div class="card">
+          <h3 class="card-header">${event.restaurantName}</h3>
+          <div class="card-body">
+            <p class="card-title">${event.description}</p>
+            <button class="btn btn-primary addToCartButton">Add to cart</button>
+          </div>
+        </div>
+        `;
+        restDiv.appendChild(div);
+      });
+
+    function filterByDate(){
+    const date = document.getElementById('date').value;
+    const url = 'http://localhost:80/api/restaurants?date=' + date;
+
+    const restDiv = document.getElementById('restaurants');
+    restDiv.innerHTML = '';
+
+    fetch(url)
+    .then(response => response.json())
+    .then((events)=> {
+      appendData(events);
+    })
+  }
+
+
+    }
+  </script>
 
   <footer class="foot row bottom"></footer>
   <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>

@@ -256,6 +256,12 @@ class Router
         }elseif(str_starts_with($request, "/api/foodfestival")){
             require_once("controllers/APIControllers/YummyController.php");
             $controller = new FoodFestivalController();
+        }
+        elseif(str_starts_with($request, "/api/restaurants")){
+            require_once("controllers/APIControllers/RestaurantsAPIController.php");
+            $controller = new RestaurantApiController();
+            $controller->handleGetRequest();
+            return;
         } else {
             http_response_code(400);
             // send json
