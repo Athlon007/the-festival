@@ -191,6 +191,12 @@ class Router
                 $ticketController = new PaymentController();
                 $ticketController->sendTicketsAndInvoice();
                 break;
+                case "/checkout":
+                require_once("controllers/PaymentController.php");
+                $ticketController = new PaymentController();
+                $ticketController->submitPaymentToMollie();
+                break;
+
             default:
                 $this->route404($message);
                 break;

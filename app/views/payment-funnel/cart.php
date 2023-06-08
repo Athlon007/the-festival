@@ -34,6 +34,7 @@
                         echo "<h4>Your cart is empty. Go buy some stuff!</h4>";
                     } else {
                         $orderItems = $cartOrder->getOrderItems();
+                        $_SESSION['orderItems'] = $orderItems;
                         foreach ($orderItems as $orderItem) {
                             $id = $orderItem->getTicketLinkId(); ?>
                             <div id="cart-item-<?= $id ?>" class="card p-3 m-3" style="width: 60%">
@@ -61,8 +62,9 @@
                     <?php
                     }
                     ?>
-
+                    <form action="/checkout" method="post">
                     <button class="btn btn-primary">Check out</button>
+                    </form>
 
 
                 </div>

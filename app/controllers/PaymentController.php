@@ -2,6 +2,7 @@
 
 require_once("../services/InvoiceService.php");
 require_once("../controllers/TicketController.php");
+require_once("../services/MollieService.php");
 
 class PaymentController
 {
@@ -26,5 +27,19 @@ class PaymentController
         $this->ticketController->getAllTickets($order);
 
         require_once(__DIR__ . '../../views/payment-funnel/paymentSuccess.php');
+    }
+
+    public function submitPaymentToMollie(){
+        //retrieve the order from the session
+
+        $order = $_SESSION['orderItems'];
+
+        //go to payment page
+        $mollie = new MollieService();
+        $mollie->pay($order);
+
+        //unset the order from the session
+        unset($_SESSION['orderItems']);
+
     }
 }
