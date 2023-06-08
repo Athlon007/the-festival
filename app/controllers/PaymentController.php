@@ -31,8 +31,8 @@ class PaymentController
 
     public function submitPaymentToMollie(){
         //retrieve the order from the session
-
-        $order = $_SESSION['orderItems'];
+        //session_start();
+        $order = serialize($_SESSION['orderItems']);
 
         //go to payment page
         $mollie = new MollieService();
