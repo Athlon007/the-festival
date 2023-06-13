@@ -51,9 +51,9 @@ class UserService
 
     public function createNewUser(string $email, string $firstName, string $lastName, string $password, $usertype, DateTime $registrationDate): void
     {
-        if($this->emailAlreadyExists($email))
+        if ($this->emailAlreadyExists($email))
             throw new Exception("Email already exists.", 409);
-        
+
         //Create user object
         $user = new User();
         $user->setEmail($email);
@@ -109,7 +109,7 @@ class UserService
             throw ($ex);
         }
     }
-    //TODO: move this function to the mailservice 
+    //TODO: move this function to the mailservice
     public function sendResetTokenToUser($email, $reset_token)
     {
         try {
@@ -260,7 +260,7 @@ class UserService
         try {
             //Fetch user from db
             $user = $this->userRepository->getById($data->id);
-            
+
             //Update user data
             $user->setFirstName($data->firstName);
             $user->setLastName($data->lastName);
@@ -297,5 +297,4 @@ class UserService
             throw ($ex);
         }
     }
-
 }

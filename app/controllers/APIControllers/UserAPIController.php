@@ -86,7 +86,6 @@ class UserAPIController extends APIController
     private function login($data)
     {
         try {
-            echo " ";
             if (!isset($data->email) || !isset($data->password))
                 throw new MissingVariableException("Email and password are required", 400);
 
@@ -98,6 +97,7 @@ class UserAPIController extends APIController
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
+
             $_SESSION["user"] = serialize($user);
 
             //If the user is a customer, try to fetch the cart they might have saved during an earlier visit.
@@ -107,6 +107,7 @@ class UserAPIController extends APIController
 
             parent::sendSuccessMessage("Login successful.");
         } catch (Exception $ex) {
+            Logger::write($ex);
             parent::sendErrorMessage($ex->getMessage(), $ex->getCode());
         }
     }
