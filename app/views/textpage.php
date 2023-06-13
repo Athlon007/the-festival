@@ -23,7 +23,7 @@
                     <div class="carousel-item <?= $counter == 0 ? 'active' : ''; ?>">
                         <img src="<?= $image->getSrc(); ?>" class="d-block w-100" alt="<?= $image->getAlt(); ?>">
                         <div class="carousel-caption">
-                            <h1><?= $image->getAlt(); ?></h1>
+                            <h1><?= $title; ?></h1>
                         </div>
                     </div>
                 <? $counter += 1;
