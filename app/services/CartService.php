@@ -69,6 +69,16 @@ class CartService
     }
 
     /**
+     * Used when sharing a cart with another user.
+     * @param $orderId The ID of the order to get.
+     * @return Order
+     */
+    public function getCartByOrderId($orderId): Order
+    {
+        return $this->orderService->getOrderById($orderId);
+    }
+
+    /**
      * Gets the total item count from the session.
      * @return Order
      */

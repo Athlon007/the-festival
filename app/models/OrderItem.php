@@ -12,7 +12,7 @@ class OrderItem implements JsonSerializable
     private float $fullTicketPrice;
     private int $quantity;
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             "orderItemId" => $this->orderItemId,
