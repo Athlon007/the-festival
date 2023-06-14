@@ -17,7 +17,6 @@
 <body>
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
-  <img src="/img/jpg/festival-yummy.jpg" alt="Yummy-background" width="300" height="300">
   <div style="text-align:center">
   <h1>Yummy!</h1>
   <h3>One time deals can be found in these participating restaurants:</h3>
