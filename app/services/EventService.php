@@ -9,12 +9,10 @@ require_once('EventTypeService.php');
 class EventService
 {
     private $repo;
-    private $eventTypeService;
 
     public function __construct()
     {
         $this->repo = new EventRepository();
-        $this->eventTypeService = new EventTypeService();
     }
 
     public function getAllEvents()
