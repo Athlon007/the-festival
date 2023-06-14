@@ -27,7 +27,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
             $address->setPostalCode($item['addressPostalCode']);
             $address->setCity($item['addressCity']);
             $address->setCountry($item['addressCountry']);
-            
+
             $location = new Location(
                 $item['locationId'],
                 $item['locationName'],
@@ -62,7 +62,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
                 $this->readIfSet($item['artistCountry']),
                 $this->readIfSet($item['artistGenres']),
                 $this->readIfSet($item['artistHomepage']),
-                $this->readIfSet($item['artistFacebook']),
+                $this->readIfSet($item['artistFacebok']),
                 $this->readIfSet($item['artistTwitter']),
                 $this->readIfSet($item['artistInstagram']),
                 $this->readIfSet($item['artistSpotify']),
