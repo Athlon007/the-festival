@@ -2,6 +2,10 @@
 
 require_once("Repository.php");
 require_once("../models/Image.php");
+
+/**
+ * @author Konrad
+ */
 class ImageRepository extends Repository
 {
     private function imageBuilder($arr): array
