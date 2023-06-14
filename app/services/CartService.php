@@ -164,8 +164,12 @@ class CartService
     {
         //Retrieve the order that is in cart from the db.
         $cartOrder = $this->getCart();
+        //
+        //Call payment method here
+        //
         $cartOrder->setIsPaid(true);
         $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
+        return $cartOrder;
     }
 
     public function getCartAfterLogin($customerId)

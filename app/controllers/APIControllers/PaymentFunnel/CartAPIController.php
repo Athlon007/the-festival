@@ -53,6 +53,11 @@ class CartAPIController extends APIController
                 $cartOrder = $this->cartService->removeItem($ticketLinkId);
                 parent::sendResponse($cartOrder);
                 return;
+            }
+            else if (str_starts_with($uri, "/api/cart/checkout")) {
+                $cartOrder = $this->cartService->checkoutCart();
+                parent::sendResponse($cartOrder);
+                return;
             } else {
                 throw new Exception("Bad request.", 400);
             }
