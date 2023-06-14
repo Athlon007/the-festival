@@ -21,6 +21,11 @@ function createNavLink(collapseLi, element) {
     collapseA.setAttribute('href', link);
     collapseA.textContent = element.page.title;
 
+    if (link == '/') {
+        // Unique name for the home link
+        collapseA.textContent = "Home";
+    }
+
     // If the current URL contains the href of the page, add the active class to the li.
     if (isCurrentLink(element.page.href)) {
         collapseA.classList.add('active');
