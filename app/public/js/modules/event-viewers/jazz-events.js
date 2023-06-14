@@ -1,3 +1,4 @@
+// Author: Konrad
 class JazzEventList extends EventsList {
     constructor(container) {
         super(container);

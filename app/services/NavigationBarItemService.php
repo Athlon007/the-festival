@@ -2,6 +2,9 @@
 require_once("../repositories/NavigationBarItemRepository.php");
 require_once('PageService.php');
 
+/**
+ * @author Konrad
+ */
 class NavigationBarItemService
 {
     private $navBarItemRepository;
@@ -21,18 +24,6 @@ class NavigationBarItemService
     {
         return $this->navBarItemRepository->getAll();
     }
-
-    /**
-     * Returns the navigation bar item with the given id.
-     * @param int $id The id of the navigation bar item to return.
-     * @return NavigationBarItem The navigation bar item with the given id.
-     */
-    public function getNavBarItemById(int $id): NavigationBarItem
-    {
-        $id = htmlspecialchars($id);
-        return $this->navBarItemRepository->getById($id);
-    }
-
 
     /**
      * Sets the navigation bar items array from the given input.

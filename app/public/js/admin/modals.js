@@ -1,3 +1,4 @@
+// Author: Konrad
 import { ImagePicker } from "./image_picker.js";
 
 export class MsgBox {

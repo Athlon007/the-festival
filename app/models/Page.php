@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @author Konrad
+ */
 class Page implements JsonSerializable
 {
     protected $id;

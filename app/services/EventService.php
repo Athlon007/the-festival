@@ -6,6 +6,12 @@ require_once(__DIR__ . "/../repositories/EventRepository.php");
 require_once(__DIR__ . "/../models/Exceptions/InvalidVariableException.php");
 require_once('EventTypeService.php');
 
+/**
+ * TicketLink should be used for getting events.
+ * This class is used for creating, editing and deleting events that are linked to TicketLink.
+ * It provides universal information about events, so you won't get any event-specific details from here.
+ * @author Konrad
+ */
 class EventService
 {
     private $repo;
@@ -13,40 +19,6 @@ class EventService
     public function __construct()
     {
         $this->repo = new EventRepository();
-    }
-
-    public function getAllEvents()
-    {
-        return $this->repo->getAll();
-    }
-
-    public function getEventById($id)
-    {
-        // if is jazz event
-        if ($this->repo->isInJazzEvents($id)) {
-            return $this->repo->getJazzEventById($id);
-        }
-
-        // if is history event
-        if ($this->repo->isInHistoryEvents($id)) {
-            return $this->repo->getHistoryEventById($id);
-        }
-
-        return $this->repo->getEventById($id);
-    }
-
-    public function getJazzEvents($sort, $filters): array
-    {
-        $sort = htmlspecialchars($sort);
-        $filters = array_map('htmlspecialchars', $filters);
-
-        return $this->repo->getAllJazzEvents($sort, $filters);
-    }
-
-    public function getJazzEventById($id): MusicEvent
-    {
-        $id = htmlspecialchars($id);
-        return $this->repo->getJazzEventById($id);
     }
 
     public function getJazzEventsByArtistId($artistId): array

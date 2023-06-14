@@ -1,3 +1,4 @@
+// Author: Konrad
 const HAARLEM_LOCATION = [52.3814425, 4.6360367]; // I don't think Haarlem is going to move anytime soon.
 const DEFAULT_ZOOM_LEVEL = 16;
 

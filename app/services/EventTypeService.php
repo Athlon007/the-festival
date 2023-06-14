@@ -2,6 +2,10 @@
 
 require_once(__DIR__ . "/../repositories/EventTypeRepository.php");
 
+/**
+ * Handles business logic for event types.
+ * @author Konrad
+ */
 class EventTypeService
 {
     private $repo;

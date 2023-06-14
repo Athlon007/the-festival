@@ -3,6 +3,10 @@
 require_once("../models/Exceptions/UploadException.php");
 require_once("../services/ImageService.php");
 
+/**
+ * Handles image uploads and removals.
+ * @author Konrad
+ */
 class UploaderController
 {
     private $imageService;
