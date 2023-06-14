@@ -14,11 +14,13 @@ class CartService
 {
     private $orderService;
     private $customerService;
+    private $mollieService;
 
     public function __construct()
     {
         $this->orderService = new OrderService();
         $this->customerService = new CustomerService();
+        $this->mollieService = new MollieService();
     }
 
     /**
@@ -164,9 +166,7 @@ class CartService
     {
         //Retrieve the order that is in cart from the db.
         $cartOrder = $this->getCart();
-        //
-        //Call payment method here
-        //
+        $this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId());
         $cartOrder->setIsPaid(true);
         $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
         return $cartOrder;
@@ -182,7 +182,6 @@ class CartService
             //If there is no cart order saved for the customer, then this method has no further purpose.
             return;
         }
-
 
         //Check if there is an active cart in session.
         // KONRAD: Also make sure that the cart in session is not the same as the one that is saved in the database.
