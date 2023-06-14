@@ -20,8 +20,21 @@ class OrderController
     public function showShoppingCart()
     {
         $fullPrice = 0;
+        $hasStuffInCart = false;
         try {
-            $cartOrder = $this->cartService->getCart();
+            // http://localhost/shopping-cart?id=16
+            // Check if "id" is set in the URL query string
+            // if so, other user is trying to share their cart with you
+
+            $cartOrder = null;
+            $shareMode = false;
+            if (isset($_GET["id"])) {
+                $cartOrder = $this->cartService->getCartByOrderId($_GET["id"]);
+                $shareMode = true;
+            } else {
+                $cartOrder = $this->cartService->getCart();
+            }
+
             if ($cartOrder) {
                 $fullPrice = $cartOrder->getTotalPrice();
             }
