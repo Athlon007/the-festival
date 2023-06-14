@@ -30,7 +30,7 @@ class Logger
             // Write to file
             fwrite(
                 $file,
-                $t->getMessage()
+                $t->getMessage() . " (╯°□°)╯︵ ┻━┻"
                     . "\n\n" . $t->getFile() . ":" . $t->getLine()
                     . "\n\n" . $t->getTraceAsString()
             );
