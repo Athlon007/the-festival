@@ -72,7 +72,8 @@ class CartService
 
     /**
      * Used when sharing a cart with another user.
-     * @param $orderId The ID of the order to get.
+     * @param $orderId
+     * The ID of the order to get.
      * @return Order
      */
     public function getCartByOrderId($orderId): Order
@@ -97,11 +98,10 @@ class CartService
         }
     }
 
-    // (╯°□°)╯︵ ┻━┻
-
     /**
      * Adds one item to the cart.
-     * @param $ticketLinkId The ID of the ticketlink to add.
+     * @param $ticketLinkId
+     * The ID of the ticketlink to add.
      * @return Order
      */
     public function addItem($ticketLinkId): Order
@@ -134,9 +134,9 @@ class CartService
 
     /**
      * Removes one item from the cart.
-     * @param $ticketLinkId The ID of the item to remove.
+     * @param $ticketLinkId
+     * The ID of the item to remove.
      * @return Order returns the order object.
-     * @author Joshua
      */
     public function removeItem($ticketLinkId): Order
     {
@@ -162,6 +162,11 @@ class CartService
         return $order;
     }
 
+    /**
+     * @return Order
+     * @throws CartException
+     * @throws \Mollie\Api\Exceptions\ApiException
+     */
     public function checkoutCart()
     {
         //Retrieve the order that is in cart from the db.
@@ -172,10 +177,13 @@ class CartService
         return $cartOrder;
     }
 
+    /**
+     * @param $customerId
+     * @return void
+     */
     public function getCartAfterLogin($customerId)
     {
-        $this->cartIsInitialised();
-
+        //Fetch
         $customerOrder = $this->orderService->getCartOrderForCustomer($customerId);
 
         if (!$customerOrder) {
@@ -183,11 +191,8 @@ class CartService
             return;
         }
 
-        //Check if there is an active cart in session.
-        // KONRAD: Also make sure that the cart in session is not the same as the one that is saved in the database.
-        //         Otherwise you will double all the items in the cart.
-        if (isset($_SESSION["cartId"]) && $_SESSION["cartId"] != $customerOrder->getOrderId()) {
-            //If so, then we have to merge the two orders. The one that is in session and the one that the customer saved in the database during an earlier visit.
+        //If there is already a cart in session and the logged-in user has another cart in db, we merge the carts
+        if ($this->cartIsInitialised() && ($_SESSION["cartId"] != $customerOrder->getOrderId())) {
 
             $sessionOrder = $this->orderService->getOrderById($_SESSION["cartId"]);
             $mergedOrder = $this->orderService->mergeOrders($customerOrder, $sessionOrder);
@@ -200,6 +205,9 @@ class CartService
         $_SESSION["cartId"] = $customerOrder->getOrderId();
     }
 
+    /**
+     * @return bool
+     */
     private function cartIsInitialised(): bool
     {
         if (session_status() == PHP_SESSION_NONE) {

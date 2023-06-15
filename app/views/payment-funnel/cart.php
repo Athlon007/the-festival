@@ -81,7 +81,7 @@
                     <?php if ($hasStuffInCart) {
                         ?>
                         <h4 id="total">Total price: &euro;
-                            <?= $fullPrice ?>
+                            <?= $cartOrder->getTotalPrice(); ?>
                         </h4>
                         <?php if (!$shareMode) { ?>
                             <button class="btn btn-primary">Check out</button>

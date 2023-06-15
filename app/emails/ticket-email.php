@@ -44,7 +44,7 @@
         to enter the event. Please note that each ticket is valid for a single admission only
     </p>
 
-    <p>Best regards,</p>
+    <p>Kind regards,</p>
     <p>The Festival Team</p>
 </body>
 
