@@ -145,14 +145,16 @@ class OrderRepository extends Repository
     {
         $sql = "select o.orderId, o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId from orders o
         join users u on u.userId = o.customerId
-        join tickets t on t.orderId = t.ticketId
-        join events e on t.eventId = e.eventId";
+        left join tickets t on t.orderId = t.ticketId
+        left join events e on t.eventId = e.eventId
+        where o.isPaid = 1";
 
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $orders = [];
+        $customerRep = new CustomerRepository();
         foreach ($result as $row) {
             $order = new Order();
             $order->setOrderId($row['orderId']);
@@ -160,9 +162,11 @@ class OrderRepository extends Repository
             $orderItems = $this->getOrderItemsByOrderId($row['orderId']);
             $order->setOrderItems($orderItems);
 
-            $customerRep = new CustomerRepository();
-            $customer = $customerRep->getById($row['customerId']);
-            $order->setCustomer($customer);
+
+            if ($row['customerId'] != null) {
+                $customer = $customerRep->getById($row['customerId']);
+                $order->setCustomer($customer);
+            }
 
             array_push($orders, $order);
         }
