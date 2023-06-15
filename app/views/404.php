@@ -16,6 +16,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <div class="container">
+        <br><br>
         <h1>404</h1>
     </div>
     <footer class="foot row bottom"></footer>

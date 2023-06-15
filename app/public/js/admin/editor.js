@@ -601,3 +601,20 @@ if (window.self != window.top) {
     // disable max-width
     container.style.maxWidth = 'none';
 }
+
+// on 'title' edit end, try to generate a href automatically:
+title.onblur = function () {
+    if (pageHref.value == '') {
+        let titleValue = title.value;
+        // Remove special characters
+        titleValue = titleValue.replace(/[^a-zA-Z0-9 ]/g, "");
+        // Replace spaces with dashes
+        titleValue = titleValue.replace(/ /g, "-");
+        // Make lowercase
+        titleValue = titleValue.toLowerCase();
+        // Make sure that the count of characters is less than 50
+        titleValue = titleValue.substring(0, 50);
+
+        pageHref.value = '/' + titleValue;
+    }
+}

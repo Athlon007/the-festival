@@ -153,7 +153,7 @@ function createLanguagePicker() {
 function createIcon(href, alt, iconClass) {
     let collapseLi = document.createElement('li');
     collapseLi.classList.add('nav-item');
-    collapseLi.classList.add('d-none');
+    //collapseLi.classList.add('d-none');
     collapseLi.classList.add('d-lg-block');
     collapseLi.classList.add('px-2');
 
@@ -161,7 +161,7 @@ function createIcon(href, alt, iconClass) {
     collapseA.setAttribute('href', href);
 
     collapseA.classList.add('nav-item');
-    collapseA.classList.add('d-none');
+    //collapseA.classList.add('d-none');
     collapseA.classList.add('d-lg-block');
     collapseA.classList.add('d-xl-block');
     collapseA.classList.add(iconClass);
@@ -172,7 +172,7 @@ function createIcon(href, alt, iconClass) {
     if (alt == 'Shopping cart') {
         // Create a circle with the number of items in the cart
         let cartCircle = document.createElement('div');
-        cartCircle.classList.add('shopping-circle', 'd-none');
+        cartCircle.classList.add('shopping-circle');
         cartCircle.id = 'shopping-circle';
 
         let cartCircleText = document.createElement('p');
