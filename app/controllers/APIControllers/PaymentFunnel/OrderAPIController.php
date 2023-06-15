@@ -15,13 +15,13 @@ class OrderAPIController extends APIController
         $this->orderService = new OrderService();
     }
 
-    public function handlePostRequest($uri)
-    {
-       //api/orders
-    }
-    
     public function handleGetRequest($uri)
     {
+        // Getting access to this API requires either a valid API key, or a valid session.
+        if (!$this->isLoggedInAsAdmin()) {
+            $this->sendErrorMessage("You are not logged in as an admin.", 401);
+        }
+
         //api/orders
 
         //api/orders/unpaid/{customerId}
@@ -30,15 +30,4 @@ class OrderAPIController extends APIController
 
         //api/orders/{id}
     }
-
-    public function handleDeleteRequest($uri)
-    {
-       //api/orders/{id}
-    }
-
-    public function handlePutRequest($uri)
-    {
-        //api/orders/{id}
-    }
 }
-?>

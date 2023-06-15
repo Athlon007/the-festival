@@ -334,6 +334,13 @@ class Router
             return;
         }
 
+        if (str_starts_with($request, "/manageApiKeys")) {
+            require_once("controllers/ApiKeyController.php");
+            $apiKeyController = new ApiKeyController();
+            $apiKeyController->init();
+            return;
+        }
+
         switch ($request) {
             case "/manageUsers":
                 require_once("controllers/UserController.php");
