@@ -57,14 +57,14 @@ class OrderService
         return $orders;
     }
 
-    public function getOrdersToExport()
+    public function getOrdersToExport($isPaid = null, $customerId = null)
     {
-        return $this->orderRepository->getOrdersToExport();
+        return $this->orderRepository->getOrdersToExport($isPaid, $customerId);
     }
 
     public function downloadOrders()
     {
-        $orders = $this->getOrdersToExport();
+        $orders = $this->getOrdersToExport(true);
 
         if ($orders == null) {
             echo "No orders found";
@@ -191,5 +191,11 @@ class OrderService
         $this->deleteOrder($sessionOrder->getOrderId());
 
         return $customerOrder;
+    }
+
+
+    public function getAllOrders($limit = null, $offset = null, $isPaid = null)
+    {
+        return $this->orderRepository->getAllOrders($limit, $offset, $isPaid);
     }
 }

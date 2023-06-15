@@ -141,28 +141,52 @@ class OrderRepository extends Repository
         }
     }
 
-    public function getOrdersToExport()
+    public function getOrdersToExport($isPaid = null, $customerId = null)
     {
-        $sql = "select o.orderId, o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId from orders o
+        $sql = "select o.orderId, o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId, o.isPaid from orders o
         join users u on u.userId = o.customerId
-        join tickets t on t.orderId = t.ticketId
-        join events e on t.eventId = e.eventId";
+        left join tickets t on t.orderId = t.ticketId
+        left join events e on t.eventId = e.eventId ";
+
+        if ($isPaid != null) {
+            $sql .= " WHERE isPaid = " . ($isPaid == 'true' || $isPaid == 1 ? "1" : "0") . " ";
+        }
+
+        if ($customerId != null) {
+
+            if ($isPaid != null) {
+                $sql .= " AND ";
+            } else {
+                $sql .= " WHERE  ";
+            }
+
+            $sql .= " o.customerId = :customerId ";
+        }
 
         $stmt = $this->connection->prepare($sql);
+
+        if ($customerId != null) {
+            $stmt->bindValue(":customerId", htmlspecialchars($customerId));
+        }
+
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $orders = [];
+        $customerRep = new CustomerRepository();
         foreach ($result as $row) {
             $order = new Order();
             $order->setOrderId($row['orderId']);
             $order->setOrderDate(DateTime::createFromFormat('Y-m-d H:i:s', $row['orderDate']));
             $orderItems = $this->getOrderItemsByOrderId($row['orderId']);
             $order->setOrderItems($orderItems);
+            $order->setIsPaid($row['isPaid']);
 
-            $customerRep = new CustomerRepository();
-            $customer = $customerRep->getById($row['customerId']);
-            $order->setCustomer($customer);
+
+            if ($row['customerId'] != null) {
+                $customer = $customerRep->getById($row['customerId']);
+                $order->setCustomer($customer);
+            }
 
             array_push($orders, $order);
         }
