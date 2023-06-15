@@ -4,6 +4,9 @@ require_once(__DIR__ . "/../repositories/ArtistRepository.php");
 require_once("ImageService.php");
 require_once(__DIR__ . "/../models/Exceptions/InvalidVariableException.php");
 
+/**
+ * @author Konrad
+ */
 class ArtistService
 {
     private $repo;
@@ -30,6 +33,7 @@ class ArtistService
             throw new InvalidVariableException("Artist name is required.");
         }
 
+        // Sanitize the input
         $name = htmlspecialchars($name);
         $description = htmlspecialchars($description);
         $country = htmlspecialchars($country);
@@ -42,6 +46,7 @@ class ArtistService
         $recentAlbums = htmlspecialchars($recentAlbums);
         $artistKindId = htmlspecialchars($artistKindId);
 
+        // Create the artist
         $artistId = $this->repo->insert(
             $name,
             $description,
@@ -59,6 +64,8 @@ class ArtistService
         // Now, we insert the songs and images
         $imageService = new ImageService();
 
+        // If we have images assigned to the artist, we assign them.
+        // The images must be in the database too btw.
         if (is_array($images)) {
             $imageService->assignImagesToArtist($artistId, $images);
         }
@@ -72,8 +79,22 @@ class ArtistService
         $this->repo->deleteById($id);
     }
 
-    public function updateById($artistId, $name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $images, $artistKindId): Artist
-    {
+    public function updateById(
+        $artistId,
+        $name,
+        $description,
+        $recentAlbums,
+        $country,
+        $genres,
+        $homepage,
+        $facebook,
+        $twitter,
+        $instagram,
+        $spotify,
+        $images,
+        $artistKindId
+    ): Artist {
+        // Sanitize the input
         $artistId = htmlspecialchars($artistId);
         $name = htmlspecialchars($name);
         $description = htmlspecialchars($description);
@@ -87,6 +108,7 @@ class ArtistService
         $recentAlbums = htmlspecialchars($recentAlbums);
         $artistKindId = htmlspecialchars($artistKindId);
 
+        // Update the artist
         $this->repo->update(
             $artistId,
             $name,
@@ -106,6 +128,7 @@ class ArtistService
         $imageService = new ImageService();
 
         if (!is_array($images)) {
+            // If we don't have images, then we delete all images from the artist.
             $images = array();
         }
         $imageService->assignImagesToArtist($artistId, $images);

@@ -3,6 +3,9 @@ require_once("APIController.php");
 require_once(__DIR__ . "/../../services/ArtistService.php");
 require_once(__DIR__ . "/../../models/Exceptions/MissingVariableException.php");
 
+/**
+ * @author Konrad
+ */
 class ArtistAPIController extends APIController
 {
     private $service;

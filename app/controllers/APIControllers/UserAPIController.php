@@ -120,6 +120,8 @@ class UserAPIController extends APIController
             }
 
             $_SESSION["user"] = null;
+            // Destroy the session.
+            session_destroy();
             parent::sendSuccessMessage("Logout successful.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());

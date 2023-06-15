@@ -1,3 +1,4 @@
+// Author: Konrad
 // A simple countdown timer that counts down to the start of the Festival.
 
 class Countdown {

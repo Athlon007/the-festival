@@ -4,6 +4,9 @@ require_once('Artist.php');
 require_once(__DIR__ . '/../Types/EventType.php');
 require_once(__DIR__ . '/../Location.php');
 
+/**
+ * @author Konrad
+ */
 class MusicEvent extends Event implements JsonSerializable
 {
     private Artist $artist;

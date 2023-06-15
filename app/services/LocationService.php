@@ -5,7 +5,9 @@ require_once(__DIR__ . "/AddressService.php");
 require_once(__DIR__ . "/../models/Location.php");
 require_once(__DIR__ . '/../models/Exceptions/ObjectNotFoundException.php');
 
-
+/**
+ * @author Konrad
+ */
 class LocationService
 {
     private LocationRepository $repo;
@@ -27,6 +29,13 @@ class LocationService
         return $this->repo->getById($id);
     }
 
+    /**
+     * Retrives locations by different type
+     * 1: Jazz & More
+     * 2: YUMMY!
+     * 3: Stroll
+     * 4: DANCE!
+     */
     public function getLocationsByType(int $type, $sort = null): array
     {
         return $this->repo->getLocationsByType($type, $sort);
@@ -87,6 +96,9 @@ class LocationService
 
     const TOMTOM_API_KEY = "hhPEr4bmakfOBlVfPEsMhZWHNlmGt40L";
 
+    /**
+     * Fetches geocoding data from TomTom API
+     */
     public function fetchGeocoding($street, $buildingNumber, $postal, $city)
     {
         $opts = array(
@@ -103,6 +115,7 @@ class LocationService
         $context = stream_context_create($opts);
 
         $address = urlencode($street . " " . $buildingNumber . ", " . $postal . " " . $city);
+        // Oddly enough, TomTom API requires authentication key to be passed as a query parameter, not as a header.
         $url = "https://api.tomtom.com/search/2/geocode/$address.json?key=" . self::TOMTOM_API_KEY;
 
         $response = file_get_contents($url, true, $context);
@@ -113,6 +126,7 @@ class LocationService
             throw new ObjectNotFoundException("Invalid JSON");
         }
 
+        // We're only interested in the first result, and only in the lat/lon data.
         $lat = $response['results'][0]['position']['lat'];
         $lon = $response['results'][0]['position']['lon'];
 

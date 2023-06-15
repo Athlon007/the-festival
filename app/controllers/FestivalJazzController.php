@@ -2,6 +2,9 @@
 
 require_once(__DIR__ . "/../services/JazzTicketLinkService.php");
 
+/**
+ * @author Konrad
+ */
 class FestivalJazzController
 {
     const JAZZ_ARTIST_PAGE = "/../views/festival/jazzartist.php";

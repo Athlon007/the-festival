@@ -2,6 +2,7 @@
 
 /**
  * Logger class.
+ * Put it in the catch block of every try-catch statement you want to log.
  * @author Konrad
  */
 class Logger
@@ -30,7 +31,7 @@ class Logger
             // Write to file
             fwrite(
                 $file,
-                $t->getMessage()
+                $t->getMessage() . " (╯°□°)╯︵ ┻━┻"
                     . "\n\n" . $t->getFile() . ":" . $t->getLine()
                     . "\n\n" . $t->getTraceAsString()
             );

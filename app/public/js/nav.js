@@ -1,3 +1,7 @@
+// Author: Konrad
+// Handles building the navbar.
+// Must be included in the HTML file, otherwise you won't get a navbar.
+
 import { isCurrentLink, getNavbarItems } from './utils.js';
 
 //Check if /js/cart.js is loaded.

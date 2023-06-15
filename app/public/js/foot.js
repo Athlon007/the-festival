@@ -1,3 +1,7 @@
+// Author: Konrad
+// Handles creation of the footer.
+// Must be included in every HTML file, otherwise the footer will not be shown.
+
 import { getNavbarItems, isCurrentLink } from './utils.js';
 
 function getSocials() {
