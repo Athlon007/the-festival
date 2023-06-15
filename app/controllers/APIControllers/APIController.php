@@ -68,17 +68,6 @@ class APIController
         echo json_encode($body);
     }
 
-    /**
-     * Checks if the current request is from localhost.
-     */
-    final protected function isLocalApiRequest()
-    {
-        // TODO: Implement local API checking
-        return true;
-
-        //require_once(__DIR__ . "/../Config.php");
-        //return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
-    }
 
     final protected function isLoggedIn()
     {
