@@ -4,6 +4,7 @@ require_once(__DIR__ . '/../models/Exceptions/EventSoldOutException.php');
 require_once(__DIR__ . '/../models/Exceptions/CartException.php');
 require_once('OrderService.php');
 require_once('CustomerService.php');
+require_once('MollieService.php');
 
 
 /**
@@ -24,8 +25,24 @@ class CartService
     }
 
     /**
+     * Checks if cart is initialised
+     * @return bool
+     */
+    private function cartIsInitialised(): bool
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        //Check if the cart is initialised.
+        return (isset($_SESSION["cartId"]));
+    }
+
+    /**
      * Is called to create a new cart order if there is none in session when it's required to be.
+     * @param $ticketLinkId
      * @return Order
+     * @throws CartException
      */
     private function initialiseCart($ticketLinkId): Order
     {
@@ -50,7 +67,6 @@ class CartService
         } else
             $order = $this->orderService->createOrder($ticketLinkId);
 
-
         $_SESSION["cartId"] = $order->getOrderId();
         return $order;
     }
@@ -58,6 +74,7 @@ class CartService
     /**
      * Gets the cart from the session.
      * @return Order
+     * @throws CartException
      */
     public function getCart(): Order
     {
@@ -71,23 +88,11 @@ class CartService
     }
 
     /**
-     * Used when sharing a cart with another user.
-     * @param $orderId
-     * The ID of the order to get.
-     * @return Order
-     */
-    public function getCartByOrderId($orderId): Order
-    {
-        return $this->orderService->getOrderById($orderId);
-    }
-
-    /**
      * Gets the total item count from the session.
-     * @return Order
+     * @return int
      */
     public function getCount(): int
     {
-
         if (!$this->cartIsInitialised()) {
             return 0;
         } else {
@@ -99,10 +104,21 @@ class CartService
     }
 
     /**
+     * Used when sharing a cart with another user.
+     * @param $orderId
+     * @return Order
+     */
+    public function getCartByOrderId($orderId): Order
+    {
+        return $this->orderService->getOrderById($orderId);
+    }
+
+    /**
      * Adds one item to the cart.
      * @param $ticketLinkId
      * The ID of the ticketlink to add.
      * @return Order
+     * @throws CartException
      */
     public function addItem($ticketLinkId): Order
     {
@@ -137,6 +153,7 @@ class CartService
      * @param $ticketLinkId
      * The ID of the item to remove.
      * @return Order returns the order object.
+     * @throws CartException
      */
     public function removeItem($ticketLinkId): Order
     {
@@ -163,25 +180,34 @@ class CartService
     }
 
     /**
-     * @return Order
-     * @throws CartException
-     * @throws \Mollie\Api\Exceptions\ApiException
+     * Removes the whole order item from the cart.
+     * @param $ticketLinkId
+     * The ID of the item to remove.
+     * @return Order returns the order object.
+     * @throws ObjectNotFoundException | CartException
      */
-    public function checkoutCart()
-    {
-        //Retrieve the order that is in cart from the db.
-        $cartOrder = $this->getCart();
-        $this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId());
-        $cartOrder->setIsPaid(true);
-        $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
-        return $cartOrder;
+    public function deleteWholeItem($ticketLinkId): Order{
+        //Get order from the cart
+        $order = $this->getCart();
+
+        //Find the order item that contains the ticket link
+        foreach($order->getOrderItems() as $orderItem ){
+            //Delete the order item from the database and from the order, return order
+            if($orderItem->getTicketLinkId() == $ticketLinkId){
+                $this->orderService->deleteOrderItem($orderItem->getOrderItemId());
+                $order->removeOrderItem($orderItem);
+                return $order;
+            }
+        }
+        //If the order item was not found, throw an exception
+        throw new ObjectNotFoundException("Specified item not found.");
     }
 
     /**
      * @param $customerId
      * @return void
      */
-    public function getCartAfterLogin($customerId)
+    public function getCartAfterLogin($customerId): void
     {
         //Fetch
         $customerOrder = $this->orderService->getCartOrderForCustomer($customerId);
@@ -206,15 +232,21 @@ class CartService
     }
 
     /**
-     * @return bool
+     * @return Order
+     * @throws CartException | \Mollie\Api\Exceptions\ApiException
      */
-    private function cartIsInitialised(): bool
+    public function checkoutCart(): Order
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
+        //Retrieve the order that is in cart from the db.
+        $cartOrder = $this->getCart();
 
-        //Check if the cart is initialised.
-        return (isset($_SESSION["cartId"]));
+        //Call mollie service for payment (either throws exception or returns void)
+        $this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId());
+
+        $cartOrder->setIsPaid(true);
+        $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
+        return $cartOrder;
     }
+
+
 }

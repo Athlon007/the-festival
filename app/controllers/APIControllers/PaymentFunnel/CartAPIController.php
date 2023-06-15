@@ -5,7 +5,7 @@ require_once(__DIR__ . "/../../../models/TicketLink.php");
 require_once(__DIR__ . "/../../../services/TicketLinkService.php");
 
 /**
- * This API controller is specifically used to manipulate the cart in session.
+ * This API controller is specifically used for the cart order in SESSION and communicates with the order backend.
  * @author Joshua
  */
 class CartAPIController extends APIController
@@ -40,20 +40,21 @@ class CartAPIController extends APIController
     protected function handlePostRequest($uri)
     {
         try {
-            //api/cart/add/{ticketlinkId} POST method - adds the ticket link to the cart order
+            //api/cart/add/{ticketlinkId} POST method - adds one item of the ticket link to the cart order
             if (str_starts_with($uri, "/api/cart/add/") && is_numeric(basename($uri))) {
                 $ticketLinkId = basename($uri);
                 $cartOrder = $this->cartService->addItem($ticketLinkId);
                 parent::sendResponse($cartOrder);
                 return;
             }
-            //api/cart/remove/{ticketlinkId} POST method - removes the ticket link from the cart order
+            //api/cart/remove/{ticketlinkId} POST method - removes one item of the ticket link from the cart order
             else if (str_starts_with($uri, "/api/cart/remove/") && is_numeric(basename($uri))) {
                 $ticketLinkId = basename($uri);
                 $cartOrder = $this->cartService->removeItem($ticketLinkId);
                 parent::sendResponse($cartOrder);
                 return;
             }
+            ///api/cart/checkout POST method - checks out the cart
             else if (str_starts_with($uri, "/api/cart/checkout")) {
                 $cartOrder = $this->cartService->checkoutCart();
                 parent::sendResponse($cartOrder);
@@ -74,6 +75,20 @@ class CartAPIController extends APIController
 
     protected function handleDeleteRequest($uri)
     {
-        parent::sendErrorMessage("Method not allowed.", 405);
+        try {
+            ///api/cart/item/{ticketlink} DELETE method - Deletes the whole order item from the cart order
+            if (str_starts_with($uri, "/api/cart/item/") && is_numeric(basename($uri))){
+                $ticketLinkId = basename($uri);
+                $cartOrder = $this->cartService->deleteWholeItem($ticketLinkId);
+                parent::sendResponse($cartOrder);
+                return;
+            }
+            else{
+                throw new Exception("Bad Request", 400);
+            }
+        }
+        catch(Throwable $e){
+            parent::sendErrorMessage($e->getMessage(), $e->getCode());
+        }
     }
 }

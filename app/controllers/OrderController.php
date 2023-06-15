@@ -32,6 +32,9 @@ class OrderController
                 $shareMode = true;
             } else {
                 $cartOrder = $this->cartService->getCart();
+                if ($cartOrder->getTotalItemCount() > 0) {
+                    $hasStuffInCart = true;
+                }
             }
         } catch (Throwable $e) {
             Logger::write($e);
