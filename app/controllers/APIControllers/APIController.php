@@ -106,4 +106,20 @@ class APIController
             return false;
         }
     }
+
+    final protected function isApiKeyValid()
+    {
+        require_once(__DIR__ . "/../../services/ApiKeyService.php");
+        $apiKey = $this->getApiKeyFromBearer();
+        $apiKeyService = new ApiKeyService();
+        return $apiKeyService->isKeyValid($apiKey);
+    }
+
+    final protected function getApiKeyFromBearer()
+    {
+        $headers = apache_request_headers();
+        $bearer = $headers['Authorization'];
+        $bearer = str_replace("Bearer ", "", $bearer);
+        return $bearer;
+    }
 }

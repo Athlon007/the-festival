@@ -45,11 +45,11 @@ class ApikeyRepository extends Repository
         $stmt->execute();
     }
 
-    public function isKeyValid($key): bool
+    public function isKeyValid($token): bool
     {
-        $sql = "SELECT apiKeyId FROM apikeys WHERE `key` = :key";
+        $sql = "SELECT apiKeyId FROM apikeys WHERE token = :token";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':key', $key, PDO::PARAM_STR);
+        $stmt->bindParam(':token', $token, PDO::PARAM_STR);
         $stmt->execute();
         $result = $stmt->fetch();
         return $result !== false;
