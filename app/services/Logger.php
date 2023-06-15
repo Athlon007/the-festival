@@ -2,6 +2,7 @@
 
 /**
  * Logger class.
+ * Put it in the catch block of every try-catch statement you want to log.
  * @author Konrad
  */
 class Logger

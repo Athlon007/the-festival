@@ -1,3 +1,4 @@
+// Author: Konrad
 class AllAccessPass {
     constructor(container) {
         this.container = container;

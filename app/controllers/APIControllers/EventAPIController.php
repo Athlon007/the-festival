@@ -14,6 +14,9 @@ require_once(__DIR__ . '/../../services/JazzTicketLinkService.php');
 require_once(__DIR__ . '/../../services/HistoryTicketLinkService.php');
 require_once(__DIR__ . '/../../services/PassTicketLinkService.php');
 
+/**
+ * @author Konrad
+ */
 class EventAPIController extends APIController
 {
     private $eventService;

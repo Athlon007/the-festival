@@ -4,10 +4,14 @@ require_once("../models/Exceptions/ImageNotFoundException.php");
 require_once("../models/Image.php");
 require_once("../models/Page.php");
 
+/**
+ * Service for handling images.
+ * @author Konrad
+ */
 class ImageService
 {
     private $imageRepository;
-
+    // As for now, we only allow these image types:
     private $allowedImageTypes = array("png", "jpg", "jpeg", "webp");
 
     public function __construct()
@@ -29,6 +33,9 @@ class ImageService
         return $this->imageRepository->getAll();
     }
 
+    /**
+     * Assigns images that will be used in the banner for a given page.
+     */
     public function setImagesForPage($pageId, $imageIds): void
     {
         $cleanedImagesArray = array();
@@ -100,6 +107,9 @@ class ImageService
         unlink("../public" . $image->getSrc());
     }
 
+    /**
+     * Only updates the alt text of an image.
+     */
     public function updateImage($id, $alt): void
     {
         $id = htmlspecialchars($id);
@@ -107,6 +117,9 @@ class ImageService
         $this->imageRepository->updateImage($id, $alt);
     }
 
+    /**
+     * Used by JazzArtist page to assign images to an artist.
+     */
     public function assignImagesToArtist($artistId, $imageIds)
     {
         $this->removeImagesFromArtist($artistId);
@@ -115,11 +128,17 @@ class ImageService
         }
     }
 
+    /**
+     * Undoes the previous method.
+     */
     public function removeImagesFromArtist($artistId)
     {
         $this->imageRepository->removeImagesForArtist($artistId);
     }
 
+    /**
+     * Lets you search for images by their alt text.
+     */
     public function search($search): array
     {
         $search = htmlspecialchars($search);

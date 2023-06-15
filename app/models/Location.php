@@ -1,7 +1,6 @@
 <?php
 
 require_once("Address.php");
-
 class Location implements JsonSerializable
 {
     private int $locationId;

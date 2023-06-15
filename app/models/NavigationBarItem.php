@@ -4,6 +4,7 @@ require_once("Page.php");
 
 /**
  * A representation of navigation bar link.
+ * @author Konrad Figura
  */
 class NavigationBarItem implements JsonSerializable
 {

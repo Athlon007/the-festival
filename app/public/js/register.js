@@ -21,20 +21,19 @@ const passwordConfirmField = document.getElementById("passwordConfirm");
 var popup = document.getElementById("popup");
 
 
-function attemptRegister(captcha)
-{
+function attemptRegister(captcha) {
     //Clear popups
     popup.innerHTML = "";
-    
-    if(!allFieldsFilled()){
+
+    if (!allFieldsFilled()) {
         displayError("Please fill in all fields");
         return;
     }
-    else if(!checkPassword()){
+    else if (!checkPassword()) {
         displayError("Confirmed password does not match.");
         return;
     }
-    else if(!document.getElementById("termsAcceptance").checked){
+    else if (!document.getElementById("termsAcceptance").checked) {
         displayError("You must agree to our terms and conditions.");
         return;
     }
@@ -49,36 +48,36 @@ function attemptRegister(captcha)
         address: createAddressObject(),
         captchaResponse: captcha
     }
-    
+
     fetch("/api/user/register", {
         method: "POST",
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
-    .then(data => {
-        if(data.error_message){
-            displayError(data.error_message);
-            return;
-        }
-        window.location.assign("/home/login");
-    })
-    .catch(error => {displayError(error)});
+        .then(response => response.json())
+        .then(data => {
+            if (data.error_message) {
+                displayError(data.error_message);
+                return;
+            }
+            window.location.assign("/home/login");
+        })
+        .catch(error => { displayError(error) });
 }
 
-function allFieldsFilled(){
+function allFieldsFilled() {
     return !(!firstNameField.value || !lastNameField.value || !doBField.value || !phoneNumberField.value || !streetNameField.value
-            || !houseNumberField.value || !postalCodeField.value || !cityField.value || !countryField.value || !emailField.value 
-            || !passwordField.value || !passwordConfirmField.value);
+        || !houseNumberField.value || !postalCodeField.value || !cityField.value || !countryField.value || !emailField.value
+        || !passwordField.value || !passwordConfirmField.value);
 }
 
-function checkPassword(){
+function checkPassword() {
     return (passwordField.value == passwordConfirmField.value);
 }
 
-function createAddressObject(){
+function createAddressObject() {
     var housenumber = houseNumberField.value + " " + extensionField.value;
     var postCode = postalCodeField.value.replace(" ", "");
-    
+
     var address = {
         streetName: streetNameField.value,
         houseNumber: housenumber,
@@ -90,31 +89,25 @@ function createAddressObject(){
     return address;
 }
 
-function fetchAddress(){    
+function fetchAddress() {
     var postalCode = postalCodeField.value.replace(" ", "");
     var houseNumber = houseNumberField.value;
 
-    const data = {
-        postalCode: postalCode,
-        houseNumber: houseNumber
-    }
-
-    fetch("/api/address/fetch-address", {
-        method: "GET",
-        body: JSON.stringify(data)
+    fetch("/api/address/fetch-address?postalCode=" + postalCode + "&houseNumber=" + houseNumber, {
+        method: "GET"
     })
-    .then(response => response.json())
-    .then(data => {
-        if(data.address){
-            streetNameField.value = data.address.street;
-            cityField.value = data.address.city;
-            countryField.value = "Netherlands";
-        }
-    })
-    .catch(error => {console.log(error)});
+        .then(response => response.json())
+        .then(data => {
+            if (data.address) {
+                streetNameField.value = data.address.street;
+                cityField.value = data.address.city;
+                countryField.value = "Netherlands";
+            }
+        })
+        .catch(error => { console.log(error) });
 }
 
-function displayError(error){
+function displayError(error) {
     errorDiv = document.createElement("div");
     errorDiv.innerHTML = error;
     errorDiv.classList.add("alert");
@@ -124,7 +117,7 @@ function displayError(error){
     popup.appendChild(errorDiv);
 }
 
-function displaySuccess(success){
+function displaySuccess(success) {
     successDiv = document.createElement("div");
     successDiv.innerHTML = success;
     successDiv.classList.add("alert");
@@ -132,4 +125,4 @@ function displaySuccess(success){
     successDiv.classList.add("p-3");
     successDiv.setAttribute("role", "alert");
     popup.appendChild(successDiv);
-}   
+}

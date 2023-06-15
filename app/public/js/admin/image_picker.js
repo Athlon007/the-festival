@@ -1,3 +1,4 @@
+// Author: Konrad
 export class ImagePicker {
     loadImagePicker(container, onImageSelected, onImageUnselected) {
         container.innerHTML = '';

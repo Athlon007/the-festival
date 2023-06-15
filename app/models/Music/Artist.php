@@ -2,8 +2,10 @@
 
 require_once(__DIR__ . "/../Image.php");
 require_once("ArtistKind.php");
-require_once("Song.php");
 
+/**
+ * @author Konrad
+ */
 class Artist implements JsonSerializable
 {
     private $id;

@@ -1,6 +1,10 @@
 <?php
 require_once("Page.php");
 
+/**
+ * Dynamically loaded page with text content.
+ * @author Konrad
+ */
 class TextPage extends Page
 {
     public $content;

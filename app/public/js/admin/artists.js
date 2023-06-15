@@ -1,3 +1,4 @@
+// Author: Konrad
 // If page is not in iframe, redirect to '/manage'.
 if (window.frameElement == null) {
     window.location.href = '/manageJazz';
