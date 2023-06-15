@@ -16,10 +16,12 @@ class ApiKeyController
     public function init()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if ($_POST['action'] === 'post') {
+            if ($_POST['action'] === 'POST') {
                 $this->createKey();
             } elseif ($_POST['action'] === 'DELETE') {
                 $this->deleteKey();
+            } else {
+                echo "Invalid action";
             }
         } else {
             echo $_SERVER['REQUEST_METHOD'];
