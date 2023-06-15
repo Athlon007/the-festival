@@ -112,7 +112,7 @@ class OrderController
             //     header("Location: /");
             // }
 
-            $orders = $this->orderService->getOrdersToExport();
+            $orders = $this->orderService->getOrdersToExport(true);
             require_once('../views/admin/viewOrders.php');
 
             return $orders;
