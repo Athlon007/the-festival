@@ -6,6 +6,7 @@
 // Cart.Remove(itemID) - removes one item from the cart
 // Cart.UpdateCounter() - updates the counter of items in the cart
 // Cart.Get() - returns the cart object
+// Cart.Delete(itemId) - deletes the item from the cart (all instances of it)
 
 (function () {
     const apiUrl = '/api/cart';
@@ -104,6 +105,22 @@
             })
             .catch(error => {
                 console.log(error);
+            }
+            );
+    }
+
+    //Deletes the item from the cart
+    Cart.Delete = function (itemId) {
+        fetch(apiUrl + '/item/' + itemId,
+            {
+                method: 'DELETE'
+            }).then(response => response.json())
+            .then(data => {
+                Cart.UpdateCounter();
+                resolve(data);
+            }
+            ).catch(error => {
+                reject(error);
             }
             );
     }
