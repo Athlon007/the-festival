@@ -35,7 +35,7 @@ class NavigationBarItemService
         foreach ($input as $i) {
             $index++;
             // Get the page from the database.
-            $page = $this->pageService->getPageById($i["page"]["id"]);
+            $page = $this->pageService->getPageById(htmlspecialchars($i["page"]["id"]));
 
             // Now we must create an array of children of that navigation bar item.
             // There is only ONE level of children possible.
@@ -44,7 +44,7 @@ class NavigationBarItemService
             $childIndex = (int)((string)$index . '00');
             foreach ($i["children"] as $child) {
                 $childIndex++;
-                $childPage = $this->pageService->getPageById($child["page"]["id"]);
+                $childPage = $this->pageService->getPageById(htmlspecialchars($child["page"]["id"]));
                 // Set the children of the navigation bar item.
                 $children[] = new NavigationBarItem(0, $childPage, array(), $childIndex);
             }

@@ -116,7 +116,12 @@ class Router
             return;
         }
 
-        if (str_starts_with($request, '/manage')) {
+        if (
+            str_starts_with($request, '/manage')
+            || str_starts_with($request, '/addTour')
+            || str_starts_with($request, '/viewOrders')
+            || str_starts_with($request, '/downloadOrders')
+        ) {
             $this->routeAdminManage($request);
             return;
         }
@@ -176,21 +181,6 @@ class Router
                 require_once("controllers/FestivalFoodController.php");
                 $festivalFoodController = new FestivalFoodController();
                 $festivalFoodController->loadFoodFestivalPage();
-                break;
-            case "/addTour":
-                require_once("controllers/FestivalHistoryController.php");
-                $historyController = new FestivalHistoryController();
-                $historyController->addTour();
-                break;
-            case "/viewOrders":
-                require_once("controllers/OrderController.php");
-                $ticketController = new OrderController();
-                $ticketController->getOrdersToExport();
-                break;
-            case "/downloadOrders":
-                require_once("controllers/OrderController.php");
-                $ticketController = new OrderController();
-                $ticketController->downloadOrders();
                 break;
             case "/paymentSuccess":
                 require_once("controllers/PaymentController.php");
@@ -383,6 +373,21 @@ class Router
                 break;
             case "/manageHistory":
                 $historyController->getAllHistoryEvents();
+                break;
+            case "/addTour":
+                require_once("controllers/FestivalHistoryController.php");
+                $historyController = new FestivalHistoryController();
+                $historyController->addTour();
+                break;
+            case "/viewOrders":
+                require_once("controllers/OrderController.php");
+                $ticketController = new OrderController();
+                $ticketController->getOrdersToExport();
+                break;
+            case "/downloadOrders":
+                require_once("controllers/OrderController.php");
+                $ticketController = new OrderController();
+                $ticketController->downloadOrders();
                 break;
         }
     }
