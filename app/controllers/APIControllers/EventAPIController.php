@@ -125,6 +125,8 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
+            // Valid ticket type is required.
+            // Check /api/tickettypes for available ticket types.
             $ticketTypeId = $data['ticketType']['id'];
             if (!isset($ticketTypeId)) {
                 $ticketTypeId = $data['ticketType'];
@@ -211,7 +213,12 @@ class EventAPIController extends APIController
 
         try {
             $editedTicketLinkID = basename($uri);
-            $ticketType = $this->ticketTypeService->getById($data['ticketType']['id']);
+            $ticketTypeId = $data['ticketType']['id'];
+            if (!isset($ticketTypeId)) {
+                $ticketTypeId = $data['ticketType'];
+            }
+
+            $ticketType = $this->ticketTypeService->getById($ticketTypeId);
 
             $event = null;
 
