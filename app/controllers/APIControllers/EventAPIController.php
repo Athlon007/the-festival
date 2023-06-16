@@ -14,6 +14,7 @@ require_once(__DIR__ . '/../../services/TicketLinkService.php');
 require_once(__DIR__ . '/../../services/JazzTicketLinkService.php');
 require_once(__DIR__ . '/../../services/HistoryTicketLinkService.php');
 require_once(__DIR__ . '/../../services/PassTicketLinkService.php');
+require_once(__DIR__ . '/../../services/LocationService.php');
 
 /**
  * @author Konrad
@@ -43,6 +44,7 @@ class EventAPIController extends APIController
         $this->ticketTypeService = new TicketTypeService();
         $this->eventTypeService = new EventTypeService();
         $this->festivalHistoryservice = new FestivalHistoryService();
+        $this->locationService = new LocationService();
 
         // Load appropriate TicketLinkService.
         $request = $_SERVER['REQUEST_URI'];
@@ -55,9 +57,6 @@ class EventAPIController extends APIController
             // Music Services
             require_once(__DIR__ . '/../../services/ArtistService.php');
             $this->artistService = new ArtistService();
-
-            require_once(__DIR__ . '/../../services/LocationService.php');
-            $this->locationService = new LocationService();
         } elseif (str_starts_with($request, EventAPIController::URI_STROLL)) {
             $this->ticketLinkService = new HistoryTicketLinkService();
         } elseif (str_starts_with($request, EventAPIController::URI_PASSES)) {
