@@ -19,15 +19,15 @@ class OrderService
 {
     private $orderRepository;
     private $customerRepository;
-    //private $invoiceService;
-    //private $ticketController;
+    private $invoiceService;
+    private $ticketController;
 
     public function __construct()
     {
         $this->orderRepository = new OrderRepository();
         $this->customerRepository = new CustomerRepository();
-        //$this->invoiceService = new InvoiceService();
-        //$this->ticketController = new TicketController();
+        $this->invoiceService = new InvoiceService();
+        $this->ticketController = new TicketController();
     }
 
     public function getOrderById(int $id): Order
@@ -186,17 +186,17 @@ class OrderService
         return $this->orderRepository->getAllOrders($limit, $offset, $isPaid);
     }
 
-//    /**
-//     * @param Order $order
-//     * @return void
-//     * @throws Exception
-//     */
-//    public function sendTicketsAndInvoice(Order $order): void
-//    {
-//        //Send invoice via email
-//        $this->invoiceService->sendInvoiceEmail($order);
-//
-//        // Get all tickets and send them to the user
-//        $this->ticketController->getAllTickets($order);
-//    }
+    /**
+     * @param Order $order
+     * @return void
+     * @throws Exception
+     */
+    public function sendTicketsAndInvoice(Order $order): void
+    {
+        //Send invoice via email
+        $this->invoiceService->sendInvoiceEmail($order);
+
+        // Get all tickets and send them to the user
+        $this->ticketController->getAllTickets($order);
+    }
 }
