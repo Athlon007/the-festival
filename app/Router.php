@@ -166,6 +166,22 @@ class Router
                 $orderController = new OrderController();
                 $orderController->showShoppingCart();
                 break;
+            case "/order-history":
+                require_once("controllers/OrderController.php");
+                $orderController = new OrderController();
+                $orderController->showOrderHistory();
+                break;
+
+            case "/sendInvoiceOfOrder":
+                require_once("controllers/OrderController.php");
+                $orderController = new OrderController();
+                $orderController->sendInvoiceOfOrder();
+                break;
+            case "/sendTicketOfOrder":
+                require_once("controllers/OrderController.php");
+                $orderController = new OrderController();
+                $orderController->sendTicketOfOrder();
+                break;
             case "/buyPass":
             case "/buy-pass":
             case "/buypass":

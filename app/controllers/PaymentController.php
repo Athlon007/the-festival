@@ -21,7 +21,9 @@ class PaymentController
         //go to payment page
         $this->mollie->pay($order);
 
-        //unset the order from the session
-        unset($_SESSION['orderItems']);
+        // Get all tickets and send them to the user
+        $this->ticketController->getAllTicketsAndSend($order);
+
+        require_once(__DIR__ . '../../views/payment-funnel/paymentSuccess.php');
     }
 }

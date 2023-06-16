@@ -13,30 +13,6 @@ class TicketController
         $this->ticketService = new TicketService();
     }
 
-    public function getAllTickets(Order $order)
-    {
-        try {    
-            // get all history, jazz tickets (for now, later we will get all tickets for yummy and dance)
-            $tickets = array_merge(
-                $this->ticketService->getAllHistoryTickets($order),
-                $this->ticketService->getAllJazzTickets($order)
-            );
-    
-            $qrCodeImages = array();
-            foreach ($tickets as $ticket) {
-                $qrCodeImage = $this->ticketService->generateQRCode($ticket);
-                $qrCodeImages[] = $qrCodeImage;
-            }
-    
-            $dompdf =  $this->ticketService->generatePDFTicket($tickets, $order, $qrCodeImages);
-            $order->setTickets($tickets);
-            $this->ticketService->sendTicketByEmail($dompdf, $order);
-            return $tickets;
-        } catch (Exception $ex) {
-            throw ($ex);
-        }
-    }
-
     public function markTicketAsScanned()
     {
         try {

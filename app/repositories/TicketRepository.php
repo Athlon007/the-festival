@@ -16,6 +16,30 @@ require_once(__DIR__ . '/../repositories/UserRepository.php');
 
 class TicketRepository extends Repository
 {
+
+    // Add ticket to database
+    public function insertTicket(Order $order, Event $event, $ticketTypeId): Ticket
+    {
+        $query = "INSERT INTO tickets (eventId, isScanned, orderId, basePrice, vat, fullPrice, ticketTypeId) VALUES (:eventId, :isScanned, :orderId, :basePrice, :vat, :fullPrice, :ticketTypeId)";
+        $stmt = $this->connection->prepare($query);
+
+        $stmt->bindValue(":eventId", $event->getId());
+        $stmt->bindValue(":isScanned", 0);
+        $stmt->bindValue(":orderId", $order->getOrderId());
+        $stmt->bindValue(":basePrice", $order->getTotalBasePrice());
+        $stmt->bindValue(":vat", $event->getVat());
+        $stmt->bindValue(":fullPrice", $order->getTotalPrice());
+        $stmt->bindValue(":ticketTypeId", $ticketTypeId);
+
+        $stmt->execute();
+
+        $ticketId = $this->connection->lastInsertId();
+
+        $ticket = new Ticket();
+        $ticket->setTicketId($ticketId);
+
+        return $ticket;
+    }
     public function getAllTicketsByOrderIdAndEventType(Order $order, string $eventType)
     {
         $eventType = strtolower($eventType);
@@ -54,9 +78,6 @@ class TicketRepository extends Repository
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // if (empty($result)) {
-        //     throw new TicketNotFoundException("No tickets found for order ID: {$order->getOrderId()} and event type: {$eventType}");
-        // }
 
         $tickets = [];
 

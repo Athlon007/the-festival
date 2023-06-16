@@ -28,12 +28,9 @@
                     <th>Order Date</th>
                     <th>Customer Name</th>
                     <th>Customer Email</th>
-                    <th>Event Name</th>
-                    <th>Base Price</th>
-                    <th>Price</th>
+                    <th>Total excl VAT</th>
                     <th>Quantity</th>
-                    <th>Total Base Price</th>
-                    <th>Total Price</th>
+                    <th>Total inc VAT</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,7 +41,7 @@
                                 <?= $order->getOrderId() ?>
                             </td>
                             <td>
-                                <?= date_format($order->getOrderDate(), 'd/m/Y') ?>
+                            <?= $order->getOrderDateAsDMY(); ?>
                             </td>
                             <td>
                                 <?= $order->getCustomer()->getFirstName() ?>
