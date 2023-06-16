@@ -3,23 +3,24 @@
 require_once(__DIR__ . '/../models/User.php');
 require_once(__DIR__ . '/../models/Address.php');
 
-class Customer extends User implements JsonSerializable{
+class Customer extends User implements JsonSerializable
+{
     private DateTime $dateOfBirth;
     private string $phoneNumber;
     private Address $address;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->userType = 3;
     }
 
-    public function jsonSerialize() : mixed
+    public function jsonSerialize(): mixed
     {
         return [
             'userId' => $this->userId,
             'email' => $this->email,
             'firstName' => $this->firstName,
             'lastName' => $this->lastName,
-            'hashPassword' => $this->hashPassword,
             'userType' => $this->userType,
             'dateOfBirth' => $this->dateOfBirth,
             'phoneNumber' => $this->phoneNumber,
@@ -27,44 +28,43 @@ class Customer extends User implements JsonSerializable{
         ];
     }
 
-    public function getDateOfBirth() : DateTime
+    public function getDateOfBirth(): DateTime
     {
         return $this->dateOfBirth;
     }
 
-    public function getDateOfBirthAsString() : string
+    public function getDateOfBirthAsString(): string
     {
         return $this->dateOfBirth->format('Y-m-d');
     }
 
-    public function getDateOfBirthAsDMY() : string
+    public function getDateOfBirthAsDMY(): string
     {
         return $this->dateOfBirth->format('d-m-Y');
     }
 
-    public function setDateOfBirth(DateTime $dateOfBirth) : void
+    public function setDateOfBirth(DateTime $dateOfBirth): void
     {
         $this->dateOfBirth = $dateOfBirth;
     }
 
-    public function getPhoneNumber() : string
+    public function getPhoneNumber(): string
     {
         return $this->phoneNumber;
     }
 
-    public function setPhoneNumber(string $phoneNumber) : void
+    public function setPhoneNumber(string $phoneNumber): void
     {
         $this->phoneNumber = $phoneNumber;
     }
 
-    public function getAddress() : Address
+    public function getAddress(): Address
     {
         return $this->address;
     }
 
-    public function setAddress(Address $address) : void
+    public function setAddress(Address $address): void
     {
         $this->address = $address;
     }
 }
-

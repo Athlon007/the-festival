@@ -1,13 +1,19 @@
 <?php
 require_once("../repositories/NavigationBarItemRepository.php");
+require_once('PageService.php');
 
+/**
+ * @author Konrad
+ */
 class NavigationBarItemService
 {
     private $navBarItemRepository;
+    private $pageService;
 
     public function __construct()
     {
         $this->navBarItemRepository = new NavigationBarItemRepository();
+        $this->pageService = new PageService();
     }
 
     /**
@@ -20,23 +26,47 @@ class NavigationBarItemService
     }
 
     /**
-     * Returns the navigation bar item with the given id.
-     * @param int $id The id of the navigation bar item to return.
-     * @return NavigationBarItem The navigation bar item with the given id.
+     * Sets the navigation bar items array from the given input.
      */
-    public function getNavBarItemById(int $id): NavigationBarItem
+    private function mapInputToArrayOfNavbarItems($input): array
     {
-        $id = htmlspecialchars($id);
-        return $this->navBarItemRepository->getById($id);
+        $navbarItems = array();
+        $index = 0;
+        foreach ($input as $i) {
+            $index++;
+            // Get the page from the database.
+            $page = $this->pageService->getPageById(htmlspecialchars($i["page"]["id"]));
+
+            // Now we must create an array of children of that navigation bar item.
+            // There is only ONE level of children possible.
+            $children = array();
+            // Child's index is : parent's index + 100.
+            $childIndex = (int)((string)$index . '00');
+            foreach ($i["children"] as $child) {
+                $childIndex++;
+                $childPage = $this->pageService->getPageById(htmlspecialchars($child["page"]["id"]));
+                // Set the children of the navigation bar item.
+                $children[] = new NavigationBarItem(0, $childPage, array(), $childIndex);
+            }
+            // Set the navigation bar item.
+            $navbarItems[] = new NavigationBarItem(0, $page, $children, $index);
+        }
+
+        return $navbarItems;
     }
 
-    public function setNavbars(array $navbars): array
+    public function setNavbars($input): array
     {
-        // First, we must clear the database of all the navigation bar items.
+        // First we create an array of what was inputted by the user.
+        // We're doing it before we clear the database,
+        // because we want to avoid implications if the user input is invalid.
+        $navbarItems = $this->mapInputToArrayOfNavbarItems($input);
+
+        // We must clear the database of all the navigation bar items.
         $this->navBarItemRepository->clear();
 
         // Then, we must add the new navigation bar items.
-        foreach ($navbars as $navbar) {
+        foreach ($navbarItems as $navbar) {
             $id = $this->navBarItemRepository->insert($navbar->getPage()->getId(), $navbar->getOrder());
 
             // If the navigation bar item has children, we must add them as well.

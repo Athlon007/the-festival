@@ -1,3 +1,7 @@
+// ------------------------------
+// --- Used by /shopping-cart ---
+// ------------------------------
+
 // Find spans with following id pattern: cart-counter-*
 
 const total = document.getElementById('total');
@@ -9,7 +13,6 @@ for (let counter of cartCounterSpans) {
 
     const btnAdd = document.getElementById('cart-item-add-' + id);
     const btnRemove = document.getElementById('cart-item-remove-' + id);
-    const btnDelete = document.getElementById('cart-item-delete-' + id);
 
     const cartItemUnitPrice = document.getElementById('cart-item-unit-price-' + id);
     const cartItemTotalPrice = document.getElementById('cart-item-total-price-' + id);
@@ -20,7 +23,8 @@ for (let counter of cartCounterSpans) {
         Cart.Add(id);
 
         const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
-        cartItemTotalPrice.innerHTML = "&euro; " + ((count + 1) * unitPrice);
+        console.log(unitPrice);
+        cartItemTotalPrice.innerHTML = "&euro; " + parseFloat(((count + 1) * unitPrice)).toFixed(0);
 
         const totalAmount = parseFloat(total.innerHTML.split('€')[1]);
         total.innerHTML = "Total price: &euro; " + (totalAmount + unitPrice);
@@ -44,18 +48,20 @@ for (let counter of cartCounterSpans) {
         }
     });
 
-    btnDelete.addEventListener('click', function () {
-        const count = parseInt(counter.innerHTML);
-        for (let i = 0; i < count; i++) {
-            Cart.Remove(id);
-        }
+}
 
-        const div = document.getElementById('cart-item-' + id);
-        div.parentNode.removeChild(div);
-        Cart.Remove(id);
+// Get hostname.
+const hostname = window.location.hostname;
+const protocol = window.location.protocol;
+// Format: http://hostnane/shopping-cart?id=cartId
+const shareId = document.getElementById('share-id').value;
+const shareUrl = protocol + "//" + hostname + "/shopping-cart?id=" + shareId;
 
-        const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
-        const totalAmount = parseFloat(total.innerHTML.split('€')[1]);
-        total.innerHTML = "Total price: &euro; " + (totalAmount - unitPrice * count);
-    });
+const shareUrlText = document.getElementById('share-url-text');
+shareUrlText.value = shareUrl;
+
+async function shareMyCart() {
+    // Select entire text in the input field and copy it to clipboard.
+    shareUrlText.select();
+    await navigator.clipboard.writeText(shareUrlText.value);
 }

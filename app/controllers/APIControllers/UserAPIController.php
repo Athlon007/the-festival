@@ -63,6 +63,7 @@ class UserAPIController extends APIController
                 }
             }
         } catch (Exception $ex) {
+            Logger::write($ex);
             parent::sendErrorMessage($ex->getMessage());
         }
     }
@@ -87,15 +88,16 @@ class UserAPIController extends APIController
         try {
             if (!isset($data->email) || !isset($data->password))
                 throw new MissingVariableException("Email and password are required", 400);
-            
+
 
             //Fetch user (method throws error if user not found)
             $user = $this->userService->verifyUser($data);
 
             //Store user in session
-            if(session_status() == PHP_SESSION_NONE){
+            if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
+
             $_SESSION["user"] = serialize($user);
 
             //If the user is a customer, try to fetch the cart they might have saved during an earlier visit.
@@ -105,6 +107,7 @@ class UserAPIController extends APIController
 
             parent::sendSuccessMessage("Login successful.");
         } catch (Exception $ex) {
+            Logger::write($ex);
             parent::sendErrorMessage($ex->getMessage(), $ex->getCode());
         }
     }
@@ -112,11 +115,13 @@ class UserAPIController extends APIController
     private function logout()
     {
         try {
-            if(session_status() == PHP_SESSION_NONE){
+            if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
 
             $_SESSION["user"] = null;
+            // Destroy the session.
+            session_destroy();
             parent::sendSuccessMessage("Logout successful.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());
@@ -127,9 +132,11 @@ class UserAPIController extends APIController
     {
         try {
             //Check if all data is present
-            if (!isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password)
-            || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse)) { 
-            
+            if (
+                !isset($data->firstName) || !isset($data->lastName) || !isset($data->email) || !isset($data->password)
+                || !isset($data->dateOfBirth) || !isset($data->phoneNumber) || !isset($data->address) || !isset($data->captchaResponse)
+            ) {
+
                 throw new MissingVariableException("Registration data incomplete.");
             }
 
@@ -148,9 +155,10 @@ class UserAPIController extends APIController
             $customer->setLastName($data->lastName);
             $customer->setEmail($data->email);
             $customer->setHashPassword($data->password);
-            $customer->setDateOfBirth($data->dateOfBirth);
+            $dateTime = new DateTime($data->dateOfBirth);
+            $customer->setDateOfBirth($dateTime);
             $customer->setPhoneNumber($data->phoneNumber);
-            
+
             //Create address object from data, then set for customer
             $address = new Address();
             $address->setStreetName($data->address->streetName);
@@ -158,13 +166,14 @@ class UserAPIController extends APIController
             $address->setPostalCode($data->address->postalCode);
             $address->setCity($data->address->city);
             $address->setCountry($data->address->country);
-            
+
             $customer->setAddress($address);
-            
+
             $this->customerService->registerCustomer($customer);
 
             parent::sendSuccessMessage("Registration successful.");
         } catch (Exception $ex) {
+            Logger::write($ex);
             parent::sendErrorMessage($ex->getMessage());
         }
     }

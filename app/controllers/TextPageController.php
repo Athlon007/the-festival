@@ -2,6 +2,9 @@
 
 require_once("../models/TextPage.php");
 
+/**
+ * @author Konrad
+ */
 class TextPageController
 {
     const TEXT_PAGE_PATH = "/../views/textpage.php";

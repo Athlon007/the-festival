@@ -5,6 +5,9 @@ require_once("../models/Page.php");
 require_once("../models/TextPage.php");
 require_once("ImageRepository.php");
 
+/**
+ * @author Konrad
+ */
 class PageRepository extends Repository
 {
     /**

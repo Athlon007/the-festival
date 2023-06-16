@@ -1,11 +1,22 @@
+// Author: Konrad
+// An universal method of adding a new item to the cart.
+//
+// METHODS:
+// Cart.Add(itemID) - adds one item to the cart
+// Cart.Remove(itemID) - removes one item from the cart
+// Cart.UpdateCounter() - updates the counter of items in the cart
+// Cart.Get() - returns the cart object
+// Cart.Delete(itemId) - deletes the item from the cart (all instances of it)
+
 (function () {
+    const apiUrl = '/api/cart';
     var Cart = {};
     //Adds one item to the cart order
     Cart.Add = function (itemID) {
         document.getElementById('shopping-circle').classList.remove('d-none');
         document.getElementById('shopping-circle-text').innerHTML = this.count;
 
-        const url = "/api/cart/add/" + itemID;
+        const url = apiUrl + "/add/" + itemID;
         return new Promise((resolve, reject) => {
             fetch(url, {
                 method: 'POST',
@@ -69,7 +80,7 @@
 
     //Updates the counter in the nav bar by getting the count from the cart order from the server
     Cart.UpdateCounter = function () {
-        fetch('/api/cart/count',
+        fetch(apiUrl + '/count',
             {
                 method: 'GET',
                 headers: {
@@ -94,6 +105,22 @@
             })
             .catch(error => {
                 console.log(error);
+            }
+            );
+    }
+
+    //Deletes the item from the cart
+    Cart.Delete = function (itemId) {
+        fetch(apiUrl + '/item/' + itemId,
+            {
+                method: 'DELETE'
+            }).then(response => response.json())
+            .then(data => {
+                Cart.UpdateCounter();
+                resolve(data);
+            }
+            ).catch(error => {
+                reject(error);
             }
             );
     }

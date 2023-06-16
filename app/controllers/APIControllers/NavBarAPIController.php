@@ -2,6 +2,9 @@
 require_once(__DIR__ . "/APIController.php");
 require_once("../services/NavigationBarItemService.php");
 
+/**
+ * @author Konrad
+ */
 class NavBarAPIController extends APIController
 {
     private $navService;
@@ -13,12 +16,6 @@ class NavBarAPIController extends APIController
 
     public function handleGetRequest($uri)
     {
-        // Make sure that only localhost can use this API.
-        if (!parent::isLocalApiRequest()) {
-            parent::sendErrorMessage("Access denied.");
-            return;
-        }
-
         try {
             $output = $this->navService->getAll();
             echo json_encode($output);
@@ -35,34 +32,9 @@ class NavBarAPIController extends APIController
             return;
         }
 
-        // Make sure that only localhost can use this API.
-        if (!parent::isLocalApiRequest()) {
-            parent::sendErrorMessage("Access denied.");
-            return;
-        }
-
-        require_once(__DIR__ . '/../../services/PageService.php');
-        $pageService = new PageService();
-
         try {
             $input = json_decode(file_get_contents("php://input"), true);
-
-            $navBarItemsArray = array();
-            $index = 0;
-            foreach ($input as $i) {
-                $index++;
-                $page = $pageService->getPageById($i["page"]["id"]);
-                $children = array();
-                $childIndex = (int)((string)$index . '00');
-                foreach ($i["children"] as $child) {
-                    $childIndex++;
-                    $childPage = $pageService->getPageById($child["page"]["id"]);
-                    $children[] = new NavigationBarItem(0, $childPage, array(), $childIndex);
-                }
-                $navBarItemsArray[] = new NavigationBarItem(0, $page, $children, $index);
-            }
-
-            $output = $this->navService->setNavbars($navBarItemsArray);
+            $output = $this->navService->setNavbars($input);
             echo json_encode($output);
         } catch (Exception $e) {
             Logger::write($e);

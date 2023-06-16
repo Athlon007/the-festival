@@ -7,6 +7,12 @@ class Router
 {
     const PAGE_NOT_FOUND_PATH = "/views/404.php";
 
+    // General idea of the router:
+    // 1. Check if the request is for an API endpoint. If so, route it to routeAPI().
+    // 2. Check if the request is for a page or textpage. If so, try to load it from the database (for textpages), or from URL (for pages).
+    // 3. If page is neither TextPage or Page, try static routes (so stuff like /login, /register, /cart, etc.)
+    // 4. If nothing matches, return 404. Game over, man, game over!
+
     /**
      * The default entry path from /public/index.php.
      */
@@ -110,7 +116,12 @@ class Router
             return;
         }
 
-        if (str_starts_with($request, '/manage')) {
+        if (
+            str_starts_with($request, '/manage')
+            || str_starts_with($request, '/addTour')
+            || str_starts_with($request, '/viewOrders')
+            || str_starts_with($request, '/downloadOrders')
+        ) {
             $this->routeAdminManage($request);
             return;
         }
@@ -175,21 +186,6 @@ class Router
                 require_once("controllers/FestivalFoodController.php");
                 $festivalFoodController = new FestivalFoodController();
                 $festivalFoodController->loadFoodFestivalPage();
-                break;
-            case "/addTour":
-                require_once("controllers/FestivalHistoryController.php");
-                $historyController = new FestivalHistoryController();
-                $historyController->addTour();
-                break;
-            case "/viewOrders":
-                require_once("controllers/OrderController.php");
-                $ticketController = new OrderController();
-                $ticketController->getOrdersToExport();
-                break;
-            case "/downloadOrders":
-                require_once("controllers/OrderController.php");
-                $ticketController = new OrderController();
-                $ticketController->downloadOrders();
                 break;
             case "/paymentSuccess":
                 require_once("controllers/PaymentController.php");
@@ -343,6 +339,13 @@ class Router
             return;
         }
 
+        if (str_starts_with($request, "/manageApiKeys")) {
+            require_once("controllers/ApiKeyController.php");
+            $apiKeyController = new ApiKeyController();
+            $apiKeyController->init();
+            return;
+        }
+
         switch ($request) {
             case "/manageUsers":
                 require_once("controllers/UserController.php");
@@ -382,6 +385,21 @@ class Router
                 break;
             case "/manageHistory":
                 $historyController->getAllHistoryEvents();
+                break;
+            case "/addTour":
+                require_once("controllers/FestivalHistoryController.php");
+                $historyController = new FestivalHistoryController();
+                $historyController->addTour();
+                break;
+            case "/viewOrders":
+                require_once("controllers/OrderController.php");
+                $ticketController = new OrderController();
+                $ticketController->getOrdersToExport();
+                break;
+            case "/downloadOrders":
+                require_once("controllers/OrderController.php");
+                $ticketController = new OrderController();
+                $ticketController->downloadOrders();
                 break;
         }
     }

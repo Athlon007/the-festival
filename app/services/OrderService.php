@@ -39,23 +39,28 @@ class OrderService
         //Get the order object
         $order = $this->orderRepository->getOrderById($id);
         //Get the customer object attached in order
-        $order->setCustomer($this->customerRepository->getById($order->getCustomer()->getUserId()));
+        // Btw, customer may be null if the order is made by a visitor
+        if ($order->getCustomer() != null) {
+            $order->setCustomer($this->customerRepository->getById($order->getCustomer()->getUserId()));
+        } else {
+            $order->setCustomer(null);
+        }
         return $order;
     }
 
-    public function getOrderHistory(int $customerId)
+    public function getOrderHistory(int $customerId): array
     {
         return $this->orderRepository->getOrderHistory($customerId);
     }
 
-    public function getOrdersToExport()
+    public function getOrdersToExport($isPaid = null, $customerId = null)
     {
-        return $this->orderRepository->getOrdersToExport();
+        return $this->orderRepository->getOrdersToExport($isPaid, $customerId);
     }
 
     public function downloadOrders()
     {
-        $orders = $this->getOrdersToExport();
+        $orders = $this->getOrdersToExport(true);
 
         if ($orders == null) {
             echo "No orders found";
@@ -63,21 +68,26 @@ class OrderService
         }
 
         $fileName = "orders-data_" . date('Y-m-d') . ".xls";
-        $fields = array('ID', 'ORDER DATE', 'CUSTOMER NAME', 'CUSTOMER EMAIL', 'TOTAL EXCL VAT', 'NUMBER OF ITEM', 'TOTAL INC VAT');
+        $fields = array('ID', 'ORDER DATE', 'CUSTOMER NAME', 'CUSTOMER EMAIL', 'EVENT NAME', 'BASE PRICE', 'PRICE', 'QUANTITY', 'TOTAL BASE PRICE', 'TOTAL PRICE');
         $excelData = implode("\t", $fields) . "\n";
 
         foreach ($orders as $order) {
-            $lineData = array(
-                $order->getOrderId(),
-                date_format($order->getOrderDate(), 'd/m/Y'),
-                $order->getCustomer()->getFirstName() . " " . $order->getCustomer()->getLastName(),
-                $order->getCustomer()->getEmail(),
-                number_format($order->getTotalBasePrice(), 2),
-                $order->getTotalItemCount(),
-                number_format($order->getTotalPrice(), 2)
-            );
-            array_walk($lineData, array($this, 'filterData'));
-            $excelData .= implode("\t", $lineData) . "\n";
+            foreach ($order->getOrderItems() as $orderItem) {
+                $lineData = array(
+                    $order->getOrderId(),
+                    date_format($order->getOrderDate(), 'd/m/Y'),
+                    $order->getCustomer()->getFirstName() . " " . $order->getCustomer()->getLastName(),
+                    $order->getCustomer()->getEmail(),
+                    $orderItem->getEventName(),
+                    number_format($orderItem->getBasePrice(), 2),
+                    number_format($orderItem->getFullTicketPrice(), 2),
+                    $orderItem->getQuantity(),
+                    number_format($orderItem->getTotalBasePrice(), 2),
+                    number_format($orderItem->getTotalFullPrice(), 2)
+                );
+                array_walk($lineData, array($this, 'filterData'));
+                $excelData .= implode("\t", $lineData) . "\n";
+            }
         }
 
         // Send HTTP headers
@@ -92,7 +102,6 @@ class OrderService
 
     public function sendInvoice()
     {
-
     }
 
 
@@ -178,5 +187,10 @@ class OrderService
         $this->deleteOrder($sessionOrder->getOrderId());
 
         return $customerOrder;
+    }
+
+    public function getAllOrders($limit = null, $offset = null, $isPaid = null)
+    {
+        return $this->orderRepository->getAllOrders($limit, $offset, $isPaid);
     }
 }

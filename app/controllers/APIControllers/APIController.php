@@ -68,17 +68,6 @@ class APIController
         echo json_encode($body);
     }
 
-    /**
-     * Checks if the current request is from localhost.
-     */
-    final protected function isLocalApiRequest()
-    {
-        // TODO: Implement local API checking
-        return true;
-
-        //require_once(__DIR__ . "/../Config.php");
-        //return $_SERVER["REMOTE_ADDR"] == $allowed_api_address;
-    }
 
     final protected function isLoggedIn()
     {
@@ -116,5 +105,21 @@ class APIController
             Logger::write($e);
             return false;
         }
+    }
+
+    final protected function isApiKeyValid()
+    {
+        require_once(__DIR__ . "/../../services/ApiKeyService.php");
+        $apiKey = $this->getApiKeyFromBearer();
+        $apiKeyService = new ApiKeyService();
+        return $apiKeyService->isKeyValid($apiKey);
+    }
+
+    final protected function getApiKeyFromBearer()
+    {
+        $headers = apache_request_headers();
+        $bearer = $headers['Authorization'];
+        $bearer = str_replace("Bearer ", "", $bearer);
+        return $bearer;
     }
 }

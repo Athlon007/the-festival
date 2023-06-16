@@ -3,6 +3,9 @@ require_once("../repositories/PageRepository.php");
 require_once("../models/Exceptions/PageNotFoundException.php");
 require_once("../models/Exceptions/FileDoesNotExistException.php");
 
+/**
+ * @author Konrad
+ */
 class PageService
 {
     private $repo;

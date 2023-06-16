@@ -19,8 +19,29 @@ class OrderController
 
     public function showShoppingCart()
     {
+        $fullPrice = 0;
+        $hasStuffInCart = false;
         try {
-            $cartOrder = $this->cartService->getCart();
+            // http://localhost/shopping-cart?id=16
+            // Check if "id" is set in the URL query string
+            // if so, other user is trying to share their cart with you
+
+            $cartOrder = null;
+            $shareMode = false;
+            if (isset($_GET["id"])) {
+                $cartOrder = $this->cartService->getCartByOrderId($_GET["id"]);
+                $shareMode = true;
+            } else {
+                $cartOrder = $this->cartService->getCart();
+            }
+
+            if ($cartOrder) {
+                $orderItems = $cartOrder->getOrderItems();
+                foreach ($orderItems as $orderItem) {
+                    $hasStuffInCart = true;
+                    $fullPrice += $orderItem->getTotalFullPrice();
+                }
+            }
         } catch (Throwable $e) {
             Logger::write($e);
             $cartOrder = null;
@@ -41,9 +62,8 @@ class OrderController
             $customer = unserialize($_SESSION['user']);
 
             $orders = $this->orderService->getOrderHistory($customer->getUserId());
-            require_once('../views/payment-funnel/order-history.php');
-
-            return $orders;
+            //$orders = $this->orderService->getOrderHistory(33);
+            require_once('../views/orderHistory.php');
         } catch (Throwable $e) {
             Logger::write($e);
         }
@@ -93,7 +113,7 @@ class OrderController
             //     header("Location: /");
             // }
 
-            $orders = $this->orderService->getOrdersToExport();
+            $orders = $this->orderService->getOrdersToExport(true);
             require_once('../views/admin/viewOrders.php');
 
             return $orders;

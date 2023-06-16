@@ -4,6 +4,9 @@ require_once("Repository.php");
 require_once("../models/NavigationBarItem.php");
 require_once("../models/Page.php");
 
+/**
+ * @author Konrad
+ */
 class NavigationBarItemRepository extends Repository
 {
     /**

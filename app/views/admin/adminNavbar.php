@@ -11,6 +11,8 @@
     <a class="flex-sm-fill text-sm-center nav-link" href="/managePasses">Passes</a>
     <a class="flex-sm-fill text-sm-center nav-link" href="/manageNavBar">Nav Bar</a>
     <a class="flex-sm-fill text-sm-center nav-link" href="/manageLocations">Locations</a>
+    <a class="flex-sm-fill text-sm-center nav-link" href="/viewOrders">Orders</a>
+    <a class="flex-sm-fill text-sm-center nav-link" href="/manageApiKeys">API Keys</a>
 </nav>
 
 <script>

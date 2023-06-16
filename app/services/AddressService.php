@@ -43,7 +43,7 @@ class AddressService
 
         $context = stream_context_create($opts);
 
-        $url = "https://postcode.tech/api/v1/postcode?postcode=" . $data->postalCode . "&number=" . $data->houseNumber;
+        $url = "https://postcode.tech/api/v1/postcode?postcode=" . $data['postalCode'] . "&number=" . $data['houseNumber'];
         // Open the file using the HTTP headers set above
         $response = file_get_contents($url, false, $context);
 

@@ -41,12 +41,12 @@ class OrderRepository extends Repository
 
     private function getOrderItemById($orderItemId): OrderItem
     {
-        $sql = "select o.orderItemId, tl.ticketLinkId, e.name as eventName, tt.ticketTypeName as ticketName, e.startTime, tt.ticketTypePrice as fullTicketPrice, f.VAT, o.quantity 
-                from orderitems o 
-                join ticketlinks tl on tl.ticketLinkId = o.ticketLinkId 
-                join tickettypes tt on tt.ticketTypeId = tl.ticketTypeId 
-                join events e on e.eventId = tl.eventId 
-                join festivaleventtypes f on f.eventTypeId = e.festivalEventType 
+        $sql = "select o.orderItemId, tl.ticketLinkId, e.name as eventName, tt.ticketTypeName as ticketName, e.startTime, tt.ticketTypePrice as fullTicketPrice, f.VAT, o.quantity
+                from orderitems o
+                join ticketlinks tl on tl.ticketLinkId = o.ticketLinkId
+                join tickettypes tt on tt.ticketTypeId = tl.ticketTypeId
+                join events e on e.eventId = tl.eventId
+                join festivaleventtypes f on f.eventTypeId = e.festivalEventType
                 where o.orderItemId = :orderItemId";
 
         $stmt = $this->connection->prepare($sql);
@@ -99,9 +99,9 @@ class OrderRepository extends Repository
 
     public function getOrderItemsByOrderId($orderId): array
     {
-        $sql = "select o.orderItemId, tl.ticketLinkId, e.name as eventName, tt.ticketTypeName as ticketName, e.startTime, tt.ticketTypePrice as fullTicketPrice, f.VAT, o.quantity 
+        $sql = "select o.orderItemId, tl.ticketLinkId, e.name as eventName, tt.ticketTypeName as ticketName, e.startTime, tt.ticketTypePrice as fullTicketPrice, f.VAT, o.quantity
                 from orderitems o
-                join ticketlinks tl on tl.ticketLinkId = o.ticketLinkId 
+                join ticketlinks tl on tl.ticketLinkId = o.ticketLinkId
                 join tickettypes tt on tt.ticketTypeId = tl.ticketTypeId
                 join events e on e.eventId = tl.eventId
                 join festivaleventtypes f on f.eventTypeId = e.festivalEventType
@@ -139,31 +139,54 @@ class OrderRepository extends Repository
             $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
             return $order;
         }
-
     }
 
-    public function getOrdersToExport()
+    public function getOrdersToExport($isPaid = null, $customerId = null)
     {
-        $sql = "select o.orderId, o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId from orders o
+        $sql = "select o.orderId, o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId, o.isPaid from orders o
         join users u on u.userId = o.customerId
-        join tickets t on t.orderId = t.ticketId 
-        join events e on t.eventId = e.eventId";
+        left join tickets t on t.orderId = t.ticketId
+        left join events e on t.eventId = e.eventId ";
+
+        if ($isPaid != null) {
+            $sql .= " WHERE isPaid = " . ($isPaid == 'true' || $isPaid == 1 ? "1" : "0") . " ";
+        }
+
+        if ($customerId != null) {
+
+            if ($isPaid != null) {
+                $sql .= " AND ";
+            } else {
+                $sql .= " WHERE  ";
+            }
+
+            $sql .= " o.customerId = :customerId ";
+        }
 
         $stmt = $this->connection->prepare($sql);
+
+        if ($customerId != null) {
+            $stmt->bindValue(":customerId", htmlspecialchars($customerId));
+        }
+
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $orders = [];
+        $customerRep = new CustomerRepository();
         foreach ($result as $row) {
             $order = new Order();
             $order->setOrderId($row['orderId']);
             $order->setOrderDate(DateTime::createFromFormat('Y-m-d H:i:s', $row['orderDate']));
             $orderItems = $this->getOrderItemsByOrderId($row['orderId']);
             $order->setOrderItems($orderItems);
+            $order->setIsPaid($row['isPaid']);
 
-            $customerRep = new CustomerRepository();
-            $customer = $customerRep->getById($row['customerId']);
-            $order->setCustomer($customer);
+
+            if ($row['customerId'] != null) {
+                $customer = $customerRep->getById($row['customerId']);
+                $order->setCustomer($customer);
+            }
 
             array_push($orders, $order);
         }
@@ -175,8 +198,8 @@ class OrderRepository extends Repository
         // TODO: Communicate with order service from the invoice service and use getOrderById method. so you can get the order items, and customer as well.
         $sql = "select o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId from orders o
         join users u on u.userId = o.customerId
-        join tickets t on o.orderId  = t.orderId
-        join events e on t.eventId = e.eventId 
+        join tickets t on t.orderId = t.ticketId
+        join events e on t.eventId = e.eventId
         where o.orderId = :orderId ";
 
         $stmt = $this->connection->prepare($sql);
@@ -228,7 +251,7 @@ class OrderRepository extends Repository
         $sql = "UPDATE orders SET orderDate = :orderDate, customerId = :customerId, isPaid = :isPaid WHERE orderId = :orderId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDateAsString()));
-        $stmt->bindValue(":customerId", htmlspecialchars($order->getCustomer()->getCustomerId()));
+        $stmt->bindValue(":customerId", htmlspecialchars($order->getCustomer()->getUserId()));
         $stmt->bindValue(":isPaid", htmlspecialchars($order->getIsPaid()));
         $stmt->bindValue(":orderId", htmlspecialchars($orderId));
 
@@ -246,7 +269,6 @@ class OrderRepository extends Repository
 
         $stmt->execute();
         return $this->getOrderItemById($orderItemId);
-
     }
 
     //Insert a new order into the database
@@ -255,7 +277,16 @@ class OrderRepository extends Repository
         $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDateAsString()));
-        $stmt->bindValue(":customerId", htmlspecialchars($order->getCustomer()->getCustomerId()));
+        //$customerId = $order->getCustomer()->getUserId();
+        //$stmt->bindValue(":customerId", htmlspecialchars($customerId));
+
+        if ($order->getCustomer() != null) {
+            $customerId = $order->getCustomer()->getUserId();
+            $stmt->bindValue(":customerId", htmlspecialchars($customerId));
+        } else {
+            $stmt->bindValue(":customerId", null);
+        }
+
         $stmt->execute();
 
         return $this->getOrderById($this->connection->lastInsertId());
@@ -279,7 +310,6 @@ class OrderRepository extends Repository
         $sql = "DELETE FROM orders WHERE orderId = :orderId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderId", $orderId);
-
     }
 
     public function deleteOrderItem(int $orderItemId)
@@ -300,7 +330,6 @@ class OrderRepository extends Repository
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
         } catch (Exception $ex) {
-
         }
     }
 
@@ -308,8 +337,13 @@ class OrderRepository extends Repository
     {
         $order = new Order();
         $order->setOrderId($row['orderId']);
-        $order->setOrderDate($row['orderDate']);
-        $order->getCustomer()->setUserId($row['customerId']);
+        $order->setOrderDate(DateTime::createFromFormat('Y-m-d H:i:s', $row['orderDate']));
+        if ($row['customerId'] != null) {
+            $order->setCustomer(new Customer());
+            $order->getCustomer()->setUserId($row['customerId']);
+        } else {
+            $order->setCustomer(null);
+        }
         $order->setIsPaid($row['isPaid']);
 
         return $order;
@@ -336,4 +370,3 @@ class OrderRepository extends Repository
         return $eventName . " - " . $formattedDate;
     }
 }
-?>
