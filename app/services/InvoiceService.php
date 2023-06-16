@@ -22,21 +22,14 @@ use PHPMailer\PHPMailer\Exception;
 
 class InvoiceService
 {
-    private OrderRepository $orderRepository;
-
     private PDFService $pdfService;
 
     public function __construct()
     {
-        $this->orderRepository = new OrderRepository();
         $this->pdfService = new PDFService();
     }
 
-
     public function sendInvoiceEmail(Order $order){
-        // $orderID = $order->getId();
-        // $order->setOrderId(1);   
-        $order = $this->orderRepository->getOrderForInvoice($order->getOrderId());
 
         if ($order == null) {
             echo "No orders found";
