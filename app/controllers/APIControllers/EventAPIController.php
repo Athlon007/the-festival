@@ -5,6 +5,7 @@ require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
 require_once(__DIR__ . '/../../services/EventTypeService.php');
 require_once(__DIR__ . '/../../services/TicketTypeService.php');
+require_once(__DIR__ . '/../../services/FestivalHistoryService.php');
 require_once('APIController.php');
 require_once(__DIR__ . '/../../models/Types/TicketType.php');
 require_once(__DIR__ . '/../../models/TicketLink.php');
@@ -25,6 +26,8 @@ class EventAPIController extends APIController
     private $ticketLinkService;
     private $locationService;
 
+    private $festivalHistoryservice;
+
     // Music services
     private $artistService;
 
@@ -39,6 +42,7 @@ class EventAPIController extends APIController
         $this->eventService = new EventService();
         $this->ticketTypeService = new TicketTypeService();
         $this->eventTypeService = new EventTypeService();
+        $this->festivalHistoryservice = new FestivalHistoryService();
 
         // Load appropriate TicketLinkService.
         $request = $_SERVER['REQUEST_URI'];
@@ -148,8 +152,22 @@ class EventAPIController extends APIController
                     $availableSeats,
                 );
             } elseif (str_starts_with($uri, EventAPIController::URI_STROLL)) {
-                $this->sendErrorMessage('Invalid request', 400);
-                return;
+                $guide = $this->festivalHistoryservice->getGuideById($data['guide']);
+                $location = $this->locationService->getById($data['location']);
+                $availableTickets = $data['available-tickets'];
+
+                $eventType = $this->eventTypeService->getById(3);
+
+                $event = new HistoryEvent(
+                    $data['event']['id'],
+                    $data['name'],
+                    $availableTickets,
+                    new DateTime($data['startTime']),
+                    new DateTime($data['endTime']),
+                    $guide,
+                    $location,
+                    $eventType
+                );
             } else {
                 // if availableTickets is not set, it is a pass.
                 if (isset($data['event']['availableTickets'])) {

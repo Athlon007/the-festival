@@ -64,6 +64,19 @@ class EventService
             return $this->repo->getJazzEventById($id);
         }
 
+        // if event is type of historyevent
+        if ($event instanceof HistoryEvent) {
+            $event->getGuide()->setGuideId(htmlspecialchars($event->getGuide()->getGuideId()));
+            $event->getLocation()->setLocationId(htmlspecialchars($event->getLocation()->getLocationId()));
+            $this->repo->createHistoryEvent(
+                $id,
+                $event->getGuide()->getGuideId(),
+                $event->getLocation()->getLocationId()
+            );
+
+            return $this->repo->getHistoryEventById($id); // Modify this line
+        }
+
         return $this->repo->getEventById($id);
     }
 
