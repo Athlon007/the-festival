@@ -6,7 +6,6 @@ require_once('OrderService.php');
 require_once('CustomerService.php');
 require_once('MollieService.php');
 
-
 /**
  * Handles the cart session and uses OrderService to communicate with the database.
  * @author Joshua
@@ -245,6 +244,11 @@ class CartService
 
         $cartOrder->setIsPaid(true);
         $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
+
+        //Call ticketservice to generate the tickets (either throws exception or returns void)
+
+        //Call ticket and invoice mailing (either throws exception or returns void)
+        $this->orderService->sendTicketsAndInvoice($cartOrder);
         return $cartOrder;
     }
 

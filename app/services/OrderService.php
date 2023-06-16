@@ -19,19 +19,15 @@ class OrderService
 {
     private $orderRepository;
     private $customerRepository;
-    private $ticketLinkRepository;
-    private $ticketRepository;
-    private $ticketService;
-    private $pdfService;
+    private $invoiceService;
+    private $ticketController;
 
     public function __construct()
     {
         $this->orderRepository = new OrderRepository();
-        $this->ticketLinkRepository = new TicketLinkRepository();
-        $this->ticketRepository = new TicketRepository();
         $this->customerRepository = new CustomerRepository();
-        $this->ticketService = new TicketService();
-        $this->pdfService = new PDFService();
+        $this->invoiceService = new InvoiceService();
+        $this->ticketController = new TicketController();
     }
 
     public function getOrderById(int $id): Order
@@ -103,11 +99,6 @@ class OrderService
         echo $excelData;
         exit;
     }
-
-    public function sendInvoice()
-    {
-    }
-
 
     private function filterData(&$str)
     {
@@ -193,9 +184,28 @@ class OrderService
         return $customerOrder;
     }
 
-
+    //TODO: Check if redundant
     public function getAllOrders($limit = null, $offset = null, $isPaid = null)
     {
         return $this->orderRepository->getAllOrders($limit, $offset, $isPaid);
+    }
+
+    /**
+     * @param Order $order
+     * @return void
+     * @throws Exception
+     */
+    public function sendTicketsAndInvoice(Order $order): void
+    {
+        $order = new Order();
+        $order->setOrderId(1);
+
+        //Send invoice via email
+        $this->invoiceService->sendInvoiceEmail($order);
+
+        // Get all tickets and send them to the user
+        $this->ticketController->getAllTickets($order);
+
+        require_once(__DIR__ . '../../views/payment-funnel/paymentSuccess.php');
     }
 }

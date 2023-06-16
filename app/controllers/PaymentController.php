@@ -15,7 +15,7 @@ class PaymentController
         $this->ticketController = new TicketController();
     }
 
-    public function sendTicketsAndInvoice()
+    public function sendTicketsAndInvoice($order): void
     {
         $order = new Order();
         $order->setOrderId(1);

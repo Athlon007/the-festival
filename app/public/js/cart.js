@@ -11,6 +11,7 @@
 (function () {
     const apiUrl = '/api/cart';
     var Cart = {};
+
     //Adds one item to the cart order
     Cart.Add = function (itemID) {
         document.getElementById('shopping-circle').classList.remove('d-none');
