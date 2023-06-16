@@ -125,7 +125,12 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
-            $ticketType = $this->ticketTypeService->getById($data['ticketType']['id']);
+            $ticketTypeId = $data['ticketType']['id'];
+            if (!isset($ticketTypeId)) {
+                $ticketTypeId = $data['ticketType'];
+            }
+
+            $ticketType = $this->ticketTypeService->getById($ticketTypeId);
             $event = null;
 
             if (
