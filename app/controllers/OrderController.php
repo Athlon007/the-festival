@@ -9,12 +9,14 @@ class OrderController
     private $orderService;
     private $cartService;
     private $invoiceService;
+    private $ticketService;
 
     public function __construct()
     {
         $this->orderService = new OrderService();
         $this->cartService = new CartService();
         $this->invoiceService = new InvoiceService();
+        $this->ticketService = new TicketService();
     }
 
     public function showShoppingCart()
@@ -62,8 +64,11 @@ class OrderController
             $customer = unserialize($_SESSION['user']);
 
             $orders = $this->orderService->getOrderHistory($customer->getUserId());
-            //$orders = $this->orderService->getOrderHistory(33);
-            require_once('../views/orderHistory.php');
+
+            if ($orders == null) {
+                throw new Exception("No orders found");
+            }
+            require_once('../views/payment-funnel/order-history.php');
         } catch (Throwable $e) {
             Logger::write($e);
         }
@@ -100,19 +105,6 @@ class OrderController
     public function getOrdersToExport()
     {
         try {
-            // if (session_status() == PHP_SESSION_NONE) {
-            //     session_start();
-            // }
-
-            // if (!isset($_SESSION['user'])) {
-            //     header("Location: /");
-            // }
-
-            // $user = unserialize($_SESSION['user']);
-            // if ($user->getUserTypeAsString() != "Admin") {
-            //     header("Location: /");
-            // }
-
             $orders = $this->orderService->getOrdersToExport(true);
             require_once('../views/admin/viewOrders.php');
 
@@ -125,40 +117,67 @@ class OrderController
     public function downloadOrders()
     {
         try {
-            // if (session_status() == PHP_SESSION_NONE) {
-            //     session_start();
-            // }
-
-            // if (!isset($_SESSION['user'])) {
-            //     header("Location: /");
-            // }
-
-            // $user = unserialize($_SESSION['user']);
-            // if ($user->getUserTypeAsString() != "Admin") {
-            //     header("Location: /");
-            // }
-
             return $this->orderService->downloadOrders();
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
     }
 
-    public function sendInvoiceEmail()
+    public function sendInvoiceOfOrder()
     {
-        // if (session_status() == PHP_SESSION_NONE) {
-        //     session_start();
-        // }
+        try {
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+            $customer = unserialize($_SESSION['user']);
 
-        // if (!isset($_SESSION['user'])) {
-        //     header("Location: /");
-        // }
+            $orders = $this->orderService->getOrderHistory($customer->getUserId());
 
-        // $user = unserialize($_SESSION['user']);
-        // if ($user->getUserTypeAsString() != "Admin") {
-        //     header("Location: /");
-        // }
-        $order = new Order();
-        return $this->invoiceService->sendInvoiceEmail($order);
+            // Get the specific order id from the url to send the invoice of that order
+            $orderId = $_GET['orderId'];
+
+            $order = $this->orderService->getOrderById($orderId);
+
+            if ($orders == null) {
+                throw new Exception("No orders found");
+            }
+
+            $this->invoiceService->sendInvoiceEmail($order);
+
+            // show an alert that the invoice has been sent
+            echo "<script>alert('Invoice has been sent to your email!')</script>";
+
+            require_once('../views/payment-funnel/order-history.php');
+
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
     }
+
+    public function sendTicketOfOrder()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        $customer = unserialize($_SESSION['user']);
+
+        $orders = $this->orderService->getOrderHistory($customer->getUserId());
+
+        // Get the specific order id from the url to send the ticket of that order
+        $orderId = $_GET['orderId'];
+
+        $order = $this->orderService->getOrderById($orderId);
+
+        if ($orders == null) {
+            throw new Exception("No orders found");
+        }
+
+        $this->ticketService->getAllTicketsAndSend($order);
+
+        // show an alert that the ticket has been sent
+        echo "<script>alert('Ticket has been sent to your email!')</script>";
+
+        require_once('../views/payment-funnel/order-history.php');
+    }
+
 }

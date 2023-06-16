@@ -41,21 +41,24 @@
                             <?= $order->getOrderDateAsDMY(); ?>
                         </td>
                         <td>
-                            <?= "€ " . number_format($order->getTotalBasePrice(),2) ?>
+                            <?= "€ " . number_format($order->getTotalBasePrice(), 2) ?>
                         </td>
                         <td>
                             <?= $order->getTotalItemCount(); ?>
                         </td>
                         <td>
-                            <?= "€ " . number_format($order->getTotalPrice(),2) ?>
+                            <?= "€ " . number_format($order->getTotalPrice(), 2) ?>
+                        </td>
+                        <td>
+                            <a href="/sendTicketOfOrder?orderId=<?= $order->getOrderId() ?>" class="btn btn-primary">Send
+                                Ticket</a>
+                            <a href="/sendInvoiceOfOrder?orderId=<?= $order->getOrderId() ?>" class="btn btn-primary">Send
+                                Invoice</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
-
-
-
 
 
         <script src="/js/accountmanager.js"></script>

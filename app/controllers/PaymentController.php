@@ -23,7 +23,7 @@ class PaymentController
         $this->invoiceService->sendInvoiceEmail($order);
 
         // Get all tickets and send them to the user
-        $this->ticketController->getAllTickets($order);
+        $this->ticketController->getAllTicketsAndSend($order);
 
         require_once(__DIR__ . '../../views/payment-funnel/paymentSuccess.php');
     }
