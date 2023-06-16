@@ -9,6 +9,10 @@ require_once(__DIR__ . '/../repositories/CustomerRepository.php');
 //Services
 require_once(__DIR__ . '/../services/TicketService.php');
 require_once(__DIR__ . '/../services/PDFService.php');
+require_once(__DIR__ . '/../services/InvoiceService.php');
+
+//Controllers
+require_once(__DIR__ . '/../controllers/TicketController.php');
 
 //Models
 require_once(__DIR__ . '/../models/Order.php');

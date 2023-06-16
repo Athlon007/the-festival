@@ -5,9 +5,6 @@ require_once __DIR__ . '/../models/Ticket/Ticket.php';
 require_once(__DIR__ . '/../models/TicketLink.php');
 require_once(__DIR__ . '/../models/Exceptions/TicketNotFoundException.php');
 require_once(__DIR__ . '/../services/PDFService.php');
-require_once(__DIR__ . '/../services/OrderService.php');
-require_once(__DIR__ . '/../repositories/OrderRepository.php');
-require_once(__DIR__ . '../../vendor/autoload.php');
 
 use Dompdf\Dompdf;
 
@@ -20,6 +17,11 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
+/**
+ * Class InvoiceService
+ * This class is responsible for generating and sending invoices
+ * @Author: Vedat
+ */
 class InvoiceService
 {
     private PDFService $pdfService;

@@ -40,24 +40,41 @@
                                     $id = $orderItem->getTicketLinkId(); ?>
                                     <div id="cart-item-<?= $id ?>" class="card p-3 m-3" style="width: 100%">
                                         <div class="card-header" style="width: 100%">
-                                            <?= $orderItem->getEventName() ?>
-                                            <?= $orderItem->getTicketName() ?> - &euro;
-                                            <?= $orderItem->getBasePrice() ?> + &euro;
-                                            <?= $orderItem->getVatAmount() ?> VAT
+                                            <h5 class="card-title">
+                                                <?= $orderItem->getEventName() ?> -
+                                                <?= $orderItem->getTicketName() ?>
+                                            </h5>
+                                        </div>
+                                        <div class="card-body" style="width: 100%">
+                                            <h6 class="card-subtitle">
+                                                Price per ticket: &euro; <?= $orderItem->getFullTicketPrice() ?>
+                                                (&euro; <?= $orderItem->getBasePrice() ?> + &euro;
+                                                <?= $orderItem->getVatAmount() ?> VAT)
+                                            </h6>
                                         </div>
                                         <br>
                                         <div style="width: 100%">
                                             <?php if (!$shareMode) { ?>
                                                 <button id="cart-item-remove-<?= $id ?>" class="btn btn-light"
-                                                    style="width: 20%">-</button>
+                                                    style="width: 10%">-</button>
                                             <?php } ?>
-                                            <span id="cart-item-counter-<?= $id ?>" class="fw-bold mx-2"><?= $orderItem->getQuantity() ?></span>
+                                            <span id="cart-item-counter-<?= $id ?>" class="fw-bold mx-2">
+                                                <?= $orderItem->getQuantity() ?>
+                                            </span>
                                             <?php if (!$shareMode) { ?>
-                                                <button id="cart-item-add-<?= $id ?>" class=" btn btn-light"
-                                                    style="width: 20%">+</button>
+                                                <button id="cart-item-add-<?= $id ?>" class="btn btn-light"
+                                                    style="width: 10%">+</button>
                                             <?php } ?>
-                                            <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end"><?= $orderItem->getBasePrice() + $orderItem->getVatAmount() ?></span>
-                                            <span id="cart-item-total-price-<?= $id ?>" class="price float-end">&euro; <?= $orderItem->getTotalFullPrice() ?></span>
+                                            <?php if (!$shareMode) { ?>
+                                                <button id="order-item-delete-<?= $id ?>" class="btn btn-danger ms-5"
+                                                        style="width: 20%">DELETE</button>
+                                            <?php } ?>
+                                            <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end">
+                                                <?= $orderItem->getBasePrice() + $orderItem->getVatAmount() ?>
+                                            </span>
+                                            <span id="cart-item-total-price-<?= $id ?>" class="price float-end">
+                                                &euro; <?= $orderItem->getTotalFullPrice() ?>
+                                            </span>
                                         </div>
                                         <br>
                                     </div>
