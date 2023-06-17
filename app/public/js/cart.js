@@ -102,7 +102,7 @@
 
                 this.count = data.count;
 
-                console.log("Cart count: " + data.count);
+                //console.log("Cart count: " + data.count);
             })
             .catch(error => {
                 console.log(error);
@@ -124,6 +124,22 @@
                 reject(error);
             }
             );
+    }
+
+    //Checks out the cart
+    Cart.Checkout = function () {
+        fetch(apiUrl + '/checkout',
+            {
+                method: 'POST'
+            }).then(response => response.json())
+            .then(data => {
+                    Cart.UpdateCounter();
+                    resolve(data);
+                }
+            ).catch(error => {
+                reject(error);
+            }
+        );
     }
 
     window.Cart = Cart;

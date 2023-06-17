@@ -25,7 +25,7 @@
                 <div class="col-10">
                     <h2 class="mb-5 mt-5">Shopping Cart</h2>
                     <!--Pop-up message-->
-                    <div id="popup">
+                    <div id="error-popup" class="alert alert-danger d-none">
                     </div>
                     <div class="row">
                         <?php
@@ -101,7 +101,7 @@
                             <?= $cartOrder->getTotalPrice(); ?>
                         </h4>
                         <?php if (!$shareMode) { ?>
-                            <button class="btn btn-primary">Check out</button>
+                            <button class="btn btn-primary" onclick="checkout()">Check out</button>
 
                         <?php } else { ?>
                             <p>This cart has been shared with you.</p>

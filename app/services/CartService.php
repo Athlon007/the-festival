@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . '/../models/Exceptions/EventSoldOutException.php');
 require_once(__DIR__ . '/../models/Exceptions/CartException.php');
+require_once(__DIR__ . '/../models/Exceptions/AuthenticationException.php');
 require_once('OrderService.php');
 require_once('CustomerService.php');
 require_once('MollieService.php');
@@ -236,6 +237,10 @@ class CartService
      */
     public function checkoutCart(): Order
     {
+        if (!isset($_SESSION['user'])) {
+            throw new AuthenticationException("User is not logged in.");
+        }
+
         //Retrieve the order that is in cart from the db.
         $cartOrder = $this->getCart();
 

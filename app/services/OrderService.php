@@ -39,7 +39,7 @@ class OrderService
         //Get the order object
         $order = $this->orderRepository->getOrderById($id);
         //Get the customer object attached in order
-        // Btw, customer may be null if the order is made by a visitor
+        //Customer may be null if the order is made by a visitor
         if ($order->getCustomer() != null) {
             $order->setCustomer($this->customerRepository->getById($order->getCustomer()->getUserId()));
         } else {

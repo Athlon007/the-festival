@@ -13,6 +13,7 @@ for (let counter of cartCounterSpans) {
 
     const btnAdd = document.getElementById('cart-item-add-' + id);
     const btnRemove = document.getElementById('cart-item-remove-' + id);
+    const btnDelete = document.getElementById('order-item-delete-' + id);
 
     const cartItemUnitPrice = document.getElementById('cart-item-unit-price-' + id);
     const cartItemTotalPrice = document.getElementById('cart-item-total-price-' + id);
@@ -23,7 +24,6 @@ for (let counter of cartCounterSpans) {
         Cart.Add(id);
 
         const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
-        console.log(unitPrice);
         cartItemTotalPrice.innerHTML = "&euro; " + parseFloat(((count + 1) * unitPrice)).toFixed(0);
 
         const totalAmount = parseFloat(total.innerHTML.split('€')[1]);
@@ -48,6 +48,21 @@ for (let counter of cartCounterSpans) {
         }
     });
 
+    btnDelete.addEventListener('click', function () {
+
+        const count = parseInt(counter.innerHTML);
+        const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
+        const totalAmount = parseFloat(total.innerHTML.split('€')[1]);
+        total.innerHTML = "Total price: &euro; " + (totalAmount - (count * unitPrice));
+
+        //Call the delete api method
+        Cart.Delete(id);
+
+        //Remove the div
+        const div = document.getElementById('cart-item-' + id);
+        div.parentNode.removeChild(div);
+    });
+
 }
 
 // Get hostname.
@@ -64,4 +79,20 @@ async function shareMyCart() {
     // Select entire text in the input field and copy it to clipboard.
     shareUrlText.select();
     await navigator.clipboard.writeText(shareUrlText.value);
+}
+
+function checkout(){
+    Cart.Checkout()
+        .then(data => {
+            console.log(data);
+            window.location.href = "/paymentSuccess";
+        })
+        .catch(error => {
+
+            console.log(error);
+            errorPopup = document.getElementById('popup');
+
+
+
+        });
 }
