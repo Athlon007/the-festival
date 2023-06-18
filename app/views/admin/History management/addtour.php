@@ -48,7 +48,7 @@
                     <option value="" selected disabled>Select a Location</option>
                     <!-- Populate options from the database -->
                     <?php foreach ($locations as $location) { ?>
-                        <option value="<?php echo $location->getLocationId(); ?>"><?php echo $location->getName(); ?>
+                        <option value="<?php echo $location->getLocationId(); ?>"><?php echo "[" . $location->getLocationTypeAsString() . "] " . $location->getName(); ?>
                         </option>
                     <?php } ?>
                 </select>
