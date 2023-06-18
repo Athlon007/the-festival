@@ -127,10 +127,13 @@
     }
 
     //Checks out the cart
-    Cart.Checkout = function () {
+    Cart.Checkout = function (paymentMethod) {
         fetch(apiUrl + '/checkout',
             {
-                method: 'POST'
+                method: 'POST',
+                data:{
+                    paymentMethod: paymentMethod
+                }
             }).then(response => response.json())
             .then(data => {
                     Cart.UpdateCounter();

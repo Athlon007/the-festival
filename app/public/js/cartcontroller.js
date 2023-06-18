@@ -2,10 +2,10 @@
 // --- Used by /shopping-cart ---
 // ------------------------------
 
-// Find spans with following id pattern: cart-counter-*
-
 const total = document.getElementById('total');
+const errorPopup= document.getElementById('popup');
 
+// Find spans with following id pattern: cart-counter-*
 const cartCounterSpans = document.querySelectorAll('span[id^="cart-item-counter-"]');
 for (let counter of cartCounterSpans) {
     // get the ID part.
@@ -82,17 +82,42 @@ async function shareMyCart() {
 }
 
 function checkout(){
-    Cart.Checkout()
+
+    let idealRadButton = document.getElementById('method-ideal');
+    let cardRadButton = document.getElementById('method-card');
+    let klarnaRadButton = document.getElementById('method-klarna');
+    let paymentMethod;
+    if(idealRadButton.checked)
+        paymentMethod = "ideal";
+    else if(cardRadButton.checked)
+        paymentMethod = "card";
+    else if(klarnaRadButton.checked)
+        paymentMethod = "klarna";
+    else{
+        showErrorPopup("Please select a payment method before checking out.");
+        return;
+    }
+        
+        
+    Cart.Checkout(paymentMethod)
         .then(data => {
+            hideErrorPopup();
             console.log(data);
             window.location.href = "/paymentSuccess";
         })
         .catch(error => {
 
             console.log(error);
-            errorPopup = document.getElementById('popup');
-
-
-
+            showErrorPopup(error.message);
         });
+    
+}
+
+function showErrorPopup(message) {
+    errorPopup.innerHTML = message;
+    errorPopup.classList.remove('d-none');
+}
+
+function hideErrorPopup() {
+    errorPopup.classList.add('d-none');
 }

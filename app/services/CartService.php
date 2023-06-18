@@ -251,6 +251,7 @@ class CartService
         $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
 
         //Call ticketservice to generate the tickets (either throws exception or returns void)
+        
 
         //Call ticket and invoice mailing (either throws exception or returns void)
         $this->orderService->sendTicketsAndInvoice($cartOrder);

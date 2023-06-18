@@ -102,6 +102,27 @@
                         </h4>
                         <?php if (!$shareMode) { ?>
                             <button class="btn btn-primary" onclick="checkout()">Check out</button>
+                            <br>
+                            <br>
+                            <h5>Payment method:</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethodRadios" id="method-ideal" value="method-ideal" checked>
+                                <label class="form-check-label" for="method-ideal">
+                                    iDEAL
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethodRadios" id="method-card" value="method-card">
+                                <label class="form-check-label" for="method-card">
+                                    Card
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethodRadios" id="method-klarna" value="method-klarna">
+                                <label class="form-check-label" for="method-klarna">
+                                    Klarna (Pay later)
+                                </label>
+                            </div>
 
                         <?php } else { ?>
                             <p>This cart has been shared with you.</p>

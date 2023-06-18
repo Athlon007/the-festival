@@ -3,6 +3,7 @@ require_once(__DIR__ . "/../APIController.php");
 require_once(__DIR__ . "/../../../services/CartService.php");
 require_once(__DIR__ . "/../../../models/TicketLink.php");
 require_once(__DIR__ . "/../../../services/TicketLinkService.php");
+require_once(__DIR__ . "/../../../models/Exceptions/MissingVariableException.php");
 
 /**
  * This API controller is specifically used for the cart order in SESSION and communicates with the order backend.
@@ -56,6 +57,7 @@ class CartAPIController extends APIController
             }
             ///api/cart/checkout POST method - checks out the cart
             else if (str_starts_with($uri, "/api/cart/checkout")) {
+                $paymentMethod = getPaymentMethodFromPost();
                 $cartOrder = $this->cartService->checkoutCart();
                 parent::sendResponse($cartOrder);
                 return;
@@ -90,5 +92,15 @@ class CartAPIController extends APIController
         catch(Throwable $e){
             parent::sendErrorMessage($e->getMessage(), $e->getCode());
         }
+    }
+
+    private function getPaymentMethodFromPost()
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+
+        if (!isset($data["paymentMethod"]))
+            throw new MissingVariableException("Payment method not specified.", 400);
+        return $data["paymentMethod"];
     }
 }
