@@ -92,11 +92,11 @@ function checkout(){
     let paymentMethod;
 
     if(idealRadButton.checked)
-        paymentMethod = "Ideal";
+        paymentMethod = "ideal";
     else if(cardRadButton.checked)
-        paymentMethod = "Card";
+        paymentMethod = "card";
     else if(klarnaRadButton.checked)
-        paymentMethod = "Klarna";
+        paymentMethod = "klarna";
     else{
         showErrorPopup("Please select a payment method before checking out.");
         return;

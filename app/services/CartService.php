@@ -207,14 +207,18 @@ class CartService
      * @param $customerId
      * @return void
      */
-    public function getCartAfterLogin($customerId): void
+    public function getCartAfterLogin($customer): void
     {
         //Fetch
-        $customerOrder = $this->orderService->getCartOrderForCustomer($customerId);
+        $customerOrder = $this->orderService->getCartOrderForCustomer($customer->getUserId());
 
-        if (!$customerOrder) {
-            //If there is no cart order saved for the customer, then this method has no further purpose.
-            return;
+        //If there is no cart order saved for the customer,
+        // but there is a cart in session,
+        // we link the cart to the customer.
+        if (!$customerOrder && $this->cartIsInitialised()) {
+            $order = $this->getCart();
+            $order->setCustomer($customer);
+            $this->orderService->updateOrder($order->getOrderId(), $order);
         }
 
         //If there is already a cart in session and the logged-in user has another cart in db, we merge the carts

@@ -159,21 +159,21 @@ class OrderService
     }
 
     //If the customer has an unpaid order and logs in while having created another order as a visitor, merge the two orders.
-    public function mergeOrders($customerOrder, $sessionOrder): Order
+    public function mergeOrders(Order $customerOrder, Order $sessionOrder): Order
     {
-
-        //Nested loop that checks if there are orderitems that represent the same ticket
+        //Nested loop that checks if there are order items that represent the same ticket
         foreach ($customerOrder->getOrderItems() as $customerOrderItem) {
             foreach ($sessionOrder->getOrderItems() as $sessionOrderItem) {
-                //If there is a match in ticketlink then add the quantity of the sessionOrderItem to the customerOrderItem and update
+
                 if ($sessionOrderItem->getTicketLinkId() == $customerOrderItem->getTicketLinkId()) {
+                    //If there is a match in ticket link then add the quantity of the sessionOrderItem to the customerOrderItem and update
                     $customerOrderItem->setQuantity($customerOrderItem->getQuantity() + $sessionOrderItem->getQuantity());
                     $this->updateOrderItem($customerOrderItem->getOrderItemId(), $customerOrderItem);
                 }
-                //If the orderItem is unique then we add it to the customerOrder and update it
                 else {
+                    //If the orderItem is unique then we add it to the customerOrder and update it
                     $sessionOrderItem->setOrderId($customerOrder->getOrderId());
-                    $customerOrder->addOrderItem($this->updateOrderItem($customerOrderItem->getOrderItemId(), $customerOrderItem));
+                    $customerOrder->addOrderItem($this->updateOrderItem($sessionOrderItem->getOrderItemId(), $sessionOrderItem));
                 }
             }
         }
