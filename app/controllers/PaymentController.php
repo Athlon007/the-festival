@@ -16,10 +16,13 @@ class PaymentController
     public function submitPaymentToMollie(){
         //retrieve the order from the session
         //session_start();
-        $order = serialize($_SESSION['orderItems']);
+        $order = serialize($_SESSION['order']);
+
 
         //go to payment page
-        $this->mollie->pay($order);
+        $mollie = new MollieService();
+        $mollie->pay($order);
+        //$mollie->pay($totalPrice, $orderId, $userId, $paymentMethod);
 
         // Get all tickets and send them to the user
         $this->ticketController->getAllTicketsAndSend($order);

@@ -14,6 +14,7 @@ class RestaurantApiController{
     public function handleGetRequest()
     {
         try {
+            error_reporting(E_ERROR | E_PARSE);
             if($_GET['date']){
                 $output = $this->service->getAllRestaurants($_GET['date']);
             }else{

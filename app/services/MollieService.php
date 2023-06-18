@@ -9,8 +9,24 @@ class MollieService{
         $this->mollie->setApiKey("test_MVbzPEjp3tJW86EDNq2Dwzwbf3CKRa");
     }
 
-    public function pay(float $totalPrice, int $orderId, int $userId){
+    public function pay(float $totalPrice, int $orderId, int $userId, string $paymentType = null){
         try{
+            $mollieMethod= null;
+            switch($paymentType){
+                case "ideal":
+                    $mollieMethod = \Mollie\Api\Types\PaymentMethod::IDEAL;
+                    break;
+                case "card":
+                    $mollieMethod = \Mollie\Api\Types\PaymentMethod::CREDITCARD;
+                    break;
+                case "klarna":
+                    $mollieMethod = Mollie\Api\Types\PaymentMethod::KLARNA_PAY_LATER;
+                    break;
+                default:
+                    $mollieMethod = \Mollie\Api\Types\PaymentMethod::IDEAL;
+                    break;
+            }
+
             $payment = $this->mollie->payments->create([
                 "amount" => [
                     "currency" => "EUR",
@@ -19,7 +35,7 @@ class MollieService{
                 "description" => "Haarlem Festival Order #{$orderId}",
                 "redirectUrl" => "http://localhost:8080/order/{$orderId}/payment-success",
                 "webhookUrl" => "https://c6a0-85-149-137-48.eu.ngrok.io ",
-                "method" => \Mollie\Api\Types\PaymentMethod::IDEAL,
+                "method" => $mollieMethod,
                 "metadata" => [
                     "order_id" => $orderId,
                     "user_id" => $userId

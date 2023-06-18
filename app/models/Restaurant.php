@@ -8,9 +8,6 @@ class Restaurant implements JsonSerializable{
 protected int $restaurantId;
 protected String $restaurantName;
 protected int $addressId;
-protected int $numOfSessions;
-protected string $durationOfSessions;
-protected int $availableSeats = 0;
 protected string $description;
 protected string $price;
 protected int $typeId;
