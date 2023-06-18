@@ -8,8 +8,7 @@
     <meta name="theme-color" content="#fffbfa">
     <meta name="robots" content="noindex, nofollow">
     <title>Visit Haarlem - Add Event</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/icons.css">
 </head>
@@ -57,10 +56,10 @@
             <div class="mb-3">
                 <label for="ticketType" class="form-label">Ticket Type:</label>
                 <select class="form-select" id="ticketType" name="ticketType" required>
-                    <option value="" selected disabled>Selecta a Ticket Type</option>
+                    <option value="" selected disabled>Select a Ticket Type</option>
                     <!-- Populate options from the database -->
                     <?php foreach ($ticketTypes as $ticketType) { ?>
-                        <option value="<?php echo $ticketType->getId(); ?>"><?php echo $ticketType->getName() . ' ' . $ticketType->getPrice() ?>                        </option>
+                        <option value="<?php echo $ticketType->getId(); ?>"><?php echo $ticketType->getName() . ' ' . $ticketType->getPrice() ?> </option>
                     <?php } ?>
                 </select>
             </div>
@@ -78,7 +77,7 @@
     <script type="module" src="/js/nav.js"></script>
     <script type="module" src="/js/foot.js"></script>
     <script>
-        document.getElementById('add-event-form').addEventListener('submit', function (event) {
+        document.getElementById('add-event-form').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the form from submitting normally
             if (validateInputs()) {
                 submitForm();
@@ -89,16 +88,28 @@
             var form = document.getElementById('add-event-form');
             var formData = new FormData(form);
             var data = {};
-            formData.forEach(function (value, key) {
+            formData.forEach(function(value, key) {
                 data[key] = value;
             });
+
+            // Make sure that the numbers are not strings
+            for (var key in data) {
+                if (!isNaN(data[key])) {
+                    // Convert to number
+                    data[key] = Number(data[key]);
+                }
+            }
+
             console.log(data);
+            return;
             fetch("/api/events/stroll", {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            }).then(res => res.json())
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data),
+                }).then(res => res.json())
                 .then(data => {
                     if (data.success_message) {
                         alert(data.success_message)
@@ -153,11 +164,8 @@
         }
     </script>
 
-    <script type="application/javascript"
-        src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
+    <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
 
 </html>
