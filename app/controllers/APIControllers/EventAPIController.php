@@ -5,6 +5,7 @@ require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
 require_once(__DIR__ . '/../../services/EventTypeService.php');
 require_once(__DIR__ . '/../../services/TicketTypeService.php');
+require_once(__DIR__ . '/../../services/FestivalHistoryService.php');
 require_once('APIController.php');
 require_once(__DIR__ . '/../../models/Types/TicketType.php');
 require_once(__DIR__ . '/../../models/TicketLink.php');
@@ -13,6 +14,7 @@ require_once(__DIR__ . '/../../services/TicketLinkService.php');
 require_once(__DIR__ . '/../../services/JazzTicketLinkService.php');
 require_once(__DIR__ . '/../../services/HistoryTicketLinkService.php');
 require_once(__DIR__ . '/../../services/PassTicketLinkService.php');
+require_once(__DIR__ . '/../../services/LocationService.php');
 
 /**
  * @author Konrad
@@ -24,6 +26,8 @@ class EventAPIController extends APIController
     private $eventTypeService;
     private $ticketLinkService;
     private $locationService;
+
+    private $festivalHistoryservice;
 
     // Music services
     private $artistService;
@@ -39,6 +43,8 @@ class EventAPIController extends APIController
         $this->eventService = new EventService();
         $this->ticketTypeService = new TicketTypeService();
         $this->eventTypeService = new EventTypeService();
+        $this->festivalHistoryservice = new FestivalHistoryService();
+        $this->locationService = new LocationService();
 
         // Load appropriate TicketLinkService.
         $request = $_SERVER['REQUEST_URI'];
@@ -51,9 +57,6 @@ class EventAPIController extends APIController
             // Music Services
             require_once(__DIR__ . '/../../services/ArtistService.php');
             $this->artistService = new ArtistService();
-
-            require_once(__DIR__ . '/../../services/LocationService.php');
-            $this->locationService = new LocationService();
         } elseif (str_starts_with($request, EventAPIController::URI_STROLL)) {
             $this->ticketLinkService = new HistoryTicketLinkService();
         } elseif (str_starts_with($request, EventAPIController::URI_PASSES)) {
@@ -122,7 +125,14 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
-            $ticketType = $this->ticketTypeService->getById($data['ticketType']['id']);
+            // Valid ticket type is required.
+            // Check /api/tickettypes for available ticket types.
+            $ticketTypeId = $data['ticketType']['id'];
+            if (!isset($ticketTypeId)) {
+                $ticketTypeId = $data['ticketType'];
+            }
+
+            $ticketType = $this->ticketTypeService->getById($ticketTypeId);
             $event = null;
 
             if (
@@ -148,8 +158,22 @@ class EventAPIController extends APIController
                     $availableSeats,
                 );
             } elseif (str_starts_with($uri, EventAPIController::URI_STROLL)) {
-                $this->sendErrorMessage('Invalid request', 400);
-                return;
+                $guide = $this->festivalHistoryservice->getGuideById($data['guide']);
+                $location = $this->locationService->getById($data['location']);
+                $availableTickets = $data['available-tickets'];
+
+                $eventType = $this->eventTypeService->getById(3);
+
+                $event = new HistoryEvent(
+                    $data['event']['id'],
+                    $data['name'],
+                    $availableTickets,
+                    new DateTime($data['startTime']),
+                    new DateTime($data['endTime']),
+                    $guide,
+                    $location,
+                    $eventType
+                );
             } else {
                 // if availableTickets is not set, it is a pass.
                 if (isset($data['event']['availableTickets'])) {
@@ -189,7 +213,12 @@ class EventAPIController extends APIController
 
         try {
             $editedTicketLinkID = basename($uri);
-            $ticketType = $this->ticketTypeService->getById($data['ticketType']['id']);
+            $ticketTypeId = $data['ticketType']['id'];
+            if (!isset($ticketTypeId)) {
+                $ticketTypeId = $data['ticketType'];
+            }
+
+            $ticketType = $this->ticketTypeService->getById($ticketTypeId);
 
             $event = null;
 

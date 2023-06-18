@@ -198,7 +198,7 @@ class OrderRepository extends Repository
         // TODO: Communicate with order service from the invoice service and use getOrderById method. so you can get the order items, and customer as well.
         $sql = "select o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId from orders o
         join users u on u.userId = o.customerId
-        join tickets t on t.orderId = t.ticketId
+        join tickets t on t.orderId = o.orderId
         join events e on t.eventId = e.eventId
         where o.orderId = :orderId ";
 
@@ -222,23 +222,27 @@ class OrderRepository extends Repository
 
     public function getOrderHistory($customerId): array
     {
-        $sql = "SELECT * FROM orders WHERE customerId = :customerId AND isPaid = 1";
+        $sql = "SELECT * FROM orders WHERE customerId=:customerId AND isPaid = 1";
 
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":customerId", $customerId);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if (!$result)
-            throw new OrderNotFoundException();
-
-        $orders = array();
+        $orders = [];
         foreach ($result as $row) {
-            $order = $this->buildOrder($row);
-            $order->setOrderItems($this->getOrderItemsByOrderId($order->getOrderId()));
-            array_push($orders, $order);
-        }
+            $order = new Order();
+            $order->setOrderId($row['orderId']);
+            $order->setOrderDate(DateTime::createFromFormat('Y-m-d H:i:s', $row['orderDate']));
+            $orderItems = $this->getOrderItemsByOrderId($row['orderId']);
+            $order->setOrderItems($orderItems);
 
+            $customerRep = new CustomerRepository();
+            $customer = $customerRep->getById($row['customerId']);
+            $order->setCustomer($customer);
+
+            $orders [] = $order;
+        }
         return $orders;
     }
 

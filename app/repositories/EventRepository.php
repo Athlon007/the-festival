@@ -333,6 +333,18 @@ class EventRepository extends Repository
         }
     }
 
+    // Create the history event
+    public function createHistoryEvent($eventId, $guideId, $locationId): int{
+        $sql = "INSERT INTO historyevents (eventId, guideId, locationId) VALUES (:eventId, :guideId, :locationId)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':eventId', $eventId);
+        $stmt->bindParam(':guideId', $guideId);
+        $stmt->bindParam(':locationId', $locationId);
+        $stmt->execute();
+
+        return $this->connection->lastInsertId();
+    }
+
     public function createJazzEvent($eventId, $artistId, $locationId): int
     {
         $sql = "INSERT INTO jazzevents (eventId, artistId, locationId) VALUES (:eventId, :artistId, :locationId)";

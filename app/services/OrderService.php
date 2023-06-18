@@ -50,11 +50,7 @@ class OrderService
 
     public function getOrderHistory(int $customerId): array
     {
-        $orders = $this->orderRepository->getOrderHistory($customerId);
-        foreach ($orders as $order) {
-            $order->setCustomer($this->customerRepository->getById($order->getCustomer()->getUserId()));
-        }
-        return $orders;
+        return $this->orderRepository->getOrderHistory($customerId);
     }
 
     public function getOrdersToExport($isPaid = null, $customerId = null)
@@ -192,7 +188,6 @@ class OrderService
 
         return $customerOrder;
     }
-
 
     public function getAllOrders($limit = null, $offset = null, $isPaid = null)
     {

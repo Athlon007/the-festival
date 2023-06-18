@@ -18,10 +18,16 @@ class Guide implements JsonSerializable
             'language' => $this->language
         ];
     }
+    
 
     public function getGuideId(): int
     {
         return $this->guideId;
+    }
+
+    public function setGuideId(int $guideId): void
+    {
+        $this->guideId = $guideId;
     }
 
     public function getFirstName(): string
