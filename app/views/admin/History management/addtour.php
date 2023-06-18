@@ -26,11 +26,11 @@
             </div>
             <div class="mb-3">
                 <label for="startTime" class="form-label">Start Time:</label>
-                <input type="datetime-local" class="form-control" id="startTime" name="startTime" required>
+                <input type="datetime-local" class="form-control" id="startTime" name="start_time" required>
             </div>
             <div class="mb-3">
                 <label for="endTime" class="form-label">End Time:</label>
-                <input type="datetime-local" class="form-control" id="endTime" name="endTime" required>
+                <input type="datetime-local" class="form-control" id="endTime" name="end_time" required>
             </div>
             <div class="mb-3">
                 <label for="guide" class="form-label">Guide:</label>
@@ -65,7 +65,7 @@
             </div>
             <div class="mb-3">
                 <label for="available_tickets" class="form-label">Available Tickets:</label>
-                <input type="number" class="form-control" id="available_tickets" name="available-tickets" required>
+                <input type="number" class="form-control" id="available_tickets" name="available_tickets" required>
             </div>
 
             <button type="submit" class="btn btn-primary">Add Event</button>
@@ -100,7 +100,11 @@
                 }
             }
 
-            console.log(data);
+            // Replace in startTime T with a space
+            data.start_time = data.start_time.replace('T', ' ');
+            data.end_time = data.end_time.replace('T', ' ');
+
+            console.log(JSON.stringify(data));
             fetch("/api/events/stroll", {
                     method: 'POST',
                     credentials: 'same-origin',

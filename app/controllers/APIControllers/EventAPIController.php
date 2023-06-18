@@ -174,7 +174,7 @@ class EventAPIController extends APIController
                     $location,
                     $eventType,
                 );
-             } else {
+            } else {
                 // if availableTickets is not set, it is a pass.
                 if (isset($data['event']['availableTickets'])) {
                     $this->sendErrorMessage('Invalid request', 400);
