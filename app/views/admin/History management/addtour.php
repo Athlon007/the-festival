@@ -65,7 +65,7 @@
             </div>
             <div class="mb-3">
                 <label for="available_tickets" class="form-label">Available Tickets:</label>
-                <input type="number" class="form-control" id="available_tickets" name="available_tickets" required>
+                <input type="number" class="form-control" id="available_tickets" name="available-tickets" required>
             </div>
 
             <button type="submit" class="btn btn-primary">Add Event</button>
