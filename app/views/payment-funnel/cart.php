@@ -25,14 +25,18 @@
                 <div class="col-10">
                     <h2 class="mb-5 mt-5">Shopping Cart</h2>
                     <!--Pop-up message-->
-                    <div id="error-popup" class="alert alert-danger d-none">
-                    </div>
+                    <div id="popup" class="d-none"></div>
                     <div class="row">
+
+                        <!-- Cart disclaimer in case there's nothing -->
+
                         <?php
                         if (!$hasStuffInCart) {
                             echo "<h4>Your cart is empty. Go buy some stuff!</h4>";
                         } else { ?>
-                            <!-- Cart -->
+
+                            <!-- Cart items list -->
+
                             <div class="col-7">
                                 <?php
                                 $orderItems = $cartOrder->getOrderItems();
@@ -80,10 +84,12 @@
                                     </div>
                                 <?php } ?>
                             </div>
-                            <!-- Buttons -->
+
+                            <!-- Buttons on the right-->
+
                             <?php if (!$shareMode) { ?>
                                 <div class="col-5 d-grid">
-                                    <button class="btn btn-secondary float-end my-2">My Order History</button>
+                                    <button class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?> ">My Order History</button>
                                     <input type="hidden" id="share-id" value="<?= $cartOrder->getOrderId(); ?>">
                                     <div class="input-group">
                                         <input type=text" class="form-control" readonly id="share-url-text">
@@ -95,30 +101,49 @@
                     </div>
                     <br>
                     <br>
+
+                    <!-- Checkout section-->
+
                     <?php if ($hasStuffInCart) {
                         ?>
                         <h4 id="total">Total price: &euro;
                             <?= $cartOrder->getTotalPrice(); ?>
                         </h4>
                         <?php if (!$shareMode) { ?>
-                            <button class="btn btn-primary" onclick="checkout()">Check out</button>
+                            <button class="btn btn-primary <?php if (!$isLoggedIn) echo "disabled"; ?> " onclick="checkout()">Check out</button>
                             <br>
+                            <div> <?php if (!$isLoggedIn) echo "Log in to check out your cart."; ?> </div>
                             <br>
                             <h5>Payment method:</h5>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentMethodRadios" id="method-ideal" value="method-ideal" checked>
+                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> "
+                                       type="radio"
+                                       name="paymentMethodRadios"
+                                       id="method-ideal"
+                                       value="method-ideal"
+                                >
                                 <label class="form-check-label" for="method-ideal">
                                     iDEAL
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentMethodRadios" id="method-card" value="method-card">
+                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> "
+                                       type="radio"
+                                       name="paymentMethodRadios"
+                                       id="method-card"
+                                       value="method-card"
+                                >
                                 <label class="form-check-label" for="method-card">
                                     Card
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentMethodRadios" id="method-klarna" value="method-klarna">
+                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> "
+                                       type="radio"
+                                       name="paymentMethodRadios"
+                                       id="method-klarna"
+                                       value="method-klarna"
+                                >
                                 <label class="form-check-label" for="method-klarna">
                                     Klarna (Pay later)
                                 </label>

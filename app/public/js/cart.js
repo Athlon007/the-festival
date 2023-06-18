@@ -112,7 +112,8 @@
 
     //Deletes the item from the cart
     Cart.Delete = function (itemId) {
-        fetch(apiUrl + '/item/' + itemId,
+        return new Promise((resolve, reject) => {
+            fetch(apiUrl + '/item/' + itemId,
             {
                 method: 'DELETE'
             }).then(response => response.json())
@@ -124,25 +125,28 @@
                 reject(error);
             }
             );
+        });
     }
 
     //Checks out the cart
     Cart.Checkout = function (paymentMethod) {
-        fetch(apiUrl + '/checkout',
-            {
-                method: 'POST',
-                data:{
-                    paymentMethod: paymentMethod
+        return new Promise((resolve, reject) => {
+            fetch(apiUrl + '/checkout',
+                {
+                    method: 'POST',
+                    data:{
+                        paymentMethod: paymentMethod
+                    }
+                }).then(response => response.json())
+                .then(data => {
+                        Cart.UpdateCounter();
+                        resolve(data);
+                    }
+                ).catch(error => {
+                    reject(error);
                 }
-            }).then(response => response.json())
-            .then(data => {
-                    Cart.UpdateCounter();
-                    resolve(data);
-                }
-            ).catch(error => {
-                reject(error);
-            }
-        );
+            );
+        });
     }
 
     window.Cart = Cart;

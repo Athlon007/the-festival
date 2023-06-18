@@ -3,7 +3,7 @@
 // ------------------------------
 
 const total = document.getElementById('total');
-const errorPopup= document.getElementById('popup');
+const popup= document.getElementById('popup');
 
 // Find spans with following id pattern: cart-counter-*
 const cartCounterSpans = document.querySelectorAll('span[id^="cart-item-counter-"]');
@@ -62,6 +62,9 @@ for (let counter of cartCounterSpans) {
         const div = document.getElementById('cart-item-' + id);
         div.parentNode.removeChild(div);
     });
+}
+
+function loadCart(isLoggedIn){
 
 }
 
@@ -104,7 +107,7 @@ function checkout(){
         .then(data => {
             hideErrorPopup();
             console.log(data);
-            window.location.href = "/paymentSuccess";
+
         })
         .catch(error => {
 

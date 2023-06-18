@@ -24,6 +24,7 @@ class OrderController
         $hasStuffInCart = false;
         $cartOrder = null;
         $shareMode = false;
+        $isLoggedIn = isset($_SESSION['user']);
 
         try {
             // http://localhost/shopping-cart?id=16
