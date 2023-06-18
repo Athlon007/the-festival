@@ -87,12 +87,13 @@ function checkout(){
     let cardRadButton = document.getElementById('method-card');
     let klarnaRadButton = document.getElementById('method-klarna');
     let paymentMethod;
+
     if(idealRadButton.checked)
-        paymentMethod = "ideal";
+        paymentMethod = "Ideal";
     else if(cardRadButton.checked)
-        paymentMethod = "card";
+        paymentMethod = "Card";
     else if(klarnaRadButton.checked)
-        paymentMethod = "klarna";
+        paymentMethod = "Klarna";
     else{
         showErrorPopup("Please select a payment method before checking out.");
         return;
