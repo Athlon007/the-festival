@@ -10,9 +10,19 @@ class FestivalHistoryService
         $this->festivalHistoryRep = new FestivalHistoryRepository();
     }
 
+    public function getAllGuides()
+    {
+        return $this->festivalHistoryRep->getAllGuides();
+    }
+
     public function getAllHistoryEvents()
     {
         return $this->festivalHistoryRep->getAllHistoryEvents();
+    }
+
+    public function getGuideById($id)
+    {
+        return $this->festivalHistoryRep->getGuideById($id);
     }
 
 }

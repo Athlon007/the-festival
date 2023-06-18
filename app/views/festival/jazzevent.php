@@ -46,7 +46,7 @@
         <div class="row card col-10 mx-auto p-1 my-2">
             <div class="row mx-auto">
                 <div class="col-8">
-                    <h2>About artist</h2>
+                    <h2>About <?= $cartItem->getEvent()->getName() ?></h2>
                     <?php if ($event->getArtist()->noInformation()) { ?>
                         <p>Sorry, but currently we don't have any information about this artist!</p>
                     <?php } else { ?>

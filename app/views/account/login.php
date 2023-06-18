@@ -19,7 +19,7 @@
 
     <!-- Login form -->
     <div class="container py-5 h-100">
-        <div class="row p-6">
+        <div class="row p-6 my-4">
             <div class="col-md-6 offset-md-3 ">
                 <h2 class=text-center>Log in to Visit Haarlem</h2>
 

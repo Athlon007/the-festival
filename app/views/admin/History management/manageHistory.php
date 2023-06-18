@@ -67,6 +67,9 @@
                             <td>
                                 <?php echo $historyEvent->getAvailableTickets(); ?>
                             </td>
+                            <!-- Update button -->
+                            <td>
+                                <a href="/updateHistoryTour?id=<?php echo $historyEvent->getId(); ?>" class="btn btn-primary">Update</a>
                         </tr>
                     <?php } ?>
                 </tbody>
@@ -77,7 +80,7 @@
     <!-- Add button -->
     <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
         <div class="col-12 text-right">
-            <a href="/addHistoryTour" class="btn btn-success btn-lg">Add Tours</a>
+            <a href="/addTour" class="btn btn-success btn-lg">Add Tours</a>
         </div>
     </div>
     </div>

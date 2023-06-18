@@ -185,13 +185,14 @@ class JazzTicketLinkRepository extends TicketLinkRepository
                         $sql .= " je.artistId = :$key ";
                         break;
                     case "artist_kind":
-                        $sql .= " a.artistKindId = :$key";
+                        $sql .= " a.artistKindId = :$key ";
                         break;
                     default:
                         continue 2;
                 }
 
-                if (end($filters) !== $filter) {
+                // Add "AND" if there are more filters
+                if (next($filters)) {
                     $sql .= " AND ";
                 }
             }
@@ -217,7 +218,8 @@ class JazzTicketLinkRepository extends TicketLinkRepository
         $stmt = $this->connection->prepare($sql);
 
         foreach ($filters as $key => $filter) {
-            if (empty($filter)) {
+            // If the filter is empty, skip. DO NOT SKIP IF THAT IS A NUMBER!
+            if (empty($filter) && !is_numeric($filter)) {
                 continue;
             }
 

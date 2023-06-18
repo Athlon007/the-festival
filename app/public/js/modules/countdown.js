@@ -13,7 +13,7 @@ class Countdown {
 
         // If the festival has already started, show 'Festival started' instead of the countdown
         if (this.festivalStart < new Date()) {
-            this.container.innerHTML = '<p class="countdown-counter">Festival started!</p>';
+            this.container.innerHTML = '<p class="countdown-counter w-100 mx-auto">Festival&nbsp;started!</p>';
             return;
         }
 
