@@ -41,7 +41,7 @@
         </li>
         <li class="list-group-item">
           <div class="col-md-6 ticketOfTour" style="width: 50%; float:center;">
-            <h3>Sort</h3>
+            <h3>FIlter by type</h3>
             <select class="form-select" id="ticket">
             <?php foreach ($types as $type) { ?>
               <option value="<?php $type['typeId'] ?>"> <?= $type['typeName']?></option>
@@ -60,13 +60,6 @@
           </select>
         </li>
         <li class="list-group-item">
-          <h3>Time</h3>
-          <div class="center orangeBorder">
-            <label for="appt">Select a time:</label>
-            <input type="time" id="appt" name="appt">
-          </div>
-        </li>
-        <li class="list-group-item">
           <h3>Price Range</h3>
           <div class="center">
             <label for="appt">Select a minprice:</label>
@@ -76,31 +69,7 @@
           </div>
         </li>
         <li class="list-group-item">
-          <h3>Time</h3>
-          <div class="center orangeBorder">
-            <label for="appt">Select a time:</label>
-            <input type="time" id="appt" name="appt">
-          </div>
-        </li>
-        <li class="list-group-item">
           <h3>Number of People</h3>
-          <div style="float: left; padding: 0px 50px 0px;">
-          <input type="radio" id="one" name="age" value="1">
-          <label for="1">1</label><br>
-          <input type="radio" id="two" name="age" value="2">
-          <label for="2">2</label><br>
-          <input type="radio" id="tree" name="age" value="3">
-          <label for="3">3</label><br><br>
-          </div>
-          <div style="float: right; padding: 0px 50px 0px;">
-          <input type="radio" id="four" name="age" value="4">
-          <label for="4">4</label><br>
-          <input type="radio" id="five" name="age" value="5">
-          <label for="5">5</label><br>
-          <input type="radio" id="six" name="age" value="6">
-          <label for="6">6</label><br><br>
-          </div>
-          <label for="more">More</label>
           <input type="input" id="more" name="more" value="">
         </li>
         <li class="list-group-item">
@@ -139,11 +108,16 @@
         div.className = 'item';
         div.innerHTML = `
         <div class="card">
-          <h3 class="card-header">${event.restaurantName}</h3>
-          <div class="card-body">
-            <p class="card-title">${event.description}</p>
-            <button class="btn btn-primary addToCartButton">Add to cart</button>
+          <div class="column">
+          <h3>${event.restaurantName}</h3>
           </div>
+          <div class="column">
+            <p>${event.description}</p>
+          </div>
+          <div class="column">
+            <p>${event.price}</p>
+          </div>
+            <button class="btn btn-primary addToCartButton">Add to cart</button>
         </div>
         `;
         restDiv.appendChild(div);
