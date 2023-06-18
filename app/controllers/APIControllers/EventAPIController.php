@@ -161,11 +161,12 @@ class EventAPIController extends APIController
                 $guide = $this->festivalHistoryservice->getGuideById($data['guide']);
                 $location = $this->locationService->getById($data['location']);
                 $availableTickets = $data['available-tickets'];
+                $ticketType = 
 
                 $eventType = $this->eventTypeService->getById(3);
 
                 $event = new HistoryEvent(
-                    $data['event']['id'],
+                    0,
                     $data['name'],
                     $availableTickets,
                     new DateTime($data['startTime']),
