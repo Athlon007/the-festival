@@ -114,11 +114,12 @@
                     body: JSON.stringify(data),
                 }).then(res => res.json())
                 .then(data => {
-                    if (data.success_message) {
-                        alert(data.success_message)
-                    } else {
+                    if (data.error_message) {
                         alert(data.error_message)
+                        return;
                     }
+
+                    alert('Event added successfully!');
                 })
         }
 
