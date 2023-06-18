@@ -101,7 +101,6 @@
             }
 
             console.log(data);
-            return;
             fetch("/api/events/stroll", {
                     method: 'POST',
                     credentials: 'same-origin',
