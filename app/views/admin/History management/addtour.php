@@ -55,8 +55,18 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="available-tickets" class="form-label">Available Tickets:</label>
-                <input type="number" class="form-control" id="available-tickets" name="available_tickets" required>
+                <label for="ticketType" class="form-label">Ticket Type:</label>
+                <select class="form-select" id="ticketType" name="ticketType" required>
+                    <option value="" selected disabled>Selecta a Ticket Type</option>
+                    <!-- Populate options from the database -->
+                    <?php foreach ($ticketTypes as $ticketType) { ?>
+                        <option value="<?php echo $ticketType->getId(); ?>"><?php echo $ticketType->getName() . ' ' . $ticketType->getPrice() ?>                        </option>
+                    <?php } ?>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="available_tickets" class="form-label">Available Tickets:</label>
+                <input type="number" class="form-control" id="available_tickets" name="available_tickets" required>
             </div>
 
             <button type="submit" class="btn btn-primary">Add Event</button>
@@ -104,7 +114,8 @@
             var endTimeInput = document.getElementById('endTime');
             var guideInput = document.getElementById('guide');
             var locationInput = document.getElementById('location');
-            var availableTicketsInput = document.getElementById('available-tickets');
+            var availableTicketsInput = document.getElementById('available_tickets');
+            var ticketTypeInput = document.getElementById('ticketType');
 
             // Validate name (ensure it is not empty)
             if (nameInput.value.trim() === '') {

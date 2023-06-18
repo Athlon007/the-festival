@@ -160,22 +160,21 @@ class EventAPIController extends APIController
             } elseif (str_starts_with($uri, EventAPIController::URI_STROLL)) {
                 $guide = $this->festivalHistoryservice->getGuideById($data['guide']);
                 $location = $this->locationService->getById($data['location']);
-                $availableTickets = $data['available-tickets'];
-                $ticketType = 
+                $ticketTypeId = $data['ticketType'];
 
                 $eventType = $this->eventTypeService->getById(3);
 
                 $event = new HistoryEvent(
                     0,
                     $data['name'],
-                    $availableTickets,
-                    new DateTime($data['startTime']),
-                    new DateTime($data['endTime']),
+                    $data['available_tickets'],
+                    new DateTime($data['start_time']),
+                    new DateTime($data['end_time']),
                     $guide,
                     $location,
-                    $eventType
+                    $eventType,
                 );
-            } else {
+             } else {
                 // if availableTickets is not set, it is a pass.
                 if (isset($data['event']['availableTickets'])) {
                     $this->sendErrorMessage('Invalid request', 400);
