@@ -51,7 +51,7 @@
         </li>
         <li class="list-group-item">
         <h3>Dates</h3>
-          <select class="form-select" id="date" oninput="filterByDate()">
+          <select class="form-select" id="date" onselect="filterByDate()">
             <option selected>Select ticket</option>
             <option value="27/07/2023">Thu 27/07/2023</option>
             <option value="28/07/2023">Fri 28/07/2023</option>
