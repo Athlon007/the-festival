@@ -186,14 +186,15 @@ class CartService
      * @return Order returns the order object.
      * @throws ObjectNotFoundException | CartException
      */
-    public function deleteWholeItem($ticketLinkId): Order{
+    public function deleteWholeItem($ticketLinkId): Order
+    {
         //Get order from the cart
         $order = $this->getCart();
 
         //Find the order item that contains the ticket link
-        foreach($order->getOrderItems() as $orderItem ){
+        foreach ($order->getOrderItems() as $orderItem) {
             //Delete the order item from the database and from the order, return order
-            if($orderItem->getTicketLinkId() == $ticketLinkId){
+            if ($orderItem->getTicketLinkId() == $ticketLinkId) {
                 $this->orderService->deleteOrderItem($orderItem->getOrderItemId());
                 $order->removeOrderItem($orderItem);
                 return $order;
@@ -219,6 +220,12 @@ class CartService
             $order = $this->getCart();
             $order->setCustomer($customer);
             $this->orderService->updateOrder($order->getOrderId(), $order);
+            return;
+        }
+
+        //If there is no cart order saved for the customer and in the session, return
+        if (!$customerOrder && !$this->cartIsInitialised()) {
+            return;
         }
 
         //If there is already a cart in session and the logged-in user has another cart in db, we merge the carts
@@ -239,12 +246,34 @@ class CartService
      * @return Order
      * @throws CartException | \Mollie\Api\Exceptions\ApiException
      */
-    public function checkoutCart($paymentMethod): Order
+    public function checkoutCart($paymentMethod): string
     {
         $cartOrder = $this->checkValidCheckout();
 
         //Call mollie service for payment (either throws exception or returns void)
-        $this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId(), $paymentMethod);
+        $paymentUrl = $this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId(), $paymentMethod);
+        return $paymentUrl;
+    }
+
+    public function checkIfPaid()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['payment_id'])) {
+            throw new CartException("Payment not started.");
+        }
+
+        // Get payment ID from session.
+        $paymentId = $_SESSION['payment_id'];
+        $cartOrder = $this->checkValidCheckout();
+
+        $payment = $this->mollieService->getPayment($paymentId);
+
+        if (!$payment->isPaid()) {
+            throw new CartException("Payment not completed.");
+        }
 
         $cartOrder->setIsPaid(true);
         $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
@@ -252,10 +281,7 @@ class CartService
         //Remove the cart from the session
         unset($_SESSION["cartId"]);
 
-        //Call ticketservice to generate the tickets (either throws exception or returns void)
-        
-
-        //Call ticket and invoice mailing (either throws exception or returns void)
+        //Call invoice mailing (either throws exception or returns void)
         $this->orderService->sendTicketsAndInvoice($cartOrder);
         return $cartOrder;
     }
@@ -266,7 +292,8 @@ class CartService
      * @throws AuthenticationException
      * @throws CartException
      */
-    private function checkValidCheckout() : Order {
+    private function checkValidCheckout(): Order
+    {
         //Cart must be initialised
         if (!$this->cartIsInitialised())
             throw new CartException("Cart not initialised.");
@@ -299,6 +326,4 @@ class CartService
 
         return $cartOrder;
     }
-
-
 }

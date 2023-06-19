@@ -121,6 +121,7 @@ class Router
             || str_starts_with($request, '/addTour')
             || str_starts_with($request, '/viewOrders')
             || str_starts_with($request, '/downloadOrders')
+            || str_starts_with($request, '/updateEvent')
         ) {
             $this->routeAdminManage($request);
             return;
@@ -218,7 +219,9 @@ class Router
                 $ticketController = new PaymentController();
                 $ticketController->submitPaymentToMollie();
                 break;
-
+            case "/payment-success":
+                require_once("views/payment-funnel/paymentSuccess.php");
+                break;
             default:
                 $this->route404($message);
                 break;
@@ -426,6 +429,11 @@ class Router
                 require_once("controllers/FestivalHistoryController.php");
                 $historyController = new FestivalHistoryController();
                 $historyController->addTour();
+                break;
+            case "/updateEvent":
+                require_once("controllers/FestivalHistoryController.php");
+                $historyController = new FestivalHistoryController();
+                $historyController->updateEvent();
                 break;
             case "/viewOrders":
                 require_once("controllers/OrderController.php");
