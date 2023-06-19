@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="tweaked order merging">
+    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Fixed customer check">
+      <change afterPath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/OrderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/OrderController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/APIControllers/EventAPIController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/APIControllers/EventAPIController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/models/Music/DanceEvent.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/Music/DanceEvent.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/repositories/OrderRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/OrderRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/payment-funnel/cart.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/payment-funnel/cart.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,20 +38,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "Dance",
-    "last_opened_file_path": "C:/Users/joshu/Documents/InHolland/Year 2/Term 3/the-festival-2",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Dance&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/joshu/Documents/InHolland/Year 2/Term 3/the-festival-2&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RunManager">
+    <configuration default="true" type="ComposerRunConfigurationType" factoryName="Composer Script">
+      <option name="pathToComposerJson" value="$PROJECT_DIR$/composer.json" />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -70,7 +75,7 @@
       <workItem from="1687090607078" duration="13559000" />
       <workItem from="1687161657772" duration="3330000" />
       <workItem from="1687168802335" duration="21008000" />
-      <workItem from="1687190497923" duration="1581000" />
+      <workItem from="1687190497923" duration="3051000" />
     </task>
     <task id="LOCAL-00001" summary="Added sendTicketsAndInvoice method to OrderService">
       <created>1686906723310</created>
@@ -177,7 +182,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687188168848</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Fixed customer check">
+      <created>1687192199817</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1687192199817</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -210,6 +222,7 @@
     <MESSAGE value="added order history js" />
     <MESSAGE value="fixed ticket generation" />
     <MESSAGE value="tweaked order merging" />
-    <option name="LAST_COMMIT_MESSAGE" value="tweaked order merging" />
+    <MESSAGE value="Fixed customer check" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed customer check" />
   </component>
 </project>

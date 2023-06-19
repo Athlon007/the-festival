@@ -28,7 +28,6 @@ class EventAPIController extends APIController
     private $eventTypeService;
     private $ticketLinkService;
     private $locationService;
-
     private $festivalHistoryservice;
 
     // Music services
