@@ -212,7 +212,7 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
-            $editedTicketLinkID = basename($uri);
+            $editedTicketLinkID = (int)basename($uri);
             $ticketTypeId = $data['ticketType']['id'];
             if (!isset($ticketTypeId)) {
                 $ticketTypeId = $data['ticketType'];
