@@ -109,7 +109,7 @@ class UserService
             throw ($ex);
         }
     }
-    //TODO: move this function to the mailservice
+    //TODO: move this function to the MailService
     public function sendResetTokenToUser($email, $reset_token)
     {
         try {

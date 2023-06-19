@@ -1,3 +1,6 @@
+// Author: Konrad
+// A few useful functions that are used in multiple places.
+
 let navItems = null;
 
 /**

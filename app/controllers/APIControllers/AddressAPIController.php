@@ -17,8 +17,9 @@ class AddressAPIController extends APIController
         $this->addressService = new AddressService();
     }
 
-    private function buildAddressFromPostedJson(){
-        
+    private function buildAddressFromPostedJson()
+    {
+
         $json = file_get_contents('php://input');
         $data = json_decode($json);
 
@@ -55,7 +56,7 @@ class AddressAPIController extends APIController
 
     protected function handlePostRequest($uri)
     {
-        
+
 
         //For other post requests, admin authentication is required.
         if (!$this->isLoggedInAsAdmin()) {
@@ -63,7 +64,7 @@ class AddressAPIController extends APIController
             return;
         }
 
-        try {    
+        try {
             $address = $this->buildAddressFromPostedJson();
             $address = $this->addressService->insertAddress($address);
 
@@ -78,12 +79,14 @@ class AddressAPIController extends APIController
     {
         // This is a special case, we need to fetch the address from the external API.
         if (str_starts_with($uri, "/api/address/fetch-address")) {
-            $data = json_decode(file_get_contents("php://input"));
+
+            // get from GET parameters
+            $data = $_GET;
             $this->fetchAddress($data);
             return;
         }
-        
-        if (!is_numeric(basename($uri))){
+
+        if (!is_numeric(basename($uri))) {
             $this->sendErrorMessage("Invalid API Request. You can only request specific addresses.", 400);
             return;
         }
@@ -114,7 +117,7 @@ class AddressAPIController extends APIController
         try {
             $address = $this->buildAddressFromPostedJson();
             $address = $this->addressService->updateAddress($addressId, $address);
-                
+
             echo json_encode($address);
         } catch (Throwable $e) {
             Logger::write($e);

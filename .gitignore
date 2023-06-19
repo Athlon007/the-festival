@@ -11,3 +11,5 @@
 
 app/logs/*
 *.log
+
+.idea/*

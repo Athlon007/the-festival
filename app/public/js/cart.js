@@ -1,6 +1,56 @@
+// Author: Konrad
+// An universal method of adding a new item to the cart.
+//
+// METHODS:
+// Cart.Add(itemID) - adds one item to the cart
+// Cart.Remove(itemID) - removes one item from the cart
+// Cart.UpdateCounter() - updates the counter of items in the cart
+// Cart.Get() - returns the cart object
+// Cart.Delete(itemId) - deletes the item from the cart (all instances of it)
+
+
+
+// load admin/modals.js
+function createToast(header, msg) {
+    // Create bootstrap toast
+    let toast = document.createElement('div');
+    toast.classList.add('toast');
+    toast.style.position = 'fixed';
+    toast.style.zIndex = 9999;
+    toast.style.left = '30px';
+    toast.style.top = '30px';
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    toast.setAttribute('data-bs-delay', '3000');
+    toast.setAttribute('data-bs-autohide', 'true');
+
+    // Create header
+    let toastHeader = document.createElement('div');
+    toastHeader.classList.add('toast-header');
+    toastHeader.innerHTML = header;
+
+    // Create body
+    let toastBody = document.createElement('div');
+    toastBody.classList.add('toast-body');
+    toastBody.innerHTML = msg;
+
+    // Append header and body to toast
+    toast.appendChild(toastHeader);
+    toast.appendChild(toastBody);
+
+    // Append toast to the beginning of the body
+    document.body.insertBefore(toast, document.body.firstChild);
+
+    // Show toast
+    let toastElement = new bootstrap.Toast(toast);
+    toastElement.show();
+}
+
 (function () {
     const apiUrl = '/api/cart';
     var Cart = {};
+
     //Adds one item to the cart order
     Cart.Add = function (itemID) {
         document.getElementById('shopping-circle').classList.remove('d-none');
@@ -15,6 +65,12 @@
                 }
             }).then(response => response.json())
                 .then(data => {
+                    if (data.error_message) {
+                        // Admin probably tried to add an item to cart, which is not supported.
+                        // Only users can add items to cart.
+                        createToast('Error', data.error_message);
+                    }
+
                     Cart.UpdateCounter();
                     resolve(data);
                 }
@@ -91,12 +147,52 @@
 
                 this.count = data.count;
 
-                console.log("Cart count: " + data.count);
+                //console.log("Cart count: " + data.count);
             })
             .catch(error => {
                 console.log(error);
             }
             );
+    }
+
+    //Deletes the item from the cart
+    Cart.Delete = function (itemId) {
+        return new Promise((resolve, reject) => {
+            fetch(apiUrl + '/item/' + itemId,
+            {
+                method: 'DELETE'
+            }).then(response => response.json())
+            .then(data => {
+                Cart.UpdateCounter();
+                resolve(data);
+            }
+            ).catch(error => {
+                reject(error);
+            }
+            );
+        });
+    }
+
+    //Checks out the cart
+    Cart.Checkout = function (paymentMethod) {
+        console.log(paymentMethod);
+        return new Promise((resolve, reject) => {
+            fetch(apiUrl + '/checkout',
+                {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "paymentMethod": paymentMethod
+                    }),
+                }).then(response => response.json())
+                .then(data => {
+                        Cart.UpdateCounter();
+                        resolve(data);
+                    }
+                ).catch(error => {
+                    reject(error);
+                }
+            );
+        });
     }
 
     window.Cart = Cart;

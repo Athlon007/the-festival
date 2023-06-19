@@ -3,6 +3,9 @@
 require_once('Event.php');
 require_once(__DIR__ . '/Types/TicketType.php');
 
+/**
+ * A link between an event and a ticket type.
+ */
 class TicketLink implements JsonSerializable
 {
     private $id;

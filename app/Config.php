@@ -14,3 +14,7 @@ if ($debugMode) {
 }
 
 $allowed_api_address = "172.23.0.1";
+
+//Mollie API key
+
+$mollie_api="test_MVbzPEjp3tJW86EDNq2Dwzwbf3CKRa";

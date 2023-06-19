@@ -1,3 +1,4 @@
+// Author: Konrad
 const START_DATE = '2023-07-27 10:00:00';
 
 // Load FullCalendar's JS.

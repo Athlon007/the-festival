@@ -34,6 +34,16 @@ class TicketService
     $this->repository = new TicketRepository();
   }
 
+  public function insertTicket(Order $order, Event $event, $ticketTypeId): Ticket
+  {
+    try {
+      $ticket = $this->repository->insertTicket($order, $event, $ticketTypeId);
+      return $ticket;
+    } catch (Exception $ex) {
+      throw ($ex);
+    }
+  }
+
   public function getTicketByID($ticketID): Ticket
   {
     try {
@@ -122,6 +132,32 @@ class TicketService
   }
 
 
+  public function getAllTicketsAndSend(Order $order)
+  {
+    try {
+      //         // get all history, jazz tickets (for now, later we will get all tickets for yummy and dance)
+      $tickets = array_merge(
+        $this->getAllHistoryTickets($order),
+        $this->getAllJazzTickets($order)
+      );
+
+      $qrCodeImages = array();
+      foreach ($tickets as $ticket) {
+        $qrCodeImage = $this->generateQRCode($ticket);
+        $qrCodeImages[] = $qrCodeImage;
+      }
+
+      $dompdf = $this->generatePDFTicket($tickets, $order, $qrCodeImages);
+      $order->setTickets($tickets);
+      $this->sendTicketByEmail($dompdf, $order);
+      return $tickets;
+    } catch (Exception $ex) {
+      throw ($ex);
+    }
+  }
+
+
+
   public function sendTicketByEmail(Dompdf $dompdf, Order $order)
   {
     try {
@@ -145,6 +181,7 @@ class TicketService
       $mail->Body = ob_get_clean();
 
       // $mail->addAddress($order->getCustomer()->getEmail(), $name);
+      //Debugging
       $mail->addAddress("turkvedat0911@gmail.com", $name);
       foreach ($order->getTickets() as $ticket) {
         $pdfContents = $dompdf->output();

@@ -22,16 +22,22 @@
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
-                    <h2 class="mb-5 mt-5">Shopping Cart</h2>
+                    <h2 class="mb-5 mt-5">Shopping Cart <?= $shareMode ? "(Shared)" : "" ?></h2>
                     <!--Pop-up message-->
-                    <div id="popup">
-                    </div>
+                    <div id="popup" class="alert d-none"></div>
                     <div class="row">
+
+                        <!-- Cart disclaimer in case there's nothing -->
+
                         <?php
-                        if (!$hasStuffInCart) {
+                        if ($isAdmin && !$shareMode) {
+                            echo "<h4>As an admin, you are not allowed to purchase things.</h4>";
+                        } elseif (!$hasStuffInCart && !$shareMode) {
                             echo "<h4>Your cart is empty. Go buy some stuff!</h4>";
                         } else { ?>
-                            <!-- Cart -->
+
+                            <!-- Cart items list -->
+
                             <div class="col-7">
                                 <?php
                                 $orderItems = $cartOrder->getOrderItems();
@@ -39,29 +45,49 @@
                                     $id = $orderItem->getTicketLinkId(); ?>
                                     <div id="cart-item-<?= $id ?>" class="card p-3 m-3" style="width: 100%">
                                         <div class="card-header" style="width: 100%">
-                                            <?= $orderItem->getEventName() ?>
-                                            <?= $orderItem->getTicketName() ?> - &euro; <?= $orderItem->getBasePrice() ?> + &euro; <?= $orderItem->getVatAmount() ?> VAT
+                                            <h5 class="card-title">
+                                                <?= $orderItem->getEventName() ?> -
+                                                <?= $orderItem->getTicketName() ?>
+                                            </h5>
+                                        </div>
+                                        <div class="card-body" style="width: 100%">
+                                            <h6 class="card-subtitle">
+                                                Price per ticket: <strong>&euro; <?= number_format($orderItem->getFullTicketPrice(), 2, '.'); ?></strong>
+                                                (&euro; <?= number_format($orderItem->getBasePrice(), 2, '.'); ?>
+                                                + &euro; <?= number_format($orderItem->getVatAmount(), 2, '.'); ?> VAT)
+                                            </h6>
                                         </div>
                                         <br>
                                         <div style="width: 100%">
                                             <?php if (!$shareMode) { ?>
-                                                <button id="cart-item-remove-<?= $id ?>" class="btn btn-light" style="width: 20%">-</button>
+                                                <button id="cart-item-remove-<?= $id ?>" class="btn btn-light" style="width: 10%">-</button>
                                             <?php } ?>
-                                            <span id="cart-item-counter-<?= $id ?>" class="fw-bold mx-2"><?= $orderItem->getQuantity() ?></span>
+                                            <span id="cart-item-counter-<?= $id ?>" class="fw-bold mx-2">
+                                                <?= $orderItem->getQuantity() ?>
+                                            </span>
                                             <?php if (!$shareMode) { ?>
-                                                <button id="cart-item-add-<?= $id ?>" class=" btn btn-light" style="width: 20%">+</button>
+                                                <button id="cart-item-add-<?= $id ?>" class="btn btn-light" style="width: 10%">+</button>
                                             <?php } ?>
-                                            <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end"><?= $orderItem->getBasePrice() + $orderItem->getVatAmount() ?></span>
-                                            <span id="cart-item-total-price-<?= $id ?>" class="price float-end">&euro; <?= $orderItem->getTotalFullPrice() ?></span>
+                                            <?php if (!$shareMode) { ?>
+                                                <button id="order-item-delete-<?= $id ?>" class="btn btn-danger ms-5" style="width: 20%">DELETE</button>
+                                            <?php } ?>
+                                            <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end">
+                                                <?= $orderItem->getFullTicketPrice() ?>
+                                            </span>
+                                            <span id="cart-item-total-price-<?= $id ?>" class="price float-end">
+                                                &euro; <?= number_format($orderItem->getTotalFullPrice(), 2, '.'); ?>
+                                            </span>
                                         </div>
                                         <br>
                                     </div>
-                                <?php }   ?>
+                                <?php } ?>
                             </div>
-                            <!-- Buttons -->
+
+                            <!-- Buttons on the right-->
+
                             <?php if (!$shareMode) { ?>
                                 <div class="col-5 d-grid">
-                                    <button class="btn btn-secondary float-end my-2">My Order History</button>
+                                    <button class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?> ">My Order History</button>
                                     <input type="hidden" id="share-id" value="<?= $cartOrder->getOrderId(); ?>">
                                     <div class="input-group">
                                         <input type=text" class="form-control" readonly id="share-url-text">
@@ -73,11 +99,38 @@
                     </div>
                     <br>
                     <br>
+
+                    <!-- Checkout section-->
+
                     <?php if ($hasStuffInCart) {
                     ?>
-                        <h4 id="total">Total price: &euro; <?= $fullPrice ?></h4>
+                        <h4 id="total">Total price: &euro;
+                            <?= number_format($cartOrder->getTotalPrice(), 2, '.'); ?>
+                        </h4>
                         <?php if (!$shareMode) { ?>
-                            <button class="btn btn-primary">Check out</button>
+                            <button class="btn btn-primary <?php if (!$isLoggedIn) echo "disabled"; ?> " onclick="checkout()">Check out</button>
+                            <br>
+                            <div> <?php if (!$isLoggedIn) echo "Log in to check out your cart."; ?> </div>
+                            <br>
+                            <h5>Payment method:</h5>
+                            <div class="form-check">
+                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> " type="radio" name="paymentMethodRadios" id="method-ideal" value="method-ideal">
+                                <label class="form-check-label" for="method-ideal">
+                                    iDEAL
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> " type="radio" name="paymentMethodRadios" id="method-card" value="method-card">
+                                <label class="form-check-label" for="method-card">
+                                    Card
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> " type="radio" name="paymentMethodRadios" id="method-klarna" value="method-klarna">
+                                <label class="form-check-label" for="method-klarna">
+                                    Klarna (Pay later)
+                                </label>
+                            </div>
 
                         <?php } else { ?>
                             <p>This cart has been shared with you.</p>
@@ -85,9 +138,6 @@
                     <?php
                     }
                     ?>
-
-
-
                 </div>
             </div>
         </div>

@@ -3,6 +3,9 @@
 require_once("EventRepository.php");
 require_once("TicketLinkRepository.php");
 
+/**
+ * @author Konrad
+ */
 class JazzTicketLinkRepository extends TicketLinkRepository
 {
     protected function build($arr): array
@@ -27,7 +30,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
             $address->setPostalCode($item['addressPostalCode']);
             $address->setCity($item['addressCity']);
             $address->setCountry($item['addressCountry']);
-            
+
             $location = new Location(
                 $item['locationId'],
                 $item['locationName'],
@@ -62,7 +65,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
                 $this->readIfSet($item['artistCountry']),
                 $this->readIfSet($item['artistGenres']),
                 $this->readIfSet($item['artistHomepage']),
-                $this->readIfSet($item['artistFacebook']),
+                $this->readIfSet($item['artistFacebok']),
                 $this->readIfSet($item['artistTwitter']),
                 $this->readIfSet($item['artistInstagram']),
                 $this->readIfSet($item['artistSpotify']),
@@ -93,6 +96,10 @@ class JazzTicketLinkRepository extends TicketLinkRepository
         return $output;
     }
 
+    // Why such long query? Because we need to get all the data for the event, and we need to get the ticket type
+    // If we get everything one by one, we will have a lot of queries, and that will be slow.
+    // This way we get all the data in one query, and we can build the objects from that.
+    // We are saving good 30 seconds of loading time.
     public function getAll($sort = null, $filters = [])
     {
         $sql = "SELECT e.eventId,
@@ -178,13 +185,14 @@ class JazzTicketLinkRepository extends TicketLinkRepository
                         $sql .= " je.artistId = :$key ";
                         break;
                     case "artist_kind":
-                        $sql .= " a.artistKindId = :$key";
+                        $sql .= " a.artistKindId = :$key ";
                         break;
                     default:
                         continue 2;
                 }
 
-                if (end($filters) !== $filter) {
+                // Add "AND" if there are more filters
+                if (next($filters)) {
                     $sql .= " AND ";
                 }
             }
@@ -210,7 +218,8 @@ class JazzTicketLinkRepository extends TicketLinkRepository
         $stmt = $this->connection->prepare($sql);
 
         foreach ($filters as $key => $filter) {
-            if (empty($filter)) {
+            // If the filter is empty, skip. DO NOT SKIP IF THAT IS A NUMBER!
+            if (empty($filter) && !is_numeric($filter)) {
                 continue;
             }
 

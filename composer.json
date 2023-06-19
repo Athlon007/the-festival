@@ -2,6 +2,7 @@
     "require": {
         "tecnickcom/tcpdf": "^6.6",
         "dompdf/dompdf": "^2.0",
-        "endroid/qr-code": "^4.8"
+        "endroid/qr-code": "^4.8",
+       "mollie/mollie-api-php": "2.51"
     }
 }

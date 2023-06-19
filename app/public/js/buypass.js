@@ -1,3 +1,4 @@
+// Author: Konrad
 const eventType = document.getElementById('event-type');
 const passType = document.getElementById('pass-type');
 const date = document.getElementById('event-date');

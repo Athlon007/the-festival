@@ -25,7 +25,7 @@ class FestivalHistoryRepository extends Repository
     public function getAllHistoryEvents()
     {
         try {
-            $query = "            SELECT he.eventId as eventId, he.locationId as locationId, e.name as name,
+            $query = "SELECT he.eventId as eventId, he.locationId as locationId, e.name as name,
             e.startTime as startTime, e.endTime as endTime, g.guideId as guideId, e.availableTickets as availableTickets, e.festivalEventType
             FROM historyevents he
             JOIN events e ON e.eventId = he.eventId
@@ -41,8 +41,8 @@ class FestivalHistoryRepository extends Repository
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $historyEvent = new HistoryEvent(
                     $row['eventId'],
-                    $row['locationId'],
                     $row['name'],
+                    $row['availableTickets'],
                     new DateTime($row['startTime']),
                     new DateTime($row['endTime']),
                     $this->getGuideByID($row['guideId']),
@@ -58,11 +58,36 @@ class FestivalHistoryRepository extends Repository
         }
     }
 
+    public function getAllGuides(){
+        try {
+            $query = "SELECT g.guideId, g.name as firstName, g.lastName , g.`language`  FROM guides g";
+
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute();
+
+            // fetch each results as objects
+            $guides = array();
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $guide = new Guide();
+                $guide->setGuideId($row['guideId']);
+                $guide->setFirstName($row['firstName']);
+                $guide->setLastName($row['lastName']);
+                $guide->setLanguage($row['language']);
+                
+                $guides[] = $guide;
+            }
+
+            return $guides;
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
     // TODO: remove this method
     public function getGuideByID($id)
     {
         try {
-            $query = "SELECT g.guideId, g.name as firstName, g.lastName , g.`language` , g.description  FROM guides g where guideId = :id";
+            $query = "SELECT g.guideId, g.name as firstName, g.lastName , g.`language`  FROM guides g where guideId = :id";
 
             $stmt = $this->connection->prepare($query);
             $stmt->bindValue(":id", $id);

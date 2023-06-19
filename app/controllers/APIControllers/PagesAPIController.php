@@ -2,6 +2,9 @@
 require_once("APIController.php");
 require_once(__DIR__ . '/../../services/PageService.php');
 
+/**
+ * @author Konrad
+ */
 class PagesAPIController extends APIController
 {
     private $pageService;

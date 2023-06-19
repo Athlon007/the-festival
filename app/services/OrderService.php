@@ -9,6 +9,10 @@ require_once(__DIR__ . '/../repositories/CustomerRepository.php');
 //Services
 require_once(__DIR__ . '/../services/TicketService.php');
 require_once(__DIR__ . '/../services/PDFService.php');
+require_once(__DIR__ . '/../services/InvoiceService.php');
+
+//Controllers
+require_once(__DIR__ . '/../controllers/TicketController.php');
 
 //Models
 require_once(__DIR__ . '/../models/Order.php');
@@ -19,19 +23,15 @@ class OrderService
 {
     private $orderRepository;
     private $customerRepository;
-    private $ticketLinkRepository;
-    private $ticketRepository;
-    private $ticketService;
-    private $pdfService;
+    private $invoiceService;
+    private $ticketController;
 
     public function __construct()
     {
         $this->orderRepository = new OrderRepository();
-        $this->ticketLinkRepository = new TicketLinkRepository();
-        $this->ticketRepository = new TicketRepository();
         $this->customerRepository = new CustomerRepository();
-        $this->ticketService = new TicketService();
-        $this->pdfService = new PDFService();
+        $this->invoiceService = new InvoiceService();
+        $this->ticketController = new TicketController();
     }
 
     public function getOrderById(int $id): Order
@@ -39,7 +39,7 @@ class OrderService
         //Get the order object
         $order = $this->orderRepository->getOrderById($id);
         //Get the customer object attached in order
-        // Btw, customer may be null if the order is made by a visitor
+        //Customer may be null if the order is made by a visitor
         if ($order->getCustomer() != null) {
             $order->setCustomer($this->customerRepository->getById($order->getCustomer()->getUserId()));
         } else {
@@ -50,21 +50,17 @@ class OrderService
 
     public function getOrderHistory(int $customerId): array
     {
-        $orders = $this->orderRepository->getOrderHistory($customerId);
-        foreach ($orders as $order) {
-            $order->setCustomer($this->customerRepository->getById($order->getCustomer()->getUserId()));
-        }
-        return $orders;
+        return $this->orderRepository->getOrderHistory($customerId);
     }
 
-    public function getOrdersToExport()
+    public function getOrdersToExport($isPaid = null, $customerId = null)
     {
-        return $this->orderRepository->getOrdersToExport();
+        return $this->orderRepository->getOrdersToExport($isPaid, $customerId);
     }
 
     public function downloadOrders()
     {
-        $orders = $this->getOrdersToExport();
+        $orders = $this->getOrdersToExport(true);
 
         if ($orders == null) {
             echo "No orders found";
@@ -103,11 +99,6 @@ class OrderService
         echo $excelData;
         exit;
     }
-
-    public function sendInvoice()
-    {
-    }
-
 
     private function filterData(&$str)
     {
@@ -168,21 +159,21 @@ class OrderService
     }
 
     //If the customer has an unpaid order and logs in while having created another order as a visitor, merge the two orders.
-    public function mergeOrders($customerOrder, $sessionOrder): Order
+    public function mergeOrders(Order $customerOrder, Order $sessionOrder): Order
     {
-
-        //Nested loop that checks if there are orderitems that represent the same ticket
+        //Nested loop that checks if there are order items that represent the same ticket
         foreach ($customerOrder->getOrderItems() as $customerOrderItem) {
             foreach ($sessionOrder->getOrderItems() as $sessionOrderItem) {
-                //If there is a match in ticketlink then add the quantity of the sessionOrderItem to the customerOrderItem and update
+
                 if ($sessionOrderItem->getTicketLinkId() == $customerOrderItem->getTicketLinkId()) {
+                    //If there is a match in ticket link then add the quantity of the sessionOrderItem to the customerOrderItem and update
                     $customerOrderItem->setQuantity($customerOrderItem->getQuantity() + $sessionOrderItem->getQuantity());
                     $this->updateOrderItem($customerOrderItem->getOrderItemId(), $customerOrderItem);
                 }
-                //If the orderItem is unique then we add it to the customerOrder and update it
                 else {
+                    //If the orderItem is unique then we add it to the customerOrder and update it
                     $sessionOrderItem->setOrderId($customerOrder->getOrderId());
-                    $customerOrder->addOrderItem($this->updateOrderItem($customerOrderItem->getOrderItemId(), $customerOrderItem));
+                    $customerOrder->addOrderItem($this->updateOrderItem($sessionOrderItem->getOrderItemId(), $sessionOrderItem));
                 }
             }
         }
@@ -191,5 +182,25 @@ class OrderService
         $this->deleteOrder($sessionOrder->getOrderId());
 
         return $customerOrder;
+    }
+
+    //TODO: Check if redundant
+    public function getAllOrders($limit = null, $offset = null, $isPaid = null)
+    {
+        return $this->orderRepository->getAllOrders($limit, $offset, $isPaid);
+    }
+
+    /**
+     * @param Order $order
+     * @return void
+     * @throws Exception
+     */
+    public function sendTicketsAndInvoice(Order $order): void
+    {
+        //Send invoice via email
+        $this->invoiceService->sendInvoiceEmail($order);
+
+        // Get all tickets and send them to the user
+        $this->ticketController->getAllTickets($order);
     }
 }

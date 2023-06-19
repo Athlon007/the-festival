@@ -1,3 +1,4 @@
+// Author: Konrad
 class EventsList {
     constructor(container) {
         this.events = [];

@@ -34,9 +34,9 @@ class RestaurantService{
         }
     }
 
-function getAllRestaurants(): array{
+function getAllRestaurants($date = null): array{
     try {
-        return $this->repository->getAllRestaurants();
+        return $this->repository->getAllRestaurants($date);
     } catch (Exception $ex) {
         throw ($ex);
     }

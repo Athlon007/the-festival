@@ -102,7 +102,7 @@ class UserAPIController extends APIController
 
             //If the user is a customer, try to fetch the cart they might have saved during an earlier visit.
             if ($user->getUserTypeAsString() == "Customer") {
-                $this->cartService->getCartAfterLogin($user->getUserId());
+                $this->cartService->getCartAfterLogin($user);
             }
 
             parent::sendSuccessMessage("Login successful.");
@@ -120,6 +120,8 @@ class UserAPIController extends APIController
             }
 
             $_SESSION["user"] = null;
+            // Destroy the session.
+            session_destroy();
             parent::sendSuccessMessage("Logout successful.");
         } catch (Exception $ex) {
             parent::sendErrorMessage($ex->getMessage());

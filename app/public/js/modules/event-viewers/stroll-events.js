@@ -147,11 +147,16 @@ class StrollEventList extends EventsList {
         ticketInfo.appendChild(ticketInfoP2);
         // p3
         let ticketInfoP3 = document.createElement('p');
-        ticketInfoP3.innerHTML = "<strong>Time:</strong> " + event.event.startTime.date;
+        // Time is in  2023-07-27 10:00:00.000000 format. Make it look better
+        // Convert it to 203-07-27 10:00
+        let formattedDateTime = event.event.startTime.date.split('.')[0];
+        // Remove the seconds
+        formattedDateTime = formattedDateTime.substring(0, formattedDateTime.length - 3);
+        ticketInfoP3.innerHTML = "<strong>Time:</strong> " + formattedDateTime;
         ticketInfo.appendChild(ticketInfoP3);
         // p4
         let ticketInfoP4 = document.createElement('p');
-        ticketInfoP4.innerHTML = "<strong>Spots:</strong> 0";
+        ticketInfoP4.innerHTML = "<strong>Available Tickets:</strong> " + event.event.availableTickets;
         ticketInfo.appendChild(ticketInfoP4);
         ticketContainer.appendChild(ticketBody);
 
@@ -164,7 +169,7 @@ class StrollEventList extends EventsList {
         ticketButton.classList.add('btn', 'btn-primary', 'w-100');
         ticketButton.innerText = "Add to cart";
         ticketButton.addEventListener('click', () => {
-            this.addToCart(event.id);
+            Cart.Add(event.id);
         });
         ticketPriceDiv.appendChild(ticketButton);
         ticketBody.appendChild(ticketPriceDiv);

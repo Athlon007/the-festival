@@ -5,6 +5,9 @@ require_once("ImageRepository.php");
 require_once("../models/Music/Artist.php");
 require_once("../models/Music/ArtistKind.php");
 
+/**
+ * @author Konrad
+ */
 class ArtistRepository extends Repository
 {
     private $imageRepo;

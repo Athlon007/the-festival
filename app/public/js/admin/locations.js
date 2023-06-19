@@ -1,3 +1,4 @@
+// Author: Konrad
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;
@@ -125,11 +126,11 @@ btnSubmit.onclick = function () {
 
 document.getElementById('delete').onclick = function () {
     if (editedId === -1) {
-        msgBox.createToast('Error!', 'No page selected');
+        msgBox.createToast('Error!', 'No location selected');
         return;
     }
 
-    msgBox.createYesNoDialog('Delete page', 'Are you sure you want to delete this location? This is irreversible!', function () {
+    msgBox.createYesNoDialog('Delete location', 'Are you sure you want to delete this location? This is irreversible!', function () {
         // fetch with post
         fetch('/api/locations/' + editedId, {
             method: 'DELETE',
@@ -150,7 +151,7 @@ document.getElementById('delete').onclick = function () {
                         }
                     }
                     toggleEditor(masterEditor, false);
-                    msgBox.createToast('Success!', 'Page has been deleted');
+                    msgBox.createToast('Success!', 'Location has been deleted');
                 } else {
                     msgBox.createToast('Something went wrong', data.error_message);
                 }
@@ -361,17 +362,8 @@ function fetchAddress() {
         return;
     }
 
-    let sendData = {
-        postalCode: postalCode,
-        houseNumber: houseNumber
-    }
-
-    fetch("/api/address/fetch-address", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(sendData)
+    fetch("/api/address/fetch-address?postalCode=" + postalCode + "&houseNumber=" + houseNumber, {
+        method: 'GET'
     })
         .then(response => response.json())
         .then(data => {

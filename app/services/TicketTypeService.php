@@ -3,6 +3,9 @@
 require_once(__DIR__ . '/../repositories/TicketTypeRepository.php');
 require_once(__DIR__ . '/../models/Types/TicketType.php');
 
+/**
+ * @author Konrad
+ */
 class TicketTypeService
 {
     private $ticketTypeRepository;
@@ -20,7 +23,12 @@ class TicketTypeService
     public function getById($id): TicketType
     {
         $id = htmlspecialchars($id);
-        return $this->ticketTypeRepository->getById($id);
+        $output = $this->ticketTypeRepository->getById($id);
+
+        if ($output->getId() == null) {
+            throw new Exception("TicketType $id not found");
+        }
+        return $output;
     }
 
     public function create(TicketType $ticketType): TicketType

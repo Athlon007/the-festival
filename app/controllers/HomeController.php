@@ -16,8 +16,9 @@ class HomeController
      */
     public function index(): void
     {
-        require(__dir__ . self::HOME_PAGE);
+        require(__DIR__ . self::HOME_PAGE);
     }
+
     /**
      * Loads when user presses the account button in nav bar, behaves differently depending on login status
      */
@@ -25,15 +26,14 @@ class HomeController
     {
         //Load login screen if user is not logged in, else load account management screen
         if (!isset($_SESSION['user'])) {
-            require(__dir__ . self::LOGIN_PAGE);
+            require(__DIR__ . self::LOGIN_PAGE);
         } else {
-            // print type of user object.
             $user = unserialize($_SESSION['user']);
 
             if ($user->getUserType() == 3) {
-                require(__dir__ . self::CUSTOMER_ACCOUNT_PAGE);
+                require(__DIR__ . self::CUSTOMER_ACCOUNT_PAGE);
             } else {
-                require(__dir__ . self::EMPLOYEE_ACCOUNT_PAGE);
+                require(__DIR__ . self::EMPLOYEE_ACCOUNT_PAGE);
             }
         }
     }
@@ -42,6 +42,6 @@ class HomeController
      */
     public function register(): void
     {
-        require(__dir__ . self::REGISTER_PAGE);
+        require(__DIR__ . self::REGISTER_PAGE);
     }
 }

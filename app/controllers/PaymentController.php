@@ -2,28 +2,30 @@
 
 require_once("../services/InvoiceService.php");
 require_once("../controllers/TicketController.php");
+require_once("../services/MollieService.php");
 
 class PaymentController
 {
-    private $invoiceService;
-    private $ticketController;
-
+    private $mollie;
     public function __construct()
     {
-        $this->invoiceService = new InvoiceService();
-        $this->ticketController = new TicketController();
+        $this->mollie = new MollieService();
     }
 
-    public function sendTicketsAndInvoice()
-    {
-        $order = new Order();
-        $order->setOrderId(1);
+    //TODO: see if this is still needed because it doesn't work anymore
+    public function submitPaymentToMollie(){
+        //retrieve the order from the session
+        //session_start();
+        $order = serialize($_SESSION['order']);
 
-        //Send invoice via email
-        $this->invoiceService->sendInvoiceEmail($order);
+
+        //go to payment page
+        $mollie = new MollieService();
+        $mollie->pay($order);
+        //$mollie->pay($totalPrice, $orderId, $userId, $paymentMethod);
 
         // Get all tickets and send them to the user
-        $this->ticketController->getAllTickets($order);
+        $this->ticketController->getAllTicketsAndSend($order);
 
         require_once(__DIR__ . '../../views/payment-funnel/paymentSuccess.php');
     }
