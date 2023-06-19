@@ -263,7 +263,7 @@ class CartService
      * @throws AuthenticationException
      * @throws Exception
      */
-    public function checkIfPaid() : Order
+    public function checkIfPaid(): Order
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
@@ -276,6 +276,8 @@ class CartService
         // Get payment ID from session.
         $paymentId = $_SESSION['payment_id'];
         $cartOrder = $this->checkValidCheckout();
+
+        $customer = $cartOrder->getCustomer();
 
         $payment = $this->mollieService->getPayment($paymentId);
 
@@ -291,6 +293,7 @@ class CartService
 
         //Call invoice mailing (either throws exception or returns void)
         $this->orderService->sendTicketsAndInvoice($cartOrder);
+
         return $cartOrder;
     }
 

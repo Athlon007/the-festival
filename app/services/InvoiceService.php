@@ -85,10 +85,8 @@ class InvoiceService
       //$mail->addAddress("aathlon@outlook.com", $name);
       $mail->addStringAttachment($pdfContents, 'invoice.pdf', 'base64', 'application/pdf');
 
-      if ($mail->send()) {
-        echo "Mail sent";
-      } else {
-        echo "Mail not sent";
+      if (!$mail->send()) {
+        // TODO: Maybe throw error...
       }
     } catch (Exception $ex) {
       throw ($ex);
