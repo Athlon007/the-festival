@@ -255,7 +255,15 @@ class CartService
         return $paymentUrl;
     }
 
-    public function checkIfPaid()
+    /**
+     * Checks if the mollie API has returned a successful payment or not.
+     * @return Order
+     * @throws CartException
+     * @throws \Mollie\Api\Exceptions\ApiException
+     * @throws AuthenticationException
+     * @throws Exception
+     */
+    public function checkIfPaid() : Order
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();

@@ -138,9 +138,9 @@ class OrderService
         return $this->orderRepository->updateOrder($orderId, $order);
     }
 
-    public function updateOrderItem($orderItemId, $orderItem): OrderItem
+    public function updateOrderItem($orderItemId, $orderItem, $orderId = null): OrderItem
     {
-        return $this->orderRepository->updateOrderItem($orderItemId, $orderItem);
+        return $this->orderRepository->updateOrderItem($orderItemId, $orderItem, $orderId);
     }
 
     public function deleteOrder($orderId): void
@@ -166,8 +166,8 @@ class OrderService
                     $this->updateOrderItem($customerOrderItem->getOrderItemId(), $customerOrderItem);
                 } else {
                     //If the orderItem is unique then we add it to the customerOrder and update it
-                    $sessionOrderItem->setOrderId($customerOrder->getOrderId());
-                    $customerOrder->addOrderItem($this->updateOrderItem($sessionOrderItem->getOrderItemId(), $sessionOrderItem));
+                    $this->orderRepository->updateOrderItem($sessionOrderItem->getOrderItemId(), $sessionOrderItem, $customerOrder->getOrderId());
+                    $customerOrder->addOrderItem($sessionOrderItem);
                 }
             }
         }
