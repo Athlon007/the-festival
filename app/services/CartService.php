@@ -241,13 +241,11 @@ class CartService
      */
     public function checkoutCart($paymentMethod): Order
     {
-        //Retrieve the order that is in cart from the db.
-        $cartOrder = $this->getCart();
-
-        $this->checkValidCheckout($cartOrder);
+        $cartOrder = $this->checkValidCheckout();
 
         //Call mollie service for payment (either throws exception or returns void)
-        $this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId(), $paymentMethod);
+        //TODO: Uncomment after debugging
+        //$this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId(), $paymentMethod);
 
         $cartOrder->setIsPaid(true);
         $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
@@ -260,22 +258,40 @@ class CartService
         return $cartOrder;
     }
 
+    /**
+     * Fetches the cart order from db and the validates the checkout values.
+     * @return Order
+     * @throws AuthenticationException
+     * @throws CartException
+     */
     private function checkValidCheckout() : Order {
+        //Cart must be initialised
         if (!$this->cartIsInitialised())
             throw new CartException("Cart not initialised.");
 
+        //Fetch order from db
         $cartOrder = $this->getCart();
 
+        //Order must not be paid already
         if ($cartOrder->getIsPaid())
             throw new CartException("Cart already paid.");
 
+        //Order must not be empty
         if ($cartOrder->getOrderItems() == null)
             throw new CartException("Cart is empty.");
 
+        //A user must be logged in
         if (!isset($_SESSION["user"]))
             throw new AuthenticationException("User not logged in.");
 
+        //Fetch user from session
         $user = unserialize($_SESSION["user"]);
+
+        //The user must be a customer
+        if (!$user instanceof Customer)
+            throw new AuthenticationException("Only customers are allowed to check out.");
+
+        //The customer must be owner of the cart
         if ($user->getUserId() != $this->getCart()->getCustomer()->getUserId())
             throw new AuthenticationException("Only the owner of the cart is authorised to checkout.");
 
