@@ -8,8 +8,7 @@
     <meta name="theme-color" content="#fffbfa">
     <meta name="robots" content="noindex, nofollow">
     <title>Visit Haarlem - Add Event</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/icons.css">
 </head>
@@ -49,14 +48,24 @@
                     <option value="" selected disabled>Select a Location</option>
                     <!-- Populate options from the database -->
                     <?php foreach ($locations as $location) { ?>
-                        <option value="<?php echo $location->getLocationId(); ?>"><?php echo $location->getName(); ?>
+                        <option value="<?php echo $location->getLocationId(); ?>"><?php echo "[" . $location->getLocationTypeAsString() . "] " . $location->getName(); ?>
                         </option>
                     <?php } ?>
                 </select>
             </div>
             <div class="mb-3">
-                <label for="available-tickets" class="form-label">Available Tickets:</label>
-                <input type="number" class="form-control" id="available-tickets" name="available_tickets" required>
+                <label for="ticketType" class="form-label">Ticket Type:</label>
+                <select class="form-select" id="ticketType" name="ticketType" required>
+                    <option value="" selected disabled>Select a Ticket Type</option>
+                    <!-- Populate options from the database -->
+                    <?php foreach ($ticketTypes as $ticketType) { ?>
+                        <option value="<?php echo $ticketType->getId(); ?>"><?php echo $ticketType->getName() . ' ' . $ticketType->getPrice() ?> </option>
+                    <?php } ?>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="available_tickets" class="form-label">Available Tickets:</label>
+                <input type="number" class="form-control" id="available_tickets" name="available_tickets" required>
             </div>
 
             <button type="submit" class="btn btn-primary">Add Event</button>
@@ -68,7 +77,7 @@
     <script type="module" src="/js/nav.js"></script>
     <script type="module" src="/js/foot.js"></script>
     <script>
-        document.getElementById('add-event-form').addEventListener('submit', function (event) {
+        document.getElementById('add-event-form').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the form from submitting normally
             if (validateInputs()) {
                 submitForm();
@@ -79,22 +88,38 @@
             var form = document.getElementById('add-event-form');
             var formData = new FormData(form);
             var data = {};
-            formData.forEach(function (value, key) {
+            formData.forEach(function(value, key) {
                 data[key] = value;
             });
-            console.log(data);
+
+            // Make sure that the numbers are not strings
+            for (var key in data) {
+                if (!isNaN(data[key])) {
+                    // Convert to number
+                    data[key] = Number(data[key]);
+                }
+            }
+
+            // Replace in startTime T with a space
+            data.start_time = data.start_time.replace('T', ' ');
+            data.end_time = data.end_time.replace('T', ' ');
+
+            console.log(JSON.stringify(data));
             fetch("/api/events/stroll", {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            }).then(res => res.json())
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data),
+                }).then(res => res.json())
                 .then(data => {
-                    if (data.success_message) {
-                        alert(data.success_message)
-                    } else {
+                    if (data.error_message) {
                         alert(data.error_message)
+                        return;
                     }
+
+                    alert('Event added successfully!');
                 })
         }
 
@@ -104,7 +129,8 @@
             var endTimeInput = document.getElementById('endTime');
             var guideInput = document.getElementById('guide');
             var locationInput = document.getElementById('location');
-            var availableTicketsInput = document.getElementById('available-tickets');
+            var availableTicketsInput = document.getElementById('available_tickets');
+            var ticketTypeInput = document.getElementById('ticketType');
 
             // Validate name (ensure it is not empty)
             if (nameInput.value.trim() === '') {
@@ -142,11 +168,8 @@
         }
     </script>
 
-    <script type="application/javascript"
-        src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
+    <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
 
 </html>

@@ -169,8 +169,6 @@ class StrollEventList extends EventsList {
         ticketButton.classList.add('btn', 'btn-primary', 'w-100');
         ticketButton.innerText = "Add to cart";
         ticketButton.addEventListener('click', () => {
-            //this.addToCart(event.id);
-            console.log(event.id);
             Cart.Add(event.id);
         });
         ticketPriceDiv.appendChild(ticketButton);
