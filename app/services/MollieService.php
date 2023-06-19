@@ -44,7 +44,9 @@ class MollieService{
 
             header("Location: " . $payment->getCheckoutUrl(), true, 303);
         }catch(\Mollie\Api\Exceptions\ApiException $e){
+            Logger::write($e);
             throw $e;
+
         }
     }
 
