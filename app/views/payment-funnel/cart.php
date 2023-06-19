@@ -22,11 +22,19 @@
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
+                    <button
+                            class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?> "
+                            style="width: 9em;"
+                            onclick="showOrderHistory()">
+                        My Order History
+                    </button>
+                    <br>
                     <h2 class="mb-5 mt-5">Shopping Cart <?= $shareMode ? "(Shared)" : "" ?></h2>
                     <!--Pop-up message-->
                     <div id="popup" class="alert d-none"></div>
+
                     <div class="row">
-                        <button class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?> " onclick="showOrderHistory()">My Order History</button>
+
                         <!-- Cart disclaimer in case there's nothing -->
 
                         <?php
@@ -69,7 +77,7 @@
                                                 <button id="cart-item-add-<?= $id ?>" class="btn btn-light" style="width: 10%">+</button>
                                             <?php } ?>
                                             <?php if (!$shareMode) { ?>
-                                                <button id="order-item-delete-<?= $id ?>" class="btn btn-danger ms-5" style="width: 20%">DELETE</button>
+                                                <button id="order-item-delete-<?= $id ?>" class="btn btn-danger ms-5" style="width: 6em;">DELETE</button>
                                             <?php } ?>
                                             <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end">
                                                 <?= $orderItem->getFullTicketPrice() ?>
