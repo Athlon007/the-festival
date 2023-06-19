@@ -21,12 +21,18 @@ class LocationService
 
     public function getAll($sort = null): array
     {
-        return $this->repo->getAll($sort);
+        $locations = $this->repo->getAll($sort);
+        foreach ($locations as $location) {
+            $location->setAddress($this->addressService->getAddressById($location->getAddressId()));
+        }
+        return $locations;
     }
 
     public function getById($id): Location
     {
-        return $this->repo->getById($id);
+        $location = $this->repo->getById($id);
+        $location->setAddress($this->addressService->getAddressById($location->getAddressId()));
+        return $location;
     }
 
     /**
@@ -38,7 +44,11 @@ class LocationService
      */
     public function getLocationsByType(int $type, $sort = null): array
     {
-        return $this->repo->getLocationsByType($type, $sort);
+        $locations = $this->repo->getLocationsByType($type, $sort);
+        foreach ($locations as $location) {
+            $location->setAddress($this->addressService->getAddressById($location->getAddressId()));
+        }
+        return $locations;
     }
 
     public function insertLocation($name, $streetName, $houseNumber, $postalCode, $city, $country, $locationType, $lon, $lat, $capacity): Location
