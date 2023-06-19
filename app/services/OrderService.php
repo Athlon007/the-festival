@@ -24,14 +24,16 @@ class OrderService
     private $orderRepository;
     private $customerRepository;
     private $invoiceService;
-    private $ticketController;
+    private $ticketService;
+    private $ticketLinkService;
 
     public function __construct()
     {
         $this->orderRepository = new OrderRepository();
         $this->customerRepository = new CustomerRepository();
         $this->invoiceService = new InvoiceService();
-        $this->ticketController = new TicketController();
+        $this->ticketService = new TicketService();
+        $this->ticketLinkService = new TicketLinkService();
     }
 
     public function getOrderById(int $id): Order
@@ -201,7 +203,24 @@ class OrderService
         //Send invoice via email
         $this->invoiceService->sendInvoiceEmail($order);
 
-        // Get all tickets and send them to the user
-        $this->ticketController->getAllTickets($order);
+        // Generate the tickets for the order
+        $this->generateTicketsForOrder($order);
+
+        //Send all the tickets via email
+        $this->ticketService->getAllTicketsAndSend($order);
+    }
+
+    /**
+     * @throws \PHPMailer\PHPMailer\Exception
+     */
+    private function generateTicketsForOrder($order){
+
+        foreach($order->getOrderItems() as $orderItem){
+            $ticketLink = $this->ticketLinkService->getById($orderItem->getTicketLinkId());
+
+            for ($i = 0; $i < $orderItem->getQuantity(); $i++)
+            $this->ticketService->insertTicket($order, $ticketLink->getEvent(), $ticketLink->getTicketType()->getId());
+        }
+
     }
 }

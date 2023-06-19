@@ -75,9 +75,9 @@ class InvoiceService
         require_once(__DIR__ . '/../emails/invoice-email.php');
         $mail->Body = ob_get_clean();
   
-        // $mail->addAddress($order->getCustomer()->getEmail(), $name);
+        $mail->addAddress($order->getCustomer()->getEmail(), $name);
         //Debugging
-        $mail->addAddress("turkvedat0911@gmail.com", $name);
+        //$mail->addAddress("turkvedat0911@gmail.com", $name);
         $mail->addStringAttachment($pdfContents, 'invoice.pdf', 'base64', 'application/pdf');
   
         if ($mail->send()) {

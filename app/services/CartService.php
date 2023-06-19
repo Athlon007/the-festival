@@ -252,12 +252,12 @@ class CartService
         //Remove the cart from the session
         unset($_SESSION["cartId"]);
 
-        //Call ticketservice to generate the tickets (either throws exception or returns void)
-        
 
-        //Call ticket and invoice mailing (either throws exception or returns void)
+        //Call invoice mailing (either throws exception or returns void)
         $this->orderService->sendTicketsAndInvoice($cartOrder);
         return $cartOrder;
+
+
     }
 
     /**
