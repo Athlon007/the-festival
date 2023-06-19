@@ -1,6 +1,6 @@
 <?php
 
-require_once("../services/TicketLinkService.php");
+require_once("../services/HistoryTicketLinkService.php");
 require_once("../services/FestivalHistoryService.php");
 require_once("../services/LocationService.php");
 
@@ -12,9 +12,11 @@ class FestivalHistoryController
     private $ticketTypeService;
 
     private $eventService;
+    private $ticketLinkService;
 
     public function __construct()
     {
+        $this->ticketLinkService = new HistoryTicketLinkService();
         $this->festivalHistoryService = new FestivalHistoryService();
         $this->locationService = new LocationService();
         $this->ticketTypeService = new TicketTypeService();
@@ -57,14 +59,14 @@ class FestivalHistoryController
             return $guides
                 && $locations && $ticketTypes;
         } catch (PDOException $e) {
-
         }
     }
 
     public function updateEvent()
     {
         try {
-            $historyEvent = $this->festivalHistoryService->getById($_GET['id']);
+            $ticketLink = $this->ticketLinkService->getByEventId($_GET['id']);
+            $historyEvent = $ticketLink->getEvent();
             $guides = $this->festivalHistoryService->getAllGuides();
             $locations = $this->locationService->getAll();
             $ticketTypes = $this->ticketTypeService->getAll();
@@ -73,7 +75,6 @@ class FestivalHistoryController
             return $guides
                 && $locations && $ticketTypes && $historyEvent;
         } catch (PDOException $e) {
-
         }
     }
 }

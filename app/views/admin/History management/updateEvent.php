@@ -8,8 +8,7 @@
     <meta name="theme-color" content="#fffbfa">
     <meta name="robots" content="noindex, nofollow">
     <title>Visit Haarlem - Update Event</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/icons.css">
 </head>
@@ -25,21 +24,20 @@
         <form action="/api/events/<?php echo $historyEvent->getId(); ?>" method="PUT" id="update-event-form">
             <div class="mb-3">
                 <label for="eventId" class="form-label">Event ID:</label>
-                <input type="text" class="form-control" id="eventId" name="eventId"
-                    value="<?php echo $historyEvent->getId(); ?>" readonly>
+                <input type="hidden" id="ticketLinkId" name="ticketLinkId" value="<?php echo $ticketLink->getId(); ?>">
+                <input type="text" class="form-control" id="eventId" name="eventId" value="<?php echo $historyEvent->getId(); ?>" readonly>
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name:</label>
-                <input type="text" class="form-control" id="name" name="name"
-                    value="<?php echo $historyEvent->getName(); ?>" required>
+                <input type="text" class="form-control" id="name" name="name" value="<?php echo $historyEvent->getName(); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="startTime" class="form-label">Start Time:</label>
-                <input type="datetime-local" class="form-control" id="startTime" name="start_time" required>
+                <input type="datetime-local" class="form-control" id="startTime" name="start_time" value="<?= $historyEvent->getStartTime()->format("Y-m-d H:i:s") ?>" required>
             </div>
-            <div class="mb-3">
+            <div class=" mb-3">
                 <label for="endTime" class="form-label">End Time:</label>
-                <input type="datetime-local" class="form-control" id="endTime" name="end_time" required>
+                <input type="datetime-local" class="form-control" id="endTime" name="end_time" value="<?= $historyEvent->getEndTime()->format("Y-m-d H:i:s") ?>" required>
             </div>
             <div class="mb-3">
                 <label for="guide" class="form-label">Guide:</label>
@@ -47,7 +45,7 @@
                     <option value="" selected disabled>Select a guide</option>
                     <!-- Populate options from the database -->
                     <?php foreach ($guides as $guide) { ?>
-                        <option value="<?php echo $guide->getGuideId(); ?>"><?php echo $guide->getFirstName() . ' ' . $guide->getLastName() . ' (' . $guide->getLanguage() . ')'; ?></option>
+                        <option value="<?php echo $guide->getGuideId(); ?>" <?php $guide->getGuideId() == $historyEvent->getGuide()->getGuideId() ? 'selected' : '' ?>><?php echo $guide->getFirstName() . ' ' . $guide->getLastName() . ' (' . $guide->getLanguage() . ')'; ?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -57,7 +55,7 @@
                     <option value="" selected disabled>Select a Location</option>
                     <!-- Populate options from the database -->
                     <?php foreach ($locations as $location) { ?>
-                        <option value="<?php echo $location->getLocationId(); ?>"><?php echo "[" . $location->getLocationTypeAsString() . "] " . $location->getName(); ?>
+                        <option value="<?php echo $location->getLocationId(); ?>" <?php $location->getLocationId() == $historyEvent->getLocation()->getLocationId() ? 'selected' : '' ?>><?php echo "[" . $location->getLocationTypeAsString() . "] " . $location->getName(); ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -74,8 +72,7 @@
             </div>
             <div class="mb-3">
                 <label for="available_tickets" class="form-label">Available Tickets:</label>
-                <input type="number" class="form-control" id="available_tickets" name="available_tickets"
-                    placeholder="<?php echo $historyEvent->getAvailableTickets(); ?>" required>
+                <input type="number" class="form-control" id="available_tickets" name="available_tickets" placeholder="<?php echo $historyEvent->getAvailableTickets(); ?>" required>
             </div>
 
             <button type="submit" class="btn btn-primary">Update Event</button>
@@ -87,7 +84,7 @@
     <script type="module" src="/js/nav.js"></script>
     <script type="module" src="/js/foot.js"></script>
     <script>
-        document.getElementById('update-event-form').addEventListener('submit', function (event) {
+        document.getElementById('update-event-form').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the form from submitting normally
             if (validateInputs()) {
                 submitForm();
@@ -98,7 +95,7 @@
             var form = document.getElementById('update-event-form');
             var formData = new FormData(form);
             var data = {};
-            formData.forEach(function (value, key) {
+            formData.forEach(function(value, key) {
                 data[key] = value;
             });
 
@@ -116,14 +113,15 @@
 
             console.log(JSON.stringify(data));
             eventId = Number(data.eventId);
-            fetch("/api/events/eventId", {
-                method: 'PUT',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data),
-            }).then(res => res.json())
+            const ticketLinkId = Number(data.ticketLinkId);
+            fetch("/api/events/stroll/" + ticketLinkId, {
+                    method: 'PUT',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data),
+                }).then(res => res.json())
                 .then(data => {
                     if (data.error_message) {
                         alert(data.error_message)
