@@ -1,8 +1,10 @@
 <?php
 require_once __DIR__ . '/../repositories/RestaurantRepository.php';
-require_once __DIR__ . '/../models/Restaurant.php';
+require_once __DIR__ . '/../models/Yummy/Restaurant.php';
+require_once __DIR__ . '/../models/Yummy/RestaurantEvent.php';
 
-class RestaurantService{
+class RestaurantService
+{
 
     protected RestaurantRepository $repository;
 
@@ -12,7 +14,7 @@ class RestaurantService{
     }
 
 
-    
+
     public function createNewRestaurant(string $name, int $addressId, int $numOfSessions, string $durationOfSessions, string $description, int $price, $availableSeats, int $typeId, string $rating): void
     {
         try {
@@ -28,27 +30,25 @@ class RestaurantService{
             $restaurant->setRating($rating);
 
             $this->repository->insertRestaurant($restaurant);
-        } 
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw ($ex);
         }
     }
 
-function getAllRestaurants(/*$date = null*/): array{
-    try {
-    return $this->repository->getAllRestaurants(/*$date*/);
-    } catch (Exception $ex) {
-        throw ($ex);
+    function getAllRestaurants(/*$date = null*/): array
+    {
+        try {
+            return $this->repository->getAllRestaurants(/*$date*/);
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
+    function deleteRestaurant($id): void
+    {
+        try {
+            $this->repository->deleteRestaurant($id);
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
     }
 }
-function deleteRestaurant($id): void{
-    try {
-        $this->repository->deleteRestaurant($id);
-    } catch (Exception $ex) {
-        throw ($ex);
-    }
-}
-
-}
-
-?>
