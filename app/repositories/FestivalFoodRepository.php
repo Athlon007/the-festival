@@ -7,7 +7,7 @@ class FestivalFoodRepository extends Repository
     public function getAllRestaurants()
     {
         try {
-            $query = "SELECT * FROM restaurants ";
+            $query = "select * from restaurants join restaurantevent on restaurants.restaurantId = restaurantevent.restaurantId join events on restaurantevent.eventId = events.eventId  ; ";
             $stmt = $this->connection->prepare($query);
             $stmt->execute();
             //$stmt->setFetchMode(PDO::FETCH_CLASS, 'FestivalFood');

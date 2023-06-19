@@ -9,9 +9,10 @@ class RestaurantRepository extends Repository
     {
         try {
             if ($date) {
-                $query = "SELECT * FROM restaurants as r WHERE r.date = :date ";
+                //$query = "SELECT * FROM restaurants as r WHERE r.date = :date ";
+                $query = "Select * from restaurants join restaurantevent on restaurants.restaurantId = restaurantevent.restaurantId join events on restaurantevent.eventId = events.eventId";
                 $stmt = $this->connection->prepare($query);
-                $stmt->bindValue(':date', $date);
+                //$stmt->bindValue(':date', $date);
             } else{
                 $query = "SELECT * FROM restaurants";
                 $stmt = $this->connection->prepare($query);

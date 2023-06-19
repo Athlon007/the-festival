@@ -51,8 +51,9 @@
                                 <?php echo $restaurant->getRating(); ?>
                             <td>
                                 <form action="deleteRestaurant" method="POST">
-                                    <button type="submit" name="delete_restaurant" value="<?= $user->getUserId(); ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
-                                    <a href="updateUser?id=<?php echo $user->getUserId() ?>" class="btn btn-primary">Update</a>
+                                    <button type="submit" name="delete_restaurant" value="<?= $restaurant->getRestaurantId(); ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this Restaurant?');">Delete</button>
+                                    <a href="updateRestaurant?id=<?php echo $restaurant->getRestaurantId() ?>" class="btn btn-primary">Update</a>
+                                    <a href="updateSession?id=<?php echo $restaurant->getRestaurantId() ?>" class="btn btn-primary">Manage Session</a>
                                 </form>
                             </td>
                         </tr>

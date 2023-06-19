@@ -16,7 +16,7 @@ class RestaurantApiController{
         try {
             error_reporting(E_ERROR | E_PARSE);
             if($_GET['date']){
-                $output = $this->service->getAllRestaurants($_GET['date']);
+            $output = $this->service->getAllRestaurants(/*$_GET['date']*/);
             }else{
             $output = $this->service->getAllRestaurants();
             }
