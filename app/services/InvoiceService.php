@@ -5,6 +5,7 @@ require_once __DIR__ . '/../models/Ticket/Ticket.php';
 require_once(__DIR__ . '/../models/TicketLink.php');
 require_once(__DIR__ . '/../models/Exceptions/TicketNotFoundException.php');
 require_once(__DIR__ . '/../services/PDFService.php');
+require_once(__DIR__ . "/../repositories/OrderRepository.php");
 
 use Dompdf\Dompdf;
 
@@ -25,68 +26,63 @@ use PHPMailer\PHPMailer\Exception;
 class InvoiceService
 {
     private PDFService $pdfService;
+    private TicketRepository $ticketRepository;
+    private OrderRepository $orderRepository;
 
     public function __construct()
     {
         $this->pdfService = new PDFService();
+        $this->ticketRepository = new TicketRepository();
+        $this->orderRepository = new OrderRepository();
     }
 
-    public function sendInvoiceEmail(Order $order){
+    // buffer the following html into a variable
+    ob_start();
+    $html = require_once(__DIR__ . '/../pdfs/invoice-pdf.php');
+    $html = ob_get_clean();
 
-        if ($order == null) {
-            echo "No orders found";
-            exit;
-        }
+    $title = "Invoice";
+    $filename = "invoice_" . date('Y-m-d') . ".pdf";
 
-        // buffer the following html into a variable
-        ob_start();
-        $html = require_once(__DIR__ . '/../pdfs/invoice-pdf.php');
-        $html = ob_get_clean();
-
-        $title = "Invoice";
-        $filename = "invoice_" . date('Y-m-d') . ".pdf";
-
-        $dompdf = $this->pdfService->generatePDF($html, $title, $filename);
-        $this->sendInvoiceByEmail($dompdf, $order);
-    }
+    $dompdf = $this->pdfService->generatePDF($html, $title, $filename);
+    $this->sendInvoiceByEmail($dompdf, $order);
+  }
 
 
-    public function sendInvoiceByEmail(Dompdf $dompdf, Order $order)
-    {
-      try {
-        $pdfContents = $dompdf->output();
-  
-        $mail = new PHPMailer(true);
-        $mail->isSMTP();
-        $mail->isHTML(true);
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->SMTPSecure = "tls";
-        $mail->Port = 587;
-  
-        $mail->Username = "infohaarlemfestival5@gmail.com";
-        $mail->Password = 'zznalnrljktsitri';
-        $mail->Subject = 'Your Invoice for the The Festival';
-  
-        $recipentEmail = $order->getCustomer()->getEmail();
-        $name = $order->getCustomer()->getFullName();
-  
-        ob_start();
-        require_once(__DIR__ . '/../emails/invoice-email.php');
-        $mail->Body = ob_get_clean();
-  
-        // $mail->addAddress($order->getCustomer()->getEmail(), $name);
-        //Debugging
-        $mail->addAddress("turkvedat0911@gmail.com", $name);
-        $mail->addStringAttachment($pdfContents, 'invoice.pdf', 'base64', 'application/pdf');
-  
-        if ($mail->send()) {
-          echo "Mail sent";
-        } else {
-          echo "Mail not sent";
-        }
-      } catch (Exception $ex) {
-        throw ($ex);
+  public function sendInvoiceByEmail(Dompdf $dompdf, Order $order)
+  {
+    try {
+      $pdfContents = $dompdf->output();
+
+      $mail = new PHPMailer(true);
+      $mail->isSMTP();
+      $mail->isHTML(true);
+      $mail->Host = 'smtp.gmail.com';
+      $mail->SMTPAuth = true;
+      $mail->SMTPSecure = "tls";
+      $mail->Port = 587;
+
+      $mail->Username = "infohaarlemfestival5@gmail.com";
+      $mail->Password = 'zznalnrljktsitri';
+      $mail->Subject = 'Your Invoice for the The Festival';
+
+      $recipentEmail = $order->getCustomer()->getEmail();
+      $name = $order->getCustomer()->getFullName();
+
+      ob_start();
+      require_once(__DIR__ . '/../emails/invoice-email.php');
+      $mail->Body = ob_get_clean();
+
+      $mail->addAddress($order->getCustomer()->getEmail(), $name);
+      //Debugging
+      //$mail->addAddress("aathlon@outlook.com", $name);
+      $mail->addStringAttachment($pdfContents, 'invoice.pdf', 'base64', 'application/pdf');
+
+      if (!$mail->send()) {
+        throw new Exception("Email could not be sent");
       }
+    } catch (Exception $ex) {
+      throw ($ex);
     }
+  }
 }

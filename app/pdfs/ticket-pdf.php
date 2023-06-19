@@ -47,8 +47,9 @@ foreach ($tickets as $index => $ticket) {
 
         <div class="ticket-info">
             <label>Event Location:</label>
-            <!-- TODO: It must be retrieved from the event location table -->
-            <p>St. Bavo Church</p>
+            <p>
+                <?= $ticket->getEvent()->getLocation()->getName() ?>
+            </p>
         </div>
 
         <div class="ticket-info">

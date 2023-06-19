@@ -18,17 +18,17 @@ class TicketRepository extends Repository
 {
 
     // Add ticket to database
-    public function insertTicket(Order $order, Event $event, $ticketTypeId): Ticket
+    public function insertTicket($orderId, OrderItem $orderItem, Event $event, $ticketTypeId): Ticket
     {
         $query = "INSERT INTO tickets (eventId, isScanned, orderId, basePrice, vat, fullPrice, ticketTypeId) VALUES (:eventId, :isScanned, :orderId, :basePrice, :vat, :fullPrice, :ticketTypeId)";
         $stmt = $this->connection->prepare($query);
 
         $stmt->bindValue(":eventId", $event->getId());
         $stmt->bindValue(":isScanned", 0);
-        $stmt->bindValue(":orderId", $order->getOrderId());
-        $stmt->bindValue(":basePrice", $order->getTotalBasePrice());
+        $stmt->bindValue(":orderId", $orderId);
+        $stmt->bindValue(":basePrice", $orderItem->getBasePrice());
         $stmt->bindValue(":vat", $event->getVat());
-        $stmt->bindValue(":fullPrice", $order->getTotalPrice());
+        $stmt->bindValue(":fullPrice", $orderItem->getFullTicketPrice());
         $stmt->bindValue(":ticketTypeId", $ticketTypeId);
 
         $stmt->execute();

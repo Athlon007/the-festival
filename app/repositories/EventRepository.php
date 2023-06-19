@@ -367,6 +367,15 @@ class EventRepository extends Repository
         $stmt->execute();
     }
 
+    public function updateHistoryEvent($eventId, $guideId, $locationId){
+        $sql = "UPDATE historyevents SET guideId = :guideId, locationId = :locationId WHERE eventId = :eventId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':eventId', $eventId);
+        $stmt->bindParam(':guideId', $guideId);
+        $stmt->bindParam(':locationId', $locationId);
+        $stmt->execute();
+    }
+
     public function getJazzEventsForArtist($artistId)
     {
         $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, e.availableTickets "

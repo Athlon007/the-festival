@@ -62,7 +62,7 @@ class UserAPIController extends APIController
                         break;
                 }
             }
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             Logger::write($ex);
             parent::sendErrorMessage($ex->getMessage());
         }
@@ -106,7 +106,7 @@ class UserAPIController extends APIController
             }
 
             parent::sendSuccessMessage("Login successful.");
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             Logger::write($ex);
             parent::sendErrorMessage($ex->getMessage(), $ex->getCode());
         }
@@ -123,7 +123,8 @@ class UserAPIController extends APIController
             // Destroy the session.
             session_destroy();
             parent::sendSuccessMessage("Logout successful.");
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
+            Logger::write($ex);
             parent::sendErrorMessage($ex->getMessage());
         }
     }
@@ -172,7 +173,7 @@ class UserAPIController extends APIController
             $this->customerService->registerCustomer($customer);
 
             parent::sendSuccessMessage("Registration successful.");
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             Logger::write($ex);
             parent::sendErrorMessage($ex->getMessage());
         }
@@ -199,7 +200,8 @@ class UserAPIController extends APIController
 
             // Log the response being sent back to the client
             error_log(json_encode(['success' => true]));
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
+            Logger::write($ex);
             parent::sendErrorMessage($ex->getMessage());
         }
     }
@@ -218,7 +220,8 @@ class UserAPIController extends APIController
             }
             $userService->updateUserPassword($data);
             parent::sendSuccessMessage("Password updated.");
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
+            Logger::write($ex);
             parent::sendErrorMessage($ex->getMessage());
         }
     }
@@ -242,7 +245,8 @@ class UserAPIController extends APIController
             $now = new DateTime();
             $this->userService->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, $data->role, $now);
             parent::sendSuccessMessage("User added.");
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
+            Logger::write($ex);
             parent::sendErrorMessage($ex->getMessage());
         }
     }
@@ -263,7 +267,8 @@ class UserAPIController extends APIController
 
             $this->userService->deleteUser($data);
             parent::sendSuccessMessage("User deleted.");
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
+            Logger::write($ex);
             parent::sendErrorMessage($ex->getMessage());
         }
     }
@@ -285,7 +290,8 @@ class UserAPIController extends APIController
             }
             $this->userService->updateUser($data);
             parent::sendSuccessMessage("User updated.");
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
+            Logger::write($ex);
             parent::sendErrorMessage($ex->getMessage());
         }
     }
@@ -304,7 +310,8 @@ class UserAPIController extends APIController
             $this->customerService->updateCustomer($customer, $data);
 
             parent::sendSuccessMessage("Your account was successfully updated.");
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
+            Logger::write($ex);
             parent::sendErrorMessage($ex->getMessage());
         }
     }

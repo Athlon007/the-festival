@@ -2,6 +2,8 @@
 
 require_once(__DIR__ . '/../../models/Event.php');
 require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
+require_once(__DIR__ . '/../../models/Music/JazzEvent.php');
+require_once(__DIR__ . '/../../models/Music/DanceEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
 require_once(__DIR__ . '/../../services/EventTypeService.php');
 require_once(__DIR__ . '/../../services/TicketTypeService.php');
@@ -52,7 +54,12 @@ class EventAPIController extends APIController
             str_starts_with($request, EventAPIController::URI_JAZZ)
             || str_starts_with($request, EventAPIController::URI_DANCE)
         ) {
-            $this->ticketLinkService = new JazzTicketLinkService();
+            if (str_starts_with($request, EventAPIController::URI_JAZZ)) {
+                $this->ticketLinkService = new JazzTicketLinkService();
+            } else {
+                // TODO: CHANGE THAT JOSH!!!!
+                $this->ticketLinkService = new TicketLinkService();
+            }
 
             // Music Services
             require_once(__DIR__ . '/../../services/ArtistService.php');
@@ -137,7 +144,6 @@ class EventAPIController extends APIController
 
             if (
                 str_starts_with($uri, EventAPIController::URI_JAZZ)
-                || str_starts_with($uri, EventAPIController::URI_DANCE)
             ) {
                 $artist = $this->artistService->getById($data['event']['artist']['id']);
                 $location = $this->locationService->getById($data['event']['location']['id']);
@@ -147,7 +153,7 @@ class EventAPIController extends APIController
 
                 $eventType = $this->eventTypeService->getById($data['event']['eventType']['id']);
 
-                $event = new MusicEvent(
+                $event = new JazzEvent(
                     0,
                     $data['event']['name'],
                     new DateTime($data['event']['startTime']),
@@ -157,6 +163,8 @@ class EventAPIController extends APIController
                     $eventType,
                     $availableSeats,
                 );
+            } elseif (str_starts_with($uri, EventAPIController::URI_DANCE)) {
+                // TODO: Josh, please add details.
             } elseif (str_starts_with($uri, EventAPIController::URI_STROLL)) {
                 $guide = $this->festivalHistoryservice->getGuideById($data['guide']);
                 $location = $this->locationService->getById($data['location']);
@@ -212,7 +220,7 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
-            $editedTicketLinkID = basename($uri);
+            $editedTicketLinkID = (int)basename($uri);
             $ticketTypeId = $data['ticketType']['id'];
             if (!isset($ticketTypeId)) {
                 $ticketTypeId = $data['ticketType'];
@@ -222,10 +230,7 @@ class EventAPIController extends APIController
 
             $event = null;
 
-            if (
-                str_starts_with($uri, EventAPIController::URI_JAZZ)
-                || str_starts_with($uri, EventAPIController::URI_DANCE)
-            ) {
+            if (str_starts_with($uri, EventAPIController::URI_JAZZ)) {
                 $artist = $this->artistService->getById($data['event']['artist']['id']);
                 $location = $this->locationService->getById($data['event']['location']['id']);
 
@@ -233,7 +238,7 @@ class EventAPIController extends APIController
 
                 $eventType = $this->eventTypeService->getById($data['event']['eventType']['id']);
 
-                $event = new MusicEvent(
+                $event = new JazzEvent(
                     basename($uri),
                     $data['event']['name'],
                     new DateTime($data['event']['startTime']),
@@ -243,9 +248,25 @@ class EventAPIController extends APIController
                     $eventType,
                     $availableSeats
                 );
+            } elseif (str_starts_with($uri, EventAPIController::URI_DANCE)) {
+                // TODO: AAAA, JOSHHHH
             } elseif (str_starts_with($uri, EventAPIController::URI_STROLL)) {
-                $this->sendErrorMessage('Invalid request', 400);
-                return;
+                $guide = $this->festivalHistoryservice->getGuideById($data['guide']);
+                $location = $this->locationService->getById($data['location']);
+                $ticketTypeId = $data['ticketType'];
+
+                $eventType = $this->eventTypeService->getById(3);
+
+                $event = new HistoryEvent(
+                    $data['eventId'],
+                    $data['name'],
+                    $data['available_tickets'],
+                    new DateTime($data['start_time']),
+                    new DateTime($data['end_time']),
+                    $guide,
+                    $location,
+                    $eventType,
+                );
             } else {
                 // if availableTickets is not set, it is an all access pass.
                 if (isset($data['event']['availableTickets'])) {

@@ -27,12 +27,8 @@
                     <tr>
                         <th>Name</th>
                         <th>Location</th>
-                        <th>Number of Sessions</th>
-                        <th>Duration of Sessions</th>
-                        <th>Available seats</th>
                         <th>Description</th>
                         <th>Price</th>
-                        <th>type ID</th>
                         <th>Rating</th>
                     </tr>
                 </thead>
@@ -40,16 +36,10 @@
                     <?php foreach ($restaurants as $restaurant) { ?>
                         <tr>
                             <td data-th="Restaurant Name">
-                                <?= $restaurant['RestaurantName'] ?>
+                                <?php echo $restaurant->getRestaurantName(); ?>
                             </td>
                             <td data-th="address Id">
                                 <?php echo $restaurant->getAddressId(); ?>
-                            </td>
-                            <td data-th="Number of Sessions">
-                                <?php echo $restaurant->getNumOfSessions(); ?>
-                            </td>
-                            <td data-th="Duration of Sessions">
-                                <?php echo $restaurant->getDurationOfSessions(); ?>
                             </td>
                             <td data-th="Description">
                                 <?php echo $restaurant->getDescription(); ?>
@@ -57,12 +47,6 @@
                             <td data-th="Price">
                                 <?php echo $restaurant->getPrice(); ?>
                             </td>
-                            <td data-th="Available Seats">
-                                <?php echo $restaurant->getAvailableSeats(); ?>
-                            </td>
-                            <td data-th="TypeId">
-                                type
-                            <td>
                             <td data-th="Rating">
                                 <?php echo $restaurant->getRating(); ?>
                             <td>
