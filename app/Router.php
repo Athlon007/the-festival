@@ -198,6 +198,16 @@ class Router
                 $festivalFoodController = new FestivalFoodController();
                 $festivalFoodController->loadFoodFestivalPage();
                 break;
+            case "/addRestaurant":
+                require_once("controllers/FestivalFoodController.php");
+                $festivalFoodController = new FestivalFoodController();
+                $festivalFoodController->addRestaurant();
+                break;
+            case "/addSession":
+                require_once("controllers/FestivalFoodController.php");
+                $festivalFoodController = new FestivalFoodController();
+                $festivalFoodController->addSession();
+                break;
             case "/paymentSuccess":
                 require_once("controllers/PaymentController.php");
                 $ticketController = new PaymentController();

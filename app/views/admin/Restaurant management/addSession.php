@@ -17,31 +17,31 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
     <script type="module" src="/js/nav.js"></script>
-    <h1>Add Retsaurant</h1>
+    <h1>Artist</h1>
                 
                 <form action="updateArtist" method="POST">
-                    <div class="form-group">
-                        <label for="shortDescription">name</label>
+                <div class="form-group">
+                        <label for="genres">Name</label>
                         <input type="text" class="form-control" id="" name="" value="">
                     </div>
                     <div class="form-group">
-                        <label for="longDescription">Location</label>
+                        <label for="shortDescription">Start Time</label>
                         <input type="text" class="form-control" id="" name="" value="">
                     </div>
                     <div class="form-group">
-                        <label for="recentAlbums">Description</label>
+                        <label for="longDescription">End Time</label>
                         <input type="text" class="form-control" id="" name="" value="">
                     </div>
                     <div class="form-group">
-                        <label for="genres">Price</label>
+                        <label for="recentAlbums">Available Tickets</label>
                         <input type="text" class="form-control" id="" name="" value="">
                     </div>
-                    <div class="form-group">
-                        <label for="Country">Rating</label>
-                        <input type="text" class="form-control" id="" name="" value="">
-                    </div>
-                    <button type="submit" class="btn btn-primary" name="addRestaurantBtn">Add Restaurant</button>
+
+                    <button type="submit" class="btn btn-primary" name="addSessionBtn">Add Session</button>
                 </form>
+
+
+
 
     <footer class="foot row bottom"></footer>
     <script type="application/javascript"

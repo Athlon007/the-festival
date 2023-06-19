@@ -33,7 +33,7 @@ class MollieService{
                     "value" => number_format($totalPrice, 2, '.', '')
                 ],
                 "description" => "Haarlem Festival Order #{$orderId}",
-                "redirectUrl" => "http://localhost:8080/order/{$orderId}/payment-success",
+                "redirectUrl" => "http://localhost/payment-success",
                 "webhookUrl" => "https://c6a0-85-149-137-48.eu.ngrok.io ",
                 "method" => $mollieMethod,
                 "metadata" => [
