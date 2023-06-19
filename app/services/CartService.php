@@ -256,7 +256,7 @@ class CartService
         }
 
         if (!isset($_SESSION['payment_id'])) {
-            throw new CartException("Payment not completed.");
+            throw new CartException("Payment not started.");
         }
 
         // Get payment ID from session.
