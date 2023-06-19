@@ -52,7 +52,6 @@ class TicketController
     }
 
     public function getAllTicketsAndSend($order){
-        //TODO : make ticket and send them by email
 
 
         $order_id = $order->id;
@@ -67,15 +66,6 @@ class TicketController
                 $ticket = null;
                 array_push($ticket);
         }
-
-        //gesiter the payment on the database
-
-    
-        //generate the QR code
-
-        // generate PDF
-
-        //send email to user with ticket as PDF
 
     }
 }
