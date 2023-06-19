@@ -3,6 +3,7 @@
 require_once(__DIR__ . "/../models/Event.php");
 require_once(__DIR__ . "/../models/History/HistoryEvent.php");
 require_once(__DIR__ . "/../models/Music/MusicEvent.php");
+require_once(__DIR__ . "/../models/Music/JazzEvent.php");
 require_once("Repository.php");
 require_once("LocationRepository.php");
 require_once("ArtistRepository.php");
@@ -45,7 +46,7 @@ class EventRepository extends Repository
         $artistRepo = new ArtistRepository();
         $eventTypeRepo = new EventTypeRepository();
         foreach ($arr as $event) {
-            $event = new MusicEvent(
+            $event = new JazzEvent(
                 $event['eventId'],
                 $event['name'],
                 new DateTime($event['startTime']),
@@ -334,7 +335,8 @@ class EventRepository extends Repository
     }
 
     // Create the history event
-    public function createHistoryEvent($eventId, $guideId, $locationId): int{
+    public function createHistoryEvent($eventId, $guideId, $locationId): int
+    {
         $sql = "INSERT INTO historyevents (eventId, guideId, locationId) VALUES (:eventId, :guideId, :locationId)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':eventId', $eventId);
@@ -367,7 +369,8 @@ class EventRepository extends Repository
         $stmt->execute();
     }
 
-    public function updateHistoryEvent($eventId, $guideId, $locationId){
+    public function updateHistoryEvent($eventId, $guideId, $locationId)
+    {
         $sql = "UPDATE historyevents SET guideId = :guideId, locationId = :locationId WHERE eventId = :eventId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':eventId', $eventId);
