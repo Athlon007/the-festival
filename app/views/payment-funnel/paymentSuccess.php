@@ -27,7 +27,14 @@
                 <div id="payment-success" class="col-10 d-none">
                     <h2>Payment successful!</h2>
                     <p>Thank you for your order. You will receive an email with your tickets shortly.</p>
-                    <a href="/" class="btn btn-primary">Go to home</a>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Your order</h5>
+                            <p class="card-text">Order number: <span id="order-number"></span></p>
+                            <p class="card-text">Order date: <span id="order-date"></span></p>
+                        </div>
+                    </div>
+                    <a href="/" class="btn btn-primary my-2">Go to home</a>
                 </div>
                 <div id="payment-failed" class="col-10 d-none">
                     <h2>Payment failed!</h2>

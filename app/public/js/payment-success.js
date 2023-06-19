@@ -6,6 +6,9 @@ let checkPayment = document.getElementById('check-payment');
 let paymentSuccess = document.getElementById('payment-success');
 let paymentFailed = document.getElementById('payment-failed');
 
+let orderNumber = document.getElementById('order-number');
+let orderDate = document.getElementById('order-date');
+
 
 fetch("/api/cart/checkpayment", {
     method: "GET",
@@ -24,6 +27,9 @@ fetch("/api/cart/checkpayment", {
         } else {
             // Remove d-none from paymentSuccess.
             paymentSuccess.classList.remove('d-none');
+
+            orderNumber.textContent = data.orderId;
+            orderDate.textContent = data.orderDate.date.slice(0, -14);
         }
     }
     )

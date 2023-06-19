@@ -164,8 +164,7 @@ class OrderService
                     //If there is a match in ticket link then add the quantity of the sessionOrderItem to the customerOrderItem and update
                     $customerOrderItem->setQuantity($customerOrderItem->getQuantity() + $sessionOrderItem->getQuantity());
                     $this->updateOrderItem($customerOrderItem->getOrderItemId(), $customerOrderItem);
-                }
-                else {
+                } else {
                     //If the orderItem is unique then we add it to the customerOrder and update it
                     $sessionOrderItem->setOrderId($customerOrder->getOrderId());
                     $customerOrder->addOrderItem($this->updateOrderItem($sessionOrderItem->getOrderItemId(), $sessionOrderItem));
@@ -206,12 +205,13 @@ class OrderService
     /**
      * @throws \PHPMailer\PHPMailer\Exception
      */
-    private function generateTicketsForOrder(Order $order){
+    private function generateTicketsForOrder(Order $order)
+    {
 
-        foreach($order->getOrderItems() as $orderItem){
+        foreach ($order->getOrderItems() as $orderItem) {
             $ticketLink = $this->ticketLinkService->getById($orderItem->getTicketLinkId());
 
-            for ($i = 0; $i < $orderItem->getQuantity(); $i++){
+            for ($i = 0; $i < $orderItem->getQuantity(); $i++) {
                 $this->ticketService->insertTicket($order->getOrderId(), $orderItem, $ticketLink->getEvent(), $ticketLink->getTicketType()->getId());
             }
         }
