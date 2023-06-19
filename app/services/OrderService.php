@@ -1,22 +1,15 @@
 <?php
-
 //Repositories
 require_once(__DIR__ . '/../repositories/OrderRepository.php');
-require_once(__DIR__ . '/../repositories/TicketLinkRepository.php');
-require_once(__DIR__ . '/../repositories/TicketRepository.php');
 require_once(__DIR__ . '/../repositories/CustomerRepository.php');
 
 //Services
 require_once(__DIR__ . '/../services/TicketService.php');
-require_once(__DIR__ . '/../services/PDFService.php');
 require_once(__DIR__ . '/../services/InvoiceService.php');
-
-//Controllers
-require_once(__DIR__ . '/../controllers/TicketController.php');
+require_once(__DIR__ . '/../services/TicketLinkService.php');
 
 //Models
 require_once(__DIR__ . '/../models/Order.php');
-require_once(__DIR__ . '/../models/Ticket/Ticket.php');
 require_once(__DIR__ . '/../models/Exceptions/OrderNotFoundException.php');
 
 class OrderService
@@ -200,26 +193,28 @@ class OrderService
      */
     public function sendTicketsAndInvoice(Order $order): void
     {
-        //Send invoice via email
-        $this->invoiceService->sendInvoiceEmail($order);
-
         // Generate the tickets for the order
         $this->generateTicketsForOrder($order);
 
         //Send all the tickets via email
-        $this->ticketService->getAllTicketsAndSend($order);
+        //$this->ticketService->getAllTicketsAndSend($order);
+
+        //Send invoice via email
+        //$this->invoiceService->sendInvoiceEmail($order);
     }
 
     /**
      * @throws \PHPMailer\PHPMailer\Exception
      */
-    private function generateTicketsForOrder($order){
+    private function generateTicketsForOrder(Order $order){
 
         foreach($order->getOrderItems() as $orderItem){
             $ticketLink = $this->ticketLinkService->getById($orderItem->getTicketLinkId());
 
-            for ($i = 0; $i < $orderItem->getQuantity(); $i++)
-            $this->ticketService->insertTicket($order, $ticketLink->getEvent(), $ticketLink->getTicketType()->getId());
+            for ($i = 0; $i < $orderItem->getQuantity(); $i++){
+                $this->ticketService->insertTicket($order->getOrderId(), $orderItem, $ticketLink->getEvent(), $ticketLink->getTicketType()->getId());
+            }
+
         }
 
     }
