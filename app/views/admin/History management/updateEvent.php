@@ -18,9 +18,16 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
 
     <div class="container">
-        <h1>Update History Event # <? echo $historyEvent->getId(); ?></h1>
+        <h1>Update History Event #
+            <? echo $historyEvent->getId(); ?>
+        </h1>
 
-        <form action="/api/events/stroll" method="POST" id="add-event-form">
+        <form action="/api/events/<?php echo $historyEvent->getId(); ?>" method="PUT" id="update-event-form">
+            <div class="mb-3">
+                <label for="eventId" class="form-label">Event ID:</label>
+                <input type="text" class="form-control" id="eventId" name="eventId"
+                    value="<?php echo $historyEvent->getId(); ?>" readonly>
+            </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name:</label>
                 <input type="text" class="form-control" id="name" name="name"
@@ -71,7 +78,7 @@
                     placeholder="<?php echo $historyEvent->getAvailableTickets(); ?>" required>
             </div>
 
-            <button type="submit" class="btn btn-primary">Add Event</button>
+            <button type="submit" class="btn btn-primary">Update Event</button>
         </form>
     </div>
 
@@ -79,4 +86,96 @@
 
     <script type="module" src="/js/nav.js"></script>
     <script type="module" src="/js/foot.js"></script>
+    <script>
+        document.getElementById('update-event-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+            if (validateInputs()) {
+                submitForm();
+            }
+        });
+
+        function submitForm() {
+            var form = document.getElementById('update-event-form');
+            var formData = new FormData(form);
+            var data = {};
+            formData.forEach(function (value, key) {
+                data[key] = value;
+            });
+
+            // Make sure that the numbers are not strings
+            for (var key in data) {
+                if (!isNaN(data[key])) {
+                    // Convert to number
+                    data[key] = Number(data[key]);
+                }
+            }
+
+            // Replace in startTime T with a space
+            data.start_time = data.start_time.replace('T', ' ');
+            data.end_time = data.end_time.replace('T', ' ');
+
+            console.log(JSON.stringify(data));
+            eventId = Number(data.eventId);
+            fetch("/api/events/eventId", {
+                method: 'PUT',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+            }).then(res => res.json())
+                .then(data => {
+                    if (data.error_message) {
+                        alert(data.error_message)
+                        return;
+                    }
+
+                    alert('Event added successfully!');
+                })
+        }
+
+        function validateInputs() {
+            var nameInput = document.getElementById('name');
+            var startTimeInput = document.getElementById('startTime');
+            var endTimeInput = document.getElementById('endTime');
+            var guideInput = document.getElementById('guide');
+            var locationInput = document.getElementById('location');
+            var availableTicketsInput = document.getElementById('available_tickets');
+            var ticketTypeInput = document.getElementById('ticketType');
+
+            // Validate name (ensure it is not empty)
+            if (nameInput.value.trim() === '') {
+                alert('Please enter a name.');
+                nameInput.focus();
+                return false;
+            }
+
+            // Validate start time (ensure it is in the correct format)
+            var startTime = new Date(startTimeInput.value);
+            if (isNaN(startTime)) {
+                alert('Please enter a valid start time.');
+                startTimeInput.focus();
+                return false;
+            }
+
+            // Validate end time (ensure it is in the correct format)
+            var endTime = new Date(endTimeInput.value);
+            if (isNaN(endTime)) {
+                alert('Please enter a valid end time.');
+                endTimeInput.focus();
+                return false;
+            }
+
+            // Validate available tickets (ensure it is a positive integer)
+            var availableTickets = parseInt(availableTicketsInput.value);
+            if (isNaN(availableTickets) || availableTickets <= 0) {
+                alert('Please enter a valid number of available tickets.');
+                availableTicketsInput.focus();
+                return false;
+            }
+
+            // All inputs are valid
+            return true;
+        }
+    </script>
 </body>
