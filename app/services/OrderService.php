@@ -191,6 +191,7 @@ class OrderService
     }
 
     /**
+     * After checking out the cart, this function will be called to send the tickets and invoice to the user.
      * @param Order $order
      * @return void
      * @throws Exception

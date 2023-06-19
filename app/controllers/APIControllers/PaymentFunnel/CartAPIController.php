@@ -58,7 +58,7 @@ class CartAPIController extends APIController
             ///api/cart/checkout POST method - checks out the cart
             else if (str_starts_with($uri, "/api/cart/checkout")) {
                 $paymentMethod = $this->getPaymentMethodFromPost();
-                $cartOrder = $this->cartService->checkoutCart($paymentMethod);
+                $this->cartService->checkoutCart($paymentMethod);
                 parent::sendSuccessMessage("Your cart has been successfully checked out.", 200);
                 return;
             } else {

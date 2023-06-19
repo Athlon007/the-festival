@@ -244,11 +244,13 @@ class CartService
         $cartOrder = $this->checkValidCheckout();
 
         //Call mollie service for payment (either throws exception or returns void)
-        //TODO: Uncomment after debugging
-        //$this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId(), $paymentMethod);
+        $this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId(), $paymentMethod);
 
         $cartOrder->setIsPaid(true);
         $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
+
+        //Remove the cart from the session
+        unset($_SESSION["cartId"]);
 
         //Call ticketservice to generate the tickets (either throws exception or returns void)
         
