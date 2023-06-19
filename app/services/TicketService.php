@@ -101,7 +101,8 @@ class TicketService
   public function generateQRCode($ticket): string
   {
     //Generate a QR code image with the ticket ID as data
-    $qrCodeData = "http://localhost/ticket?ticketId=" . $ticket->getTicketId();
+    $hostName = "http://localhost";
+    $qrCodeData = $hostName + "/ticket?ticketId=" . $ticket->getTicketId();
 
     $qrCode = new QrCode($qrCodeData);
     $qrCode->setSize(150);
