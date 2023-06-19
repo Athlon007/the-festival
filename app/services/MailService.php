@@ -8,8 +8,8 @@ require_once(__DIR__ . '/../models/Ticket/Ticket.php');
 require_once(__DIR__ . '/../models/Order.php');
 
 /**
- * @author: Joshua
  * Handels all email sending
+ * @author: Joshua
  */
 class MailService{
 
@@ -37,6 +37,26 @@ class MailService{
 
     }
 
+    /**
+     * @throws Exception
+     */
+    public function sendTicketEmail($customer, $pdf){
+        $receiverEmail = $customer->getEmail();
+        $receiverName = $customer->getFullName();
+        $subject = "Your tickets for Haarlem Festival.";
+        $message = "Thank you for buying a ticket. You can find your tickets in the attachment.";
+
+        $this->mailer->addAttachment($pdf);
+
+        $this->mailer->addAddress($receiverEmail, $receiverName);
+        $this->mailer->Subject = $subject;
+        $this->mailer->Body = $message;
+
+        if (!$this->mailer->send()) {
+            throw new Exception();
+        }
+    }
+
     public function sendAccountUpdateEmail($customer){
         //Create email by loading customer data into HTML template
         ob_start();
@@ -54,6 +74,5 @@ class MailService{
             throw new Exception("Error while sending message.");
         }
     }
-
 }
 ?>

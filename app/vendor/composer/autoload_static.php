@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitea80f93e39bcc8ca96e308c3888d79bf
+class ComposerStaticInit9441162f80a0b20ecde9ef3225d5f455
 {
     public static $prefixLengthsPsr4 = array (
         'S' => 
@@ -14,6 +14,7 @@ class ComposerStaticInitea80f93e39bcc8ca96e308c3888d79bf
         ),
         'M' => 
         array (
+            'Mollie\\Api\\' => 11,
             'Masterminds\\' => 12,
         ),
         'F' => 
@@ -29,6 +30,10 @@ class ComposerStaticInitea80f93e39bcc8ca96e308c3888d79bf
             'Dompdf\\' => 7,
             'DASPRiD\\Enum\\' => 13,
         ),
+        'C' => 
+        array (
+            'Composer\\CaBundle\\' => 18,
+        ),
         'B' => 
         array (
             'BaconQrCode\\' => 12,
@@ -43,6 +48,10 @@ class ComposerStaticInitea80f93e39bcc8ca96e308c3888d79bf
         'Sabberworm\\CSS\\' => 
         array (
             0 => __DIR__ . '/..' . '/sabberworm/php-css-parser/src',
+        ),
+        'Mollie\\Api\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mollie/mollie-api-php/src',
         ),
         'Masterminds\\' => 
         array (
@@ -63,6 +72,10 @@ class ComposerStaticInitea80f93e39bcc8ca96e308c3888d79bf
         'DASPRiD\\Enum\\' => 
         array (
             0 => __DIR__ . '/..' . '/dasprid/enum/src',
+        ),
+        'Composer\\CaBundle\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/composer/ca-bundle/src',
         ),
         'BaconQrCode\\' => 
         array (
@@ -92,9 +105,9 @@ class ComposerStaticInitea80f93e39bcc8ca96e308c3888d79bf
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitea80f93e39bcc8ca96e308c3888d79bf::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitea80f93e39bcc8ca96e308c3888d79bf::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitea80f93e39bcc8ca96e308c3888d79bf::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit9441162f80a0b20ecde9ef3225d5f455::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit9441162f80a0b20ecde9ef3225d5f455::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit9441162f80a0b20ecde9ef3225d5f455::$classMap;
 
         }, null, ClassLoader::class);
     }

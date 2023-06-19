@@ -31,13 +31,19 @@
             Account changes
         </h2>
         <p>
-            Dear customer,
+            Dear <?php echo $customer->getFullName(); ?>,
         </p>
         <p>
-            Changes have been made to your account. If you did not make these changes, contact us immediately by replying to this e-mail.
+            Changes have been made to your account.
+            <br>
+            If you did not make these changes, contact us immediately.
+            <br>
+            Use your Account number when you contact support: <?php echo $customer->getUserId(); ?>
         </p>
         <p>
-            Your account number: <?php echo $customer->getUserId(); ?>
+            Kind regards,
+            <br>
+            The Festival Team
         </p>
     </body>
 </html>

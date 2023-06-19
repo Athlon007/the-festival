@@ -42,11 +42,6 @@ class User implements JsonSerializable
         $this->email = $email;
     }
 
-    public function getFullName(): string
-    {
-        return $this->firstName . " " . $this->lastName;
-    }
-
     public function getFirstName(): string
     {
         return $this->firstName;
@@ -117,8 +112,7 @@ class User implements JsonSerializable
                 $this->userType = 3;
                 break;
             default:
-                $this->userType = 0;
-                break;
+                throw new InvalidArgumentException("UserType not valid.");
         }
     }
 
@@ -135,5 +129,10 @@ class User implements JsonSerializable
     public function isAdmin(): bool
     {
         return $this->userType == 1;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->firstName . " " . $this->lastName;
     }
 }

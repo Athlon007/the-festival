@@ -50,6 +50,7 @@ function createToast(header, msg) {
 (function () {
     const apiUrl = '/api/cart';
     var Cart = {};
+
     //Adds one item to the cart order
     Cart.Add = function (itemID) {
         document.getElementById('shopping-circle').classList.remove('d-none');
@@ -146,7 +147,7 @@ function createToast(header, msg) {
 
                 this.count = data.count;
 
-                console.log("Cart count: " + data.count);
+                //console.log("Cart count: " + data.count);
             })
             .catch(error => {
                 console.log(error);
@@ -156,7 +157,8 @@ function createToast(header, msg) {
 
     //Deletes the item from the cart
     Cart.Delete = function (itemId) {
-        fetch(apiUrl + '/item/' + itemId,
+        return new Promise((resolve, reject) => {
+            fetch(apiUrl + '/item/' + itemId,
             {
                 method: 'DELETE'
             }).then(response => response.json())
@@ -168,6 +170,29 @@ function createToast(header, msg) {
                 reject(error);
             }
             );
+        });
+    }
+
+    //Checks out the cart
+    Cart.Checkout = function (paymentMethod) {
+        console.log(paymentMethod);
+        return new Promise((resolve, reject) => {
+            fetch(apiUrl + '/checkout',
+                {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "paymentMethod": paymentMethod
+                    }),
+                }).then(response => response.json())
+                .then(data => {
+                        Cart.UpdateCounter();
+                        resolve(data);
+                    }
+                ).catch(error => {
+                    reject(error);
+                }
+            );
+        });
     }
 
     window.Cart = Cart;

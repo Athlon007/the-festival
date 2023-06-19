@@ -2,10 +2,10 @@
 // --- Used by /shopping-cart ---
 // ------------------------------
 
-// Find spans with following id pattern: cart-counter-*
-
 const total = document.getElementById('total');
+const popup= document.getElementById('popup');
 
+// Find spans with following id pattern: cart-counter-*
 const cartCounterSpans = document.querySelectorAll('span[id^="cart-item-counter-"]');
 for (let counter of cartCounterSpans) {
     // get the ID part.
@@ -13,6 +13,7 @@ for (let counter of cartCounterSpans) {
 
     const btnAdd = document.getElementById('cart-item-add-' + id);
     const btnRemove = document.getElementById('cart-item-remove-' + id);
+    const btnDelete = document.getElementById('order-item-delete-' + id);
 
     const cartItemUnitPrice = document.getElementById('cart-item-unit-price-' + id);
     const cartItemTotalPrice = document.getElementById('cart-item-total-price-' + id);
@@ -23,11 +24,10 @@ for (let counter of cartCounterSpans) {
         Cart.Add(id);
 
         const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
-        console.log(unitPrice);
-        cartItemTotalPrice.innerHTML = "&euro; " + parseFloat(((count + 1) * unitPrice)).toFixed(0);
+        cartItemTotalPrice.innerHTML = "&euro; " + parseFloat(((count + 1) * unitPrice)).toFixed(2);
 
         const totalAmount = parseFloat(total.innerHTML.split('€')[1]);
-        total.innerHTML = "Total price: &euro; " + (totalAmount + unitPrice);
+        total.innerHTML = "Total price: &euro; " + (totalAmount + unitPrice).toFixed(2);
     });
 
     btnRemove.addEventListener('click', function () {
@@ -36,10 +36,10 @@ for (let counter of cartCounterSpans) {
         Cart.Remove(id);
 
         const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
-        cartItemTotalPrice.innerHTML = "&euro; " + ((count - 1) * unitPrice);
+        cartItemTotalPrice.innerHTML = "&euro; " + ((count - 1) * unitPrice).toFixed(2);
 
         const totalAmount = parseFloat(total.innerHTML.split('€')[1]);
-        total.innerHTML = "Total price: &euro; " + (totalAmount - unitPrice);
+        total.innerHTML = "Total price: &euro; " + (totalAmount - unitPrice).toFixed(2);
 
         if (count - 1 <= 0) {
             // remove the div.
@@ -48,6 +48,20 @@ for (let counter of cartCounterSpans) {
         }
     });
 
+    btnDelete.addEventListener('click', function () {
+
+        const count = parseInt(counter.innerHTML);
+        const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
+        const totalAmount = parseFloat(total.innerHTML.split('€')[1]);
+        total.innerHTML = "Total price: &euro; " + (totalAmount - (count * unitPrice)).toFixed(2);
+
+        //Call the delete api method
+        Cart.Delete(id);
+
+        //Remove the div
+        const div = document.getElementById('cart-item-' + id);
+        div.parentNode.removeChild(div);
+    });
 }
 
 // Get hostname.
@@ -64,4 +78,61 @@ async function shareMyCart() {
     // Select entire text in the input field and copy it to clipboard.
     shareUrlText.select();
     await navigator.clipboard.writeText(shareUrlText.value);
+}
+
+function checkout(){
+
+    let idealRadButton = document.getElementById('method-ideal');
+    let cardRadButton = document.getElementById('method-card');
+    let klarnaRadButton = document.getElementById('method-klarna');
+    let paymentMethod;
+
+    if(idealRadButton.checked)
+        paymentMethod = "ideal";
+    else if(cardRadButton.checked)
+        paymentMethod = "card";
+    else if(klarnaRadButton.checked)
+        paymentMethod = "klarna";
+    else{
+        showErrorPopup("Please select a payment method before checking out.");
+        return;
+    }
+
+    Cart.Checkout(paymentMethod)
+        .then(data => {
+            hideErrorPopup();
+            console.log(data);
+
+        })
+        .catch(error => {
+
+            console.log(error);
+            showErrorPopup(error.data.error_message);
+        });
+}
+
+function showErrorPopup(message) {
+    popup.innerHTML = message;
+    popup.classList.add('alert-warning');
+    popup.classList.remove('d-none');
+
+    setTimeout(function(){
+        hideErrorPopup();
+    }, 10000);
+
+}
+
+function showSuccessPopup(message) {
+    popup.innerHTML = message;
+    popup.classList.add('alert-success');
+    popup.classList.remove('d-none');
+
+    setTimeout(function(){
+        hideErrorPopup();
+    }, 10000);
+
+}
+
+function hideErrorPopup() {
+    popup.classList.add('d-none');
 }
