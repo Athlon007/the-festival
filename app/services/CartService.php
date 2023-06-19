@@ -241,12 +241,10 @@ class CartService
      */
     public function checkoutCart($paymentMethod): Order
     {
-        if (!isset($_SESSION['user'])) {
-            throw new AuthenticationException("User is not logged in.");
-        }
-
         //Retrieve the order that is in cart from the db.
         $cartOrder = $this->getCart();
+
+        $this->checkValidCheckout($cartOrder);
 
         //Call mollie service for payment (either throws exception or returns void)
         $this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId(), $paymentMethod);
@@ -259,6 +257,28 @@ class CartService
 
         //Call ticket and invoice mailing (either throws exception or returns void)
         $this->orderService->sendTicketsAndInvoice($cartOrder);
+        return $cartOrder;
+    }
+
+    private function checkValidCheckout() : Order {
+        if (!$this->cartIsInitialised())
+            throw new CartException("Cart not initialised.");
+
+        $cartOrder = $this->getCart();
+
+        if ($cartOrder->getIsPaid())
+            throw new CartException("Cart already paid.");
+
+        if ($cartOrder->getOrderItems() == null)
+            throw new CartException("Cart is empty.");
+
+        if (!isset($_SESSION["user"]))
+            throw new AuthenticationException("User not logged in.");
+
+        $user = unserialize($_SESSION["user"]);
+        if ($user->getUserId() != $this->getCart()->getCustomer()->getUserId())
+            throw new AuthenticationException("Only the owner of the cart is authorised to checkout.");
+
         return $cartOrder;
     }
 
