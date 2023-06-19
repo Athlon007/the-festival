@@ -122,7 +122,7 @@
                             <div class="form-check">
                                 <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> " type="radio" name="paymentMethodRadios" id="method-card" value="method-card">
                                 <label class="form-check-label" for="method-card">
-                                    Card
+                                    Credit Card
                                 </label>
                             </div>
                             <div class="form-check">

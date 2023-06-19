@@ -112,10 +112,13 @@ function checkout() {
 
         })
         .catch(error => {
-
-            console.log(error);
+            //console.log(error);
             showErrorPopup(error.data.error_message);
         });
+}
+
+function showOrderHistory() {
+    window.location.href = "/order-history";
 }
 
 function showErrorPopup(message) {

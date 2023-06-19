@@ -11,11 +11,14 @@ class FestivalHistoryController
 
     private $ticketTypeService;
 
+    private $eventService;
+
     public function __construct()
     {
         $this->festivalHistoryService = new FestivalHistoryService();
         $this->locationService = new LocationService();
         $this->ticketTypeService = new TicketTypeService();
+        $this->eventService = new EventService();
     }
     public function loadHistoryStrollPage()
     {
@@ -53,6 +56,22 @@ class FestivalHistoryController
 
             return $guides
                 && $locations && $ticketTypes;
+        } catch (PDOException $e) {
+
+        }
+    }
+
+    public function updateEvent()
+    {
+        try {
+            $historyEvent = $this->festivalHistoryService->getById($_GET['id']);
+            $guides = $this->festivalHistoryService->getAllGuides();
+            $locations = $this->locationService->getAll();
+            $ticketTypes = $this->ticketTypeService->getAll();
+            require("../views/admin/History Management/updateEvent.php");
+
+            return $guides
+                && $locations && $ticketTypes && $historyEvent;
         } catch (PDOException $e) {
 
         }

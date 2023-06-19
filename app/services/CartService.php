@@ -220,6 +220,12 @@ class CartService
             $order = $this->getCart();
             $order->setCustomer($customer);
             $this->orderService->updateOrder($order->getOrderId(), $order);
+            return;
+        }
+
+        //If there is no cart order saved for the customer and in the session, return
+        if (!$customerOrder && !$this->cartIsInitialised()) {
+            return;
         }
 
         //If there is already a cart in session and the logged-in user has another cart in db, we merge the carts
@@ -275,10 +281,7 @@ class CartService
         //Remove the cart from the session
         unset($_SESSION["cartId"]);
 
-        //Call ticketservice to generate the tickets (either throws exception or returns void)
-
-
-        //Call ticket and invoice mailing (either throws exception or returns void)
+        //Call invoice mailing (either throws exception or returns void)
         $this->orderService->sendTicketsAndInvoice($cartOrder);
         return $cartOrder;
     }
