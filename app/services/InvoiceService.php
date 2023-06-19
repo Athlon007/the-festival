@@ -25,17 +25,26 @@ use PHPMailer\PHPMailer\Exception;
  */
 class InvoiceService
 {
-    private PDFService $pdfService;
-    private TicketRepository $ticketRepository;
-    private OrderRepository $orderRepository;
+  private PDFService $pdfService;
+  private TicketRepository $ticketRepository;
+  private OrderRepository $orderRepository;
 
-    public function __construct()
-    {
-        $this->pdfService = new PDFService();
-        $this->ticketRepository = new TicketRepository();
-        $this->orderRepository = new OrderRepository();
+  public function __construct()
+  {
+    $this->pdfService = new PDFService();
+    $this->ticketRepository = new TicketRepository();
+    $this->orderRepository = new OrderRepository();
+  }
+
+
+  public function sendInvoiceEmail(Order $order)
+  {
+    $order = $this->orderRepository->getOrderForInvoice($order->getOrderId());
+
+    if ($order == null) {
+      echo "No orders found";
+      exit;
     }
-
     // buffer the following html into a variable
     ob_start();
     $html = require_once(__DIR__ . '/../pdfs/invoice-pdf.php');
