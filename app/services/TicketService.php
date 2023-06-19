@@ -34,10 +34,10 @@ class TicketService
     $this->repository = new TicketRepository();
   }
 
-  public function insertTicket(Order $order, Event $event, $ticketTypeId): Ticket
+  public function insertTicket($orderId, OrderItem $orderItem, Event $event, $ticketTypeId): Ticket
   {
     try {
-      $ticket = $this->repository->insertTicket($order, $event, $ticketTypeId);
+      $ticket = $this->repository->insertTicket($orderId, $orderItem, $event, $ticketTypeId);
       return $ticket;
     } catch (Exception $ex) {
       throw ($ex);
@@ -101,7 +101,8 @@ class TicketService
   public function generateQRCode($ticket): string
   {
     //Generate a QR code image with the ticket ID as data
-    $qrCodeData = "http://localhost/ticket?ticketId=" . $ticket->getTicketId();
+    require("../Config.php");
+    $qrCodeData = $hostname . "/ticket?ticketId=" . $ticket->getTicketId();
 
     $qrCode = new QrCode($qrCodeData);
     $qrCode->setSize(150);
@@ -135,7 +136,7 @@ class TicketService
   public function getAllTicketsAndSend(Order $order)
   {
     try {
-      //         // get all history, jazz tickets (for now, later we will get all tickets for yummy and dance)
+      // get all history, jazz tickets (for now, later we will get all tickets for yummy and dance)
       $tickets = array_merge(
         $this->getAllHistoryTickets($order),
         $this->getAllJazzTickets($order)
@@ -155,8 +156,6 @@ class TicketService
       throw ($ex);
     }
   }
-
-
 
   public function sendTicketByEmail(Dompdf $dompdf, Order $order)
   {
@@ -180,9 +179,9 @@ class TicketService
       require_once(__DIR__ . '/../emails/ticket-email.php');
       $mail->Body = ob_get_clean();
 
-      // $mail->addAddress($order->getCustomer()->getEmail(), $name);
+      $mail->addAddress($order->getCustomer()->getEmail(), $name);
       //Debugging
-      $mail->addAddress("turkvedat0911@gmail.com", $name);
+      //$mail->addAddress("turkvedat0911@gmail.com", $name);
       foreach ($order->getTickets() as $ticket) {
         $pdfContents = $dompdf->output();
         $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');

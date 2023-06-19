@@ -58,6 +58,40 @@ class FestivalHistoryRepository extends Repository
         }
     }
 
+    public function getById($id){
+        try{
+            $query = "SELECT he.eventId as eventId, he.locationId as locationId, e.name as name,
+            e.startTime as startTime, e.endTime as endTime, g.guideId as guideId, e.availableTickets as availableTickets, e.festivalEventType
+            FROM historyevents he
+            JOIN events e ON e.eventId = he.eventId
+                    join ticketlinks t on e.eventId = t.eventId 
+                    join guides g ON g.guideId = he.guideId
+                    join locations l ON he.locationId = l.locationId
+                    join festivaleventtypes f on f.eventTypeId = e.festivalEventType
+                    where he.eventId = :id";
+
+            $stmt = $this->connection->prepare($query);
+            $stmt->bindValue(":id", $id);
+            $stmt->execute();
+
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $historyEvent = new HistoryEvent(
+                $row['eventId'],
+                $row['name'],
+                $row['availableTickets'],
+                new DateTime($row['startTime']),
+                new DateTime($row['endTime']),
+                $this->getGuideByID($row['guideId']),
+                $this->locationRepository->getById($row['locationId']),
+                $this->eventTypeRepository->getById($row['festivalEventType'])
+            );
+
+            return $historyEvent;
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+
     public function getAllGuides(){
         try {
             $query = "SELECT g.guideId, g.name as firstName, g.lastName , g.`language`  FROM guides g";

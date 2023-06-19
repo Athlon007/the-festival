@@ -30,6 +30,9 @@ class CartAPIController extends APIController
                 //api/cart GET - returns the cart order as an order object
                 $cartOrder = $this->cartService->getCart();
                 parent::sendResponse($cartOrder);
+            } else if ($uri == "/api/cart/checkpayment") {
+                $cartOrder = $this->cartService->checkIfPaid();
+                echo json_encode($cartOrder);
             } else
                 throw new Exception("Bad request.", 400);
         } catch (Throwable $e) {
@@ -58,8 +61,8 @@ class CartAPIController extends APIController
             ///api/cart/checkout POST method - checks out the cart
             else if (str_starts_with($uri, "/api/cart/checkout")) {
                 $paymentMethod = $this->getPaymentMethodFromPost();
-                $cartOrder = $this->cartService->checkoutCart($paymentMethod);
-                parent::sendSuccessMessage("Your cart has been successfully checked out.", 200);
+                $paymentUrl = $this->cartService->checkoutCart($paymentMethod);
+                echo json_encode(["paymentUrl" => $paymentUrl]);
                 return;
             } else {
                 throw new Exception("Bad request.", 400);
@@ -79,17 +82,15 @@ class CartAPIController extends APIController
     {
         try {
             ///api/cart/item/{ticketlink} DELETE method - Deletes the whole order item from the cart order
-            if (str_starts_with($uri, "/api/cart/item/") && is_numeric(basename($uri))){
+            if (str_starts_with($uri, "/api/cart/item/") && is_numeric(basename($uri))) {
                 $ticketLinkId = basename($uri);
                 $cartOrder = $this->cartService->deleteWholeItem($ticketLinkId);
                 parent::sendResponse($cartOrder);
                 return;
-            }
-            else{
+            } else {
                 throw new Exception("Bad Request", 400);
             }
-        }
-        catch(Throwable $e){
+        } catch (Throwable $e) {
             parent::sendErrorMessage($e->getMessage(), $e->getCode());
         }
     }

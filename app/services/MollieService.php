@@ -1,18 +1,21 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-class MollieService{
+class MollieService
+{
     private $mollie;
-    public function __construct(){
+    public function __construct()
+    {
         require_once(__DIR__ . '/../Config.php');
         $this->mollie = new \Mollie\Api\MollieApiClient();
         $this->mollie->setApiKey("test_MVbzPEjp3tJW86EDNq2Dwzwbf3CKRa");
     }
 
-    public function pay(float $totalPrice, int $orderId, int $userId, string $paymentType = null){
-        try{
-            $mollieMethod= null;
-            switch($paymentType){
+    public function pay(float $totalPrice, int $orderId, int $userId, string $paymentType = null)
+    {
+        try {
+            $mollieMethod = null;
+            switch ($paymentType) {
                 case "ideal":
                     $mollieMethod = \Mollie\Api\Types\PaymentMethod::IDEAL;
                     break;
@@ -27,13 +30,15 @@ class MollieService{
                     break;
             }
 
+            require("../Config.php");
+
             $payment = $this->mollie->payments->create([
                 "amount" => [
                     "currency" => "EUR",
-                    "value" => $totalPrice
+                    "value" => number_format($totalPrice, 2, '.', '')
                 ],
                 "description" => "Haarlem Festival Order #{$orderId}",
-                "redirectUrl" => "http://localhost:8080/order/{$orderId}/payment-success",
+                "redirectUrl" => $hostname . "/payment-success",
                 "webhookUrl" => "https://c6a0-85-149-137-48.eu.ngrok.io ",
                 "method" => $mollieMethod,
                 "metadata" => [
@@ -42,19 +47,21 @@ class MollieService{
                 ]
             ]);
 
-            header("Location: " . $payment->getCheckoutUrl(), true, 303);
-        }catch(\Mollie\Api\Exceptions\ApiException $e){
+            $_SESSION["payment_id"] = $payment->id;
+            return $payment->getCheckoutUrl();
+        } catch (\Mollie\Api\Exceptions\ApiException $e) {
+            Logger::write($e);
             throw $e;
         }
     }
 
-    public function getPayment($payment_id){
-        try{
+    public function getPayment($payment_id)
+    {
+        try {
             $payment = $this->mollie->payments->get($payment_id);
             return $payment;
-        }catch(\Mollie\Api\Exceptions\ApiException $e){
+        } catch (\Mollie\Api\Exceptions\ApiException $e) {
             echo "API call failed: " . htmlspecialchars($e->getMessage());
         }
     }
 }
-?>

@@ -36,12 +36,6 @@ class TicketController
 
                 $this->ticketService->markTicketAsScanned($ticket);
                 require_once("../views/employee/ticketScan.php");
-
-                if ($ticket->getIsScanned() == 1) {
-                    echo "<script>alert('Ticket is already scanned!')</script>";
-                } else {
-                    echo "<script>alert('Ticket is scanned!')</script>";
-                }
                 return $ticket;
             } else {
                 header("Location: /");
@@ -50,5 +44,22 @@ class TicketController
             throw ($ex);
         }
     }
+
+    public function getAllTicketsAndSend($order){
+
+
+        $order_id = $order->id;
+
+
+        $orderItemService = new OrderService();
+        $orderItems[] = $orderItemService->getsItemByOrderId($order_id);
+        $tickets[] = null;
+
+        foreach($orderItems as $order){
+                //TODO: create a ticket
+                $ticket = null;
+                array_push($ticket);
+        }
+
+    }
 }
-?>

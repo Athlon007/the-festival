@@ -22,16 +22,24 @@
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
+                    <button
+                            class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?> "
+                            style="width: 9em;"
+                            onclick="showOrderHistory()">
+                        My Order History
+                    </button>
+                    <br>
                     <h2 class="mb-5 mt-5">Shopping Cart <?= $shareMode ? "(Shared)" : "" ?></h2>
                     <!--Pop-up message-->
                     <div id="popup" class="alert d-none"></div>
+
                     <div class="row">
 
                         <!-- Cart disclaimer in case there's nothing -->
 
                         <?php
-                        if ($isAdmin && !$shareMode) {
-                            echo "<h4>As an admin, you are not allowed to purchase things.</h4>";
+                        if (!$isCustomer && !$shareMode) {
+                            echo "<h4>As an admin or employee, you are not allowed to purchase things.</h4>";
                         } elseif (!$hasStuffInCart && !$shareMode) {
                             echo "<h4>Your cart is empty. Go buy some stuff!</h4>";
                         } else { ?>
@@ -69,7 +77,7 @@
                                                 <button id="cart-item-add-<?= $id ?>" class="btn btn-light" style="width: 10%">+</button>
                                             <?php } ?>
                                             <?php if (!$shareMode) { ?>
-                                                <button id="order-item-delete-<?= $id ?>" class="btn btn-danger ms-5" style="width: 20%">DELETE</button>
+                                                <button id="order-item-delete-<?= $id ?>" class="btn btn-danger ms-5" style="width: 6em;">DELETE</button>
                                             <?php } ?>
                                             <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end">
                                                 <?= $orderItem->getFullTicketPrice() ?>
@@ -87,7 +95,7 @@
 
                             <?php if (!$shareMode) { ?>
                                 <div class="col-5 d-grid">
-                                    <button class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?> ">My Order History</button>
+
                                     <input type="hidden" id="share-id" value="<?= $cartOrder->getOrderId(); ?>">
                                     <div class="input-group">
                                         <input type=text" class="form-control" readonly id="share-url-text">
@@ -122,7 +130,7 @@
                             <div class="form-check">
                                 <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> " type="radio" name="paymentMethodRadios" id="method-card" value="method-card">
                                 <label class="form-check-label" for="method-card">
-                                    Card
+                                    Credit Card
                                 </label>
                             </div>
                             <div class="form-check">

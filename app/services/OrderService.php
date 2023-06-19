@@ -1,22 +1,15 @@
 <?php
-
 //Repositories
 require_once(__DIR__ . '/../repositories/OrderRepository.php');
-require_once(__DIR__ . '/../repositories/TicketLinkRepository.php');
-require_once(__DIR__ . '/../repositories/TicketRepository.php');
 require_once(__DIR__ . '/../repositories/CustomerRepository.php');
 
 //Services
 require_once(__DIR__ . '/../services/TicketService.php');
-require_once(__DIR__ . '/../services/PDFService.php');
 require_once(__DIR__ . '/../services/InvoiceService.php');
-
-//Controllers
-require_once(__DIR__ . '/../controllers/TicketController.php');
+require_once(__DIR__ . '/../services/TicketLinkService.php');
 
 //Models
 require_once(__DIR__ . '/../models/Order.php');
-require_once(__DIR__ . '/../models/Ticket/Ticket.php');
 require_once(__DIR__ . '/../models/Exceptions/OrderNotFoundException.php');
 
 class OrderService
@@ -24,14 +17,16 @@ class OrderService
     private $orderRepository;
     private $customerRepository;
     private $invoiceService;
-    private $ticketController;
+    private $ticketService;
+    private $ticketLinkService;
 
     public function __construct()
     {
         $this->orderRepository = new OrderRepository();
         $this->customerRepository = new CustomerRepository();
         $this->invoiceService = new InvoiceService();
-        $this->ticketController = new TicketController();
+        $this->ticketService = new TicketService();
+        $this->ticketLinkService = new TicketLinkService();
     }
 
     public function getOrderById(int $id): Order
@@ -143,9 +138,9 @@ class OrderService
         return $this->orderRepository->updateOrder($orderId, $order);
     }
 
-    public function updateOrderItem($orderItemId, $orderItem): OrderItem
+    public function updateOrderItem($orderItemId, $orderItem, $orderId = null): OrderItem
     {
-        return $this->orderRepository->updateOrderItem($orderItemId, $orderItem);
+        return $this->orderRepository->updateOrderItem($orderItemId, $orderItem, $orderId);
     }
 
     public function deleteOrder($orderId): void
@@ -169,11 +164,10 @@ class OrderService
                     //If there is a match in ticket link then add the quantity of the sessionOrderItem to the customerOrderItem and update
                     $customerOrderItem->setQuantity($customerOrderItem->getQuantity() + $sessionOrderItem->getQuantity());
                     $this->updateOrderItem($customerOrderItem->getOrderItemId(), $customerOrderItem);
-                }
-                else {
+                } else {
                     //If the orderItem is unique then we add it to the customerOrder and update it
-                    $sessionOrderItem->setOrderId($customerOrder->getOrderId());
-                    $customerOrder->addOrderItem($this->updateOrderItem($sessionOrderItem->getOrderItemId(), $sessionOrderItem));
+                    $this->orderRepository->updateOrderItem($sessionOrderItem->getOrderItemId(), $sessionOrderItem, $customerOrder->getOrderId());
+                    $customerOrder->addOrderItem($sessionOrderItem);
                 }
             }
         }
@@ -191,16 +185,32 @@ class OrderService
     }
 
     /**
+     * After checking out the cart, this function will be called to send the tickets and invoice to the user.
      * @param Order $order
      * @return void
      * @throws Exception
      */
     public function sendTicketsAndInvoice(Order $order): void
     {
+        // Generate the tickets for the order
+        $this->generateTicketsForOrder($order);
+        //Send all the tickets via email
+        $this->ticketService->getAllTicketsAndSend($order);
         //Send invoice via email
         $this->invoiceService->sendInvoiceEmail($order);
+    }
 
-        // Get all tickets and send them to the user
-        $this->ticketController->getAllTickets($order);
+    /**
+     * Generates tickets for the order
+     */
+    private function generateTicketsForOrder(Order $order)
+    {
+        foreach ($order->getOrderItems() as $orderItem) {
+            $ticketLink = $this->ticketLinkService->getById($orderItem->getTicketLinkId());
+
+            for ($i = 0; $i < $orderItem->getQuantity(); $i++) {
+                $this->ticketService->insertTicket($order->getOrderId(), $orderItem, $ticketLink->getEvent(), $ticketLink->getTicketType()->getId());
+            }
+        }
     }
 }
