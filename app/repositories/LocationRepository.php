@@ -1,7 +1,6 @@
 <?php
 
 require_once("Repository.php");
-require_once("AddressRepository.php");
 require_once(__DIR__ . "/../models/Location.php");
 
 /**
@@ -12,21 +11,25 @@ class LocationRepository extends Repository
     private function buildLocations($arr): array
     {
         $output = array();
-        $addressRepository = new AddressRepository();
 
         foreach ($arr as $row) {
             $locationId = $row["locationId"];
             $name = $row["name"];
-            $addressId = $row["addressId"];
             $locationType = $row["locationType"];
             $lon = $row["lon"];
             $lat = $row["lat"];
             $capacity = $row["capacity"];
             $description = isset($row["description"]) ? $row["description"] : null;
 
-            $address = $addressRepository->getAddressById($addressId);
-
-            $location = new Location($locationId, $name, $address, $locationType, $lon, $lat, $capacity, $description);
+            $location = new Location();
+            $location->setLocationId($locationId);
+            $location->setName($name);
+            $location->setLocationType($locationType);
+            $location->setLon($lon);
+            $location->setLat($lat);
+            $location->setCapacity($capacity);
+            $location->setDescription($description);
+            $location->setAddressId($row["addressId"]);
 
             array_push($output, $location);
         }

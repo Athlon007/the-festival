@@ -31,16 +31,16 @@ class JazzTicketLinkRepository extends TicketLinkRepository
             $address->setCity($item['addressCity']);
             $address->setCountry($item['addressCountry']);
 
-            $location = new Location(
-                $item['locationId'],
-                $item['locationName'],
-                $address,
-                $item['locationType'],
-                $item['locationLon'],
-                $item['locationLat'],
-                $item['locationCapacity'],
-                $item['locationDescription']
-            );
+            $location = new Location();
+            $location->setLocationId($item['locationId']);
+            $location->setName($item['locationName']);
+            $location->setAddress($address);
+            $location->setLocationType($item['locationType']);
+            $location->setLon($item['locationLon']);
+            $location->setLat($item['locationLat']);
+            $location->setCapacity($item['locationCapacity']);
+            $location->setDescription($item['locationDescription']);
+
             $ticketType = new TicketType(
                 $item['ticketTypeId'],
                 $item['ticketTypeName'],
