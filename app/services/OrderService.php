@@ -197,10 +197,10 @@ class OrderService
         $this->generateTicketsForOrder($order);
 
         //Send all the tickets via email
-        //$this->ticketService->getAllTicketsAndSend($order);
+        $this->ticketService->getAllTicketsAndSend($order);
 
         //Send invoice via email
-        //$this->invoiceService->sendInvoiceEmail($order);
+        $this->invoiceService->sendInvoiceEmail($order);
     }
 
     /**

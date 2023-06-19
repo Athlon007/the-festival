@@ -26,12 +26,12 @@
                     <!--Pop-up message-->
                     <div id="popup" class="alert d-none"></div>
                     <div class="row">
-
+                        <button class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?> " onclick="showOrderHistory()">My Order History</button>
                         <!-- Cart disclaimer in case there's nothing -->
 
                         <?php
-                        if ($isAdmin && !$shareMode) {
-                            echo "<h4>As an admin, you are not allowed to purchase things.</h4>";
+                        if (!$isCustomer && !$shareMode) {
+                            echo "<h4>As an admin or employee, you are not allowed to purchase things.</h4>";
                         } elseif (!$hasStuffInCart && !$shareMode) {
                             echo "<h4>Your cart is empty. Go buy some stuff!</h4>";
                         } else { ?>
@@ -87,7 +87,7 @@
 
                             <?php if (!$shareMode) { ?>
                                 <div class="col-5 d-grid">
-                                    <button class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?> ">My Order History</button>
+
                                     <input type="hidden" id="share-id" value="<?= $cartOrder->getOrderId(); ?>">
                                     <div class="input-group">
                                         <input type=text" class="form-control" readonly id="share-url-text">

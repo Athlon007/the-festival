@@ -26,10 +26,10 @@ class OrderController
         $shareMode = false;
         $isLoggedIn = isset($_SESSION['user']);
 
-        $isAdmin = false;
+        $isCustomer = false;
         if ($isLoggedIn) {
             $user = unserialize($_SESSION['user']);
-            $isAdmin = $user->getUserType() == 1;
+            $isCustomer = $user->getUserType() == 3;
         }
 
         try {
