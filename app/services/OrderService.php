@@ -194,20 +194,17 @@ class OrderService
     {
         // Generate the tickets for the order
         $this->generateTicketsForOrder($order);
-
         //Send all the tickets via email
         $this->ticketService->getAllTicketsAndSend($order);
-
         //Send invoice via email
         $this->invoiceService->sendInvoiceEmail($order);
     }
 
     /**
-     * @throws \PHPMailer\PHPMailer\Exception
+     * Generates tickets for the order
      */
     private function generateTicketsForOrder(Order $order)
     {
-
         foreach ($order->getOrderItems() as $orderItem) {
             $ticketLink = $this->ticketLinkService->getById($orderItem->getTicketLinkId());
 
