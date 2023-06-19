@@ -8,8 +8,7 @@
     <meta name="theme-color" content="#fffbfa">
     <meta name="robots" content="noindex, nofollow">
     <title>Visit Haarlem Cart</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/icons.css">
 </head>
@@ -23,7 +22,7 @@
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
-                    <h2 class="mb-5 mt-5">Shopping Cart</h2>
+                    <h2 class="mb-5 mt-5">Shopping Cart <?= $shareMode ? "(Shared)" : "" ?></h2>
                     <!--Pop-up message-->
                     <div id="popup" class="alert d-none"></div>
                     <div class="row">
@@ -31,7 +30,9 @@
                         <!-- Cart disclaimer in case there's nothing -->
 
                         <?php
-                        if (!$hasStuffInCart) {
+                        if ($isAdmin && !$shareMode) {
+                            echo "<h4>As an admin, you are not allowed to purchase things.</h4>";
+                        } elseif (!$hasStuffInCart && !$shareMode) {
                             echo "<h4>Your cart is empty. Go buy some stuff!</h4>";
                         } else { ?>
 
@@ -59,19 +60,16 @@
                                         <br>
                                         <div style="width: 100%">
                                             <?php if (!$shareMode) { ?>
-                                                <button id="cart-item-remove-<?= $id ?>" class="btn btn-light"
-                                                    style="width: 10%">-</button>
+                                                <button id="cart-item-remove-<?= $id ?>" class="btn btn-light" style="width: 10%">-</button>
                                             <?php } ?>
                                             <span id="cart-item-counter-<?= $id ?>" class="fw-bold mx-2">
                                                 <?= $orderItem->getQuantity() ?>
                                             </span>
                                             <?php if (!$shareMode) { ?>
-                                                <button id="cart-item-add-<?= $id ?>" class="btn btn-light"
-                                                    style="width: 10%">+</button>
+                                                <button id="cart-item-add-<?= $id ?>" class="btn btn-light" style="width: 10%">+</button>
                                             <?php } ?>
                                             <?php if (!$shareMode) { ?>
-                                                <button id="order-item-delete-<?= $id ?>" class="btn btn-danger ms-5"
-                                                        style="width: 20%">DELETE</button>
+                                                <button id="order-item-delete-<?= $id ?>" class="btn btn-danger ms-5" style="width: 20%">DELETE</button>
                                             <?php } ?>
                                             <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end">
                                                 <?= $orderItem->getFullTicketPrice() ?>
@@ -96,7 +94,7 @@
                                         <button class="btn btn-primary" onclick="shareMyCart()">Share</button>
                                     </div>
                                 </div>
-                            <?php }
+                        <?php }
                         } ?>
                     </div>
                     <br>
@@ -105,7 +103,7 @@
                     <!-- Checkout section-->
 
                     <?php if ($hasStuffInCart) {
-                        ?>
+                    ?>
                         <h4 id="total">Total price: &euro;
                             <?= number_format($cartOrder->getTotalPrice(), 2, '.'); ?>
                         </h4>
@@ -116,34 +114,19 @@
                             <br>
                             <h5>Payment method:</h5>
                             <div class="form-check">
-                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> "
-                                       type="radio"
-                                       name="paymentMethodRadios"
-                                       id="method-ideal"
-                                       value="method-ideal"
-                                >
+                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> " type="radio" name="paymentMethodRadios" id="method-ideal" value="method-ideal">
                                 <label class="form-check-label" for="method-ideal">
                                     iDEAL
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> "
-                                       type="radio"
-                                       name="paymentMethodRadios"
-                                       id="method-card"
-                                       value="method-card"
-                                >
+                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> " type="radio" name="paymentMethodRadios" id="method-card" value="method-card">
                                 <label class="form-check-label" for="method-card">
                                     Card
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> "
-                                       type="radio"
-                                       name="paymentMethodRadios"
-                                       id="method-klarna"
-                                       value="method-klarna"
-                                >
+                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> " type="radio" name="paymentMethodRadios" id="method-klarna" value="method-klarna">
                                 <label class="form-check-label" for="method-klarna">
                                     Klarna (Pay later)
                                 </label>
@@ -152,7 +135,7 @@
                         <?php } else { ?>
                             <p>This cart has been shared with you.</p>
                         <?php } ?>
-                        <?php
+                    <?php
                     }
                     ?>
                 </div>
@@ -161,11 +144,8 @@
     </section>
 
     <footer class="foot row bottom"></footer>
-    <script type="application/javascript"
-        src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
+    <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <script src="/js/cartcontroller.js"></script>
     <script type="module" src="/js/foot.js"></script>
 </body>
