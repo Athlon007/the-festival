@@ -26,6 +26,12 @@ class OrderController
         $shareMode = false;
         $isLoggedIn = isset($_SESSION['user']);
 
+        $isAdmin = false;
+        if ($isLoggedIn) {
+            $user = unserialize($_SESSION['user']);
+            $isAdmin = $user->getUserType() == 1;
+        }
+
         try {
             // http://localhost/shopping-cart?id=16
             // Check if "id" is set in the URL query string
@@ -143,7 +149,6 @@ class OrderController
             echo "<script>alert('Invoice has been sent to your email!')</script>";
 
             require_once('../views/payment-funnel/order-history.php');
-
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
@@ -174,5 +179,4 @@ class OrderController
 
         require_once('../views/payment-funnel/order-history.php');
     }
-
 }
