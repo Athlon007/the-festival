@@ -220,7 +220,7 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
-            $editedTicketLinkID = basename($uri);
+            $editedTicketLinkID = (int)basename($uri);
             $ticketTypeId = $data['ticketType']['id'];
             if (!isset($ticketTypeId)) {
                 $ticketTypeId = $data['ticketType'];
@@ -258,7 +258,7 @@ class EventAPIController extends APIController
                 $eventType = $this->eventTypeService->getById(3);
 
                 $event = new HistoryEvent(
-                    $data['id'],
+                    $data['eventId'],
                     $data['name'],
                     $data['available_tickets'],
                     new DateTime($data['start_time']),
