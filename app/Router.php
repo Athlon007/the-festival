@@ -203,7 +203,7 @@ class Router
                 $ticketController = new PaymentController();
                 $ticketController->sendTicketsAndInvoice();
                 break;
-                case "/checkout":
+            case "/checkout":
                 require_once("controllers/PaymentController.php");
                 $ticketController = new PaymentController();
                 $ticketController->submitPaymentToMollie();
@@ -271,11 +271,10 @@ class Router
         } elseif (str_starts_with($request, "/api/orders")) {
             require_once("controllers/APIControllers/PaymentFunnel/OrderAPIController.php");
             $controller = new OrderAPIController();
-        }elseif(str_starts_with($request, "/api/foodfestival")){
+        } elseif (str_starts_with($request, "/api/foodfestival")) {
             require_once("controllers/APIControllers/YummyController.php");
             $controller = new FoodFestivalController();
-        }
-        elseif(str_starts_with($request, "/api/restaurants")){
+        } elseif (str_starts_with($request, "/api/restaurants")) {
             require_once("controllers/APIControllers/RestaurantsAPIController.php");
             $controller = new RestaurantApiController();
             $controller->handleGetRequest();
@@ -352,7 +351,8 @@ class Router
             return;
         }
 
-        require_once("models/User.php");
+        require_once(__DIR__ . "/models/User.php");
+        require_once(__DIR__ . "/models/Customer.php");
         $user = unserialize($_SESSION['user']);
 
         if ($user->getUserType() > 2) {
