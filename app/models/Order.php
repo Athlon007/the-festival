@@ -17,7 +17,7 @@ class Order implements JsonSerializable
             "orderId" => $this->orderId,
             "orderItems" => $this->orderItems,
             "tickets" => $this->tickets,
-            "customer" => $this->customer,
+            "customer" => $this->customer != null ? $this->customer : null,
             "orderDate" => $this->orderDate,
             "isPaid" => $this->isPaid,
         ];

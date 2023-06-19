@@ -188,9 +188,7 @@ class TicketService
       }
 
       if ($mail->send()) {
-        echo "Mail sent";
-      } else {
-        echo "Mail not sent";
+        throw new Exception("Email could not be sent");
       }
     } catch (Exception $ex) {
       throw ($ex);

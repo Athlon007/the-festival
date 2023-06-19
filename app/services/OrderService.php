@@ -192,10 +192,13 @@ class OrderService
      */
     public function sendTicketsAndInvoice(Order $order): void
     {
+        // Clone object of $order to prevent the original object from being modified
+        $orderClone = clone $order;
+
         // Generate the tickets for the order
         $this->generateTicketsForOrder($order);
         //Send all the tickets via email
-        $this->ticketService->getAllTicketsAndSend($order);
+        $this->ticketService->getAllTicketsAndSend($orderClone);
         //Send invoice via email
         $this->invoiceService->sendInvoiceEmail($order);
     }

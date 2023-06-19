@@ -38,7 +38,8 @@ fetch("/api/cart/checkpayment", {
     )
     .catch((error) => {
         console.error("Error:", error);
+        checkPayment.classList.add('d-none');
         paymentFailed.classList.remove('d-none');
-        failReason.textContent = error.data.error_message;
+        failReason.textContent = error.data.error_message ?? "Unknown error.";
     }
     );
