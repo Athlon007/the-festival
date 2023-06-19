@@ -368,13 +368,8 @@ class Router
         require_once(__DIR__ . "/models/Customer.php");
         $user = unserialize($_SESSION['user']);
 
-        if ($user->getUserType() > 2) {
+        if ($user->getUserType() >= 2) {
             header("Location: /");
-            return;
-        }
-
-        if ($user->getUserType() == 2 || $request == "/manageScanTicket") {
-            require_once('views/employee/ticketScan.php');
             return;
         }
 
