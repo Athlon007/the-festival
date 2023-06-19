@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="tweaked order merging" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings" notifyAboutMissingVendor="false">
+    <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
+    <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="history-festival" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2RHSMeqzsCOXTkov4injoNz5ls4" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "Cart",
+    "last_opened_file_path": "C:/Users/joshu/Documents/InHolland/Year 2/Term 3/the-festival-2",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="" />
+      <created>1686905467046</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1686905467046</updated>
+      <workItem from="1686905468083" duration="2957000" />
+      <workItem from="1686939650375" duration="3595000" />
+      <workItem from="1687007387529" duration="329000" />
+      <workItem from="1687029841479" duration="4785000" />
+      <workItem from="1687058623574" duration="699000" />
+      <workItem from="1687089838540" duration="761000" />
+      <workItem from="1687090607078" duration="13559000" />
+      <workItem from="1687161657772" duration="3330000" />
+      <workItem from="1687168802335" duration="20598000" />
+    </task>
+    <task id="LOCAL-00001" summary="Added sendTicketsAndInvoice method to OrderService">
+      <created>1686906723310</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1686906723310</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Something causes stack overflow? Commented out invoice service and ticket controller from OrderService">
+      <created>1686907949522</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1686907949522</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Delete orderitem function working, working on checkout bug">
+      <created>1687036755094</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1687036755095</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Disabled buttons when not logged in">
+      <created>1687102650360</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1687102650360</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Fixed cart merging and saving cart when logging in">
+      <created>1687108118561</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1687108118561</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Displaying and calculating decimals in the cart frontend">
+      <created>1687109821880</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1687109821880</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Fixed paymentMethod not passing through JS, now stuck again on user not logged in bug">
+      <created>1687162963942</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1687162963942</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Just mollie bugs left now">
+      <created>1687163722864</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1687163722864</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Tweaked cart validation">
+      <created>1687164384385</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1687164384385</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Cart tweaks for mollie bugs">
+      <created>1687172497212</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1687172497212</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Cart tweaks for after the checkout">
+      <created>1687174746202</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1687174746202</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Payment Success Window checkout">
+      <created>1687179288612</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1687179288612</updated>
+    </task>
+    <task id="LOCAL-00013" summary="added order history js">
+      <created>1687180575117</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1687180575117</updated>
+    </task>
+    <task id="LOCAL-00014" summary="fixed ticket generation">
+      <created>1687185162367</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1687185162367</updated>
+    </task>
+    <task id="LOCAL-00015" summary="tweaked order merging">
+      <created>1687188168848</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1687188168848</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added sendTicketsAndInvoice method to OrderService" />
+    <MESSAGE value="Something causes stack overflow? Commented out invoice service and ticket controller from OrderService" />
+    <MESSAGE value="Delete orderitem function working, working on checkout bug" />
+    <MESSAGE value="Disabled buttons when not logged in" />
+    <MESSAGE value="Fixed cart merging and saving cart when logging in" />
+    <MESSAGE value="Displaying and calculating decimals in the cart frontend" />
+    <MESSAGE value="Fixed paymentMethod not passing through JS, now stuck again on user not logged in bug" />
+    <MESSAGE value="Just mollie bugs left now" />
+    <MESSAGE value="Tweaked cart validation" />
+    <MESSAGE value="Cart tweaks for mollie bugs" />
+    <MESSAGE value="Cart tweaks for after the checkout" />
+    <MESSAGE value="Payment Success Window checkout" />
+    <MESSAGE value="added order history js" />
+    <MESSAGE value="fixed ticket generation" />
+    <MESSAGE value="tweaked order merging" />
+    <option name="LAST_COMMIT_MESSAGE" value="tweaked order merging" />
+  </component>
+</project>
