@@ -5,7 +5,7 @@ class DanceEvent extends MusicEvent implements JsonSerializable
 {
     private array $artists;
 
-    public function __construct($id, $name, DateTime $startTime, DateTime $endTime, Artist $artist, Location $location, EventType $eventType, array $artists, $availableTickets = null)
+    public function __construct($id, $name, DateTime $startTime, DateTime $endTime, Location $location, EventType $eventType, array $artists, $availableTickets = null)
     {
         $this->setId($id);
         $this->setName($name);
@@ -25,6 +25,19 @@ class DanceEvent extends MusicEvent implements JsonSerializable
     public function setArtists(array $value)
     {
         $this->artists = $value;
+    }
+
+    public function addArtist(Artist $artist)
+    {
+        $this->artists[] = $artist;
+    }
+
+    public function removeArtist(Artist $artist)
+    {
+        $index = array_search($artist, $this->artists);
+        if ($index !== false) {
+            unset($this->artists[$index]);
+        }
     }
 
     public function jsonSerialize(): mixed

@@ -286,8 +286,6 @@ class OrderRepository extends Repository
         $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDateAsString()));
-        //$customerId = $order->getCustomer()->getUserId();
-        //$stmt->bindValue(":customerId", htmlspecialchars($customerId));
 
         if ($order->getCustomer() != null) {
             $customerId = $order->getCustomer()->getUserId();
@@ -295,8 +293,8 @@ class OrderRepository extends Repository
         } else {
             $stmt->bindValue(":customerId", null);
         }
-
         $stmt->execute();
+        $this->removeOldOrders();
 
         return $this->getOrderById($this->connection->lastInsertId());
     }

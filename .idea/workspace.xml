@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="tweaked order merging" />
+    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="tweaked order merging">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/OrderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/OrderController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/Music/DanceEvent.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/Music/DanceEvent.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/repositories/OrderRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/OrderRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/payment-funnel/cart.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/payment-funnel/cart.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,7 +23,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="history-festival" />
+        <entry key="$PROJECT_DIR$" value="Cart" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -38,7 +44,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "Cart",
+    "git-widget-placeholder": "Dance",
     "last_opened_file_path": "C:/Users/joshu/Documents/InHolland/Year 2/Term 3/the-festival-2",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -63,7 +69,8 @@
       <workItem from="1687089838540" duration="761000" />
       <workItem from="1687090607078" duration="13559000" />
       <workItem from="1687161657772" duration="3330000" />
-      <workItem from="1687168802335" duration="20598000" />
+      <workItem from="1687168802335" duration="21008000" />
+      <workItem from="1687190497923" duration="1581000" />
     </task>
     <task id="LOCAL-00001" summary="Added sendTicketsAndInvoice method to OrderService">
       <created>1686906723310</created>
