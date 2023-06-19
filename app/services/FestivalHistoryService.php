@@ -20,6 +20,10 @@ class FestivalHistoryService
         return $this->festivalHistoryRep->getAllHistoryEvents();
     }
 
+    public function getById($id){
+        return $this->festivalHistoryRep->getById($id);
+    }
+
     public function getGuideById($id)
     {
         return $this->festivalHistoryRep->getGuideById($id);

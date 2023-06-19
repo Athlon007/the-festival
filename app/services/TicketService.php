@@ -34,10 +34,10 @@ class TicketService
     $this->repository = new TicketRepository();
   }
 
-  public function insertTicket(Order $order, Event $event, $ticketTypeId): Ticket
+  public function insertTicket($orderId, OrderItem $orderItem , Event $event, $ticketTypeId): Ticket
   {
     try {
-      $ticket = $this->repository->insertTicket($order, $event, $ticketTypeId);
+      $ticket = $this->repository->insertTicket($orderId, $orderItem, $event, $ticketTypeId);
       return $ticket;
     } catch (Exception $ex) {
       throw ($ex);

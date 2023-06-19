@@ -32,6 +32,7 @@ class InvoiceService
     }
 
     public function sendInvoiceEmail(Order $order){
+        $order = $this->orderRepository->getOrderForInvoice($order->getOrderId());
 
         if ($order == null) {
             echo "No orders found";
