@@ -30,13 +30,15 @@ class MollieService
                     break;
             }
 
+            require("../Config.php");
+
             $payment = $this->mollie->payments->create([
                 "amount" => [
                     "currency" => "EUR",
                     "value" => number_format($totalPrice, 2, '.', '')
                 ],
                 "description" => "Haarlem Festival Order #{$orderId}",
-                "redirectUrl" => "http://localhost/payment-success",
+                "redirectUrl" => $hostname . "/payment-success",
                 "webhookUrl" => "https://c6a0-85-149-137-48.eu.ngrok.io ",
                 "method" => $mollieMethod,
                 "metadata" => [
