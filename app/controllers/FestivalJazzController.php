@@ -49,7 +49,7 @@ class FestivalJazzController
             $event = $cartItem->getEvent();
 
             // if event is of jazzevent type
-            if (!($event instanceof MusicEvent)) {
+            if (!($event instanceof JazzEvent)) {
                 // redirect to 404
                 return;
             }
