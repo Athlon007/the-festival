@@ -23,9 +23,9 @@
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
                     <button
-                            class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?> "
-                            style="width: 9em;"
-                            onclick="showOrderHistory()">
+                        class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?> "
+                        style="width: 9em;"
+                        onclick="showOrderHistory()">
                         My Order History
                     </button>
                     <br>
@@ -38,7 +38,7 @@
                         <!-- Cart disclaimer in case there's nothing -->
 
                         <?php
-                        if (!$isCustomer && !$shareMode) {
+                        if (!$isCustomerOrVisitor && !$shareMode) {
                             echo "<h4>As an admin or employee, you are not allowed to purchase things.</h4>";
                         } elseif (!$hasStuffInCart && !$shareMode) {
                             echo "<h4>Your cart is empty. Go buy some stuff!</h4>";

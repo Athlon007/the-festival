@@ -25,22 +25,15 @@ use PHPMailer\PHPMailer\Exception;
  */
 class InvoiceService
 {
-  private PDFService $pdfService;
-  private OrderRepository $orderRepository;
+    private PDFService $pdfService;
+    private TicketRepository $ticketRepository;
+    private OrderRepository $orderRepository;
 
-  public function __construct()
-  {
-    $this->pdfService = new PDFService();
-    $this->orderRepository = new OrderRepository();
-  }
-
-  public function sendInvoiceEmail(Order $order)
-  {
-    $order = $this->orderRepository->getOrderForInvoice($order->getOrderId());
-
-    if ($order == null) {
-      echo "No orders found";
-      exit;
+    public function __construct()
+    {
+        $this->pdfService = new PDFService();
+        $this->ticketRepository = new TicketRepository();
+        $this->orderRepository = new OrderRepository();
     }
 
     // buffer the following html into a variable
