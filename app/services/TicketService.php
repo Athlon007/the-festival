@@ -188,7 +188,7 @@ class TicketService
       }
 
       if ($mail->send()) {
-        // TODO: Maybe throw error instead?
+        throw new Exception("Email could not be sent");
       }
     } catch (Exception $ex) {
       throw ($ex);

@@ -86,7 +86,7 @@ class InvoiceService
       $mail->addStringAttachment($pdfContents, 'invoice.pdf', 'base64', 'application/pdf');
 
       if (!$mail->send()) {
-        // TODO: Maybe throw error...
+        throw new Exception("Email could not be sent");
       }
     } catch (Exception $ex) {
       throw ($ex);
