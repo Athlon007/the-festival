@@ -34,10 +34,10 @@ class TicketService
     $this->repository = new TicketRepository();
   }
 
-  public function insertTicket(Order $order, Event $event, $ticketTypeId): Ticket
+  public function insertTicket($orderId, OrderItem $orderItem , Event $event, $ticketTypeId): Ticket
   {
     try {
-      $ticket = $this->repository->insertTicket($order, $event, $ticketTypeId);
+      $ticket = $this->repository->insertTicket($orderId, $orderItem, $event, $ticketTypeId);
       return $ticket;
     } catch (Exception $ex) {
       throw ($ex);
@@ -180,9 +180,9 @@ class TicketService
       require_once(__DIR__ . '/../emails/ticket-email.php');
       $mail->Body = ob_get_clean();
 
-      // $mail->addAddress($order->getCustomer()->getEmail(), $name);
+      $mail->addAddress($order->getCustomer()->getEmail(), $name);
       //Debugging
-      $mail->addAddress("turkvedat0911@gmail.com", $name);
+      // $mail->addAddress("turkvedat0911@gmail.com", $name);
       foreach ($order->getTickets() as $ticket) {
         $pdfContents = $dompdf->output();
         $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');

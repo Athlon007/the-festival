@@ -69,11 +69,9 @@
                                 <?php echo $historyEvent->getAvailableTickets(); ?>
                             </td>
                             <!-- Update button -->
-                            <td>
-                                <a href="/updateHistoryTour?id=<?php echo $historyEvent->getId(); ?>"
-                                    class="btn btn-primary">Update</a>
-                                <!-- Delete button -->
-                            <td>
+                            <td>                            
+                            <a href="/updateEvent?id=<?= $historyEvent->getId(); ?>" class="btn btn-primary btn-lg">Update</a>
+                            </td>
                             <td>
                                 <button class="btn btn-danger delete-btn"
                                     data-event-id="<?php echo $historyEvent->getId(); ?>">Delete</button>
