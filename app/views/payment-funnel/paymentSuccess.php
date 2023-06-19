@@ -21,7 +21,7 @@
     <section class="h-100 h-custom">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
-                <div id="checking-paymemnt" class="col-10">
+                <div id="check-payment" class="col-10">
                     <h2>We're checking the payment status...</h2>
                 </div>
                 <div id="payment-success" class="col-10 d-none">
