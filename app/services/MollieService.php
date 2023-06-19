@@ -30,7 +30,7 @@ class MollieService{
             $payment = $this->mollie->payments->create([
                 "amount" => [
                     "currency" => "EUR",
-                    "value" => $totalPrice
+                    "value" => $number_format($totalPrice, 2, '.', '')
                 ],
                 "description" => "Haarlem Festival Order #{$orderId}",
                 "redirectUrl" => "http://localhost:8080/order/{$orderId}/payment-success",

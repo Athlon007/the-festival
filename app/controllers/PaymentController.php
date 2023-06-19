@@ -7,21 +7,20 @@ require_once("../services/MollieService.php");
 class PaymentController
 {
     private $mollie;
+    private $cartService;
+    private $ticketController;
     public function __construct()
     {
+        $this->cartService = new CartService();
         $this->mollie = new MollieService();
+        $this->ticketController = new TicketController();
     }
 
     //TODO: see if this is still needed because it doesn't work anymore
     public function submitPaymentToMollie(){
         //retrieve the order from the session
         //session_start();
-        $order = serialize($_SESSION['order']);
-
-
-        //go to payment page
-        $mollie = new MollieService();
-        $mollie->pay($order);
+        $order = $this->cartService->checkoutCart();
         //$mollie->pay($totalPrice, $orderId, $userId, $paymentMethod);
 
         // Get all tickets and send them to the user
