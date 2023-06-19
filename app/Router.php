@@ -199,16 +199,12 @@ class Router
                 $festivalFoodController = new FestivalFoodController();
                 $festivalFoodController->loadFoodFestivalPage();
                 break;
-            case "/paymentSuccess":
+            case "/payment-success":
                 require_once("controllers/PaymentController.php");
-                $ticketController = new PaymentController();
-                $ticketController->sendTicketsAndInvoice();
+                $controller = new PaymentController();
+                $controller->showPaymentSuccessWindow();
                 break;
-                case "/checkout":
-                require_once("controllers/PaymentController.php");
-                $ticketController = new PaymentController();
-                $ticketController->submitPaymentToMollie();
-                break;
+
 
             default:
                 $this->route404($message);

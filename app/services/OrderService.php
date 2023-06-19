@@ -214,8 +214,6 @@ class OrderService
             for ($i = 0; $i < $orderItem->getQuantity(); $i++){
                 $this->ticketService->insertTicket($order->getOrderId(), $orderItem, $ticketLink->getEvent(), $ticketLink->getTicketType()->getId());
             }
-
         }
-
     }
 }

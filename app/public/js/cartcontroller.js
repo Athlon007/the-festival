@@ -102,11 +102,10 @@ function checkout(){
         .then(data => {
             hideErrorPopup();
             console.log(data);
-
+            window.location.href = "/payment-success"
         })
         .catch(error => {
-
-            console.log(error);
+            //console.log(error);
             showErrorPopup(error.data.error_message);
         });
 }
