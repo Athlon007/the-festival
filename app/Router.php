@@ -218,7 +218,9 @@ class Router
                 $ticketController = new PaymentController();
                 $ticketController->submitPaymentToMollie();
                 break;
-
+            case "/payment-success":
+                require_once("views/payment-funnel/paymentSuccess.php");
+                break;
             default:
                 $this->route404($message);
                 break;

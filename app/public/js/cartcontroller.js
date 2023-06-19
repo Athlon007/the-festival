@@ -3,7 +3,7 @@
 // ------------------------------
 
 const total = document.getElementById('total');
-const popup= document.getElementById('popup');
+const popup = document.getElementById('popup');
 
 // Find spans with following id pattern: cart-counter-*
 const cartCounterSpans = document.querySelectorAll('span[id^="cart-item-counter-"]');
@@ -80,20 +80,20 @@ async function shareMyCart() {
     await navigator.clipboard.writeText(shareUrlText.value);
 }
 
-function checkout(){
+function checkout() {
 
     let idealRadButton = document.getElementById('method-ideal');
     let cardRadButton = document.getElementById('method-card');
     let klarnaRadButton = document.getElementById('method-klarna');
     let paymentMethod;
 
-    if(idealRadButton.checked)
+    if (idealRadButton.checked)
         paymentMethod = "ideal";
-    else if(cardRadButton.checked)
+    else if (cardRadButton.checked)
         paymentMethod = "card";
-    else if(klarnaRadButton.checked)
+    else if (klarnaRadButton.checked)
         paymentMethod = "klarna";
-    else{
+    else {
         showErrorPopup("Please select a payment method before checking out.");
         return;
     }
@@ -101,7 +101,14 @@ function checkout(){
     Cart.Checkout(paymentMethod)
         .then(data => {
             hideErrorPopup();
-            console.log(data);
+            //console.log(data);
+
+            // We should get JSON with paymentUrl.
+            // Redirect to that url.
+
+            if (data.paymentUrl) {
+                window.location.href = data.paymentUrl;
+            }
 
         })
         .catch(error => {
@@ -116,7 +123,7 @@ function showErrorPopup(message) {
     popup.classList.add('alert-warning');
     popup.classList.remove('d-none');
 
-    setTimeout(function(){
+    setTimeout(function () {
         hideErrorPopup();
     }, 10000);
 
@@ -127,7 +134,7 @@ function showSuccessPopup(message) {
     popup.classList.add('alert-success');
     popup.classList.remove('d-none');
 
-    setTimeout(function(){
+    setTimeout(function () {
         hideErrorPopup();
     }, 10000);
 
