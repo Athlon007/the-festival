@@ -38,7 +38,8 @@
                 </div>
                 <div id="payment-failed" class="col-10 d-none">
                     <h2>Payment failed!</h2>
-                    <p>Something went wrong with your payment. Please try again.</p>
+                    <p>Reason: <span id="fail-reason"></span></p>
+                    <p>Please try again.</p>
                     <a href="/shopping-cart" class="btn btn-primary">Go to cart</a>
                 </div>
             </div>
