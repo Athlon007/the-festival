@@ -110,6 +110,10 @@ function checkout(){
         });
 }
 
+function showOrderHistory(){
+    window.location.href = "/order-history";
+}
+
 function showErrorPopup(message) {
     popup.innerHTML = message;
     popup.classList.add('alert-warning');
