@@ -199,10 +199,28 @@ class Router
                 $festivalFoodController = new FestivalFoodController();
                 $festivalFoodController->loadFoodFestivalPage();
                 break;
+            case "/addRestaurant":
+                require_once("controllers/FestivalFoodController.php");
+                $festivalFoodController = new FestivalFoodController();
+                $festivalFoodController->addRestaurant();
+                break;
+            case "/addSession":
+                require_once("controllers/FestivalFoodController.php");
+                $festivalFoodController = new FestivalFoodController();
+                $festivalFoodController->addSession();
+                break;
             case "/paymentSuccess":
                 require_once("controllers/PaymentController.php");
                 $ticketController = new PaymentController();
                 $ticketController->sendTicketsAndInvoice();
+                break;
+            case "/checkout":
+                require_once("controllers/PaymentController.php");
+                $ticketController = new PaymentController();
+                $ticketController->submitPaymentToMollie();
+                break;
+            case "/payment-success":
+                require_once("views/payment-funnel/paymentSuccess.php");
                 break;
             default:
                 $this->route404($message);
@@ -266,6 +284,14 @@ class Router
         } elseif (str_starts_with($request, "/api/orders")) {
             require_once("controllers/APIControllers/PaymentFunnel/OrderAPIController.php");
             $controller = new OrderAPIController();
+        } elseif (str_starts_with($request, "/api/foodfestival")) {
+            require_once("controllers/APIControllers/YummyController.php");
+            $controller = new FoodFestivalController();
+        } elseif (str_starts_with($request, "/api/restaurants")) {
+            require_once("controllers/APIControllers/RestaurantsAPIController.php");
+            $controller = new RestaurantApiController();
+            $controller->handleGetRequest();
+            return;
         } else {
             http_response_code(400);
             // send json
@@ -338,7 +364,8 @@ class Router
             return;
         }
 
-        require_once("models/User.php");
+        require_once(__DIR__ . "/models/User.php");
+        require_once(__DIR__ . "/models/Customer.php");
         $user = unserialize($_SESSION['user']);
 
         if ($user->getUserType() > 2) {

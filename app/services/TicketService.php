@@ -135,7 +135,7 @@ class TicketService
   public function getAllTicketsAndSend(Order $order)
   {
     try {
-      //         // get all history, jazz tickets (for now, later we will get all tickets for yummy and dance)
+      // get all history, jazz tickets (for now, later we will get all tickets for yummy and dance)
       $tickets = array_merge(
         $this->getAllHistoryTickets($order),
         $this->getAllJazzTickets($order)
@@ -155,8 +155,6 @@ class TicketService
       throw ($ex);
     }
   }
-
-
 
   public function sendTicketByEmail(Dompdf $dompdf, Order $order)
   {
@@ -182,7 +180,7 @@ class TicketService
 
       $mail->addAddress($order->getCustomer()->getEmail(), $name);
       //Debugging
-      // $mail->addAddress("turkvedat0911@gmail.com", $name);
+      //$mail->addAddress("turkvedat0911@gmail.com", $name);
       foreach ($order->getTickets() as $ticket) {
         $pdfContents = $dompdf->output();
         $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');

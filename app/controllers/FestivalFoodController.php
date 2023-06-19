@@ -15,5 +15,11 @@ class FestivalFoodController
             echo $e->getMessage();
         }
     }
+    public function addRestaurant(){
+
+    }
+    public function addSession(){
+
+    }
 }
 ?>

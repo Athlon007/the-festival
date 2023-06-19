@@ -148,7 +148,7 @@ class EventAPIController extends APIController
                 $eventType = $this->eventTypeService->getById($data['event']['eventType']['id']);
 
                 $event = new MusicEvent(
-                    $data['event']['id'],
+                    0,
                     $data['event']['name'],
                     new DateTime($data['event']['startTime']),
                     new DateTime($data['event']['endTime']),

@@ -21,27 +21,28 @@ class OrderController
 
     public function showShoppingCart()
     {
-        $fullPrice = 0;
         $hasStuffInCart = false;
+        $cartOrder = null;
+        $shareMode = false;
+        $isLoggedIn = isset($_SESSION['user']);
+
+        $isCustomer = false;
+        if ($isLoggedIn) {
+            $user = unserialize($_SESSION['user']);
+            $isCustomer = $user->getUserType() == 3;
+        }
+
         try {
             // http://localhost/shopping-cart?id=16
             // Check if "id" is set in the URL query string
             // if so, other user is trying to share their cart with you
-
-            $cartOrder = null;
-            $shareMode = false;
             if (isset($_GET["id"])) {
                 $cartOrder = $this->cartService->getCartByOrderId($_GET["id"]);
                 $shareMode = true;
             } else {
                 $cartOrder = $this->cartService->getCart();
-            }
-
-            if ($cartOrder) {
-                $orderItems = $cartOrder->getOrderItems();
-                foreach ($orderItems as $orderItem) {
+                if ($cartOrder->getTotalItemCount() > 0) {
                     $hasStuffInCart = true;
-                    $fullPrice += $orderItem->getTotalFullPrice();
                 }
             }
         } catch (Throwable $e) {
@@ -148,7 +149,6 @@ class OrderController
             echo "<script>alert('Invoice has been sent to your email!')</script>";
 
             require_once('../views/payment-funnel/order-history.php');
-
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
@@ -179,5 +179,4 @@ class OrderController
 
         require_once('../views/payment-funnel/order-history.php');
     }
-
 }

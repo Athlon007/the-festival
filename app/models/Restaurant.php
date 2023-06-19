@@ -8,12 +8,9 @@ class Restaurant implements JsonSerializable{
 protected int $restaurantId;
 protected String $restaurantName;
 protected int $addressId;
-protected int $numOfSessions;
-protected string $durationOfSessions;
-protected int $availableSeats;
 protected string $description;
 protected string $price;
-protected RestaurantType $typeId;
+protected int $typeId;
 protected int $rating;
 
 /**
@@ -26,9 +23,6 @@ public function jsonSerialize() : mixed
         'restaurantId' => $this->restaurantId,
         'restaurantName' => $this->restaurantName,
         'addressId' => $this->addressId,
-        'numOfSessions' => $this->numOfSessions,
-        'durationOfSessions' => $this->durationOfSessions,
-        'availableSeats' => $this->availableSeats,
         'description' => $this->description,
         'price' => $this->price,
         'typeid' => $this->typeId,

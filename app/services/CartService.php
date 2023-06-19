@@ -2,9 +2,10 @@
 
 require_once(__DIR__ . '/../models/Exceptions/EventSoldOutException.php');
 require_once(__DIR__ . '/../models/Exceptions/CartException.php');
+require_once(__DIR__ . '/../models/Exceptions/AuthenticationException.php');
 require_once('OrderService.php');
 require_once('CustomerService.php');
-
+require_once('MollieService.php');
 
 /**
  * Handles the cart session and uses OrderService to communicate with the database.
@@ -14,16 +15,34 @@ class CartService
 {
     private $orderService;
     private $customerService;
+    private $mollieService;
 
     public function __construct()
     {
         $this->orderService = new OrderService();
         $this->customerService = new CustomerService();
+        $this->mollieService = new MollieService();
+    }
+
+    /**
+     * Checks if cart is initialised
+     * @return bool
+     */
+    private function cartIsInitialised(): bool
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        //Check if the cart is initialised.
+        return (isset($_SESSION["cartId"]));
     }
 
     /**
      * Is called to create a new cart order if there is none in session when it's required to be.
+     * @param $ticketLinkId
      * @return Order
+     * @throws CartException
      */
     private function initialiseCart($ticketLinkId): Order
     {
@@ -48,7 +67,6 @@ class CartService
         } else
             $order = $this->orderService->createOrder($ticketLinkId);
 
-
         $_SESSION["cartId"] = $order->getOrderId();
         return $order;
     }
@@ -56,6 +74,7 @@ class CartService
     /**
      * Gets the cart from the session.
      * @return Order
+     * @throws CartException
      */
     public function getCart(): Order
     {
@@ -69,22 +88,11 @@ class CartService
     }
 
     /**
-     * Used when sharing a cart with another user.
-     * @param $orderId The ID of the order to get.
-     * @return Order
-     */
-    public function getCartByOrderId($orderId): Order
-    {
-        return $this->orderService->getOrderById($orderId);
-    }
-
-    /**
      * Gets the total item count from the session.
-     * @return Order
+     * @return int
      */
     public function getCount(): int
     {
-
         if (!$this->cartIsInitialised()) {
             return 0;
         } else {
@@ -95,12 +103,22 @@ class CartService
         }
     }
 
-    // (╯°□°)╯︵ ┻━┻
+    /**
+     * Used when sharing a cart with another user.
+     * @param $orderId
+     * @return Order
+     */
+    public function getCartByOrderId($orderId): Order
+    {
+        return $this->orderService->getOrderById($orderId);
+    }
 
     /**
      * Adds one item to the cart.
-     * @param $ticketLinkId The ID of the ticketlink to add.
+     * @param $ticketLinkId
+     * The ID of the ticketlink to add.
      * @return Order
+     * @throws CartException
      */
     public function addItem($ticketLinkId): Order
     {
@@ -132,9 +150,10 @@ class CartService
 
     /**
      * Removes one item from the cart.
-     * @param $ticketLinkId The ID of the item to remove.
+     * @param $ticketLinkId
+     * The ID of the item to remove.
      * @return Order returns the order object.
-     * @author Joshua
+     * @throws CartException
      */
     public function removeItem($ticketLinkId): Order
     {
@@ -160,31 +179,57 @@ class CartService
         return $order;
     }
 
-    public function checkoutCart()
+    /**
+     * Removes the whole order item from the cart.
+     * @param $ticketLinkId
+     * The ID of the item to remove.
+     * @return Order returns the order object.
+     * @throws ObjectNotFoundException | CartException
+     */
+    public function deleteWholeItem($ticketLinkId): Order
     {
-        //Retrieve the order that is in cart from the db.
-        $cartOrder = $this->getCart();
-        $cartOrder->setIsPaid(true);
-        $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
+        //Get order from the cart
+        $order = $this->getCart();
+
+        //Find the order item that contains the ticket link
+        foreach ($order->getOrderItems() as $orderItem) {
+            //Delete the order item from the database and from the order, return order
+            if ($orderItem->getTicketLinkId() == $ticketLinkId) {
+                $this->orderService->deleteOrderItem($orderItem->getOrderItemId());
+                $order->removeOrderItem($orderItem);
+                return $order;
+            }
+        }
+        //If the order item was not found, throw an exception
+        throw new ObjectNotFoundException("Specified item not found.");
     }
 
-    public function getCartAfterLogin($customerId)
+    /**
+     * @param $customerId
+     * @return void
+     */
+    public function getCartAfterLogin($customer): void
     {
-        $this->cartIsInitialised();
+        //Fetch
+        $customerOrder = $this->orderService->getCartOrderForCustomer($customer->getUserId());
 
-        $customerOrder = $this->orderService->getCartOrderForCustomer($customerId);
-
-        if (!$customerOrder) {
-            //If there is no cart order saved for the customer, then this method has no further purpose.
+        //If there is no cart order saved for the customer,
+        // but there is a cart in session,
+        // we link the cart to the customer.
+        if (!$customerOrder && $this->cartIsInitialised()) {
+            $order = $this->getCart();
+            $order->setCustomer($customer);
+            $this->orderService->updateOrder($order->getOrderId(), $order);
             return;
         }
 
+        //If there is no cart order saved for the customer and in the session, return
+        if (!$customerOrder && !$this->cartIsInitialised()) {
+            return;
+        }
 
-        //Check if there is an active cart in session.
-        // KONRAD: Also make sure that the cart in session is not the same as the one that is saved in the database.
-        //         Otherwise you will double all the items in the cart.
-        if (isset($_SESSION["cartId"]) && $_SESSION["cartId"] != $customerOrder->getOrderId()) {
-            //If so, then we have to merge the two orders. The one that is in session and the one that the customer saved in the database during an earlier visit.
+        //If there is already a cart in session and the logged-in user has another cart in db, we merge the carts
+        if ($this->cartIsInitialised() && ($_SESSION["cartId"] != $customerOrder->getOrderId())) {
 
             $sessionOrder = $this->orderService->getOrderById($_SESSION["cartId"]);
             $mergedOrder = $this->orderService->mergeOrders($customerOrder, $sessionOrder);
@@ -197,13 +242,88 @@ class CartService
         $_SESSION["cartId"] = $customerOrder->getOrderId();
     }
 
-    private function cartIsInitialised(): bool
+    /**
+     * @return Order
+     * @throws CartException | \Mollie\Api\Exceptions\ApiException
+     */
+    public function checkoutCart($paymentMethod): string
+    {
+        $cartOrder = $this->checkValidCheckout();
+
+        //Call mollie service for payment (either throws exception or returns void)
+        $paymentUrl = $this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId(), $paymentMethod);
+        return $paymentUrl;
+    }
+
+    public function checkIfPaid()
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
 
-        //Check if the cart is initialised.
-        return (isset($_SESSION["cartId"]));
+        if (!isset($_SESSION['payment_id'])) {
+            throw new CartException("Payment not started.");
+        }
+
+        // Get payment ID from session.
+        $paymentId = $_SESSION['payment_id'];
+        $cartOrder = $this->checkValidCheckout();
+
+        $payment = $this->mollieService->getPayment($paymentId);
+
+        if (!$payment->isPaid()) {
+            throw new CartException("Payment not completed.");
+        }
+
+        $cartOrder->setIsPaid(true);
+        $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
+
+        //Remove the cart from the session
+        unset($_SESSION["cartId"]);
+
+        //Call invoice mailing (either throws exception or returns void)
+        $this->orderService->sendTicketsAndInvoice($cartOrder);
+        return $cartOrder;
+    }
+
+    /**
+     * Fetches the cart order from db and the validates the checkout values.
+     * @return Order
+     * @throws AuthenticationException
+     * @throws CartException
+     */
+    private function checkValidCheckout(): Order
+    {
+        //Cart must be initialised
+        if (!$this->cartIsInitialised())
+            throw new CartException("Cart not initialised.");
+
+        //Fetch order from db
+        $cartOrder = $this->getCart();
+
+        //Order must not be paid already
+        if ($cartOrder->getIsPaid())
+            throw new CartException("Cart already paid.");
+
+        //Order must not be empty
+        if ($cartOrder->getOrderItems() == null)
+            throw new CartException("Cart is empty.");
+
+        //A user must be logged in
+        if (!isset($_SESSION["user"]))
+            throw new AuthenticationException("User not logged in.");
+
+        //Fetch user from session
+        $user = unserialize($_SESSION["user"]);
+
+        //The user must be a customer
+        if (!$user instanceof Customer)
+            throw new AuthenticationException("Only customers are allowed to check out.");
+
+        //The customer must be owner of the cart
+        if ($user->getUserId() != $this->getCart()->getCustomer()->getUserId())
+            throw new AuthenticationException("Only the owner of the cart is authorised to checkout.");
+
+        return $cartOrder;
     }
 }

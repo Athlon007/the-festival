@@ -5,11 +5,17 @@ require_once(__DIR__ . '/../repositories/Repository.php');
 class RestaurantRepository extends Repository
 {
 
-    public function getAllRestaurants()
+    public function getAllRestaurants($date = null)
     {
         try {
-            $query = "SELECT * FROM restaurants";
-            $stmt = $this->connection->prepare($query);
+            if ($date) {
+                $query = "SELECT * FROM restaurants as r WHERE r.date = :date ";
+                $stmt = $this->connection->prepare($query);
+                $stmt->bindValue(':date', $date);
+            } else{
+                $query = "SELECT * FROM restaurants";
+                $stmt = $this->connection->prepare($query);
+            }
             $stmt->execute();
             $stmt->setFetchMode(PDO::FETCH_CLASS, 'Restaurant');
 

@@ -102,13 +102,13 @@ class OrderItem implements JsonSerializable
     //Calculated getters
     //
     //Get base price for one
-    public function getBasePrice()
+    public function getBasePrice() : float
     {
         return round($this->fullTicketPrice / (1 + $this->vatPercentage), 2, PHP_ROUND_HALF_UP);
     }
 
     //Get VAT amount for one
-    public function getVatAmount()
+    public function getVatAmount() : float
     {
         return round($this->vatPercentage * $this->getBasePrice(), 2, PHP_ROUND_HALF_UP);
     }

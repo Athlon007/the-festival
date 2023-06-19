@@ -21,3 +21,20 @@ http://haarlem.kfigura.nl/
 - Konrad Figura (680886)
 - Roby Trierweiler (682474)
 - Vedat Türk (683343)
+
+## Login Credentials
+
+### Admin
+
+- E-mail: aathlon@outlook.com
+- Password: Password1
+
+### Employee
+
+- E-mail: demoemployee@example.com
+- Password: Password1
+
+### Client
+
+- E-mail: mail@example.com
+- Password: Password1

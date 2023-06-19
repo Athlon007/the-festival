@@ -44,7 +44,7 @@
     <p>Please find attached a PDF of your invoice for your order.
     </p>
 
-    <p>Best regards,</p>
+    <p>Kind regards,</p>
     <p>The Festival Team</p>
 </body>
 
