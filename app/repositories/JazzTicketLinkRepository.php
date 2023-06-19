@@ -17,7 +17,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
         require_once(__DIR__ . "/../models/Music/Artist.php");
         require_once(__DIR__ . "/../models/Music/ArtistKind.php");
         require_once(__DIR__ . '/ImageRepository.php');
-        require_once(__DIR__ . "/../models/Music/MusicEvent.php");
+        require_once(__DIR__ . "/../models/Music/JazzEvent.php");
         require_once(__DIR__ . "/../models/TicketLink.php");
 
         $imageRepository = new ImageRepository();
@@ -73,7 +73,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
                 $artistKind
             );
 
-            $event = new MusicEvent(
+            $event = new JazzEvent(
                 $item['eventId'],
                 htmlspecialchars_decode($item['eventName']),
                 new DateTime($item['startTime']),
