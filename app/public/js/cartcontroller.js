@@ -97,8 +97,7 @@ function checkout(){
         showErrorPopup("Please select a payment method before checking out.");
         return;
     }
-        
-        
+
     Cart.Checkout(paymentMethod)
         .then(data => {
             hideErrorPopup();
@@ -108,16 +107,32 @@ function checkout(){
         .catch(error => {
 
             console.log(error);
-            showErrorPopup(error.message);
+            showErrorPopup(error.data.error_message);
         });
-    
 }
 
 function showErrorPopup(message) {
-    errorPopup.innerHTML = message;
-    errorPopup.classList.remove('d-none');
+    popup.innerHTML = message;
+    popup.classList.add('alert-warning');
+    popup.classList.remove('d-none');
+
+    setTimeout(function(){
+        hideErrorPopup();
+    }, 10000);
+
+}
+
+function showSuccessPopup(message) {
+    popup.innerHTML = message;
+    popup.classList.add('alert-success');
+    popup.classList.remove('d-none');
+
+    setTimeout(function(){
+        hideErrorPopup();
+    }, 10000);
+
 }
 
 function hideErrorPopup() {
-    errorPopup.classList.add('d-none');
+    popup.classList.add('d-none');
 }

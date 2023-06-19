@@ -25,7 +25,7 @@
                 <div class="col-10">
                     <h2 class="mb-5 mt-5">Shopping Cart</h2>
                     <!--Pop-up message-->
-                    <div id="popup" class="d-none"></div>
+                    <div id="popup" class="alert d-none"></div>
                     <div class="row">
 
                         <!-- Cart disclaimer in case there's nothing -->
@@ -51,7 +51,7 @@
                                         </div>
                                         <div class="card-body" style="width: 100%">
                                             <h6 class="card-subtitle">
-                                                Price per ticket: &euro; <?= number_format($orderItem->getFullTicketPrice(), 2, '.'); ?>
+                                                Price per ticket: <strong>&euro; <?= number_format($orderItem->getFullTicketPrice(), 2, '.'); ?></strong>
                                                 (&euro; <?= number_format($orderItem->getBasePrice(), 2, '.'); ?>
                                                 + &euro; <?= number_format($orderItem->getVatAmount(), 2, '.'); ?> VAT)
                                             </h6>

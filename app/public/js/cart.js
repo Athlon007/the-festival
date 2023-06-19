@@ -130,13 +130,14 @@
 
     //Checks out the cart
     Cart.Checkout = function (paymentMethod) {
+        console.log(paymentMethod);
         return new Promise((resolve, reject) => {
             fetch(apiUrl + '/checkout',
                 {
                     method: 'POST',
-                    data:{
-                        paymentMethod: paymentMethod
-                    }
+                    body: JSON.stringify({
+                        "paymentMethod": paymentMethod
+                    }),
                 }).then(response => response.json())
                 .then(data => {
                         Cart.UpdateCounter();

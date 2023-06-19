@@ -239,7 +239,7 @@ class CartService
      * @return Order
      * @throws CartException | \Mollie\Api\Exceptions\ApiException
      */
-    public function checkoutCart(): Order
+    public function checkoutCart($paymentMethod): Order
     {
         if (!isset($_SESSION['user'])) {
             throw new AuthenticationException("User is not logged in.");
@@ -249,7 +249,7 @@ class CartService
         $cartOrder = $this->getCart();
 
         //Call mollie service for payment (either throws exception or returns void)
-        $this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId());
+        $this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId(), $paymentMethod);
 
         $cartOrder->setIsPaid(true);
         $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
