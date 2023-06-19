@@ -24,10 +24,10 @@ for (let counter of cartCounterSpans) {
         Cart.Add(id);
 
         const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
-        cartItemTotalPrice.innerHTML = "&euro; " + parseFloat(((count + 1) * unitPrice)).toFixed(0);
+        cartItemTotalPrice.innerHTML = "&euro; " + parseFloat(((count + 1) * unitPrice)).toFixed(2);
 
         const totalAmount = parseFloat(total.innerHTML.split('€')[1]);
-        total.innerHTML = "Total price: &euro; " + (totalAmount + unitPrice);
+        total.innerHTML = "Total price: &euro; " + (totalAmount + unitPrice).toFixed(2);
     });
 
     btnRemove.addEventListener('click', function () {
@@ -36,10 +36,10 @@ for (let counter of cartCounterSpans) {
         Cart.Remove(id);
 
         const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
-        cartItemTotalPrice.innerHTML = "&euro; " + ((count - 1) * unitPrice);
+        cartItemTotalPrice.innerHTML = "&euro; " + ((count - 1) * unitPrice).toFixed(2);
 
         const totalAmount = parseFloat(total.innerHTML.split('€')[1]);
-        total.innerHTML = "Total price: &euro; " + (totalAmount - unitPrice);
+        total.innerHTML = "Total price: &euro; " + (totalAmount - unitPrice).toFixed(2);
 
         if (count - 1 <= 0) {
             // remove the div.
@@ -53,7 +53,7 @@ for (let counter of cartCounterSpans) {
         const count = parseInt(counter.innerHTML);
         const unitPrice = parseFloat(cartItemUnitPrice.innerHTML);
         const totalAmount = parseFloat(total.innerHTML.split('€')[1]);
-        total.innerHTML = "Total price: &euro; " + (totalAmount - (count * unitPrice));
+        total.innerHTML = "Total price: &euro; " + (totalAmount - (count * unitPrice)).toFixed(2);
 
         //Call the delete api method
         Cart.Delete(id);
@@ -62,10 +62,6 @@ for (let counter of cartCounterSpans) {
         const div = document.getElementById('cart-item-' + id);
         div.parentNode.removeChild(div);
     });
-}
-
-function loadCart(isLoggedIn){
-
 }
 
 // Get hostname.
@@ -92,17 +88,16 @@ function checkout(){
     let paymentMethod;
 
     if(idealRadButton.checked)
-        paymentMethod = "Ideal";
+        paymentMethod = "ideal";
     else if(cardRadButton.checked)
-        paymentMethod = "Card";
+        paymentMethod = "card";
     else if(klarnaRadButton.checked)
-        paymentMethod = "Klarna";
+        paymentMethod = "klarna";
     else{
         showErrorPopup("Please select a payment method before checking out.");
         return;
     }
-        
-        
+
     Cart.Checkout(paymentMethod)
         .then(data => {
             hideErrorPopup();
@@ -112,16 +107,32 @@ function checkout(){
         .catch(error => {
 
             console.log(error);
-            showErrorPopup(error.message);
+            showErrorPopup(error.data.error_message);
         });
-    
 }
 
 function showErrorPopup(message) {
-    errorPopup.innerHTML = message;
-    errorPopup.classList.remove('d-none');
+    popup.innerHTML = message;
+    popup.classList.add('alert-warning');
+    popup.classList.remove('d-none');
+
+    setTimeout(function(){
+        hideErrorPopup();
+    }, 10000);
+
+}
+
+function showSuccessPopup(message) {
+    popup.innerHTML = message;
+    popup.classList.add('alert-success');
+    popup.classList.remove('d-none');
+
+    setTimeout(function(){
+        hideErrorPopup();
+    }, 10000);
+
 }
 
 function hideErrorPopup() {
-    errorPopup.classList.add('d-none');
+    popup.classList.add('d-none');
 }

@@ -57,9 +57,9 @@ class CartAPIController extends APIController
             }
             ///api/cart/checkout POST method - checks out the cart
             else if (str_starts_with($uri, "/api/cart/checkout")) {
-                $paymentMethod = getPaymentMethodFromPost();
-                $cartOrder = $this->cartService->checkoutCart();
-                parent::sendResponse($cartOrder);
+                $paymentMethod = $this->getPaymentMethodFromPost();
+                $cartOrder = $this->cartService->checkoutCart($paymentMethod);
+                parent::sendSuccessMessage("Your cart has been successfully checked out.", 200);
                 return;
             } else {
                 throw new Exception("Bad request.", 400);
@@ -99,8 +99,8 @@ class CartAPIController extends APIController
         $json = file_get_contents('php://input');
         $data = json_decode($json);
 
-        if (!isset($data["paymentMethod"]))
+        if (!isset($data->paymentMethod))
             throw new MissingVariableException("Payment method not specified.", 400);
-        return $data["paymentMethod"];
+        return $data->paymentMethod;
     }
 }

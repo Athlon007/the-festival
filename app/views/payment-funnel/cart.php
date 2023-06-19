@@ -25,7 +25,7 @@
                 <div class="col-10">
                     <h2 class="mb-5 mt-5">Shopping Cart</h2>
                     <!--Pop-up message-->
-                    <div id="popup" class="d-none"></div>
+                    <div id="popup" class="alert d-none"></div>
                     <div class="row">
 
                         <!-- Cart disclaimer in case there's nothing -->
@@ -51,9 +51,9 @@
                                         </div>
                                         <div class="card-body" style="width: 100%">
                                             <h6 class="card-subtitle">
-                                                Price per ticket: &euro; <?= $orderItem->getFullTicketPrice() ?>
-                                                (&euro; <?= $orderItem->getBasePrice() ?> + &euro;
-                                                <?= $orderItem->getVatAmount() ?> VAT)
+                                                Price per ticket: <strong>&euro; <?= number_format($orderItem->getFullTicketPrice(), 2, '.'); ?></strong>
+                                                (&euro; <?= number_format($orderItem->getBasePrice(), 2, '.'); ?>
+                                                + &euro; <?= number_format($orderItem->getVatAmount(), 2, '.'); ?> VAT)
                                             </h6>
                                         </div>
                                         <br>
@@ -74,10 +74,10 @@
                                                         style="width: 20%">DELETE</button>
                                             <?php } ?>
                                             <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end">
-                                                <?= $orderItem->getBasePrice() + $orderItem->getVatAmount() ?>
+                                                <?= $orderItem->getFullTicketPrice() ?>
                                             </span>
                                             <span id="cart-item-total-price-<?= $id ?>" class="price float-end">
-                                                &euro; <?= $orderItem->getTotalFullPrice() ?>
+                                                &euro; <?= number_format($orderItem->getTotalFullPrice(), 2, '.'); ?>
                                             </span>
                                         </div>
                                         <br>
@@ -107,7 +107,7 @@
                     <?php if ($hasStuffInCart) {
                         ?>
                         <h4 id="total">Total price: &euro;
-                            <?= $cartOrder->getTotalPrice(); ?>
+                            <?= number_format($cartOrder->getTotalPrice(), 2, '.'); ?>
                         </h4>
                         <?php if (!$shareMode) { ?>
                             <button class="btn btn-primary <?php if (!$isLoggedIn) echo "disabled"; ?> " onclick="checkout()">Check out</button>

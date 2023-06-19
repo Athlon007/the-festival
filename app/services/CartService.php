@@ -207,14 +207,18 @@ class CartService
      * @param $customerId
      * @return void
      */
-    public function getCartAfterLogin($customerId): void
+    public function getCartAfterLogin($customer): void
     {
         //Fetch
-        $customerOrder = $this->orderService->getCartOrderForCustomer($customerId);
+        $customerOrder = $this->orderService->getCartOrderForCustomer($customer->getUserId());
 
-        if (!$customerOrder) {
-            //If there is no cart order saved for the customer, then this method has no further purpose.
-            return;
+        //If there is no cart order saved for the customer,
+        // but there is a cart in session,
+        // we link the cart to the customer.
+        if (!$customerOrder && $this->cartIsInitialised()) {
+            $order = $this->getCart();
+            $order->setCustomer($customer);
+            $this->orderService->updateOrder($order->getOrderId(), $order);
         }
 
         //If there is already a cart in session and the logged-in user has another cart in db, we merge the carts
@@ -235,17 +239,13 @@ class CartService
      * @return Order
      * @throws CartException | \Mollie\Api\Exceptions\ApiException
      */
-    public function checkoutCart(): Order
+    public function checkoutCart($paymentMethod): Order
     {
-        if (!isset($_SESSION['user'])) {
-            throw new AuthenticationException("User is not logged in.");
-        }
-
-        //Retrieve the order that is in cart from the db.
-        $cartOrder = $this->getCart();
+        $cartOrder = $this->checkValidCheckout();
 
         //Call mollie service for payment (either throws exception or returns void)
-        $this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId());
+        //TODO: Uncomment after debugging
+        //$this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId(), $paymentMethod);
 
         $cartOrder->setIsPaid(true);
         $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
@@ -255,6 +255,46 @@ class CartService
 
         //Call ticket and invoice mailing (either throws exception or returns void)
         $this->orderService->sendTicketsAndInvoice($cartOrder);
+        return $cartOrder;
+    }
+
+    /**
+     * Fetches the cart order from db and the validates the checkout values.
+     * @return Order
+     * @throws AuthenticationException
+     * @throws CartException
+     */
+    private function checkValidCheckout() : Order {
+        //Cart must be initialised
+        if (!$this->cartIsInitialised())
+            throw new CartException("Cart not initialised.");
+
+        //Fetch order from db
+        $cartOrder = $this->getCart();
+
+        //Order must not be paid already
+        if ($cartOrder->getIsPaid())
+            throw new CartException("Cart already paid.");
+
+        //Order must not be empty
+        if ($cartOrder->getOrderItems() == null)
+            throw new CartException("Cart is empty.");
+
+        //A user must be logged in
+        if (!isset($_SESSION["user"]))
+            throw new AuthenticationException("User not logged in.");
+
+        //Fetch user from session
+        $user = unserialize($_SESSION["user"]);
+
+        //The user must be a customer
+        if (!$user instanceof Customer)
+            throw new AuthenticationException("Only customers are allowed to check out.");
+
+        //The customer must be owner of the cart
+        if ($user->getUserId() != $this->getCart()->getCustomer()->getUserId())
+            throw new AuthenticationException("Only the owner of the cart is authorised to checkout.");
+
         return $cartOrder;
     }
 
