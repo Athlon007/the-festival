@@ -117,6 +117,10 @@ class TicketLinkRepository extends Repository
         return $output[0];
     }
 
+    /**
+     * @param $id
+     * @return TicketLink|null
+     */
     public function getByEventId($id): ?TicketLink
     {
         $sql = "SELECT e.eventId,

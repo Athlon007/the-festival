@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Added GetDanceLineUp to artist repo">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="GetById">
       <change beforePath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/repositories/TicketLinkRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/TicketLinkRepository.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -248,7 +248,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687280819544</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="GetById">
+      <created>1687298649417</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1687298649417</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -266,7 +273,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added sendTicketsAndInvoice method to OrderService" />
     <MESSAGE value="Something causes stack overflow? Commented out invoice service and ticket controller from OrderService" />
     <MESSAGE value="Delete orderitem function working, working on checkout bug" />
     <MESSAGE value="Disabled buttons when not logged in" />
@@ -291,6 +297,7 @@
     <MESSAGE value="Improved soc in eventRepo, added basis for getById" />
     <MESSAGE value="Insert dance event and insert lineup" />
     <MESSAGE value="Added GetDanceLineUp to artist repo" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added GetDanceLineUp to artist repo" />
+    <MESSAGE value="GetById" />
+    <option name="LAST_COMMIT_MESSAGE" value="GetById" />
   </component>
 </project>
