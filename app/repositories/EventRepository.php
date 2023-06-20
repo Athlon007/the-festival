@@ -21,7 +21,10 @@ class EventRepository extends Repository
                 $events[] = $this->getJazzEventById($event['eventId']);
             } elseif ($this->isInHistoryEvents($event['eventId'])) {
                 $events[] = $this->getHistoryEventById($event['eventId']);
-            } else {
+            } elseif($this->isInDanceEvents($event['eventId'])) {
+                $events[] = $this->getDanceEventById($event['eventId']);
+            }
+            else {
                 $eventEntry = new Event();
                 $eventEntry->setId($event['eventId']);
                 $eventEntry->setName($event['name']);
@@ -63,6 +66,10 @@ class EventRepository extends Repository
         return $events;
     }
 
+    /**
+     * @throws ObjectNotFoundException
+     * @throws Exception
+     */
     private function buildDanceEvent($arr): array
     {
         $events = [];
@@ -175,7 +182,7 @@ class EventRepository extends Repository
     }
 
     // JAZZ
-    public function isInJazzEvents($id)
+    private function isInJazzEvents($id)
     {
         $sql = "SELECT eventId FROM jazzevents WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
@@ -185,7 +192,7 @@ class EventRepository extends Repository
     }
 
     // HISTORY
-    public function isInHistoryEvents($id)
+    private function isInHistoryEvents($id)
     {
         $sql = "SELECT eventId FROM historyevents WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
@@ -194,7 +201,8 @@ class EventRepository extends Repository
         return count($arr) > 0;
     }
 
-    public function isInDanceEvents($id){
+    // DANCE
+    private function isInDanceEvents($id){
         $sql = "SELECT eventId FROM danceevents WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(['id' => $id]);
@@ -323,8 +331,15 @@ class EventRepository extends Repository
 
     public function getDanceEventById(int $id) : ?DanceEvent {
 
-        //TODO: Change
-        return null;
+        $sql = "SELECT d.eventId, d.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets 
+                FROM danceevents d 
+                JOIN events e ON e.eventId = d.eventId 
+                WHERE d.eventId = :id ";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+        $arr = $stmt->fetchAll();
+        return $this->buildDanceEvent($arr)[0];
     }
 
     private function getDanceLineUp() : array {
