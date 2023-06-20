@@ -112,9 +112,7 @@ btnSubmit.onclick = function () {
             locationId: locationSelect.value,
             eventTypeId: 4
         },
-        ticketType: {
-            id: ticketType.value,
-        }
+        ticketTypeId: ticketType.value
     };
 
     // disable the editor.
