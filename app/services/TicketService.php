@@ -187,7 +187,7 @@ class TicketService
         $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');
       }
 
-      if ($mail->send()) {
+      if (!$mail->send()) {
         throw new Exception("Email could not be sent");
       }
     } catch (Exception $ex) {

@@ -1,5 +1,6 @@
 <?php
 require_once("../repositories/PageRepository.php");
+require_once("../repositories/ImageRepository.php");
 require_once("../models/Exceptions/PageNotFoundException.php");
 require_once("../models/Exceptions/FileDoesNotExistException.php");
 
@@ -9,10 +10,12 @@ require_once("../models/Exceptions/FileDoesNotExistException.php");
 class PageService
 {
     private $repo;
+    private $imageRepo;
 
     public function __construct()
     {
         $this->repo = new PageRepository();
+        $this->imageRepo = new ImageRepository();
     }
 
     /**
@@ -21,7 +24,12 @@ class PageService
      */
     public function getAll(): array
     {
-        return $this->repo->getAll();
+        $pages = $this->repo->getAll();
+        foreach ($pages as $page) {
+            $page->setImages($this->imageRepo->getImagesForPageId($page->getId()));
+        }
+
+        return $pages;
     }
 
     /**
@@ -60,6 +68,8 @@ class PageService
             }
         }
 
+        $page->setImages($this->imageRepo->getImagesForPageId($page->getId()));
+
         return $page;
     }
 
@@ -90,13 +100,19 @@ class PageService
             }
         }
 
+        $page->setImages($this->imageRepo->getImagesForPageId($page->getId()));
+
 
         return $page;
     }
 
     public function getAllTextPages(): array
     {
-        return $this->repo->getAllTextPages();
+        $pages = $this->repo->getAllTextPages();
+        foreach ($pages as $page) {
+            $page->setImages($this->imageRepo->getImagesForPageId($page->getId()));
+        }
+        return $pages;
     }
 
     public function updateTextPage($id, $title, $content, $images, $href)
@@ -131,6 +147,8 @@ class PageService
         if ($page == null) {
             throw new PageNotFoundException("Page with ID '$id' was not found.");
         }
+
+        $page->setImages($this->imageRepo->getImagesForPageId($page->getId()));
 
         return $page;
     }

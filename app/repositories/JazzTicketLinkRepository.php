@@ -16,11 +16,9 @@ class JazzTicketLinkRepository extends TicketLinkRepository
         require_once(__DIR__ . "/../models/Types/EventType.php");
         require_once(__DIR__ . "/../models/Music/Artist.php");
         require_once(__DIR__ . "/../models/Music/ArtistKind.php");
-        require_once(__DIR__ . '/ImageRepository.php');
         require_once(__DIR__ . "/../models/Music/JazzEvent.php");
         require_once(__DIR__ . "/../models/TicketLink.php");
 
-        $imageRepository = new ImageRepository();
         $output = array();
         foreach ($arr as $item) {
             $address = new Address();
@@ -31,16 +29,16 @@ class JazzTicketLinkRepository extends TicketLinkRepository
             $address->setCity($item['addressCity']);
             $address->setCountry($item['addressCountry']);
 
-            $location = new Location(
-                $item['locationId'],
-                $item['locationName'],
-                $address,
-                $item['locationType'],
-                $item['locationLon'],
-                $item['locationLat'],
-                $item['locationCapacity'],
-                $item['locationDescription']
-            );
+            $location = new Location();
+            $location->setLocationId($item['locationId']);
+            $location->setName($item['locationName']);
+            $location->setAddress($address);
+            $location->setLocationType($item['locationType']);
+            $location->setLon($item['locationLon']);
+            $location->setLat($item['locationLat']);
+            $location->setCapacity($item['locationCapacity']);
+            $location->setDescription($item['locationDescription']);
+
             $ticketType = new TicketType(
                 $item['ticketTypeId'],
                 $item['ticketTypeName'],
@@ -52,7 +50,6 @@ class JazzTicketLinkRepository extends TicketLinkRepository
                 $item['eventTypeName'],
                 $item['evenTypeVat']
             );
-            $images = $imageRepository->getImagesForArtistId($item['artistId']);
             $artistKind = new ArtistKind(
                 $item['artistKindId'],
                 $item['artistKindName']
@@ -61,7 +58,7 @@ class JazzTicketLinkRepository extends TicketLinkRepository
                 $item['artistId'],
                 htmlspecialchars_decode($item['artistName']),
                 htmlspecialchars_decode($this->readIfSet($item['artistDescription'])),
-                $images,
+                array(),
                 $this->readIfSet($item['artistCountry']),
                 $this->readIfSet($item['artistGenres']),
                 $this->readIfSet($item['artistHomepage']),

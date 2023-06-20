@@ -3,6 +3,7 @@
 require_once(__DIR__ . "/../repositories/ArtistRepository.php");
 require_once("ImageService.php");
 require_once(__DIR__ . "/../models/Exceptions/InvalidVariableException.php");
+require_once(__DIR__ . "/../repositories/ImageRepository.php");
 
 /**
  * @author Konrad
@@ -10,21 +11,29 @@ require_once(__DIR__ . "/../models/Exceptions/InvalidVariableException.php");
 class ArtistService
 {
     private $repo;
+    private $imageRepository;
 
     public function __construct()
     {
         $this->repo = new ArtistRepository();
+        $this->imageRepository = new ImageRepository();
     }
 
     public function getAll($sort, $filters): array
     {
-        return $this->repo->getAll($sort, $filters);
+        $artists = $this->repo->getAll($sort, $filters);
+        foreach ($artists as $artist) {
+            $artist->setImages($this->imageRepository->getImagesForArtistId($artist->getId()));
+        }
+        return $artists;
     }
 
     public function getById($id): ?Artist
     {
         $id = htmlspecialchars($id);
-        return $this->repo->getById($id);
+        $artist = $this->repo->getById($id);
+        $artist->setImages($this->imageRepository->getImagesForArtistId($artist->getId()));
+        return $artist;
     }
 
     public function insertArtist($name, $description, $recentAlbums, $country, $genres, $homepage, $facebook, $twitter, $instagram, $spotify, $images, $artistKindId): Artist

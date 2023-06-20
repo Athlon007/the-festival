@@ -32,7 +32,7 @@ fetch("/api/cart/checkpayment", {
             paymentSuccess.classList.remove('d-none');
 
             orderNumber.textContent = data.orderId;
-            orderDate.textContent = data.orderDate.date.slice(0, -14);
+            orderDate.textContent = data.orderDate.date.slice(0, -15);
         }
     }
     )
