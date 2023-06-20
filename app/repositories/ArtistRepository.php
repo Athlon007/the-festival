@@ -126,15 +126,16 @@ class ArtistRepository extends Repository
         return $artists[0];
     }
 
-    public function getDanceEventsArtist($id): array
+    public function getDanceArtist($artistId): array
     {
         $sql = "SELECT * from danceevents d 
         join dancelineups d2 on d2.eventId = d.eventId
-        join artists a on a.artistId = d2.artistId join locations l on l.locationId = d.locationId
+        join artists a on a.artistId = d2.artistId 
+        join locations l on l.locationId = d.locationId
         join events e on e.eventId = d.eventId
-        where a.artistId = 30";
+        where a.artistId = :id";
         $statement = $this->connection->prepare($sql);
-        $statement->bindParam(":id", $id);
+        $statement->bindValue(":id", htmlspecialchars($artistId));
         $statement->execute();
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 

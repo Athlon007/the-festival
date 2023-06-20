@@ -82,7 +82,7 @@ class EventRepository extends Repository
         foreach($arr as $event){
             $artists = [];
             foreach($event['artists'] as $artist) {
-                $artists[] = $artistRepo->getDanceEventsArtist($artist['artistId']);
+                $artists[] = $artistRepo->getDanceArtist($artist['artistId']);
             }
 
             $danceEvent = new DanceEvent(
