@@ -101,7 +101,6 @@ class EventRepository extends Repository
         return $events;
     }
 
-
     public function getAll()
     {
         $sql = "SELECT eventId, name, startTime, endTime, festivalEventType FROM events";
