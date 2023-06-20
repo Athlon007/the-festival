@@ -202,7 +202,7 @@ class EventRepository extends Repository
     }
 
     // DANCE
-    private function isInDanceEvents($id){
+    private function isInDanceEvents($id) : bool {
         $sql = "SELECT eventId FROM danceevents WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(['id' => $id]);
@@ -434,10 +434,20 @@ class EventRepository extends Repository
         $stmt->bindValue(':locationId', htmlspecialchars($event->getLocation()->getLocationId()));
         $stmt->execute();
 
-        return $this->connection->lastInsertId();
+        $this->insertDanceLineup($event->getId(), $event->getArtists());
+
+        return $event;
     }
 
-    private function insertDanceLineup($eventId, $artists){
+    private function insertDanceLineup($eventId, $artists) : void {
+        $sql = "INSERT INTO dancelineups (eventId, locationId) VALUES (:eventId, :artistId)";
+
+        foreach($artists as $artist){
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(':eventId', htmlspecialchars($eventId));
+            $stmt->bindValue(':artistId', htmlspecialchars($artist->getArtistId()));
+            $stmt->execute();
+        }
 
     }
 

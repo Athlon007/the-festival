@@ -79,6 +79,7 @@ class TicketLinkRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
+
         return $this->build($result);
     }
 
