@@ -78,13 +78,13 @@ class EventRepository extends Repository
         $locationRepo = new LocationRepository();
         $artistRepo = new ArtistRepository();
         $eventTypeRepo = new EventTypeRepository();
-    
+
         foreach($arr as $event){
             $artists = [];
             foreach($event['artists'] as $artist) {
                 $artists[] = $artistRepo->getDanceEventsArtist($artist['artistId']);
             }
-            
+
             $danceEvent = new DanceEvent(
                 $event['eventId'],
                 $event['name'],
@@ -95,12 +95,12 @@ class EventRepository extends Repository
                 $artists,
                 $event['availableTickets']
             );
-            
+
             $events[] = $danceEvent;
         }
         return $events;
     }
-    
+
 
     public function getAll()
     {
@@ -323,13 +323,16 @@ class EventRepository extends Repository
         return $this->buildJazzEvent($arr)[0];
     }
 
-    public function getDanceEventById(int $id) : DanceEvent {
+    public function getDanceEventById(int $id) : ?DanceEvent {
         $sql = "SELECT * 
             FROM danceevents d 
             JOIN dancelineups dl ON d.eventId = dl.eventId
             JOIN 
             JOIN events e ON e.eventId = d.eventId
             WHERE d.eventId = :id";
+
+        //TODO: Change
+        return null;
     }
 
     private function getDanceLineUp() : array {
@@ -416,6 +419,21 @@ class EventRepository extends Repository
 
         return $this->connection->lastInsertId();
     }
+
+    public function insertDanceEvent(DanceEvent $event){
+        $sql = "INSERT INTO danceevents (eventId, locationId) VALUES (:eventId, :locationId)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':eventId', htmlspecialchars($event->getId()));
+        $stmt->bindValue(':locationId', htmlspecialchars($event->getLocation()->getLocationId()));
+        $stmt->execute();
+
+        return $this->connection->lastInsertId();
+    }
+
+    private function insertDanceLineup($eventId, $artists){
+
+    }
+
 
     public function updateJazzEvent($eventId, $artistId, $locationId)
     {

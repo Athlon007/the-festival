@@ -68,10 +68,11 @@ class EventService
 
         // If event is type of DanceEvent
         if ($event instanceof DanceEvent) {
-            // TODO: Josh for real...
+            //Insert event into dance events table
+            $this->repo->insertDanceEvent($event);
         }
 
-        // if event is type of historyevent
+        // if event is type of history event
         if ($event instanceof HistoryEvent) {
             $event->getGuide()->setGuideId(htmlspecialchars($event->getGuide()->getGuideId()));
             $event->getLocation()->setLocationId(htmlspecialchars($event->getLocation()->getLocationId()));

@@ -137,6 +137,9 @@ class EventAPIController extends APIController
             if (!isset($ticketTypeId)) {
                 $ticketTypeId = $data['ticketType'];
             }
+            if (!isset($ticketTypeId)) {
+                $ticketTypeId = $data['ticketTypeId'];
+            }
 
             $ticketType = $this->ticketTypeService->getById($ticketTypeId);
             $event = null;
@@ -163,8 +166,7 @@ class EventAPIController extends APIController
                     $availableSeats,
                 );
             } elseif (str_starts_with($uri, EventAPIController::URI_DANCE)) {
-                // TODO: Josh, please add details.
-
+                $event = $this->buildDanceEventFromData($data);
 
             } elseif (str_starts_with($uri, EventAPIController::URI_STROLL)) {
                 $guide = $this->festivalHistoryservice->getGuideById($data['guide']);
@@ -250,7 +252,8 @@ class EventAPIController extends APIController
                     $availableSeats
                 );
             } elseif (str_starts_with($uri, EventAPIController::URI_DANCE)) {
-                // TODO: AAAA, JOSHHHH
+                $event = $this->buildDanceEventFromData($data);
+                $event->setId(basename($uri));
             } elseif (str_starts_with($uri, EventAPIController::URI_STROLL)) {
                 $guide = $this->festivalHistoryservice->getGuideById($data['guide']);
                 $location = $this->locationService->getById($data['location']);
@@ -323,5 +326,37 @@ class EventAPIController extends APIController
             Logger::write($e);
             $this->sendErrorMessage("Unable to delete the event.", 500);
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function buildDanceEventFromData($data): DanceEvent
+    {
+        //Fetch the location and number of available seats
+        $location = $this->locationService->getById($data->location->id);
+        $availableSeats = $location->getCapacity();
+
+        //Fetch the event type
+        $eventType = $this->eventTypeService->getById($data->eventTypeId);
+
+        //Fetch the artists
+        $artists = array();
+
+        foreach($data->artistIds as $artistId){
+            $artists[] = $this->artistService->getById($artistId);
+        }
+
+        //Create and return the dance event
+        return new DanceEvent(
+            0,
+            $data->name,
+            new DateTime($data->startTime),
+            new DateTime($data->endTime),
+            $location,
+            $eventType,
+            $artists,
+            $availableSeats
+        );
     }
 }

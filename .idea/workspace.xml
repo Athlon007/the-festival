@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Struggling with repo">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/APIControllers/EventAPIController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/APIControllers/EventAPIController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/repositories/EventRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/EventRepository.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/services/EventService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/EventService.php" afterDir="false" />
     </list>
