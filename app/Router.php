@@ -332,6 +332,9 @@ class Router
             case "/admin/jazz-events":
                 require("views/admin/jazz-events.php");
                 break;
+            case "/admin/dance-events":
+                require("views/admin/dance-events.php");
+                break;
             case "/admin/images":
                 require("views/admin/images.php");
                 break;
