@@ -10,6 +10,7 @@ require_once(__DIR__ . "/../models/Music/Artist.php");
 require_once(__DIR__ . "/../models/Music/ArtistKind.php");
 require_once(__DIR__ . "/../models/Music/DanceEvent.php");
 require_once(__DIR__ . "/../models/TicketLink.php");
+require_once(__DIR__ . "/../models/Exceptions/ObjectNotFoundException.php");
 
 /**
  * Class DanceTicketLinkRepository
@@ -103,6 +104,54 @@ class DanceTicketLinkRepository extends TicketLinkRepository
         return $output;
     }
 
+    public function getById($id)
+    {
+        $sql = "SELECT e.eventId,
+		e.name as eventName,
+		e.startTime,
+		e.endTime,
+		e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets,
+		f.eventTypeId as eventTypeId,
+		f.name as eventTypeName,
+		f.VAT as evenTypeVat,
+		l.locationId as locationId,
+		l.name as locationName,
+		l.locationType as locationType,
+		l.capacity as locationCapacity,
+		l.lon as locationLon,
+		l.lat as locationLat,
+		l.description as locationDescription,
+		ad.addressId as addressId,
+		ad.streetName as addressStreetName,
+		ad.houseNumber as addressHouseNumber,
+		ad.postalCode as addressPostalCode,
+		ad.city as addressCity,
+		ad.country as addressCountry,
+		t.ticketTypeId as ticketTypeId,
+		t.ticketTypeName as ticketTypeName,
+		t.ticketTypePrice as ticketTypePrice,
+		t.nrOfPeople as ticketTypeNrOfPeople,
+        c.ticketLinkId as ticketLinkId
+        FROM danceevents je
+        JOIN events e ON e.eventId = de.eventId
+        JOIN ticketlinks c on e.eventId = c.eventId
+        JOIN tickettypes t on c.ticketTypeId = t.ticketTypeId
+        JOIN locations l on l.locationId = de.locationId
+        JOIN festivaleventtypes f on f.eventTypeId  = e.festivalEventType
+        JOIN addresses ad on ad.addressId =l.addressId
+        WHERE c.ticketLinkId = :id";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":id", htmlspecialchars($id));
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (empty($result)) {
+            return new ObjectNotFoundException("TicketLink with id $id not found");
+        }
+        return $this->build($result)[0];
+
+
+    }
 
     public function getAll($sort = null, $filters = []): array
     {

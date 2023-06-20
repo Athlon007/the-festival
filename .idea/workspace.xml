@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Insert dance event and insert lineup">
+    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Added GetDanceLineUp to artist repo">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/repositories/ArtistRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/ArtistRepository.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/repositories/EventRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/EventRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/EventService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/EventService.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -244,7 +241,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687273792156</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Added GetDanceLineUp to artist repo">
+      <created>1687280819544</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1687280819544</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -286,6 +290,7 @@
     <MESSAGE value="Added isInDanceEvents check" />
     <MESSAGE value="Improved soc in eventRepo, added basis for getById" />
     <MESSAGE value="Insert dance event and insert lineup" />
-    <option name="LAST_COMMIT_MESSAGE" value="Insert dance event and insert lineup" />
+    <MESSAGE value="Added GetDanceLineUp to artist repo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added GetDanceLineUp to artist repo" />
   </component>
 </project>
