@@ -28,9 +28,10 @@
                     <th>Order Date</th>
                     <th>Customer Name</th>
                     <th>Customer Email</th>
+                    <th>Event Name/Date</th>
                     <th>Total excl VAT</th>
-                    <th>Quantity</th>
                     <th>Total inc VAT</th>
+                    <th>Quantity</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,13 +63,6 @@
                             <td>
                                 <?= $orderItem->getQuantity() ?>
                             </td>
-                            <td>
-                                <?= "€ " . number_format($orderItem->getTotalBasePrice(), 2) ?>
-                            </td>
-                            <td>
-                                <?= "€ " . $orderItem->getTotalFullPrice() ?>
-                            </td>
-
                         </tr>
                     <?php endforeach; ?>
                 <?php endforeach; ?>
