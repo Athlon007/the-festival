@@ -103,4 +103,14 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
         }
         return null;
     }
+
+    public function getLocationIdFromEventId($eventId): int
+    {
+        $sql = "select h.locationId from historyevents h where h.eventId = :eventId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':eventId', $eventId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch();
+        return $result['locationId'];
+    }
 }
