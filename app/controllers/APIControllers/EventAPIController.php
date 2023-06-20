@@ -14,6 +14,7 @@ require_once(__DIR__ . '/../../models/TicketLink.php');
 
 require_once(__DIR__ . '/../../services/TicketLinkService.php');
 require_once(__DIR__ . '/../../services/JazzTicketLinkService.php');
+require_once(__DIR__ . '/../../services/DanceTicketLinkService.php');
 require_once(__DIR__ . '/../../services/HistoryTicketLinkService.php');
 require_once(__DIR__ . '/../../services/PassTicketLinkService.php');
 require_once(__DIR__ . '/../../services/LocationService.php');
@@ -57,7 +58,7 @@ class EventAPIController extends APIController
                 $this->ticketLinkService = new JazzTicketLinkService();
             } else {
                 // TODO: CHANGE THAT JOSH!!!!
-                $this->ticketLinkService = new TicketLinkService();
+                $this->ticketLinkService = new DanceTicketLinkService();
             }
 
             // Music Services
