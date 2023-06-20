@@ -103,8 +103,6 @@ class EventAPIController extends APIController
                 // Get the appropriate kind, or all artists if none is specified.
                 if (str_starts_with($uri, EventAPIController::URI_JAZZ)) {
                     $filters['artist_kind'] = '1';
-                } elseif (str_starts_with($uri, EventAPIController::URI_DANCE)) {
-                    $filters['artist_kind'] = '2';
                 }
             }
 
@@ -167,7 +165,6 @@ class EventAPIController extends APIController
                 );
             } elseif (str_starts_with($uri, EventAPIController::URI_DANCE)) {
                 $event = $this->buildDanceEventFromData($data);
-
             } elseif (str_starts_with($uri, EventAPIController::URI_STROLL)) {
                 $guide = $this->festivalHistoryservice->getGuideById($data['guide']);
                 $location = $this->locationService->getById($data['location']);
@@ -343,7 +340,7 @@ class EventAPIController extends APIController
         //Fetch the artists
         $artists = array();
 
-        foreach($data->artistIds as $artistId){
+        foreach ($data->artistIds as $artistId) {
             $artists[] = $this->artistService->getById($artistId);
         }
 
