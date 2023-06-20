@@ -72,6 +72,36 @@ class EventRepository extends Repository
         return $events;
     }
 
+    private function buildDanceEvent($arr, $filters = null): array
+    {
+        $events = [];
+        $locationRepo = new LocationRepository();
+        $artistRepo = new ArtistRepository();
+        $eventTypeRepo = new EventTypeRepository();
+    
+        foreach($arr as $event){
+            $artists = [];
+            foreach($event['artists'] as $artist) {
+                $artists[] = $artistRepo->getDanceEventsArtist($artist['artistId']);
+            }
+            
+            $danceEvent = new DanceEvent(
+                $event['eventId'],
+                $event['name'],
+                new DateTime($event['startTime']),
+                new DateTime($event['endTime']),
+                $locationRepo->getById($event['locationId']),
+                $eventTypeRepo->getById($event['festivalEventType']),
+                $artists,
+                $event['availableTickets']
+            );
+            
+            $events[] = $danceEvent;
+        }
+        return $events;
+    }
+    
+
     public function getAll()
     {
         $sql = "SELECT eventId, name, startTime, endTime, festivalEventType FROM events";
@@ -266,6 +296,20 @@ class EventRepository extends Repository
         return $this->buildJazzEvent($arr, $filters);
     }
 
+    public function getAllDanceEvent(){
+        $sql = "SELECT * from danceevents d 
+        join dancelineups d2 on d2.eventId = d.eventId
+        join artists a on a.artistId = d2.artistId join locations l on l.locationId = d.locationId
+        join events e on e.eventId = d.eventId";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+
+        $arr = $stmt->fetchAll();
+        return $this->buildDanceEvent($arr);
+    }
+
+
     public function getJazzEventById($id)
     {
         $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets  "
@@ -286,7 +330,6 @@ class EventRepository extends Repository
             JOIN 
             JOIN events e ON e.eventId = d.eventId
             WHERE d.eventId = :id";
-            "
     }
 
     private function getDanceLineUp() : array {
@@ -301,7 +344,7 @@ class EventRepository extends Repository
             $eventTypeRep = new EventTypeRepository();
 
             $sql = "SELECT he.eventId as eventId, he.locationId as locationId, e.name as name,
-             e.startTime as startTime, e.endTime as endTime, g.guideId as guideId, e.availableTickets as availableTickets, e.festivalEventType
+            e.startTime as startTime, e.endTime as endTime, g.guideId as guideId, e.availableTickets as availableTickets, e.festivalEventType
             FROM historyevents he
             JOIN events e ON e.eventId = he.eventId
             join guides g on g.guideId = he.guideId

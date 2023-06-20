@@ -60,21 +60,25 @@ class DanceTicketLinkRepository extends TicketLinkRepository
                 $item['artistKindId'],
                 $item['artistKindName']
             );
-            $artist = new Artist(
-                $item['artistId'],
-                htmlspecialchars_decode($item['artistName']),
-                htmlspecialchars_decode($this->readIfSet($item['artistDescription'])),
-                array(),
-                $this->readIfSet($item['artistCountry']),
-                $this->readIfSet($item['artistGenres']),
-                $this->readIfSet($item['artistHomepage']),
-                $this->readIfSet($item['artistFacebook']),
-                $this->readIfSet($item['artistTwitter']),
-                $this->readIfSet($item['artistInstagram']),
-                $this->readIfSet($item['artistSpotify']),
-                $this->readIfSet($item['artistRecentAlbums']),
-                $artistKind
-            );
+
+            $artists = $this->getLineUpForEvent($item['eventId']);
+            foreach ($artists as $artist){
+                $artist = new Artist(
+                    $artist['artistId'],
+                    htmlspecialchars_decode($artist['artistName']),
+                    htmlspecialchars_decode($this->readIfSet($artist['artistDescription'])),
+                    array(),
+                    $this->readIfSet($artist['artistCountry']),
+                    $this->readIfSet($artist['artistGenres']),
+                    $this->readIfSet($artist['artistHomepage']),
+                    $this->readIfSet($artist['artistFacebook']),
+                    $this->readIfSet($artist['artistTwitter']),
+                    $this->readIfSet($artist['artistInstagram']),
+                    $this->readIfSet($artist['artistSpotify']),
+                    $this->readIfSet($artist['artistRecentAlbums']),
+                    $artistKind
+                );
+            }
 
             $event = new DanceEvent(
                 $item['eventId'],
@@ -83,6 +87,7 @@ class DanceTicketLinkRepository extends TicketLinkRepository
                 new DateTime($item['endTime']),
                 $location,
                 $eventType,
+                $artists,
                 $item['availableTickets']
             );
 
@@ -98,6 +103,7 @@ class DanceTicketLinkRepository extends TicketLinkRepository
         return $output;
     }
 
+
     public function getAll($sort = null, $filters = []): array
     {
         $sql = "SELECT e.eventId,
@@ -105,18 +111,6 @@ class DanceTicketLinkRepository extends TicketLinkRepository
 		e.startTime,
 		e.endTime,
 		e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets,
-		a.artistId,
-		a.name  as artistName,
-		a.description as artistDescription,
-		a.recentAlbums as artistRecentAlbums,
-		a.genres as artistGenres,
-		a.country as artistCountry,
-		a.homepageUrl as artistHomepage,
-		a.facebookUrl as artistFacebook,
-		a.twitterUrl as artistTwitter,
-		a.instagramUrl as artistInstagram,
-		a.spotifyUrl as artistSpotify,
-		a.homepageUrl as artistHomepage,
 		f.eventTypeId as eventTypeId,
 		f.name as eventTypeName,
 		f.VAT as evenTypeVat,
@@ -137,18 +131,14 @@ class DanceTicketLinkRepository extends TicketLinkRepository
 		t.ticketTypeName as ticketTypeName,
 		t.ticketTypePrice as ticketTypePrice,
 		t.nrOfPeople as ticketTypeNrOfPeople,
-		a2.id as artistKindId,
-		a2.name as artistKindName,
         c.ticketLinkId as ticketLinkId
-        FROM jazzevents je
+        FROM danceevents je
         JOIN events e ON e.eventId = je.eventId
         JOIN ticketlinks c on e.eventId = c.eventId
         JOIN tickettypes t on c.ticketTypeId = t.ticketTypeId
-        JOIN artists a on a.artistId = je.artistId
         JOIN locations l on l.locationId = je.locationId
         JOIN festivaleventtypes f on f.eventTypeId  = e.festivalEventType
-        JOIN addresses ad on ad.addressId =l.addressId
-        JOIN artistkinds a2 on a2.id = a.artistKindId ";
+        JOIN addresses ad on ad.addressId =l.addressId";
 
         if (!empty($filters)) {
             $sql .= " WHERE ";
@@ -178,12 +168,6 @@ class DanceTicketLinkRepository extends TicketLinkRepository
                         break;
                     case 'location':
                         $sql .= " je.locationId = :$key ";
-                        break;
-                    case 'artist':
-                        $sql .= " je.artistId = :$key ";
-                        break;
-                    case "artist_kind":
-                        $sql .= " a.artistKindId = :$key ";
                         break;
                     default:
                         continue 2;
@@ -233,24 +217,16 @@ class DanceTicketLinkRepository extends TicketLinkRepository
         return $this->build($result);
     }
 
-    private function getLineUpForEvent($eventId): array
+    private function getLineUpForEvent($id): array
     {
-        $sql = "SELECT a.artistId,
-        a.name  as artistName,
-        a.description as artistDescription,
-        a.recentAlbums as artistRecentAlbums,
-        a.genres as artistGenres,
-        a.country as artistCountry,
-        a.homepageUrl as artistHomepage,
-        a.facebookUrl as artistFacebook,
-        a.twitterUrl as artistTwitter,
-        a.instagramUrl as artistInstagram,
-        a.spotifyUrl as artistSpotify,
-        a.homepageUrl as artistHomepage,
-        a2.id as artistKindId,
-        a2.name as artistKindName
-        FROM danceevents de";
+        $sql = "SELECT * from dancelineups d 
+        join artists a on a.artistId = d.artistId
+        where d.eventId = :id";
+        $statement = $this->connection->prepare($sql);
+        $statement->bindParam(":id", $id);
+        $statement->execute();
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        return [];
+        return $result;
     }
 }
