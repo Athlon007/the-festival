@@ -4,6 +4,7 @@ require_once(__DIR__ . "/../models/Event.php");
 require_once(__DIR__ . "/../models/History/HistoryEvent.php");
 require_once(__DIR__ . "/../models/Music/MusicEvent.php");
 require_once(__DIR__ . "/../models/Music/JazzEvent.php");
+require_once(__DIR__ . "/../models/Music/DanceEvent.php");
 require_once("Repository.php");
 require_once("LocationRepository.php");
 require_once("ArtistRepository.php");
@@ -276,6 +277,14 @@ class EventRepository extends Repository
         $stmt->execute();
         $arr = $stmt->fetchAll();
         return $this->buildJazzEvent($arr)[0];
+    }
+
+    public function getDanceEventById(int $id) : DanceEvent {
+        return new DanceEvent();
+    }
+
+    private function getDanceLineUp() : array {
+        return [];
     }
 
     // Get History Event by ID

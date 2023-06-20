@@ -57,7 +57,6 @@ class EventAPIController extends APIController
             if (str_starts_with($request, EventAPIController::URI_JAZZ)) {
                 $this->ticketLinkService = new JazzTicketLinkService();
             } else {
-                // TODO: CHANGE THAT JOSH!!!!
                 $this->ticketLinkService = new DanceTicketLinkService();
             }
 
@@ -118,7 +117,7 @@ class EventAPIController extends APIController
             $this->sendErrorMessage("Event with given ID not found.", 404);
         } catch (Throwable $e) {
             Logger::write($e);
-            $this->sendErrorMessage("Unable to retrieve events.", 500);
+            $this->sendErrorMessage("Unable to retrieve events.");
         }
     }
 
@@ -165,6 +164,8 @@ class EventAPIController extends APIController
                 );
             } elseif (str_starts_with($uri, EventAPIController::URI_DANCE)) {
                 // TODO: Josh, please add details.
+
+
             } elseif (str_starts_with($uri, EventAPIController::URI_STROLL)) {
                 $guide = $this->festivalHistoryservice->getGuideById($data['guide']);
                 $location = $this->locationService->getById($data['location']);

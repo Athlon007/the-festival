@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Added html special chars to customer repo and fixed eventtype repo">
-      <change afterPath="$PROJECT_DIR$/app/services/DanceTicketLinkService.php" afterDir="false" />
+    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Added dance ticketlink service">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/APIControllers/EventAPIController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/APIControllers/EventAPIController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/repositories/EventRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/EventRepository.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +72,7 @@
       <workItem from="1687161657772" duration="3330000" />
       <workItem from="1687168802335" duration="21008000" />
       <workItem from="1687190497923" duration="3051000" />
-      <workItem from="1687245623105" duration="8978000" />
+      <workItem from="1687245623105" duration="11025000" />
     </task>
     <task id="LOCAL-00001" summary="Added sendTicketsAndInvoice method to OrderService">
       <created>1686906723310</created>
@@ -192,7 +193,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687246311518</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Added dance ticketlink service">
+      <created>1687257191304</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1687257191304</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -227,6 +235,7 @@
     <MESSAGE value="tweaked order merging" />
     <MESSAGE value="Fixed customer check" />
     <MESSAGE value="Added html special chars to customer repo and fixed eventtype repo" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added html special chars to customer repo and fixed eventtype repo" />
+    <MESSAGE value="Added dance ticketlink service" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added dance ticketlink service" />
   </component>
 </project>
