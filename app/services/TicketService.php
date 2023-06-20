@@ -27,7 +27,7 @@ use Endroid\QrCode\Writer\PngWriter;
 
 class TicketService
 {
-  protected TicketRepository $repository;
+  private TicketRepository $repository;
 
   public function __construct()
   {
