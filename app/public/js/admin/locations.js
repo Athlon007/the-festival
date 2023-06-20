@@ -1,9 +1,5 @@
 // Author: Konrad
-if (window.frameElement == null) {
-    window.location.href = '/manage';
-    // stop executing rest of the script
-    throw new Error('Unauthorized access');
-}
+// Do not run this script if the window is not in a frame.
 
 import { MsgBox } from "./modals.js";
 
