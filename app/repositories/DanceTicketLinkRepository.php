@@ -247,7 +247,7 @@ class DanceTicketLinkRepository extends TicketLinkRepository
 		t.nrOfPeople as ticketTypeNrOfPeople,
         c.ticketLinkId as ticketLinkId
         FROM danceevents de
-        JOIN events e ON e.eventId = je.eventId
+        JOIN events e ON e.eventId = de.eventId
         JOIN ticketlinks c on e.eventId = c.eventId
         JOIN tickettypes t on c.ticketTypeId = t.ticketTypeId
         JOIN locations l on l.locationId = de.locationId
