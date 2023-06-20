@@ -146,8 +146,6 @@ function createToast(header, msg) {
                 cartCircleText.innerHTML = data.count;
 
                 this.count = data.count;
-
-                //console.log("Cart count: " + data.count);
             })
             .catch(error => {
                 console.log(error);
@@ -159,17 +157,17 @@ function createToast(header, msg) {
     Cart.Delete = function (itemId) {
         return new Promise((resolve, reject) => {
             fetch(apiUrl + '/item/' + itemId,
-            {
-                method: 'DELETE'
-            }).then(response => response.json())
-            .then(data => {
-                Cart.UpdateCounter();
-                resolve(data);
-            }
-            ).catch(error => {
-                reject(error);
-            }
-            );
+                {
+                    method: 'DELETE'
+                }).then(response => response.json())
+                .then(data => {
+                    Cart.UpdateCounter();
+                    resolve(data);
+                }
+                ).catch(error => {
+                    reject(error);
+                }
+                );
         });
     }
 
@@ -185,13 +183,13 @@ function createToast(header, msg) {
                     }),
                 }).then(response => response.json())
                 .then(data => {
-                        Cart.UpdateCounter();
-                        resolve(data);
-                    }
+                    Cart.UpdateCounter();
+                    resolve(data);
+                }
                 ).catch(error => {
                     reject(error);
                 }
-            );
+                );
         });
     }
 

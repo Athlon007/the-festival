@@ -128,6 +128,8 @@ class UserService
             $user = $this->getUserByEmail($email);
             $name = $user->getFirstName();
 
+            require_once("../Config.php");
+
             $mail->Body = "
                 <html>
                 <head>
@@ -184,7 +186,7 @@ class UserService
                 </div>
                 <div class=\"container\" style=\"margin-top: 20px;\">
                     <p>For security reasons, please do not share this link with anyone else. If you have any questions or concerns, please contact our support team at <span class=\"email\">infohaarlemfestival5@gmail.com</span></p>
-                    <a href=\"http://localhost/updatePassword?token=$reset_token&email=$email\" class=\"button\">Reset Your Password</a>
+                    <a href=\"$hostname/updatePassword?token=$reset_token&email=$email\" class=\"button\">Reset Your Password</a>
                 </div>
                 <div class=\"container\" style=\"margin-top: 20px;\">
                     <p>Thank you,<br>The Festival Website Team</p>

@@ -259,13 +259,22 @@ class OrderRepository extends Repository
         return $this->getOrderById($orderId);
     }
 
-    public function updateOrderItem($orderItemId, $orderItem): OrderItem
+    public function updateOrderItem($orderItemId, $orderItem, $orderId = null): OrderItem
     {
-        $sql = "UPDATE orderitems SET ticketLinkId = :ticketLinkId, quantity = :quantity WHERE orderItemId = :orderItemId";
+        if (!$orderId) {
+            $sql = "UPDATE orderitems SET ticketLinkId = :ticketLinkId, quantity = :quantity WHERE orderItemId = :orderItemId";
+        }
+        else {
+            $sql = "UPDATE orderitems SET ticketLinkId = :ticketLinkId, quantity = :quantity, orderId = :orderId WHERE orderItemId = :orderItemId";
+        }
+
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":ticketLinkId", htmlspecialchars($orderItem->getTicketLinkId()));
         $stmt->bindValue(":quantity", htmlspecialchars($orderItem->getQuantity()));
         $stmt->bindValue(":orderItemId", htmlspecialchars($orderItemId));
+        if ($orderId) {
+            $stmt->bindValue(":orderId", htmlspecialchars($orderId));
+        }
 
         $stmt->execute();
         return $this->getOrderItemById($orderItemId);
@@ -277,8 +286,6 @@ class OrderRepository extends Repository
         $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDateAsString()));
-        //$customerId = $order->getCustomer()->getUserId();
-        //$stmt->bindValue(":customerId", htmlspecialchars($customerId));
 
         if ($order->getCustomer() != null) {
             $customerId = $order->getCustomer()->getUserId();
@@ -286,8 +293,8 @@ class OrderRepository extends Repository
         } else {
             $stmt->bindValue(":customerId", null);
         }
-
         $stmt->execute();
+        $this->removeOldOrders();
 
         return $this->getOrderById($this->connection->lastInsertId());
     }

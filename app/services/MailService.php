@@ -20,7 +20,7 @@ class MailService{
     const INVOICE_EMAIL = "/../emails/invoice-email.php";
     const PASSWORD_RESET_EMAIL = "";
 
-    
+
     function __construct(){
         $this->mailer = new PHPMailer();
         $this->mailer->isSMTP();
@@ -62,17 +62,16 @@ class MailService{
         ob_start();
         require_once(self::CUSTOMER_CHANGES_EMAIL);
         $this->mailer->Body = ob_get_clean();
-        
+
         //Add subject
         $this->mailer->Subject = 'Changes to your account ';
-        
+
         //Add recipient
         $this->mailer->addAddress($customer->getEmail(), $customer->getFullName());
-        
+
         //Send email, throw exception if something goes wrong.
         if (!$this->mailer->send()) {
             throw new Exception("Error while sending message.");
         }
     }
 }
-?>

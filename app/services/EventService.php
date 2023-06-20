@@ -2,6 +2,8 @@
 
 require_once(__DIR__ . "/../models/Event.php");
 require_once(__DIR__ . "/../models/Music/MusicEvent.php");
+require_once(__DIR__ . "/../models/Music/JazzEvent.php");
+require_once(__DIR__ . "/../models/Music/DanceEvent.php");
 require_once(__DIR__ . "/../repositories/EventRepository.php");
 require_once(__DIR__ . "/../models/Exceptions/InvalidVariableException.php");
 require_once('EventTypeService.php');
@@ -52,7 +54,7 @@ class EventService
         );
 
         // if event is type of jazzevent
-        if ($event instanceof MusicEvent) {
+        if ($event instanceof JazzEvent) {
             $event->getArtist()->setId(htmlspecialchars($event->getArtist()->getId()));
             $event->getLocation()->setLocationId(htmlspecialchars($event->getLocation()->getLocationId()));
             $this->repo->createJazzEvent(
@@ -62,6 +64,11 @@ class EventService
             );
 
             return $this->repo->getJazzEventById($id);
+        }
+
+        // if event is type of danceevent
+        if ($event instanceof DanceEvent) {
+            // TODO: Josh for real...
         }
 
         // if event is type of historyevent
@@ -102,7 +109,7 @@ class EventService
         );
 
         // if event is type of jazzevent
-        if ($event instanceof MusicEvent) {
+        if ($event instanceof JazzEvent) {
             $event->getArtist()->setId(htmlspecialchars($event->getArtist()->getId()));
             $event->getLocation()->setLocationId(htmlspecialchars($event->getLocation()->getLocationId()));
 
@@ -113,16 +120,9 @@ class EventService
             );
         }
 
-        // if event is type of historyevent
-        if ($event instanceof HistoryEvent) {
-            $event->getGuide()->setGuideId(htmlspecialchars($event->getGuide()->getGuideId()));
-            $event->getLocation()->setLocationId(htmlspecialchars($event->getLocation()->getLocationId()));
-
-            $this->repo->updateHistoryEvent(
-                $event->getId(),
-                $event->getGuide()->getGuideId(),
-                $event->getLocation()->getLocationId()
-            );
+        // if event is type of danceevent
+        if ($event instanceof DanceEvent) {
+            // TODO: JOSH!
         }
 
         return $this->repo->getEventById($event->getId());

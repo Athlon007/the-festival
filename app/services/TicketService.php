@@ -34,7 +34,7 @@ class TicketService
     $this->repository = new TicketRepository();
   }
 
-  public function insertTicket($orderId, OrderItem $orderItem , Event $event, $ticketTypeId): Ticket
+  public function insertTicket($orderId, OrderItem $orderItem, Event $event, $ticketTypeId): Ticket
   {
     try {
       $ticket = $this->repository->insertTicket($orderId, $orderItem, $event, $ticketTypeId);
@@ -101,8 +101,8 @@ class TicketService
   public function generateQRCode($ticket): string
   {
     //Generate a QR code image with the ticket ID as data
-    $hostName = "http://localhost";
-    $qrCodeData = $hostName + "/ticket?ticketId=" . $ticket->getTicketId();
+    require("../Config.php");
+    $qrCodeData = $hostname . "/ticket?ticketId=" . $ticket->getTicketId();
 
     $qrCode = new QrCode($qrCodeData);
     $qrCode->setSize(150);
@@ -187,10 +187,8 @@ class TicketService
         $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');
       }
 
-      if ($mail->send()) {
-        echo "Mail sent";
-      } else {
-        echo "Mail not sent";
+      if (!$mail->send()) {
+        throw new Exception("Email could not be sent");
       }
     } catch (Exception $ex) {
       throw ($ex);

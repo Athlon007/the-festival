@@ -32,13 +32,14 @@ fetch("/api/cart/checkpayment", {
             paymentSuccess.classList.remove('d-none');
 
             orderNumber.textContent = data.orderId;
-            orderDate.textContent = data.orderDate.date.slice(0, -14);
+            orderDate.textContent = data.orderDate.date.slice(0, -15);
         }
     }
     )
     .catch((error) => {
         console.error("Error:", error);
+        checkPayment.classList.add('d-none');
         paymentFailed.classList.remove('d-none');
-        failReason.textContent = error.data.error_message;
+        failReason.textContent = error.data.error_message ?? "Unknown error.";
     }
     );
