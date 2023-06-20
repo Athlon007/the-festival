@@ -66,7 +66,7 @@ class EventService
             return $this->repo->getJazzEventById($id);
         }
 
-        // if event is type of danceevent
+        // If event is type of DanceEvent
         if ($event instanceof DanceEvent) {
             // TODO: Josh for real...
         }

@@ -280,7 +280,13 @@ class EventRepository extends Repository
     }
 
     public function getDanceEventById(int $id) : DanceEvent {
-        return new DanceEvent();
+        $sql = "SELECT * 
+            FROM danceevents d 
+            JOIN dancelineups dl ON d.eventId = dl.eventId
+            JOIN 
+            JOIN events e ON e.eventId = d.eventId
+            WHERE d.eventId = :id";
+            "
     }
 
     private function getDanceLineUp() : array {

@@ -92,7 +92,7 @@ class DanceTicketLinkRepository extends TicketLinkRepository
                 $ticketType
             );
 
-            array_push($output, $ticketLink);
+            $output[] = $ticketLink;
         }
 
         return $output;
