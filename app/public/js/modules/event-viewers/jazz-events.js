@@ -73,7 +73,6 @@ class JazzEventList extends EventsList {
 
         let dates = await fetch('/api/events/dates').then((res) => res.json());
 
-        // create array of dates also in between the first and last date
         // convert them to date objects
         dates = dates.map((date) => new Date(date));
         // sort
