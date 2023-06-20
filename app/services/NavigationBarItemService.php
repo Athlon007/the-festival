@@ -55,6 +55,10 @@ class NavigationBarItemService
         return $navbarItems;
     }
 
+    /**
+     * Sets the navigation bar layout from the given input.
+     * @param array $input The input from the user.
+     */
     public function setNavbars($input): array
     {
         // First we create an array of what was inputted by the user.
