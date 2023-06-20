@@ -89,9 +89,7 @@ btnSubmit.onclick = function () {
     let checkboxes = artistCheckboxesContainer.getElementsByTagName('input');
     for (let checkbox of checkboxes) {
         if (checkbox.checked) {
-            artists.push({
-                id: checkbox.value
-            });
+            artists.push(checkbox.value);
         }
     }
 
@@ -114,6 +112,13 @@ btnSubmit.onclick = function () {
         },
         ticketTypeId: ticketType.value
     };
+
+    // Make sure that all numbers are represented as numbers
+    for (let key in data.event) {
+        if (!isNaN(data.event[key])) {
+            data.event[key] = parseInt(data.event[key]);
+        }
+    }
 
     // disable the editor.
     toggleEditor(masterEditor, false);
