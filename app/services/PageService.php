@@ -3,19 +3,23 @@ require_once("../repositories/PageRepository.php");
 require_once("../repositories/ImageRepository.php");
 require_once("../models/Exceptions/PageNotFoundException.php");
 require_once("../models/Exceptions/FileDoesNotExistException.php");
+require_once("ImageService.php");
 
 /**
+ * Service class for pages.
+ * "Text Page" is a page that is editable, and its contents is saved in the database.
+ * Normal pages must be created manually in the "views" folder.
  * @author Konrad
  */
 class PageService
 {
     private $repo;
-    private $imageRepo;
+    private $imageService;
 
     public function __construct()
     {
         $this->repo = new PageRepository();
-        $this->imageRepo = new ImageRepository();
+        $this->imageService = new ImageService();
     }
 
     /**
@@ -26,7 +30,7 @@ class PageService
     {
         $pages = $this->repo->getAll();
         foreach ($pages as $page) {
-            $page->setImages($this->imageRepo->getImagesForPageId($page->getId()));
+            $page->setImages($this->imageService->getImagesForPageId($page->getId()));
         }
 
         return $pages;
@@ -49,13 +53,13 @@ class PageService
             $href = rtrim($href, "/");
         }
 
-        $page = null;
-        if ($this->repo->countTextPages($href) > 0) {
-            $page = $this->repo->getTextPageByHref($href);
-        } else {
-            $page = $this->repo->getPageByHref($href);
-        }
+        // Check if page is a text page.
+        // If so - get it from the text page table.
+        // If not - get it from the page table.
+        $page = $this->repo->countTextPages($href) > 0
+            ? $this->repo->getTextPageByHref($href) : $this->repo->getPageByHref($href);
 
+        // Page not found? Throw an exception.
         if ($page == null) {
             throw new PageNotFoundException("Page with href '$href' was not found.");
         }
@@ -68,7 +72,8 @@ class PageService
             }
         }
 
-        $page->setImages($this->imageRepo->getImagesForPageId($page->getId()));
+        // Load images used on that page.
+        $page->setImages($this->imageService->getImagesForPageId($page->getId()));
 
         return $page;
     }
@@ -100,21 +105,32 @@ class PageService
             }
         }
 
-        $page->setImages($this->imageRepo->getImagesForPageId($page->getId()));
-
-
+        $page->setImages($this->imageService->getImagesForPageId($page->getId()));
         return $page;
     }
 
+    /**
+     * Returns all text pages.
+     * @return array All text pages in the database.
+     */
     public function getAllTextPages(): array
     {
         $pages = $this->repo->getAllTextPages();
         foreach ($pages as $page) {
-            $page->setImages($this->imageRepo->getImagesForPageId($page->getId()));
+            $page->setImages($this->imageService->getImagesForPageId($page->getId()));
         }
         return $pages;
     }
 
+    /**
+     * Updates the page with given ID.
+     * @param int $id ID of the page to update.
+     * @param string $title New title of the page.
+     * @param string $content New content of the page.
+     * @param array $images New images of the page.
+     * @param string $href New href of the page.
+     * @throws PageNotFoundException If page with given ID was not found, throws an exception.
+     */
     public function updateTextPage($id, $title, $content, $images, $href)
     {
         $id = htmlspecialchars($id);
@@ -132,13 +148,17 @@ class PageService
             throw new PageNotFoundException("Page with ID '$id' was not found.");
         }
 
-        require_once("ImageService.php");
-        $imageService = new ImageService();
-        $imageService->setImagesForPage($id, $images);
+        $this->imageService->setImagesForPage($id, $images);
 
         $this->repo->updateTextPage($id, $title, $content, $href);
     }
 
+    /**
+     * Gets page by its ID in database.
+     * @param int $id ID of the page.
+     * @return TextPage A text page with matching ID.
+     * @throws PageNotFoundException If matching page was not found, throws the PageNotFoundException.
+     */
     public function getTextPageById($id): TextPage
     {
         $id = htmlspecialchars($id);
@@ -148,11 +168,19 @@ class PageService
             throw new PageNotFoundException("Page with ID '$id' was not found.");
         }
 
-        $page->setImages($this->imageRepo->getImagesForPageId($page->getId()));
+        $page->setImages($this->imageService->getImagesForPageId($page->getId()));
 
         return $page;
     }
 
+    /**
+     * Creates a new text page.
+     * @param string $title Title of the page.
+     * @param string $content Content of the page.
+     * @param array $images Images of the page.
+     * @param string $href Href of the page.
+     * @return TextPage The newly created text page.
+     */
     public function createTextPage($title, $content, $images, $href): TextPage
     {
         $content = htmlspecialchars($content);
@@ -170,20 +198,26 @@ class PageService
         }
 
         $pageId = $this->repo->createTextPage($title, $content, $href);
-
-        require_once("ImageService.php");
-        $imageService = new ImageService();
-        $imageService->setImagesForPage($pageId, $images);
+        $this->imageService->setImagesForPage($pageId, $images);
 
         return $this->getTextPageById($pageId);
     }
 
+    /**
+     * Deletes a text page with given ID.
+     * @param int $id ID of the page to delete.
+     */
     public function delete($id)
     {
         $id = htmlspecialchars($id);
         $this->repo->delete($id);
     }
 
+    /**
+     * Checks if page with given ID is a text page.
+     * @param int $id ID of the page.
+     * @return bool True if page is a text page, false otherwise.
+     */
     public function isInTextPage($id): bool
     {
         $id = htmlspecialchars($id);
