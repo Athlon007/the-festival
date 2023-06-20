@@ -42,32 +42,4 @@ class Logger
             // Well damn.
         }
     }
-
-    public static function writeText($text)
-    {
-        // Create directory, if it does not exist.
-        if (!file_exists(self::LOG_FOLDER)) {
-            mkdir(self::LOG_FOLDER);
-        }
-
-        try {
-            // Create file name pattern as follows: yyyy-mm-dd-hh-mm-ss-ms.log
-            $date = new DateTime();
-            $fileName = $date->format("Y-m-d-H-i-s-u") . ".log";
-
-            // Create file
-            $file = fopen(self::LOG_FOLDER . $fileName, "w");
-
-            // Write to file
-            fwrite(
-                $file,
-                $text
-            );
-
-            // Close file
-            fclose($file);
-        } catch (Throwable $t) {
-            // Well damn.
-        }
-    }
 }
