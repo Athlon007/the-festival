@@ -120,6 +120,17 @@ class EventService
             );
         }
 
+        if ($event instanceof HistoryEvent) {
+            $event->getGuide()->setGuideId(htmlspecialchars($event->getGuide()->getGuideId()));
+            $event->getLocation()->setLocationId(htmlspecialchars($event->getLocation()->getLocationId()));
+
+            $this->repo->updateHistoryEvent(
+                $event->getId(),
+                $event->getGuide()->getGuideId(),
+                $event->getLocation()->getLocationId()
+            );
+        }
+
         // if event is type of danceevent
         if ($event instanceof DanceEvent) {
             // TODO: JOSH!

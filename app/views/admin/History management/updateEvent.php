@@ -128,7 +128,7 @@
                         return;
                     }
 
-                    alert('Event added successfully!');
+                    alert('Event updated successfully!');
                 })
         }
 
