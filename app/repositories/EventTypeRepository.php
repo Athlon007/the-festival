@@ -32,6 +32,9 @@ class EventTypeRepository extends Repository
         return $this->build($result);
     }
 
+    /**
+     * @throws ObjectNotFoundException
+     */
     public function getById($id): EventType
     {
         $sql = "SELECT eventTypeId, name, VAT FROM festivaleventtypes WHERE eventTypeId = :id";
@@ -41,7 +44,7 @@ class EventTypeRepository extends Repository
         $result = $stmt->fetchAll();
         $arr = $this->build($result);
         if (empty($arr)) {
-            return null;
+            throw new ObjectNotFoundException("Event type with id: " . $id . " not found.", 404);
         }
         return $arr[0];
     }
