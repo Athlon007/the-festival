@@ -332,7 +332,7 @@ class DanceEventList extends EventsList {
             rowButtons.appendChild(buyButton);
         }
         let buttonDetailsA = document.createElement('a');
-        buttonDetailsA.href = `/festival/jazz/event/${event.event.id}`;
+        buttonDetailsA.href = `/festival/dance/event/${event.event.id}`;
         buttonDetailsA.classList.add('col-3');
         let buttonDetails = document.createElement('button');
         buttonDetails.classList.add('btn', 'btn-secondary', 'w-100');
