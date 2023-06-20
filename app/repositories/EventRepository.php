@@ -436,7 +436,17 @@ class EventRepository extends Repository
         return $this->connection->lastInsertId();
     }
 
-    public function insertDanceEvent(DanceEvent $event){
+    public function updateJazzEvent($eventId, $artistId, $locationId)
+    {
+        $sql = "UPDATE jazzevents SET artistId = :artistId, locationId = :locationId WHERE eventId = :eventId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':eventId', $eventId);
+        $stmt->bindParam(':artistId', $artistId);
+        $stmt->bindParam(':locationId', $locationId);
+        $stmt->execute();
+    }
+
+    public function insertDanceEvent(DanceEvent $event) {
         $sql = "INSERT INTO danceevents (eventId, locationId) VALUES (:eventId, :locationId)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':eventId', htmlspecialchars($event->getId()));
@@ -448,6 +458,27 @@ class EventRepository extends Repository
         return $event;
     }
 
+    public function deleteDanceEvent($eventId) {
+        $sql = "DELETE FROM danceevents WHERE eventId = :eventId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':eventId', htmlspecialchars($eventId));
+        $stmt->execute();
+
+        $this->deleteDanceLineUp($eventId);
+    }
+
+    public function updateDanceEvent(DanceEvent $event) {
+
+        $sql = "UPDATE danceevents SET locationId = :locationId WHERE eventId = :eventId";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':locationId', htmlspecialchars($event->getLocation()->getLocationId()));
+        $stmt->bindValue(':eventId', htmlspecialchars($event->getId()));
+        $stmt->execute();
+
+        $this->updateDanceLineup($event->getId(), $event->getArtists());
+    }
+
     private function insertDanceLineup($eventId, $artists) : void {
         $sql = "INSERT INTO dancelineups (eventId, locationId) VALUES (:eventId, :artistId)";
 
@@ -457,17 +488,17 @@ class EventRepository extends Repository
             $stmt->bindValue(':artistId', htmlspecialchars($artist->getArtistId()));
             $stmt->execute();
         }
-
     }
 
+    private function updateDanceLineup($eventId, $artists) : void{
+        $this->deleteDanceLineUp($eventId);
+        $this->insertDanceLineup($eventId, $artists);
+    }
 
-    public function updateJazzEvent($eventId, $artistId, $locationId)
-    {
-        $sql = "UPDATE jazzevents SET artistId = :artistId, locationId = :locationId WHERE eventId = :eventId";
+    private function deleteDanceLineUp($eventId) : void{
+        $sql = "DELETE FROM dancelineups WHERE eventId = :eventId";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':eventId', $eventId);
-        $stmt->bindParam(':artistId', $artistId);
-        $stmt->bindParam(':locationId', $locationId);
+        $stmt->bindValue(':eventId', htmlspecialchars($eventId));
         $stmt->execute();
     }
 

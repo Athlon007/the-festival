@@ -119,14 +119,15 @@ class EventService
                 $event->getArtist()->getId(),
                 $event->getLocation()->getLocationId()
             );
+            return $this->repo->getEventById($event->getId());
         }
 
         // if event is type of danceevent
         if ($event instanceof DanceEvent) {
-            // TODO: JOSH!
+            return $this->repo->updateDanceEvent($event);
         }
 
-        return $this->repo->getEventById($event->getId());
+
     }
 
     public function deleteEvent(int $id)
