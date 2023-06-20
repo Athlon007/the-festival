@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Bugfix">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/repositories/EventRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/EventRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/EventService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/EventService.php" afterDir="false" />
+    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Created insertDanceEvent, updateDanceEvent, deleteDanceEvent">
+      <change beforePath="$PROJECT_DIR$/app/services/HistoryService.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/InvoiceService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/InvoiceService.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -263,7 +262,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687300449191</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Created insertDanceEvent, updateDanceEvent, deleteDanceEvent">
+      <created>1687302150788</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1687302150788</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -281,7 +287,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Delete orderitem function working, working on checkout bug" />
     <MESSAGE value="Disabled buttons when not logged in" />
     <MESSAGE value="Fixed cart merging and saving cart when logging in" />
     <MESSAGE value="Displaying and calculating decimals in the cart frontend" />
@@ -306,6 +311,7 @@
     <MESSAGE value="Added GetDanceLineUp to artist repo" />
     <MESSAGE value="GetById" />
     <MESSAGE value="Bugfix" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bugfix" />
+    <MESSAGE value="Created insertDanceEvent, updateDanceEvent, deleteDanceEvent" />
+    <option name="LAST_COMMIT_MESSAGE" value="Created insertDanceEvent, updateDanceEvent, deleteDanceEvent" />
   </component>
 </project>
