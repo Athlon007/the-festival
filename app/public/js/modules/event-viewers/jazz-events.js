@@ -77,15 +77,6 @@ class JazzEventList extends EventsList {
         let firstDate = new Date(dates[0]);
         let lastDate = new Date(dates[dates.length - 1]);
 
-        while (firstDate <= lastDate) {
-            let date = firstDate.toISOString().split('T')[0];
-            if (!dates.includes(date)) {
-                dates.push(date);
-            }
-            firstDate.setDate(firstDate.getDate() + 1);
-        }
-
-
         // convert them to date objects
         dates = dates.map((date) => new Date(date));
         // sort
