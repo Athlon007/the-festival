@@ -24,7 +24,7 @@
                 <div class="carousel-item active">
                     <img src="<?= $image->getSrc(); ?>" class="d-block w-100" alt="<?= $image->getAlt(); ?>">
                     <div class="carousel-caption">
-                        <h1><?= $image->getAlt(); ?></h1>
+                        <h1><?= $event->getName(); ?></h1>
                     </div>
                 </div>
             </div>
