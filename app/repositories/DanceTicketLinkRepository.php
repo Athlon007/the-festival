@@ -223,7 +223,7 @@ class DanceTicketLinkRepository extends TicketLinkRepository
         join artists a on a.artistId = d.artistId
         where d.eventId = :id";
         $statement = $this->connection->prepare($sql);
-        $statement->bindParam(":id", $id);
+        $statement->bindValue(":id", htmlspecialchars($id));
         $statement->execute();
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 

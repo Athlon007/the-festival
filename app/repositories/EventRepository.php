@@ -12,9 +12,21 @@ require_once("EventTypeRepository.php");
 
 class EventRepository extends Repository
 {
+    private $locationRepo;
+    private $artistRepo;
+    private $eventTypeRepo;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->locationRepo = new LocationRepository();
+        $this->artistRepo = new ArtistRepository();
+        $this->eventTypeRepo = new EventTypeRepository();
+    }
+
     private function buildEvent($arr): array
     {
-        $eventTypeRepo = new EventTypeRepository();
         $events = [];
         foreach ($arr as $event) {
             if ($this->isInJazzEvents($event['eventId'])) {
@@ -32,7 +44,7 @@ class EventRepository extends Repository
                 $eventEntry->setEndTime(new DateTime($event['endTime']));
                 // if festivalEventType is not null
                 if ($event['festivalEventType'] !== null) {
-                    $eventEntry->setEventType($eventTypeRepo->getById($event['festivalEventType']));
+                    $eventEntry->setEventType($this->eventTypeRepo->getById($event['festivalEventType']));
                 }
                 if ($event['availableTickets'] !== null) {
                     $eventEntry->setAvailableTickets($event['availableTickets']);
@@ -46,18 +58,16 @@ class EventRepository extends Repository
     private function buildJazzEvent($arr): array
     {
         $events = [];
-        $locationRepo = new LocationRepository();
-        $artistRepo = new ArtistRepository();
-        $eventTypeRepo = new EventTypeRepository();
+
         foreach ($arr as $event) {
             $event = new JazzEvent(
                 $event['eventId'],
                 $event['name'],
                 new DateTime($event['startTime']),
                 new DateTime($event['endTime']),
-                $artistRepo->getById($event['artistId']),
-                $locationRepo->getById($event['locationId']),
-                $eventTypeRepo->getById($event['festivalEventType']),
+                $this->artistRepo->getById($event['artistId']),
+                $this->locationRepo->getById($event['locationId']),
+                $this->eventTypeRepo->getById($event['festivalEventType']),
                 $event['availableTickets']
             );
 
@@ -73,23 +83,17 @@ class EventRepository extends Repository
     private function buildDanceEvent($arr): array
     {
         $events = [];
-        $locationRepo = new LocationRepository();
-        $artistRepo = new ArtistRepository();
-        $eventTypeRepo = new EventTypeRepository();
 
         foreach($arr as $event){
-            $artists = [];
-            foreach($event['artists'] as $artist) {
-                $artists[] = $artistRepo->getDanceArtist($artist['artistId']);
-            }
+            $artists = $this->artistRepo->getDanceLineupByEventId($event['eventId']);
 
             $danceEvent = new DanceEvent(
                 $event['eventId'],
                 $event['name'],
                 new DateTime($event['startTime']),
                 new DateTime($event['endTime']),
-                $locationRepo->getById($event['locationId']),
-                $eventTypeRepo->getById($event['festivalEventType']),
+                $this->locationRepo->getById($event['locationId']),
+                $this->eventTypeRepo->getById($event['festivalEventType']),
                 $artists,
                 $event['availableTickets']
             );
@@ -329,6 +333,9 @@ class EventRepository extends Repository
         return $this->buildJazzEvent($arr)[0];
     }
 
+    /**
+     * @throws ObjectNotFoundException
+     */
     public function getDanceEventById(int $id) : ?DanceEvent {
 
         $sql = "SELECT d.eventId, d.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets 
@@ -338,7 +345,9 @@ class EventRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':id', $id);
         $stmt->execute();
+
         $arr = $stmt->fetchAll();
+
         return $this->buildDanceEvent($arr)[0];
     }
 

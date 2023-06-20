@@ -69,7 +69,7 @@ class EventService
         // If event is type of DanceEvent
         if ($event instanceof DanceEvent) {
             //Insert event into dance events table
-            $this->repo->insertDanceEvent($event);
+            return $this->repo->insertDanceEvent($event);
         }
 
         // if event is type of history event
