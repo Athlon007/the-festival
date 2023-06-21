@@ -188,13 +188,14 @@ class UserRepository extends Repository
     public function updateUser(User $user)
     {
         try {
-            $stmt = $this->connection->prepare("UPDATE users SET firstName = :firstName, lastName = :lastName, email = :email, userType = :userType WHERE userId = :id");
+            $stmt = $this->connection->prepare("UPDATE users SET firstName = :firstName, lastName = :lastName, email = :email, userType = :userType, hashPassword = :hashPassword WHERE userId = :id");
             $data = [
                 ':id' => $user->getUserId(),
                 ':firstName' => $user->getFirstName(),
                 ':lastName' => $user->getLastName(),
                 ':email' => $user->getEmail(),
-                ':userType' => $user->getUserType()
+                ':userType' => $user->getUserType(),
+                ':hashPassword' => $user->getHashPassword()
             ];
             $stmt->execute($data);
         } catch (Exception $ex) {

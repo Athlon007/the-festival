@@ -311,6 +311,7 @@ class UserAPIController extends APIController
             }
             session_start();
             $customer = unserialize($_SESSION['user']);
+            $customer = $this->customerService->getCustomerById($customer->getUserId());
             $this->customerService->updateCustomer($customer, $data);
 
             parent::sendSuccessMessage("Your account was successfully updated.");
