@@ -26,5 +26,16 @@ class RestaurantApiController{
            echo "Unable to retrive restaurants.", 500;
         }
     }
+
+    public function handleDeleteRequest()
+    {
+        try {
+            $this->service->deleteRestaurant($_GET['id']);
+            echo "Restaurant deleted successfully.";
+        } catch (Exception $e) {
+            Logger::write($e);
+            echo "Unable to delete restaurant.", 500;
+        }
+    }
 }
 ?>

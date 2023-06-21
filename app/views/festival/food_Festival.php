@@ -109,7 +109,7 @@
         div.innerHTML = `
         <div class="card">
           <div class="column">
-          <h3>${event.restaurantName}</h3>
+          <h3>${event.restaurant.restaurantName}</h3>
           </div>
           <div class="column">
             <p>${event.description}</p>

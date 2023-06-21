@@ -57,6 +57,7 @@ class LocationRepository extends Repository
         $result = $stmt->fetchAll();
         return $this->buildLocations($result);
     }
+
     public function getById($id)
     {
         $sql = "SELECT locationId, name, addressId, locationType, capacity, lon, lat FROM locations WHERE locationId = :id";

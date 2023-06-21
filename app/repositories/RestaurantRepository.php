@@ -44,6 +44,31 @@ class RestaurantRepository extends Repository
         return $output;
     }
 
+    private function buildRestaurant($input): array
+    {
+        $output = array();
+
+        foreach ($input as $row) {
+
+
+            $restaurant = new Restaurant();
+            $restaurant->setRestaurantId($row['restaurantId']);
+            $restaurant->setRestaurantName($row['restaurantName']);
+            $restaurant->setAddressId($row['addressId']);
+            $restaurant->setDescription($row['description']);
+            $restaurant->setPrice($row['price']);
+            $restaurant->setRating($row['rating']);
+
+            $type = new RestaurantType();
+            $type->setTypeId($row['typeId']);
+            $type->setTypeName($row['typeName']);
+
+            array_push($output, $restaurant);
+        }
+
+        return $output;
+    }
+
     public function getAllRestaurants($date = null)
     {
         try {
@@ -52,6 +77,25 @@ class RestaurantRepository extends Repository
             $stmt->execute();
 
             $result = $this->buildRestaurantEvents($stmt->fetchAll());
+
+            if (is_bool($result))
+                return null;
+            else
+                return $result;
+        } catch (PDOException $ex) {
+            throw new Exception("PDO Exception: " . $ex->getMessage());
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
+
+    public function getAll(){
+        try {
+            $query = "Select * from restaurants join foodtype on restaurants.typeId = foodtype.typeId";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute();
+
+            $result = $this->buildRestaurant($stmt->fetchAll());
 
             if (is_bool($result))
                 return null;
@@ -73,6 +117,41 @@ class RestaurantRepository extends Repository
         } catch (Exception $ex) {
             throw ($ex);
         }
+    }
+
+    public function deleteRestaurantEvent($id){
+        try {
+            $stmt = $this->connection->prepare("DELETE FROM restaurantevent WHERE restaurantId = :id");
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+
+    }
+
+    public function deleteEvent($id){
+        try {
+            $stmt = $this->connection->prepare("DELETE FROM events WHERE eventId = :id");
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+
+    }
+
+    public function getEventId($id){
+        try {
+            $stmt = $this->connection->prepare("SELECT eventId FROM restaurantevent WHERE restaurantId = :id");
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+            $result = $stmt->fetch();
+            return $result['eventId'];
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+
     }
 
     public function insertRestaurant(Restaurant $restaurant): void

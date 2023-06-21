@@ -35,6 +35,15 @@ class RestaurantService
         }
     }
 
+    public function getAll(){
+        try{
+            return $this->repository->getAll();
+        }
+        catch(Exception $ex){
+            throw($ex);
+        }
+    }
+
     function getAllRestaurants(/*$date = null*/): array
     {
         try {
@@ -47,6 +56,11 @@ class RestaurantService
     {
         try {
             $this->repository->deleteRestaurant($id);
+            $eventId = $this->repository->getEventId($id);
+            foreach ($eventId as $event) {
+                $this->repository->deleteEvent($event->getEventId());
+            }
+            $this->repository->deleteRestaurantEvent($id);
         } catch (Exception $ex) {
             throw ($ex);
         }
