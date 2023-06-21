@@ -63,23 +63,6 @@ class DanceTicketLinkRepository extends TicketLinkRepository
             );
 
             $artists = $this->getLineUpForEvent($item['eventId']);
-            foreach ($artists as $artist){
-                $artist = new Artist(
-                    $artist['artistId'],
-                    htmlspecialchars_decode($artist['artistName']),
-                    htmlspecialchars_decode($this->readIfSet($artist['artistDescription'])),
-                    array(),
-                    $this->readIfSet($artist['artistCountry']),
-                    $this->readIfSet($artist['artistGenres']),
-                    $this->readIfSet($artist['artistHomepage']),
-                    $this->readIfSet($artist['artistFacebook']),
-                    $this->readIfSet($artist['artistTwitter']),
-                    $this->readIfSet($artist['artistInstagram']),
-                    $this->readIfSet($artist['artistSpotify']),
-                    $this->readIfSet($artist['artistRecentAlbums']),
-                    $artistKind
-                );
-            }
 
             $event = new DanceEvent(
                 $item['eventId'],
@@ -333,14 +316,58 @@ class DanceTicketLinkRepository extends TicketLinkRepository
 
     private function getLineUpForEvent($id): array
     {
-        $sql = "SELECT * from dancelineups d 
-        join artists a on a.artistId = d.artistId
-        where d.eventId = :id";
+        $sql = "SELECT
+        a.artistId as artistId,
+        a.name as artistName,
+        a.description as artistDescription,
+        a.recentAlbums as artistRecentAlbums,
+        a.genres as artistGenres,
+        a.country as artistCountry,
+        a.homepageUrl as artistHomepage,
+        a.facebookUrl as artistFacebook,
+        a.twitterUrl as artistTwitter,
+        a.instagramUrl as artistInstagram,
+        a.spotifyUrl as artistSpotify,
+        a.artistKindId as artistKindId,
+        ak.name as artistKindName
+        FROM dancelineups d 
+        JOIN artists a on a.artistId = d.artistId
+        JOIN artistkinds ak on ak.id = a.artistKindId
+        WHERE d.eventId = :id";
         $statement = $this->connection->prepare($sql);
         $statement->bindValue(":id", htmlspecialchars($id));
         $statement->execute();
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        return $result;
+        return $this->buildArtists($result);
+    }
+
+    private function buildArtists($result) : array {
+        $artists = array();
+        foreach($result as $row){
+            $artistKind = new ArtistKind(
+                $row['artistKindId'],
+                $row['artistKindName']
+            );
+
+            $artist = new Artist(
+                $row['artistId'],
+                htmlspecialchars_decode($row['artistName']),
+                htmlspecialchars_decode($this->readIfSet($row['artistDescription'])),
+                array(),
+                htmlspecialchars_decode($this->readIfSet($row['artistCountry'])),
+                htmlspecialchars_decode($this->readIfSet($row['artistGenres'])),
+                htmlspecialchars_decode($this->readIfSet($row['artistHomepage'])),
+                htmlspecialchars_decode($this->readIfSet($row['artistFacebook'])),
+                htmlspecialchars_decode($this->readIfSet($row['artistTwitter'])),
+                htmlspecialchars_decode($this->readIfSet($row['artistInstagram'])),
+                htmlspecialchars_decode($this->readIfSet($row['artistSpotify'])),
+                htmlspecialchars_decode($this->readIfSet($row['artistRecentAlbums'])),
+                $artistKind
+            );
+            $artists[] = $artist;
+        }
+
+        return $artists;
     }
 }

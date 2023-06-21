@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Bugfixing put">
+    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Bugfixed updating">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/repositories/EventRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/EventRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/EventService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/EventService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/UserService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/UserService.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +73,7 @@
       <workItem from="1687168802335" duration="21008000" />
       <workItem from="1687190497923" duration="3051000" />
       <workItem from="1687245623105" duration="13291000" />
-      <workItem from="1687343474598" duration="4294000" />
+      <workItem from="1687343474598" duration="6678000" />
     </task>
     <task id="LOCAL-00001" summary="Added sendTicketsAndInvoice method to OrderService">
       <created>1686906723310</created>
@@ -299,7 +299,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687346602893</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Bugfixed updating">
+      <created>1687347972588</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1687347972588</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -317,7 +324,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Just mollie bugs left now" />
     <MESSAGE value="Tweaked cart validation" />
     <MESSAGE value="Cart tweaks for mollie bugs" />
     <MESSAGE value="Cart tweaks for after the checkout" />
@@ -342,6 +348,7 @@
     <MESSAGE value="Bugfixed post, getbyid and getall, just put not working cos of constraints." />
     <MESSAGE value="Bugfixing" />
     <MESSAGE value="Bugfixing put" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bugfixing put" />
+    <MESSAGE value="Bugfixed updating" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bugfixed updating" />
   </component>
 </project>
