@@ -458,18 +458,9 @@ class EventRepository extends Repository
         return $event;
     }
 
-    public function deleteDanceEvent($eventId) {
-        $sql = "DELETE FROM danceevents WHERE eventId = :eventId";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':eventId', htmlspecialchars($eventId));
-        $stmt->execute();
-
-        $this->deleteDanceLineUp($eventId);
-    }
-
-    public function updateDanceEvent(DanceEvent $event) {
+    public function updateDanceEvent(DanceEvent $event) : Event{
         //Check if the event is in the dance events table
-        if(!isInDanceEvents($event->getId())){
+        if(!$this->isInDanceEvents($event->getId())){
             throw new ObjectNotFoundException("Event not found in dance events table");
         }
 
@@ -483,6 +474,8 @@ class EventRepository extends Repository
 
         //Update danceLineups table
         $this->updateDanceLineup($event->getId(), $event->getArtists());
+
+        return $event;
     }
 
     private function insertDanceLineup($eventId, $artists) : void {

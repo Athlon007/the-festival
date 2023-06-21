@@ -90,6 +90,10 @@ class EventService
         return $this->repo->getEventById($id);
     }
 
+    /**
+     * @throws ObjectNotFoundException
+     * @throws InvalidVariableException
+     */
     public function editEvent($event): Event
     {
         //Check if event exists
