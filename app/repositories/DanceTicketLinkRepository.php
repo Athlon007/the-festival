@@ -57,10 +57,6 @@ class DanceTicketLinkRepository extends TicketLinkRepository
                 $item['eventTypeName'],
                 $item['evenTypeVat']
             );
-            $artistKind = new ArtistKind(
-                $item['artistKindId'],
-                $item['artistKindName']
-            );
 
             $artists = $this->getLineUpForEvent($item['eventId']);
 
