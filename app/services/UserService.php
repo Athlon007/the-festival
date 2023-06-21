@@ -127,8 +127,8 @@ class UserService
             $user = $this->getUserByEmail($email);
             // $name = $user->getFirstName();
 
-            require_once("../Config.php");
-            
+            require("../Config.php");
+
             ob_start();
             require_once(__DIR__ . '/../emails/resetPassword.php');
             $mail->Body = ob_get_clean();
