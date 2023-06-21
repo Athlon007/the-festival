@@ -219,6 +219,7 @@ class CartService
         if (!$customerOrder && $this->cartIsInitialised()) {
             $order = $this->getCart();
             $order->setCustomer($customer);
+            $order->setIsPaid(0);
             $this->orderService->updateOrder($order->getOrderId(), $order);
             return;
         }

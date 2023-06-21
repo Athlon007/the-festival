@@ -246,7 +246,7 @@ class OrderRepository extends Repository
         return $orders;
     }
 
-    public function updateOrder($orderId, $order): Order
+    public function updateOrder(int $orderId, Order $order): Order
     {
         $sql = "UPDATE orders SET orderDate = :orderDate, customerId = :customerId, isPaid = :isPaid WHERE orderId = :orderId";
         $stmt = $this->connection->prepare($sql);
