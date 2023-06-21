@@ -117,8 +117,13 @@ class APIController
 
     final protected function getApiKeyFromBearer()
     {
-        $headers = apache_request_headers();
-        $bearer = $headers['Authorization'];
+        $bearer = "";
+        // Check if server is running on Apache or Nginx.
+        if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            $bearer = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+        } else {
+            $bearer = $_SERVER['HTTP_AUTHORIZATION'];
+        }
         $bearer = str_replace("Bearer ", "", $bearer);
         return $bearer;
     }
