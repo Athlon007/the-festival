@@ -39,16 +39,16 @@
           </div>
 
         </li>
-        <li class="list-group-item">
+<!--      <li class="list-group-item">
           <div class="col-md-6 ticketOfTour" style="width: 50%; float:center;">
-            <h3>FIlter by type</h3>
-            <select class="form-select" id="ticket">
-            <?php foreach ($types as $type) { ?>
-              <option value="<?php $type['typeId'] ?>"> <?= $type['typeName']?></option>
-              <?php } ?>
+            <h3>Restaurant</h3>
+            <select class="form-select" id="restaurant">
+            <?php // foreach ($restaurants as $restaurant) { ?>
+              <option value="<?php //$type['typeId'] ?>"> <?php //$type['typeName']?></option>
+              <?php //} ?>
             </select>
           </div>
-        </li>
+        </li>-->
         <li class="list-group-item">
         <h3>Dates</h3>
           <select class="form-select" id="date" onselect="filterByDate()">
