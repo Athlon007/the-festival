@@ -22,17 +22,17 @@ class DanceEvent extends MusicEvent implements JsonSerializable
         return $this->artists;
     }
 
-    public function setArtists(array $value)
+    public function setArtists(array $value): void
     {
         $this->artists = $value;
     }
 
-    public function addArtist(Artist $artist)
+    public function addArtist(Artist $artist): void
     {
         $this->artists[] = $artist;
     }
 
-    public function removeArtist(Artist $artist)
+    public function removeArtist(Artist $artist): void
     {
         $index = array_search($artist, $this->artists);
         if ($index !== false) {

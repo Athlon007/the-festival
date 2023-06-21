@@ -109,6 +109,16 @@ class Router
                 $festivalJazzController->loadEventPage($request);
                 return;
             }
+        } elseif (str_starts_with($request, "/festival/dance/")) {
+            require_once("controllers/FestivalDanceController.php");
+            $festivalDanceController = new FestivalDanceController();
+            if (str_starts_with($request, "/festival/dance/artist/")) {
+                $festivalDanceController->loadArtistPage($request);
+                return;
+            } elseif (str_starts_with($request, "/festival/dance/event/")) {
+                $festivalDanceController->loadEventPage($request);
+                return;
+            }
         }
 
         if (str_starts_with($request, '/admin/')) {
@@ -331,6 +341,9 @@ class Router
                 break;
             case "/admin/jazz-events":
                 require("views/admin/jazz-events.php");
+                break;
+            case "/admin/dance-events":
+                require("views/admin/dance-events.php");
                 break;
             case "/admin/images":
                 require("views/admin/images.php");

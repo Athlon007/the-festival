@@ -1,6 +1,7 @@
 // Author: Konrad
 if (window.frameElement == null) {
     window.location.href = '/manageNavBar';
+    throw new Error('Unauthorized access');
 }
 
 import { MsgBox } from "./modals.js";

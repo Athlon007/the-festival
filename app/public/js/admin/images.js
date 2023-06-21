@@ -1,6 +1,7 @@
 // Author: Konrad
 if (window.frameElement == null) {
     window.location.href = '/manageImages';
+    throw new Error('Unauthorized access');
 }
 
 import { ImagePicker } from "./image_picker.js";
