@@ -30,7 +30,7 @@ class FestivalFoodService
             $festivalFoodRepository = new FestivalFoodRepository();
             $events = $festivalFoodRepository->getRestarantEvents($id);
             
-            return $events;
+            //return $events;
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
