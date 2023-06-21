@@ -10,6 +10,7 @@ require_once(__DIR__ . "/../models/Music/Artist.php");
 require_once(__DIR__ . "/../models/Music/ArtistKind.php");
 require_once(__DIR__ . "/../models/Music/DanceEvent.php");
 require_once(__DIR__ . "/../models/TicketLink.php");
+require_once(__DIR__ . "/../models/Exceptions/ObjectNotFoundException.php");
 
 /**
  * Class DanceTicketLinkRepository
@@ -103,7 +104,120 @@ class DanceTicketLinkRepository extends TicketLinkRepository
         return $output;
     }
 
+    /**
+     * Gets TicketLink by TicketLinkId
+     * @throws Exception
+     * @return array
+     */
+    public function getById($id) : ?TicketLink
+    {
+        $sql = "SELECT e.eventId,
+		e.name as eventName,
+		e.startTime,
+		e.endTime,
+		e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets,
+		f.eventTypeId as eventTypeId,
+		f.name as eventTypeName,
+		f.VAT as evenTypeVat,
+		l.locationId as locationId,
+		l.name as locationName,
+		l.locationType as locationType,
+		l.capacity as locationCapacity,
+		l.lon as locationLon,
+		l.lat as locationLat,
+		l.description as locationDescription,
+		ad.addressId as addressId,
+		ad.streetName as addressStreetName,
+		ad.houseNumber as addressHouseNumber,
+		ad.postalCode as addressPostalCode,
+		ad.city as addressCity,
+		ad.country as addressCountry,
+		t.ticketTypeId as ticketTypeId,
+		t.ticketTypeName as ticketTypeName,
+		t.ticketTypePrice as ticketTypePrice,
+		t.nrOfPeople as ticketTypeNrOfPeople,
+        c.ticketLinkId as ticketLinkId
+        FROM danceevents de
+        JOIN events e ON e.eventId = de.eventId
+        JOIN ticketlinks c on e.eventId = c.eventId
+        JOIN tickettypes t on c.ticketTypeId = t.ticketTypeId
+        JOIN locations l on l.locationId = de.locationId
+        JOIN festivaleventtypes f on f.eventTypeId  = e.festivalEventType
+        JOIN addresses ad on ad.addressId =l.addressId
+        WHERE c.ticketLinkId = :id";
 
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":id", htmlspecialchars($id));
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            return null;
+        }
+        return $this->build($result)[0];
+    }
+
+/**
+     * Gets TicketLink by EventId
+     * @throws Exception
+     * @return array
+     */
+    public function getByEventId($id): ?TicketLink
+    {
+        $sql = "SELECT e.eventId,
+		e.name as eventName,
+		e.startTime,
+		e.endTime,
+		e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets,
+		f.eventTypeId as eventTypeId,
+		f.name as eventTypeName,
+		f.VAT as evenTypeVat,
+		l.locationId as locationId,
+		l.name as locationName,
+		l.locationType as locationType,
+		l.capacity as locationCapacity,
+		l.lon as locationLon,
+		l.lat as locationLat,
+		l.description as locationDescription,
+		ad.addressId as addressId,
+		ad.streetName as addressStreetName,
+		ad.houseNumber as addressHouseNumber,
+		ad.postalCode as addressPostalCode,
+		ad.city as addressCity,
+		ad.country as addressCountry,
+		t.ticketTypeId as ticketTypeId,
+		t.ticketTypeName as ticketTypeName,
+		t.ticketTypePrice as ticketTypePrice,
+		t.nrOfPeople as ticketTypeNrOfPeople,
+        c.ticketLinkId as ticketLinkId
+        FROM danceevents de
+        JOIN events e ON e.eventId = de.eventId
+        JOIN ticketlinks c on e.eventId = c.eventId
+        JOIN tickettypes t on c.ticketTypeId = t.ticketTypeId
+        JOIN locations l on l.locationId = de.locationId
+        JOIN festivaleventtypes f on f.eventTypeId  = e.festivalEventType
+        JOIN addresses ad on ad.addressId =l.addressId
+        WHERE de.eventId = :id";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":id", htmlspecialchars($id));
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            return null;
+        }
+        return $this->build($result)[0];
+    }
+
+
+    /**
+     * Gets all TicketLinks
+     * @param string $sort
+     * @param array $filters
+     * @return array
+     * @throws Exception
+     */
     public function getAll($sort = null, $filters = []): array
     {
         $sql = "SELECT e.eventId,
@@ -132,11 +246,11 @@ class DanceTicketLinkRepository extends TicketLinkRepository
 		t.ticketTypePrice as ticketTypePrice,
 		t.nrOfPeople as ticketTypeNrOfPeople,
         c.ticketLinkId as ticketLinkId
-        FROM danceevents je
-        JOIN events e ON e.eventId = je.eventId
+        FROM danceevents de
+        JOIN events e ON e.eventId = de.eventId
         JOIN ticketlinks c on e.eventId = c.eventId
         JOIN tickettypes t on c.ticketTypeId = t.ticketTypeId
-        JOIN locations l on l.locationId = je.locationId
+        JOIN locations l on l.locationId = de.locationId
         JOIN festivaleventtypes f on f.eventTypeId  = e.festivalEventType
         JOIN addresses ad on ad.addressId =l.addressId";
 
@@ -223,7 +337,7 @@ class DanceTicketLinkRepository extends TicketLinkRepository
         join artists a on a.artistId = d.artistId
         where d.eventId = :id";
         $statement = $this->connection->prepare($sql);
-        $statement->bindParam(":id", $id);
+        $statement->bindValue(":id", htmlspecialchars($id));
         $statement->execute();
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 

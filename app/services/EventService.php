@@ -69,7 +69,8 @@ class EventService
         // If event is type of DanceEvent
         if ($event instanceof DanceEvent) {
             //Insert event into dance events table
-            $this->repo->insertDanceEvent($event);
+            $event->setId($id);
+            return $this->repo->insertDanceEvent($event);
         }
 
         // if event is type of history event
@@ -119,6 +120,7 @@ class EventService
                 $event->getArtist()->getId(),
                 $event->getLocation()->getLocationId()
             );
+            return $this->repo->getEventById($event->getId());
         }
 
         if ($event instanceof HistoryEvent) {
@@ -133,11 +135,10 @@ class EventService
         }
 
         // if event is type of danceevent
-        if ($event instanceof DanceEvent) {
-            // TODO: JOSH!
-        }
-
-        return $this->repo->getEventById($event->getId());
+        elseif ($event instanceof DanceEvent) {
+            return $this->repo->updateDanceEvent($event);
+        } else
+            throw new InvalidVariableException("Event type not supported");
     }
 
     public function deleteEvent(int $id)

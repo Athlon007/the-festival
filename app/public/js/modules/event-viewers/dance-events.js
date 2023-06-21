@@ -314,7 +314,7 @@ class DanceEventList extends EventsList {
             buyButton.classList.add('btn', 'btn-primary', 'col-3');
             buyButton.innerText = event.ticketType.price == 0 ? 'Book a ticket' : 'Add ticket to cart';
             buyButton.addEventListener('click', () => {
-                this.addToCart(event.id);
+                Cart.Add(event.id);
             });
             rowButtons.appendChild(buyButton);
         }

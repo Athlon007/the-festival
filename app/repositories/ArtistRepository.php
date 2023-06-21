@@ -3,6 +3,7 @@
 require_once("Repository.php");
 require_once("../models/Music/Artist.php");
 require_once("../models/Music/ArtistKind.php");
+require_once("../models/Exceptions/ObjectNotFoundException.php");
 
 /**
  * @author Konrad
@@ -111,7 +112,7 @@ class ArtistRepository extends Repository
     /**
      * Returns the artist with the given id.
      */
-    public function getById($id): ?Artist
+    public function getById($id): Artist
     {
         $sql = "SELECT artistId, name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, recentAlbums, artistKindId "
             . "FROM artists WHERE artistId = :id";
@@ -121,24 +122,21 @@ class ArtistRepository extends Repository
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         $artists = $this->buildJazzArtist($result);
         if (count($artists) == 0) {
-            return null;
+            throw new ObjectNotFoundException("Artist with id $id not found");
         }
         return $artists[0];
     }
 
-    public function getDanceEventsArtist($id): array
+    public function getDanceLineupByEventId($eventId): array
     {
-        $sql = "SELECT * from danceevents d 
-        join dancelineups d2 on d2.eventId = d.eventId
-        join artists a on a.artistId = d2.artistId join locations l on l.locationId = d.locationId
-        join events e on e.eventId = d.eventId
-        where a.artistId = 30";
+        $sql = "SELECT * from dancelineups d 
+        join artists a on a.artistId = d.artistId 
+        where d.eventId = :eventId";
         $statement = $this->connection->prepare($sql);
-        $statement->bindParam(":id", $id);
+        $statement->bindValue(":eventId", htmlspecialchars($eventId));
         $statement->execute();
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        return $result;
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
