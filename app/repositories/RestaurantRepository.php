@@ -58,6 +58,7 @@ class RestaurantRepository extends Repository
             $restaurant->setDescription($row['description']);
             $restaurant->setPrice($row['price']);
             $restaurant->setRating($row['rating']);
+            $restaurant->location = $row['name'];
 
             $type = new RestaurantType();
             $type->setTypeId($row['typeId']);
@@ -91,7 +92,7 @@ class RestaurantRepository extends Repository
 
     public function getAll(){
         try {
-            $query = "Select * from restaurants join foodtype on restaurants.typeId = foodtype.typeId";
+            $query = "Select r.*, l.name as name, ft.*  from restaurants as r join foodtype as ft on r.typeId = ft.typeId join locations as l on r.addressId = l.addressId";
             $stmt = $this->connection->prepare($query);
             $stmt->execute();
 
@@ -100,6 +101,7 @@ class RestaurantRepository extends Repository
             if (is_bool($result))
                 return null;
             else
+
                 return $result;
         } catch (PDOException $ex) {
             throw new Exception("PDO Exception: " . $ex->getMessage());

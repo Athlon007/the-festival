@@ -112,10 +112,10 @@
           <h3>${event.restaurant.restaurantName}</h3>
           </div>
           <div class="column">
-            <p>${event.description}</p>
+            <p>${event.restaurant.description}</p>
           </div>
           <div class="column">
-            <p>${event.price}</p>
+            <p>${event.restaurant.price}</p>
           </div>
             <button class="btn btn-primary addToCartButton">Add to cart</button>
         </div>

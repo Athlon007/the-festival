@@ -19,7 +19,7 @@
     <script type="module" src="/js/nav.js"></script>
     <h1>Add Session</h1>
                 
-                <form action="insertSession" method="POST">
+                <form action="insertSession?restaurantId=<?=$_GET['restaurantId']?>" method="POST">
                 <div class="form-group">
                         <label for="Name">Name</label>
                         <input type="text" class="form-control" id="" name="name" value="">

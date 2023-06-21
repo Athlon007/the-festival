@@ -227,7 +227,7 @@ class Router
             case "/insertSession":
                 require_once("controllers/FestivalFoodController.php");
                 $festivalFoodController = new FestivalFoodController();
-                $festivalFoodController->insertSession();
+                $festivalFoodController->insertSession($_GET['restaurantId']);
                 break;
             case "/updateSession":
                 require_once("controllers/FestivalFoodController.php");
@@ -465,7 +465,7 @@ class Router
                 require_once("../models/Yummy/RestaurantType.php");
                 require_once("../services/FestivalFoodService.php");
                 $festivalFoodService = new FestivalFoodService();
-                $events = $festivalFoodService->getRestarantEvents();
+                $events = $festivalFoodService->getRestarantEvents($_GET["restaurantId"]);
                 require_once("../views/admin/Restaurant management/manageSessions.php");
                 break;
             case "/manageJazz":

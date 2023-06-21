@@ -24,23 +24,23 @@ class FestivalFoodService
             echo $e->getMessage();
         }
     }
-    public function getRestarantEvents(){
+    public function getRestarantEvents($id){
         try{
             require_once("../repositories/FestivalFoodRepository.php");
             $festivalFoodRepository = new FestivalFoodRepository();
-            $events = $festivalFoodRepository->getRestarantEvents();
+            $events = $festivalFoodRepository->getRestarantEvents($id);
             
             return $events;
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
     }
-    public function insertSession($session){
+    public function insertSession($session, $restaurantId){
         try{
             require_once("../repositories/FestivalFoodRepository.php");
             $festivalFoodRepository = new FestivalFoodRepository();
-            $festivalFoodRepository->insertSession($session);
-            //$festivalFoodRepository->insertLink($restaurantId, $eventId);
+            $eventId = $festivalFoodRepository->insertSession($session);
+            $festivalFoodRepository->insertLink($restaurantId, $eventId);
         } catch (PDOException $e) {
             echo $e->getMessage();
         }

@@ -59,7 +59,7 @@
             </table>
             <div class="row mt-3" style="padding-right: 10%; padding-bottom: 1%">
                 <div class="col-12 text-right">
-                    <a href="/addSession" class="btn btn-success btn-lg">Add Session</a>
+                    <a href="/addSession?restaurantId=<?=$_GET['restaurantId']?>" class="btn btn-success btn-lg">Add Session</a>
                 </div>
             </div>
         </div>

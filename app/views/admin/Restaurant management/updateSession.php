@@ -20,9 +20,10 @@
     <h1>Update Session</h1>
                 
                 <form action="editSession" method="POST">
+                    <input type="text" hidden value="<?php echo $event['eventId']; ?>" name="eventId">
                 <div class="form-group">
                         <label for="Name">Name</label>
-                        <input type="text" class="form-control" id="" name="name"                 
+                        <input type="text" class="form-control" id="" name="eventName"                 
                         value="<?php echo $event['name']; ?>" autocomplete="off">
                     </div>
                     <div class="form-group">

@@ -70,6 +70,9 @@ class FestivalFoodController
             $endTime = $_POST['endTime'];
             $availableTickets = $_POST['availableTickets'];
 
+            $startTime = DateTime::createFromFormat('Y-m-d\TH:i', $startTime);
+            $endTime = DateTime::createFromFormat('Y-m-d\TH:i', $endTime);
+
             $restaurantEvent->setId($id);
             $restaurantEvent->setName($name);
             $restaurantEvent->setStartTime($startTime);
@@ -79,9 +82,9 @@ class FestivalFoodController
     
             require_once("../services/FestivalFoodService.php");
             $festivalFoodService = new FestivalFoodService();
-            $festivalFoodService->updateSession($session);
+            $festivalFoodService->updateSession($restaurantEvent);
     
-            header("Location: /manageRestaurants");
+            header("Location: /updateSession?id=" . $id);
     
     }
     public function updateRestaurant($id){
@@ -134,7 +137,7 @@ class FestivalFoodController
 
         header("Location: /manageRestaurants");
     }
-    public function insertSession(){
+    public function insertSession($restaurantId){
         require_once("../models/Yummy/RestaurantEvent.php");
         $session = new RestaurantEvent();
 
@@ -142,6 +145,8 @@ class FestivalFoodController
         $availableSeats = $_POST['availableTickets'];
         $startTime = $_POST['startTime'];
         $endTime = $_POST['endTime'];
+        $startTime = DateTime::createFromFormat('Y-m-d\TH:i', $startTime);
+        $endTime = DateTime::createFromFormat('Y-m-d\TH:i', $endTime);
 
         $session->setName($name);
         $session->setAvailableTickets($availableSeats);
@@ -150,9 +155,9 @@ class FestivalFoodController
 
         require_once("../services/FestivalFoodService.php");
         $festivalFoodService = new FestivalFoodService();
-        $festivalFoodService->insertSession($session);
+        $festivalFoodService->insertSession($session, $restaurantId);
 
-        header("Location: /manageSessions");
+        header("Location: /manageSessions?restaurantId=$restaurantId");
 
         
     }

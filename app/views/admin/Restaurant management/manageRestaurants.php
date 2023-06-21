@@ -39,7 +39,7 @@
                                 <?php echo $restaurant->getRestaurantName(); ?>
                             </td>
                             <td data-th="address Id">
-                                <?php echo $restaurant->getAddressId(); ?>
+                                <?php echo $restaurant->location; ?>
                             </td>
                             <td data-th="Description">
                                 <?php echo $restaurant->getDescription(); ?>

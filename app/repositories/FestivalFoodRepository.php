@@ -77,11 +77,15 @@ class FestivalFoodRepository extends Repository
             $endTime = $session->getEndTime();
             $availableTickets = $session->getAvailableTickets();
 
+            $startTime = $startTime->format('Y-m-d H:i:s');
+            $endTime = $endTime->format('Y-m-d H:i:s');
+
             $stmt->bindValue(":name", $name);
             $stmt->bindValue(":startTime", $startTime);
             $stmt->bindValue(":endTime", $endTime);
             $stmt->bindValue(":availableTickets", $availableTickets);
             $stmt->execute();
+            return $this->connection->lastInsertId();
         } catch (Exception $ex) {
             throw ($ex);
         }
@@ -146,15 +150,15 @@ class FestivalFoodRepository extends Repository
         }
     }
 
-    public function getRestarantEvents()
+    public function getRestarantEvents($id)
     {
         try {
-            /*$query = "SELECT *
+            $query = "SELECT *
             FROM development.events join restaurantevent on events.eventId=restaurantevent.eventId
-            where restaurantevent.restaurantId = :id;";*/
-            $query = "SELECT * FROM events WHERE festivalEventType = 2";
+            where restaurantevent.restaurantId = :id;";
+            //$query = "SELECT * FROM events WHERE festivalEventType = 2";
             $stmt = $this->connection->prepare($query);
-            //$stmt->bindParam(":id", $id);
+            $stmt->bindParam(":id", $id);
             $stmt->execute();
 
             $result = $stmt->fetchAll();
@@ -241,7 +245,10 @@ class FestivalFoodRepository extends Repository
             $startTime = $session->getStartTime();
             $endTime = $session->getEndTime();
             $availableTickets = $session->getAvailableTickets();
-            $id = $session->getEventId();
+            $id = $session->getId();
+
+            $startTime = $startTime->format('Y-m-d H:i:s');
+            $endTime = $endTime->format('Y-m-d H:i:s');
 
             $stmt->bindParam(":name", $name);
             $stmt->bindParam(":startTime", $startTime);
