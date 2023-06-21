@@ -79,8 +79,7 @@ class TicketService
   public function getAllYummyTickets(Order $order): array
   {
     try {
-      $eventType = "yummy";
-      $tickets = $this->repository->getAllTicketsByOrderIdAndEventType($order, $eventType);
+      $tickets = $this->repository->getAllYummyTicketsByOrderId($order);
       return $tickets;
     } catch (Exception $ex) {
       throw ($ex);
@@ -151,7 +150,8 @@ class TicketService
         $this->getAllHistoryTickets($order),
         $this->getAllJazzTickets($order),
         $this->getAllDanceTickets($order),
-        $this->getAllPasses($order)
+        $this->getAllPasses($order),
+        $this->getAllYummyTickets($order)
       );
 
       $qrCodeImages = array();
