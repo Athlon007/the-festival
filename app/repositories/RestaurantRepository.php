@@ -216,6 +216,37 @@ class RestaurantRepository extends Repository
         }
     }
 
+    public function getByEventId($id)
+    {
+        try {
+            $query = "select *
+            from restaurants
+            join restaurantevent on restaurants.restaurantId = restaurantevent.restaurantId
+            join events on restaurantevent.eventId = events.eventId
+            join foodtype on restaurants.typeId = foodtype.typeId
+            join festivaleventtypes on events.festivalEventType  = festivaleventtypes.eventTypeId
+            join ticketlinks on events.eventId = ticketlinks.eventId
+            join tickettypes on tickettypes.ticketTypeId = ticketlinks.ticketTypeId
+            where events.eventId = :eventId";
+
+            $stmt = $this->connection->prepare($query);
+
+            $stmt->bindValue(":eventId", $id, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            if ($stmt->rowCount() == 0)
+                return null;
+
+            $result = $this->buildRestaurantEvents($stmt->fetchAll());
+            return $result[0];
+        } catch (PDOException $ex) {
+            throw new Exception("PDO Exception: " . $ex->getMessage());
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+    }
+
     public function insertRestaurant(Restaurant $restaurant): void
     {
         try {

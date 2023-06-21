@@ -176,7 +176,7 @@ class TicketRepository extends Repository
         foreach ($result as $row) {
             $ticket = $this->getTicketById($row['ticketId']);
             $ticket->setTicketId($row['ticketId']);
-            $ticket->setFullPrice($row['price']);
+            $ticket->setFullPrice($row['ticketPrice']);
 
             $userRep = new UserRepository();
             $user = $userRep->getById($row['userId']);
@@ -186,9 +186,11 @@ class TicketRepository extends Repository
             $customer->setEmail($user->getEmail());
             $order->setCustomer($customer);
 
-            $eventRep = new EventRepository();
-            $event = $eventRep->getEventById($row['eventId']);
-            $ticket->setEvent($event);
+            require_once("RestaurantRepository.php");
+
+            $eventRep = new RestaurantRepository();
+            $ticketLink = $eventRep->getByEventId($row['eventId']);
+            $ticket->setEvent($ticketLink->getEvent());
 
             array_push($tickets, $ticket);
         }
