@@ -294,11 +294,12 @@ class OrderRepository extends Repository
             $stmt->bindValue(":customerId", null);
         }
         $stmt->execute();
+        $insertId = $this->connection->lastInsertId();
 
         //Also cleanse the old orders from the database
         $this->removeOldOrders();
 
-        return $this->getOrderById($this->connection->lastInsertId());
+        return $this->getOrderById($insertId);
     }
 
     public function insertOrderItem($orderItem, $orderId): OrderItem
@@ -331,7 +332,7 @@ class OrderRepository extends Repository
     }
 
 
-    //This method is used to remove orders that were never linked to an account and that are 7 days old.
+    //This method is used to remove orders that were never linked to an account and that are 2 days old.
     private function removeOldOrders()
     {
         $sql = "DELETE 

@@ -108,7 +108,7 @@ class OrderService
         return $this->orderRepository->getCartOrderForCustomer($customerId);
     }
 
-    public function createOrder(int $ticketLinkId, int $customerId = NULL): Order
+    public function createOrder($ticketLinkId, $customerId = NULL): Order
     {
         $order = new Order();
         $order->setOrderDate(new DateTime());
