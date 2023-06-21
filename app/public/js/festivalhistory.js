@@ -36,7 +36,7 @@
          } else {
              ticket.style.display = 'none';
          }
-         //TODO: finish the logic to display the tickets that match the selected preferences
+
          console.log(ticketTime);
      });
  });

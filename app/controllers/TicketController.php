@@ -44,22 +44,4 @@ class TicketController
             throw ($ex);
         }
     }
-
-    public function getAllTicketsAndSend($order){
-
-
-        $order_id = $order->id;
-
-
-        $orderItemService = new OrderService();
-        $orderItems[] = $orderItemService->getsItemByOrderId($order_id);
-        $tickets[] = null;
-
-        foreach($orderItems as $order){
-                //TODO: create a ticket
-                $ticket = null;
-                array_push($ticket);
-        }
-
-    }
 }
