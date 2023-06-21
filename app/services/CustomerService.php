@@ -91,5 +91,7 @@ class CustomerService{
         $customer->getAddress()->setCountry($data->address->country);
 
         $this->customerRepository->updateCustomer($customer);
+        $this->userRepository->updateUser($customer);
+        $this->userRepository->updatePassword($customer);
     }
 }

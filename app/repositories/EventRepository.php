@@ -33,10 +33,9 @@ class EventRepository extends Repository
                 $events[] = $this->getJazzEventById($event['eventId']);
             } elseif ($this->isInHistoryEvents($event['eventId'])) {
                 $events[] = $this->getHistoryEventById($event['eventId']);
-            } elseif($this->isInDanceEvents($event['eventId'])) {
+            } elseif ($this->isInDanceEvents($event['eventId'])) {
                 $events[] = $this->getDanceEventById($event['eventId']);
-            }
-            else {
+            } else {
                 $eventEntry = new Event();
                 $eventEntry->setId($event['eventId']);
                 $eventEntry->setName($event['name']);
@@ -84,7 +83,7 @@ class EventRepository extends Repository
     {
         $events = [];
 
-        foreach($arr as $event){
+        foreach ($arr as $event) {
             $artists = $this->artistRepo->getDanceLineupByEventId($event['eventId']);
 
             $danceEvent = new DanceEvent(
@@ -206,7 +205,8 @@ class EventRepository extends Repository
     }
 
     // DANCE
-    private function isInDanceEvents($id) : bool {
+    private function isInDanceEvents($id): bool
+    {
         $sql = "SELECT eventId FROM danceevents WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(['id' => $id]);
@@ -306,8 +306,9 @@ class EventRepository extends Repository
         return $this->buildJazzEvent($arr, $filters);
     }
 
-    public function getAllDanceEvents(){
-        $sql = "SELECT * from danceevents d 
+    public function getAllDanceEvents()
+    {
+        $sql = "SELECT * from danceevents d
         join dancelineups d2 on d2.eventId = d.eventId
         join artists a on a.artistId = d2.artistId join locations l on l.locationId = d.locationId
         join events e on e.eventId = d.eventId";
@@ -336,11 +337,12 @@ class EventRepository extends Repository
     /**
      * @throws ObjectNotFoundException
      */
-    public function getDanceEventById(int $id) : ?DanceEvent {
+    public function getDanceEventById(int $id): ?DanceEvent
+    {
 
-        $sql = "SELECT d.eventId, d.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets 
-                FROM danceevents d 
-                JOIN events e ON e.eventId = d.eventId 
+        $sql = "SELECT d.eventId, d.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets
+                FROM danceevents d
+                JOIN events e ON e.eventId = d.eventId
                 WHERE d.eventId = :id ";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':id', $id);
@@ -351,7 +353,8 @@ class EventRepository extends Repository
         return $this->buildDanceEvent($arr)[0];
     }
 
-    private function getDanceLineUp() : array {
+    private function getDanceLineUp(): array
+    {
         return [];
     }
 
@@ -446,7 +449,8 @@ class EventRepository extends Repository
         $stmt->execute();
     }
 
-    public function insertDanceEvent(DanceEvent $event) {
+    public function insertDanceEvent(DanceEvent $event)
+    {
         $sql = "INSERT INTO danceevents (eventId, locationId) VALUES (:eventId, :locationId)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':eventId', htmlspecialchars($event->getId()));
@@ -458,9 +462,10 @@ class EventRepository extends Repository
         return $event;
     }
 
-    public function updateDanceEvent(DanceEvent $event) : Event{
+    public function updateDanceEvent(DanceEvent $event): Event
+    {
         //Check if the event is in the dance events table
-        if(!$this->isInDanceEvents($event->getId())){
+        if (!$this->isInDanceEvents($event->getId())) {
             throw new ObjectNotFoundException("Event not found in dance events table");
         }
 
@@ -478,10 +483,11 @@ class EventRepository extends Repository
         return $event;
     }
 
-    private function insertDanceLineup($eventId, $artists) : void {
+    private function insertDanceLineup($eventId, $artists): void
+    {
         $sql = "INSERT INTO dancelineups (eventId, artistId) VALUES (:eventId, :artistId)";
 
-        foreach($artists as $artist){
+        foreach ($artists as $artist) {
             $stmt = $this->connection->prepare($sql);
             $stmt->bindValue(':eventId', htmlspecialchars($eventId));
             $stmt->bindValue(':artistId', htmlspecialchars($artist->getId()));
@@ -489,12 +495,14 @@ class EventRepository extends Repository
         }
     }
 
-    private function updateDanceLineup($eventId, $artists) : void{
+    private function updateDanceLineup($eventId, $artists): void
+    {
         $this->deleteDanceLineUp($eventId);
         $this->insertDanceLineup($eventId, $artists);
     }
 
-    private function deleteDanceLineUp($eventId) : void{
+    private function deleteDanceLineUp($eventId): void
+    {
         $sql = "DELETE FROM dancelineups WHERE eventId = :eventId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':eventId', htmlspecialchars($eventId));
@@ -523,10 +531,22 @@ class EventRepository extends Repository
         return $this->buildJazzEvent($arr);
     }
 
-    public function getFestivalDates(): array
+    public function getFestivalDates($filters): array
     {
-        $sql = "SELECT DISTINCT DATE(startTime) as date FROM events ORDER BY date";
+        $sql = "SELECT DISTINCT DATE(startTime) as date FROM events ";
+
+        if (isset($filters['eventType'])) {
+            $sql .= " WHERE festivalEventType = :eventType ";
+        }
+
+        $sql .= " ORDER BY date ";
+
         $stmt = $this->connection->prepare($sql);
+
+        if (isset($filters['eventType'])) {
+            $stmt->bindValue(':eventType', $filters['eventType']);
+        }
+
         $stmt->execute();
         $arr = $stmt->fetchAll();
         return array_map(fn ($date) => $date['date'], $arr);

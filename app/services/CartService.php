@@ -207,6 +207,7 @@ class CartService
     /**
      * @param $customerId
      * @return void
+     * @throws CartException
      */
     public function getCartAfterLogin($customer): void
     {

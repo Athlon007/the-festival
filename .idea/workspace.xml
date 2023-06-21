@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Fixed dance line up fetching">
+    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Remove old olders fixed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/repositories/ArtistRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/ArtistRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/repositories/HistoryTicketLinkRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/HistoryTicketLinkRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/MailService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/MailService.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,7 +21,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="Dance" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -40,20 +40,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Dance&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/joshu/Documents/InHolland/Year 2/Term 3/the-festival-2&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "bugfixing-customer",
+    "last_opened_file_path": "C:/Users/joshu/Documents/InHolland/Year 2/Term 3/the-festival-2",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -73,7 +73,7 @@
       <workItem from="1687168802335" duration="21008000" />
       <workItem from="1687190497923" duration="3051000" />
       <workItem from="1687245623105" duration="13291000" />
-      <workItem from="1687343474598" duration="7773000" />
+      <workItem from="1687343474598" duration="17892000" />
     </task>
     <task id="LOCAL-00001" summary="Added sendTicketsAndInvoice method to OrderService">
       <created>1686906723310</created>
@@ -313,7 +313,49 @@
       <option name="project" value="LOCAL" />
       <updated>1687350506431</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Changed dance line up fetching also in the artist repo">
+      <created>1687351397770</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1687351397770</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Removed artistkind from ticketlinkbuilder">
+      <created>1687351722953</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1687351722953</updated>
+    </task>
+    <task id="LOCAL-00037" summary="cart merge bugfix">
+      <created>1687353392145</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1687353392145</updated>
+    </task>
+    <task id="LOCAL-00038" summary="Remove old olders fixed">
+      <created>1687354518615</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1687354518615</updated>
+    </task>
+    <task id="LOCAL-00039" summary="Remove old olders fixed">
+      <created>1687354552889</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1687354552889</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Remove old olders fixed">
+      <created>1687355544754</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1687355544754</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -331,10 +373,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Cart tweaks for mollie bugs" />
-    <MESSAGE value="Cart tweaks for after the checkout" />
-    <MESSAGE value="Payment Success Window checkout" />
-    <MESSAGE value="added order history js" />
     <MESSAGE value="fixed ticket generation" />
     <MESSAGE value="tweaked order merging" />
     <MESSAGE value="Fixed customer check" />
@@ -356,6 +394,10 @@
     <MESSAGE value="Bugfixing put" />
     <MESSAGE value="Bugfixed updating" />
     <MESSAGE value="Fixed dance line up fetching" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed dance line up fetching" />
+    <MESSAGE value="Changed dance line up fetching also in the artist repo" />
+    <MESSAGE value="Removed artistkind from ticketlinkbuilder" />
+    <MESSAGE value="cart merge bugfix" />
+    <MESSAGE value="Remove old olders fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove old olders fixed" />
   </component>
 </project>
