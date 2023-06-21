@@ -1,5 +1,5 @@
 <?php
-            
+
 class FestivalFoodController
 {
     public function  loadFoodFestivalPage()
@@ -12,12 +12,12 @@ class FestivalFoodController
             $types = $festivalFoodService->getAllTypes();
             $location = $festivalFoodService->getAllLocations();
             require_once("../views/festival/food_Festival.php");
-
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
     }
-    public function addRestaurant(){
+    public function addRestaurant()
+    {
 
         require_once("../models/Yummy/RestaurantType.php");
         require_once("../services/FestivalFoodService.php");
@@ -28,7 +28,8 @@ class FestivalFoodController
     }
 
 
-    public function editRestaurant(){
+    public function editRestaurant()
+    {
 
         require_once("../models/Yummy/Restaurant.php");
         require_once("../models/Yummy/RestaurantType.php");
@@ -57,59 +58,62 @@ class FestivalFoodController
         $festivalFoodService->updateRestaurant($restaurant);
 
         header("Location: /manageRestaurants");
-
     }
 
-    public function editSession(){
-            
-            require_once("../models/Yummy/RestaurantEvent.php");
-            $restaurantEvent = new RestaurantEvent();
-            $id = $_POST['eventId'];
-            $name = $_POST['eventName'];
-            $startTime = $_POST['startTime'];
-            $endTime = $_POST['endTime'];
-            $availableTickets = $_POST['availableTickets'];
+    public function editSession()
+    {
 
-            $startTime = DateTime::createFromFormat('Y-m-d\TH:i', $startTime);
-            $endTime = DateTime::createFromFormat('Y-m-d\TH:i', $endTime);
+        require_once("../models/Yummy/RestaurantEvent.php");
+        $restaurantEvent = new RestaurantEvent();
+        $id = $_POST['eventId'];
+        $name = $_POST['eventName'];
+        $startTime = $_POST['startTime'];
+        $endTime = $_POST['endTime'];
+        $availableTickets = $_POST['availableTickets'];
 
-            $restaurantEvent->setId($id);
-            $restaurantEvent->setName($name);
-            $restaurantEvent->setStartTime($startTime);
-            $restaurantEvent->setEndTime($endTime);
-            $restaurantEvent->setAvailableTickets($availableTickets);
+        $startTime = DateTime::createFromFormat('Y-m-d\TH:i', $startTime);
+        $endTime = DateTime::createFromFormat('Y-m-d\TH:i', $endTime);
 
-    
-            require_once("../services/FestivalFoodService.php");
-            $festivalFoodService = new FestivalFoodService();
-            $festivalFoodService->updateSession($restaurantEvent);
-    
-            header("Location: /updateSession?id=" . $id);
-    
+        $restaurantEvent->setId($id);
+        $restaurantEvent->setName($name);
+        $restaurantEvent->setStartTime($startTime);
+        $restaurantEvent->setEndTime($endTime);
+        $restaurantEvent->setAvailableTickets($availableTickets);
+
+
+        require_once("../services/FestivalFoodService.php");
+        $festivalFoodService = new FestivalFoodService();
+        $festivalFoodService->updateSession($restaurantEvent);
+
+        header("Location: /updateSession?id=" . $id);
     }
-    public function updateRestaurant($id){
-            
-            require_once("../services/FestivalFoodService.php");
-            $festivalFoodService = new FestivalFoodService();
-            $restaurant = $festivalFoodService->getRestaurantById($id);
-            require_once("../views/admin/Restaurant management/updateRestaurant.php");
+    public function updateRestaurant($id)
+    {
+
+        require_once("../services/FestivalFoodService.php");
+        $festivalFoodService = new FestivalFoodService();
+        $restaurant = $festivalFoodService->getRestaurantById($id);
+        require_once("../views/admin/Restaurant management/updateRestaurant.php");
     }
 
-    public function updateSession($id){
+    public function updateSession($id)
+    {
         require_once("../services/FestivalFoodService.php");
         $festivalFoodService = new FestivalFoodService();
         $event = $festivalFoodService->getSessionById($id);
         require_once("../views/admin/Restaurant management/updateSession.php");
     }
 
-    public function addSession($id){
+    public function addSession($id)
+    {
         require_once("../services/FestivalFoodService.php");
         $festivalFoodService = new FestivalFoodService();
         $restaurant = $festivalFoodService->getRestaurantById($id);
         require_once("../views/admin/Restaurant management/addSession.php");
     }
 
-    public function insertRestaurant(){
+    public function insertRestaurant()
+    {
 
         require_once("../models/Yummy/Restaurant.php");
         require_once("../models/Yummy/RestaurantType.php");
@@ -137,7 +141,8 @@ class FestivalFoodController
 
         header("Location: /manageRestaurants");
     }
-    public function insertSession($restaurantId){
+    public function insertSession($restaurantId)
+    {
         require_once("../models/Yummy/RestaurantEvent.php");
         $session = new RestaurantEvent();
 
@@ -158,8 +163,5 @@ class FestivalFoodController
         $festivalFoodService->insertSession($session, $restaurantId);
 
         header("Location: /manageSessions?restaurantId=$restaurantId");
-
-        
     }
 }
-?>

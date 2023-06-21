@@ -30,31 +30,32 @@
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
             <div class="col-md-6 ticketOfTour" style="width: 50%; float:center;">
-              <h3>FIlter by type</h3>
-              <select class="form-select" id="ticket">
-                <?php foreach ($types as $type) { ?>
-                  <option value="<?php $type['typeId'] ?>"> <?= $type['typeName'] ?></option>
-                <?php } ?>
+              <h3>Filter by type</h3>
+              <select class="form-select" id="ticket" onchange="filter()">
+                <option selected>Select type</option>
+                <option value="French">French</option>
+                <option value="Fish and Seafood">Fish and Seafood</option>
+                <option value="Meat">Meat</option>
               </select>
             </div>
           </li>
           <li class="list-group-item">
             <h3>Dates</h3>
-            <select class="form-select" id="date" onselect="filterByDate()">
-              <option selected>Select ticket</option>
-              <option value="27/07/2023">Thu 27/07/2023</option>
-              <option value="28/07/2023">Fri 28/07/2023</option>
-              <option value="29/07/2023">Sat 29/07/2023</option>
-              <option value="30/07/2023">Sun 30/07/2023</option>
+            <select id="date" class="form-select" id="date" onchange="filter()">
+              <option selected>Select date</option>
+              <option value="2023-07-27">Thu 27/07/2023</option>
+              <option value="2023-07-28">Fri 28/07/2023</option>
+              <option value="2023-07-29">Sat 29/07/2023</option>
+              <option value="2023-07-30">Sun 30/07/2023</option>
             </select>
           </li>
           <li class="list-group-item">
             <h3>Price Range</h3>
             <div class="center">
               <label for="appt">Select a minprice:</label>
-              <input type="number" name="number" placeholder="minprice" min="5" />
+              <input id="minPrice" type="number" name="number" placeholder="minprice" min="5" onchange="filter()" />
               <label for="appt">Select a maxprice:</label>
-              <input type="number" name="number" placeholder="maxprice" max="50" />
+              <input id="maxPrice" type="number" name="number" placeholder="maxprice" max="50" onchange="filter()" />
             </div>
           </li>
         </ul>
@@ -108,26 +109,38 @@
         `;
         restDiv.appendChild(div);
       });
-
-      function filterByDate() {
-        const date = document.getElementById('date').value;
-        const url = '/api/restaurants?date=' + date;
-
-        const restDiv = document.getElementById('restaurants');
-        restDiv.innerHTML = '';
-
-        fetch(url)
-          .then(response => response.json())
-          .then((events) => {
-            appendData(events);
-          })
-      }
-
-
     }
 
-    function addToCart() {
-      Cart.Add(ticketLinkid);
+    function filter() {
+      let url = '/api/restaurants?';
+      // if date is selected
+      if (document.getElementById('date').value != 'Select date') {
+        url += 'date=' + document.getElementById('date').value + '&';
+      }
+      // if ticket is selected
+      if (document.getElementById('ticket').value != 'Select type') {
+        url += 'type=' + document.getElementById('ticket').value + '&';
+      }
+      // if minprice is selected
+      if (document.getElementById('minPrice').value != '') {
+        url += 'price_from=' + document.getElementById('minPrice').value + '&';
+      }
+      // if maxprice is selected
+      if (document.getElementById('maxPrice').value != '') {
+        url += 'price_to=' + document.getElementById('maxPrice').value + '&';
+      }
+
+      console.log(url);
+
+      const restDiv = document.getElementById('restaurants');
+      restDiv.innerHTML = '';
+
+      fetch(url)
+        .then(response => response.json())
+        .then((events) => {
+          console.log(events);
+          appendData(events);
+        })
     }
   </script>
 
