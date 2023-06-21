@@ -123,7 +123,9 @@ btnSubmit.onclick = function () {
 
     let json = JSON.stringify(data);
     // Make sure that artistIds is always an array, even if only one artist is selected
-    json = json.replace('"artistIds":' + artists[0], '"artistIds":[' + artists[0] + ']');
+    if (artists.length == 1) {
+        json = json.replace('"artistIds":' + artists[0], '"artistIds":[' + artists[0] + ']');
+    }
 
     // disable the editor.
     toggleEditor(masterEditor, false);
