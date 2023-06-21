@@ -37,14 +37,14 @@ const maxLocationLength = 12;
 
 let baseURL = '/api/events/dance';
 
-function updateExistingEntry(id, data) {
+function updateExistingEntry(id, json) {
     fetch(baseURL + "/" + id, {
         method: 'PUT',
         credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: json
     })
         .then(response => response.json())
         .then(data => {
@@ -60,14 +60,14 @@ function updateExistingEntry(id, data) {
         });
 }
 
-function createNewEntry(data) {
+function createNewEntry(json) {
     fetch(baseURL, {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: json
     })
         .then(response => response.json())
         .then(data => {
@@ -121,14 +121,18 @@ btnSubmit.onclick = function () {
         }
     }
 
+    let json = JSON.stringify(data);
+    // Make sure that artistIds is always an array, even if only one artist is selected
+    json = json.replace('"artistIds":' + artists[0], '"artistIds":[' + artists[0] + ']');
+
     // disable the editor.
     toggleEditor(masterEditor, false);
 
     if (isInCreationMode) {
-        createNewEntry(data);
+        createNewEntry(json);
     } else {
         data.id = editedId;
-        updateExistingEntry(editedEventId, data);
+        updateExistingEntry(editedEventId, json);
     }
 }
 
