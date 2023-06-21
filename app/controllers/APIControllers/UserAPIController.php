@@ -8,6 +8,7 @@ require_once("../services/CustomerService.php");
 require_once("../services/CartService.php");
 require_once("../models/Exceptions/MissingVariableException.php");
 require_once("../Config.php");
+require_once("../services/MailService.php");
 
 class UserAPIController extends APIController
 {
@@ -197,7 +198,8 @@ class UserAPIController extends APIController
             // here insert the email, reset token, and timestamp into the database (timestamp will be 24 hours from now)
             $userService->storeResetToken($data->email, $reset_token);
             $user = $userService->getUserByEmail($data->email);
-            $userService->sendResetTokenToUser($data->email, $reset_token, $user);
+            $emailService = new MailService();
+            $emailService->sendResetTokenToUser($data->email, $reset_token, $user);
             parent::sendSuccessMessage("Email sent, please check your inbox.");
 
             // Log the response being sent back to the client
