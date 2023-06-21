@@ -71,7 +71,7 @@ class JazzEventList extends EventsList {
         let days = document.createElement('div');
         days.classList.add('d-block');
 
-        let dates = await fetch('/api/events/dates').then((res) => res.json());
+        let dates = await fetch('/api/events/dates?eventType=1').then((res) => res.json());
 
         // convert them to date objects
         dates = dates.map((date) => new Date(date));
