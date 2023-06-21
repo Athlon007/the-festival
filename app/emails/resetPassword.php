@@ -1,5 +1,6 @@
 <?php require("../Config.php"); ?>
 <html>
+
 <head>
     <title>Reset Your Password</title>
     <style>
@@ -60,7 +61,7 @@
         <p>If you did request a password reset, please click the link below to reset your password. This link will expire in 24 hours, so please act promptly.</p>
     </div>
     <div class="container" style="margin-top: 20px;">
-        <p>For security reasons, please do not share this link with anyone else. If you have any questions or concerns, please contact our support team at <span class="email">infohaarlemfestival5@gmail.com</span></p>
+        <p>For security reasons, please do not share this link with anyone else. If you have any questions or concerns, please contact our support team at <span class="email">team@haarlem.kfigura.nl</span></p>
         <a href="<?= $hostname ?>/updatePassword?token=<?= $reset_token ?>&email=<?= $email ?>" class="button">Reset Your Password</a>
     </div>
     <div class="container" style="margin-top: 20px;">
