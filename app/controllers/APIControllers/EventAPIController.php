@@ -87,7 +87,7 @@ class EventAPIController extends APIController
 
         try {
             if (str_starts_with($uri, '/api/events/dates')) {
-                $dates = $this->eventService->getFestivalDates();
+                $dates = $this->eventService->getFestivalDates($filters);
                 echo json_encode($dates);
                 return;
             } elseif (

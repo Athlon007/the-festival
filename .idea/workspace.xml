@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Fixed dance line up fetching">
+    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Remove old olders fixed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/repositories/ArtistRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/ArtistRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/repositories/OrderRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/OrderRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/OrderService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/OrderService.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +73,7 @@
       <workItem from="1687168802335" duration="21008000" />
       <workItem from="1687190497923" duration="3051000" />
       <workItem from="1687245623105" duration="13291000" />
-      <workItem from="1687343474598" duration="7773000" />
+      <workItem from="1687343474598" duration="11767000" />
     </task>
     <task id="LOCAL-00001" summary="Added sendTicketsAndInvoice method to OrderService">
       <created>1686906723310</created>
@@ -313,7 +313,42 @@
       <option name="project" value="LOCAL" />
       <updated>1687350506431</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Changed dance line up fetching also in the artist repo">
+      <created>1687351397770</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1687351397770</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Removed artistkind from ticketlinkbuilder">
+      <created>1687351722953</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1687351722953</updated>
+    </task>
+    <task id="LOCAL-00037" summary="cart merge bugfix">
+      <created>1687353392145</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1687353392145</updated>
+    </task>
+    <task id="LOCAL-00038" summary="Remove old olders fixed">
+      <created>1687354518615</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1687354518615</updated>
+    </task>
+    <task id="LOCAL-00039" summary="Remove old olders fixed">
+      <created>1687354552889</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1687354552889</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -331,10 +366,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Cart tweaks for mollie bugs" />
-    <MESSAGE value="Cart tweaks for after the checkout" />
-    <MESSAGE value="Payment Success Window checkout" />
-    <MESSAGE value="added order history js" />
     <MESSAGE value="fixed ticket generation" />
     <MESSAGE value="tweaked order merging" />
     <MESSAGE value="Fixed customer check" />
@@ -356,6 +387,10 @@
     <MESSAGE value="Bugfixing put" />
     <MESSAGE value="Bugfixed updating" />
     <MESSAGE value="Fixed dance line up fetching" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed dance line up fetching" />
+    <MESSAGE value="Changed dance line up fetching also in the artist repo" />
+    <MESSAGE value="Removed artistkind from ticketlinkbuilder" />
+    <MESSAGE value="cart merge bugfix" />
+    <MESSAGE value="Remove old olders fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove old olders fixed" />
   </component>
 </project>

@@ -97,7 +97,7 @@ class EventService
     public function editEvent($event): Event
     {
         //Check if event exists
-        if (!$this->repo->getEventById($event->getId())){
+        if (!$this->repo->getEventById($event->getId())) {
             throw new ObjectNotFoundException("Event does not exist", 404);
         }
 
@@ -143,9 +143,7 @@ class EventService
                 $event->getLocation()->getLocationId()
             );
             return $this->repo->getEventById($event->getId());
-        }
-
-        elseif ($event instanceof DanceEvent) {
+        } elseif ($event instanceof DanceEvent) {
             return $this->repo->updateDanceEvent($event);
         } else
             throw new InvalidVariableException("Event type not supported");
@@ -156,8 +154,8 @@ class EventService
         $this->repo->deleteById($id);
     }
 
-    public function getFestivalDates()
+    public function getFestivalDates($filters)
     {
-        return $this->repo->getFestivalDates();
+        return $this->repo->getFestivalDates($filters);
     }
 }
