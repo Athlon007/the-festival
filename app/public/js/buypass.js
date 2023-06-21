@@ -3,7 +3,6 @@ const eventType = document.getElementById('event-type');
 const passType = document.getElementById('pass-type');
 const date = document.getElementById('event-date');
 const price = document.getElementById('event-price');
-const quantity = document.getElementById('quantity');
 const master = document.getElementById('master');
 
 const details = document.getElementById('details-thing');
@@ -107,7 +106,7 @@ async function loadPassTypes() {
 }
 
 function prepare() {
-    if (passTypeId == 0 || eventId == -1 || quantity.value == 0) {
+    if (passTypeId == 0 || eventId == -1) {
         return;
     }
 
@@ -125,7 +124,7 @@ function prepare() {
             } else {
                 date.innerHTML = data.event.startTime.date.split(' ')[0];
             }
-            price.innerHTML = '€ ' + data.ticketType.price * quantity.value;
+            price.innerHTML = '€ ' + data.ticketType.price;
 
             details.classList.remove('disabled');
         })
@@ -134,13 +133,9 @@ function prepare() {
         });
 }
 
-quantity.addEventListener('change', (e) => {
-    prepare();
-});
-
 document.getElementById('buy-pass').addEventListener('click', async (e) => {
     master.classList.add('disabled');
-    await Cart.Set(passTypeId, quantity.value);
+    await Cart.Add(passTypeId);
 
     window.location.href = '/festival';
 });

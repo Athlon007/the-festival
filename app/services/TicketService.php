@@ -98,6 +98,16 @@ class TicketService
     }
   }
 
+  public function getAllPasses(Order $order): array
+  {
+    try {
+      $tickets = $this->repository->getAllDayTicketsForPasses($order);
+      return $tickets;
+    } catch (Exception $ex) {
+      throw ($ex);
+    }
+  }
+
   public function generateQRCode($ticket): string
   {
     //Generate a QR code image with the ticket ID as data
@@ -140,7 +150,8 @@ class TicketService
       $tickets = array_merge(
         $this->getAllHistoryTickets($order),
         $this->getAllJazzTickets($order),
-        $this->getAllDanceTickets($order)
+        $this->getAllDanceTickets($order),
+        $this->getAllPasses($order)
       );
 
       $qrCodeImages = array();
