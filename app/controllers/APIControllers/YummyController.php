@@ -40,6 +40,7 @@ class FoodFestivalController extends APIController{
             $festivalFoodService = new FestivalFoodService();
             $restaurants = $festivalFoodService->getAllRestaurants();
             $types = $festivalFoodService->getAllTypes();
+            $location = $festivalFoodService->getAllLocations();
             require_once("../views/festival/food_Festival.php");
 
         } catch (PDOException $e) {
@@ -62,6 +63,16 @@ class FoodFestivalController extends APIController{
             $festivalFoodService = new FestivalFoodService();
             $types = $festivalFoodService->getAllTypes();
             return $types;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+    public function getAllLocations()
+    {
+        try{
+            $festivalFoodService = new FestivalFoodService();
+            $location = $festivalFoodService->getAllLocations();
+            return $location;
         } catch (PDOException $e) {
             echo $e->getMessage();
         }

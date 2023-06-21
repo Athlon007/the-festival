@@ -39,7 +39,7 @@
                                 <?php echo $restaurant->getRestaurantName(); ?>
                             </td>
                             <td data-th="address Id">
-                                <?php echo $restaurant->getAddressId(); ?>
+                                <?php echo $restaurant->location; ?>
                             </td>
                             <td data-th="Description">
                                 <?php echo $restaurant->getDescription(); ?>
@@ -50,9 +50,10 @@
                             <td data-th="Rating">
                                 <?php echo $restaurant->getRating(); ?>
                             <td>
-                                <form action="deleteRestaurant" method="POST">
-                                    <button type="submit" name="delete_restaurant" value="<?= $user->getUserId(); ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
-                                    <a href="updateUser?id=<?php echo $user->getUserId() ?>" class="btn btn-primary">Update</a>
+                            <button id="delete_restaurant" name="delete_restaurant" value="<?= $restaurant->getRestaurantId(); ?>" class="btn btn-danger" onclick="deleteRestaurant(<?= $restaurant->getRestaurantId(); ?>)">Delete</button>
+                                <form action="deleteRestaurant" method="POST">          
+                                    <a href="updateRestaurant?id=<?php echo $restaurant->getRestaurantId() ?>" class="btn btn-primary">Update</a>
+                                    <a href="manageSessions?restaurantId=<?=$restaurant->getRestaurantId()?>" class="btn btn-primary">Manage Session</a>
                                 </form>
                             </td>
                         </tr>
@@ -65,6 +66,31 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            function deleteRestaurant(restaurantId) {
+
+                window.confirm("Are you sure you want to delete this restaurant?");
+
+                if (confirm("Are you sure you want to delete this restaurant?")) {
+                fetch('http://localhost/api/deleteRestaurants?id=' + restaurantId, {
+                        method: 'DELETE',
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                    console.log("Restaurant deleted");
+                    window.location.replace('/manageRestaurants');       
+                } else {
+                    console.log("Restaurant not deleted");
+                }
+
+            }
+        </script>
 
 
         <footer class="foot row bottom"></footer>

@@ -52,6 +52,13 @@ foreach ($tickets as $index => $ticket) {
                     <?= $ticket->getEvent()->getLocation()->getName() ?>
                 </p>
             </div>
+        <?php } elseif (method_exists($ticket->getEvent(), 'getRestaurant')) { ?>
+            <div class="ticket-info">
+                <label>Restaurant:</label>
+                <p>
+                    <?= $ticket->getEvent()->getRestaurant()->getRestaurantName() ?>
+                </p>
+            </div>
         <?php } ?>
 
         <div class="ticket-info">

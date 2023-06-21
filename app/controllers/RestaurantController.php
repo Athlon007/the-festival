@@ -6,13 +6,14 @@ class RestaurantController
         try{
             require_once("../services/RestaurantService.php");
             $restaurantService = new RestaurantService();
-            $restaurants = $restaurantService->getAllRestaurants();
+            $restaurants = $restaurantService->getAll();
             require_once("../views/admin/Restaurant management/manageRestaurants.php");
         }
         catch (PDOException $e){
             echo $e->getMessage();
         }
     }
+
 }
 
 ?>
