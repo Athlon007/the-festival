@@ -98,6 +98,16 @@ class TicketService
     }
   }
 
+  public function getAllPasses(Order $order): array
+  {
+    try {
+      $tickets = $this->repository->getAllDayTicketsForPasses($order);
+      return $tickets;
+    } catch (Exception $ex) {
+      throw ($ex);
+    }
+  }
+
   public function generateQRCode($ticket): string
   {
     //Generate a QR code image with the ticket ID as data
@@ -140,7 +150,8 @@ class TicketService
       $tickets = array_merge(
         $this->getAllHistoryTickets($order),
         $this->getAllJazzTickets($order),
-        $this->getAllDanceTickets($order)
+        $this->getAllDanceTickets($order),
+        $this->getAllPasses($order)
       );
 
       $qrCodeImages = array();
@@ -151,49 +162,51 @@ class TicketService
 
       $dompdf = $this->generatePDFTicket($tickets, $order, $qrCodeImages);
       $order->setTickets($tickets);
-      $this->sendTicketByEmail($dompdf, $order);
+      $mailService = new MailService();
+      $mailService->sendTicketByEmail($dompdf, $order);
+      // $this->sendTicketByEmail($dompdf, $order);
       return $tickets;
     } catch (Exception $ex) {
       throw ($ex);
     }
   }
 
-  public function sendTicketByEmail(Dompdf $dompdf, Order $order)
-  {
-    try {
-      $mail = new PHPMailer(true);
-      $mail->isSMTP();
-      $mail->isHTML(true);
-      $mail->Host = 'smtp.gmail.com';
-      $mail->SMTPAuth = true;
-      $mail->SMTPSecure = "tls";
-      $mail->Port = 587;
+  // public function sendTicketByEmail(Dompdf $dompdf, Order $order)
+  // {
+  //   try {
+  //     $mail = new PHPMailer(true);
+  //     $mail->isSMTP();
+  //     $mail->isHTML(true);
+  //     $mail->Host = 'smtp.gmail.com';
+  //     $mail->SMTPAuth = true;
+  //     $mail->SMTPSecure = "tls";
+  //     $mail->Port = 587;
 
-      $mail->Username = "infohaarlemfestival5@gmail.com";
-      $mail->Password = 'zznalnrljktsitri';
-      $mail->Subject = 'Your Ticket for the The Festival';
+  //     $mail->Username = "infohaarlemfestival5@gmail.com";
+  //     $mail->Password = 'zznalnrljktsitri';
+  //     $mail->Subject = 'Your Ticket for the The Festival';
 
-      $recipentEmail = $order->getCustomer()->getEmail();
-      $name = $order->getCustomer()->getFullName();
+  //     $recipentEmail = $order->getCustomer()->getEmail();
+  //     $name = $order->getCustomer()->getFullName();
 
-      ob_start();
-      require_once(__DIR__ . '/../emails/ticket-email.php');
-      $mail->Body = ob_get_clean();
+  //     ob_start();
+  //     require_once(__DIR__ . '/../emails/ticket-email.php');
+  //     $mail->Body = ob_get_clean();
 
-      $mail->addAddress($order->getCustomer()->getEmail(), $name);
-      // attach pdf to email for each ticket
-      foreach ($order->getTickets() as $ticket) {
-        $pdfContents = $dompdf->output();
-        $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');
-      }
+  //     $mail->addAddress($order->getCustomer()->getEmail(), $name);
+  //     // attach pdf to email for each ticket
+  //     foreach ($order->getTickets() as $ticket) {
+  //       $pdfContents = $dompdf->output();
+  //       $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');
+  //     }
 
-      if (!$mail->send()) {
-        throw new Exception("Email could not be sent");
-      }
-    } catch (Exception $ex) {
-      throw ($ex);
-    }
-  }
+  //     if (!$mail->send()) {
+  //       throw new Exception("Email could not be sent");
+  //     }
+  //   } catch (Exception $ex) {
+  //     throw ($ex);
+  //   }
+  // }
 
   public function markTicketAsScanned(Ticket $ticket)
   {
@@ -211,7 +224,6 @@ class TicketService
   //TODO: check if obsolete after payment funnel is finished
   public function removeTicketFromOrder($orderId, $ticketId)
   {
-
     return $this->repository->removeTicketFromOrder($orderId, $ticketId);
   }
 }

@@ -134,11 +134,11 @@ btnSubmit.onclick = function () {
 
 document.getElementById('delete').onclick = function () {
     if (editedEventId === -1) {
-        msgBox.createToast('Error!', 'No page selected');
+        msgBox.createToast('Error!', 'No event selected');
         return;
     }
 
-    msgBox.createYesNoDialog('Delete page', 'Are you sure you want to delete this event? This is irreversible!', function () {
+    msgBox.createYesNoDialog('Delete event', 'Are you sure you want to delete this event? This is irreversible!', function () {
         // fetch with post
         fetch(baseURL + "/" + editedEventId, {
             method: 'DELETE',
@@ -159,7 +159,7 @@ document.getElementById('delete').onclick = function () {
                         }
                     }
                     toggleEditor(masterEditor, false);
-                    msgBox.createToast('Success!', 'Page has been deleted');
+                    msgBox.createToast('Success!', 'Event has been deleted');
                 } else {
                     msgBox.createToast('Something went wrong', data.error_message);
                 }
@@ -243,7 +243,7 @@ function createNewOptionItem(element) {
                     // Check the artists that are in the event
                     for (let artist of data.event.artists) {
                         for (let checkbox of artistCheckboxes) {
-                            if (checkbox.value == artist.artistId) {
+                            if (checkbox.value == artist.id) {
                                 checkbox.checked = true;
                                 break;
                             }

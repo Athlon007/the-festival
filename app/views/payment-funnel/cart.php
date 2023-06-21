@@ -22,12 +22,11 @@
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-10">
-                    <button
-                        class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?> "
-                        style="width: 9em;"
-                        onclick="showOrderHistory()">
-                        My Order History
-                    </button>
+                    <?php if (!$shareMode) { ?>
+                        <button class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?> " style="width: 9em;" onclick="showOrderHistory()">
+                            My Order History
+                        </button>
+                    <?php } ?>
                     <br>
                     <h2 class="mb-5 mt-5">Shopping Cart <?= $shareMode ? "(Shared)" : "" ?></h2>
                     <!--Pop-up message-->
