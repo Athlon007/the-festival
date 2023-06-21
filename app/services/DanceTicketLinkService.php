@@ -1,5 +1,7 @@
 <?php
 require_once(__DIR__ . "/../repositories/DanceTicketLinkRepository.php");
+require_once("TicketLinkService.php");
+
 class DanceTicketLinkService extends TicketLinkService
 {
     private $repository;

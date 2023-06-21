@@ -109,6 +109,16 @@ class Router
                 $festivalJazzController->loadEventPage($request);
                 return;
             }
+        } elseif (str_starts_with($request, "/festival/dance/")) {
+            require_once("controllers/FestivalDanceController.php");
+            $festivalDanceController = new FestivalDanceController();
+            if (str_starts_with($request, "/festival/dance/artist/")) {
+                $festivalDanceController->loadArtistPage($request);
+                return;
+            } elseif (str_starts_with($request, "/festival/dance/event/")) {
+                $festivalDanceController->loadEventPage($request);
+                return;
+            }
         }
 
         if (str_starts_with($request, '/admin/')) {
