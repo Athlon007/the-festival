@@ -51,7 +51,7 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
                 $location,
                 $eventType
             );
-            $event->setAvailableTickets($this->calculateAvailableTickets($event->getId()));
+            $event->setAvailableTickets($this->calculateAvailableTickets($event));
             $event->setEventType($eventType);
 
             $ticketType = new TicketType(
@@ -268,13 +268,13 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
         return null;
     }
 
-    private function calculateAvailableTickets(int $eventId) : int {
+    private function calculateAvailableTickets(HistoryEvent $event) : int {
         $sql = "SELECT count(nrOfPeople) as soldTickets
                 FROM tickets t 
                 JOIN tickettypes t2 on t.ticketTypeId = t2.ticketTypeId 
                 WHERE eventId = :eventId";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':eventId', $eventId);
+        $stmt->bindValue(':eventId', $event->getEventId());
 
         $stmt->execute();
         $result = $stmt->fetch();
