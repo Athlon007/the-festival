@@ -18,7 +18,6 @@ class MailService
 {
 
     private $mailer;
-
     const CUSTOMER_CHANGES_EMAIL = __DIR__ . "/../emails/customer-changes-email.php";
     const TICKET_EMAIL = __DIR__ . "/../emails/ticket-email.php";
     const INVOICE_EMAIL = __DIR__ . "/../emails/invoice-email.php";

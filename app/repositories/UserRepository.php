@@ -177,6 +177,9 @@ class UserRepository extends Repository
     public function deleteUser($id)
     {
         try {
+            if($this->userHasOrders($id))
+                throw new Exception("User has paid orders.");
+
             $stmt = $this->connection->prepare("DELETE FROM users WHERE userId = :id");
             $stmt->bindValue(':id', $id);
             $stmt->execute();
@@ -219,5 +222,20 @@ class UserRepository extends Repository
         } catch (Exception $ex) {
             throw ($ex);
         }
+    }
+
+    private function userHasOrders(int $userId) : bool {
+
+        $sql = "SELECT * 
+                FROM orders 
+                WHERE customerId = :userId AND isPaid = 1";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":userId", $userId);
+        $stmt->execute();
+
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return !(!$result);
     }
 }
