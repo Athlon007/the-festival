@@ -241,7 +241,7 @@ class OrderRepository extends Repository
             $customer = $customerRep->getById($row['customerId']);
             $order->setCustomer($customer);
 
-            $orders [] = $order;
+            $orders[] = $order;
         }
         return $orders;
     }
@@ -252,7 +252,12 @@ class OrderRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDateAsString()));
         $stmt->bindValue(":customerId", $order->getCustomer()->getUserId());
-        $stmt->bindValue(":isPaid", htmlspecialchars($order->getIsPaid()));
+        $isPaid = ;
+        $isPaid = htmlspecialchars($isPaid);
+        if ($isPaid == "" || $isPaid == null) {
+            $isPaid = false;
+        }
+        $stmt->bindValue(":isPaid", htmlspecialchars($order->getIsPaid()), PDO::PARAM_BOOL);
         $stmt->bindValue(":orderId", htmlspecialchars($orderId));
 
         $stmt->execute();
@@ -263,8 +268,7 @@ class OrderRepository extends Repository
     {
         if (!$orderId) {
             $sql = "UPDATE orderitems SET ticketLinkId = :ticketLinkId, quantity = :quantity WHERE orderItemId = :orderItemId";
-        }
-        else {
+        } else {
             $sql = "UPDATE orderitems SET ticketLinkId = :ticketLinkId, quantity = :quantity, orderId = :orderId WHERE orderItemId = :orderItemId";
         }
 
@@ -335,9 +339,9 @@ class OrderRepository extends Repository
     //This method is used to remove orders that were never linked to an account and that are 2 days old.
     private function removeOldOrders()
     {
-        $sql = "DELETE 
-                FROM orders 
-                WHERE customerId IS NULL 
+        $sql = "DELETE
+                FROM orders
+                WHERE customerId IS NULL
                 AND orderDate < DATE_SUB(NOW(), INTERVAL 2 DAY)";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
