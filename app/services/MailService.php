@@ -22,7 +22,7 @@ class MailService
     const CUSTOMER_CHANGES_EMAIL = __DIR__ . "/../emails/customer-changes-email.php";
     const TICKET_EMAIL = __DIR__ . "/../emails/ticket-email.php";
     const INVOICE_EMAIL = __DIR__ . "/../emails/invoice-email.php";
-    const PASSWORD_RESET_EMAIL = __DIR__ . "";
+    const PASSWORD_RESET_EMAIL = __DIR__ . "/../emails/resetPassword.php";
 
 
     function __construct()
@@ -38,27 +38,6 @@ class MailService
         $this->mailer->Password = 'zznalnrljktsitri';
     }
 
-    /**
-     * @throws Exception
-     */
-    public function sendTicketEmail($customer, $pdf)
-    {
-        $receiverEmail = $customer->getEmail();
-        $receiverName = $customer->getFullName();
-        $subject = "Your tickets for Haarlem Festival.";
-        $message = "Thank you for buying a ticket. You can find your tickets in the attachment.";
-
-        $this->mailer->addAttachment($pdf);
-
-        $this->mailer->addAddress($receiverEmail, $receiverName);
-        $this->mailer->Subject = $subject;
-        $this->mailer->Body = $message;
-
-        if (!$this->mailer->send()) {
-            throw new Exception();
-        }
-    }
-
     public function sendResetTokenToUser($email, $reset_token, $user)
     {
         try {
@@ -68,7 +47,7 @@ class MailService
             $this->mailer->Subject = 'Reset Your Password';
 
             ob_start();
-            require_once(__DIR__ . '/../emails/resetPassword.php');
+            require_once(self::PASSWORD_RESET_EMAIL);
             $this->mailer->Body = ob_get_clean();
 
             $this->mailer->addAddress($email);
@@ -89,7 +68,7 @@ class MailService
             $this->mailer->Subject = 'Your Invoice for the The Festival';
 
             ob_start();
-            require_once(__DIR__ . '/../emails/invoice-email.php');
+            require_once(self::INVOICE_EMAIL);
             $this->mailer->Body = ob_get_clean();
 
             $this->mailer->addAddress($recipentEmail, $name);
@@ -112,7 +91,7 @@ class MailService
             $name = $order->getCustomer()->getFullName();
 
             ob_start();
-            require_once(__DIR__ . '/../emails/ticket-email.php');
+            require_once(self::TICKET_EMAIL);
             $this->mailer->Body = ob_get_clean();
 
             $this->mailer->addAddress($recipentEmail, $name);
@@ -134,7 +113,7 @@ class MailService
     {
         //Create email by loading customer data into HTML template
         ob_start();
-        require_once(__DIR__ . '/../emails/customer-changes-email.php');
+        require_once(self::CUSTOMER_CHANGES_EMAIL);
         $this->mailer->Body = ob_get_clean();
 
         //Add subject

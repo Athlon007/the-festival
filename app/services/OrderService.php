@@ -178,12 +178,6 @@ class OrderService
         return $customerOrder;
     }
 
-    //TODO: Check if redundant
-    public function getAllOrders($limit = null, $offset = null, $isPaid = null)
-    {
-        return $this->orderRepository->getAllOrders($limit, $offset, $isPaid);
-    }
-
     /**
      * After checking out the cart, this function will be called to send the tickets and invoice to the user.
      * @param Order $order

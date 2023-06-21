@@ -215,9 +215,7 @@ class GeneralMap extends HMap {
             [52.40981049836807, 4.6043215933379065]
         ], '#4943A0');
     }
-
-    // TODO: Add the other functions.
-    showDance() {
+        showDance() {
         this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
         this.clearPins()
     }
