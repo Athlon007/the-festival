@@ -51,7 +51,7 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
                 $location,
                 $eventType
             );
-
+            $event->setAvailableTickets($this->calculateAvailableTickets($event->getId()));
             $event->setEventType($eventType);
 
             $ticketType = new TicketType(
@@ -75,7 +75,7 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
              e.eventId,
              e.name as eventName,
              e.startTime,
-            e.endTime,
+             e.endTime,
              e.eventId,
              e.festivalEventType,
              e.availableTickets,
@@ -161,13 +161,13 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
         }
     }
 
-    public function getById($id)
-    {
+    public function getById($id) : ?TicketLink {
+
         $sql = "select c.ticketLinkId,
              e.eventId,
              e.name as eventName,
              e.startTime,
-            e.endTime,
+             e.endTime,
              e.eventId,
              e.festivalEventType,
              e.availableTickets,
@@ -204,7 +204,7 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
              join locations l on l.locationId = h.locationId
              join festivaleventtypes f on f.eventTypeId = e.festivalEventType
              join addresses a on a.addressId = l.addressId
-            WHERE c.ticketLinkId = :id";
+             WHERE c.ticketLinkId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -218,7 +218,7 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
              e.eventId,
              e.name as eventName,
              e.startTime,
-            e.endTime,
+             e.endTime,
              e.eventId,
              e.festivalEventType,
              e.availableTickets,
@@ -266,5 +266,20 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
             return $output[0];
         }
         return null;
+    }
+
+    private function calculateAvailableTickets(int $eventId) : int {
+        $sql = "SELECT count(nrOfPeople) as soldTickets
+                FROM tickets t 
+                JOIN tickettypes t2 on t.ticketTypeId = t2.ticketTypeId 
+                WHERE eventId = :eventId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':eventId', $eventId);
+
+        $stmt->execute();
+        $result = $stmt->fetch();
+        $soldTickets = $result['soldTickets'];
+
+        return $event->getAvailableTickets() - $soldTickets;
     }
 }

@@ -15,10 +15,10 @@ class MailService{
 
     private $mailer;
 
-    const CUSTOMER_CHANGES_EMAIL = "/../emails/customer-changes-email.php";
-    const TICKET_EMAIL = "/../emails/ticket-email.php";
-    const INVOICE_EMAIL = "/../emails/invoice-email.php";
-    const PASSWORD_RESET_EMAIL = "";
+    const CUSTOMER_CHANGES_EMAIL = __DIR__ . "/../emails/customer-changes-email.php";
+    const TICKET_EMAIL = __DIR__ . "/../emails/ticket-email.php";
+    const INVOICE_EMAIL = __DIR__ . "/../emails/invoice-email.php";
+    const PASSWORD_RESET_EMAIL = __DIR__ . "";
 
 
     function __construct(){
@@ -53,21 +53,26 @@ class MailService{
         }
     }
 
-    public function sendAccountUpdateEmail($customer){
+    /**
+     * @throws Exception
+     */
+    public function sendAccountUpdateEmail($customer): void
+    {
         //Create email by loading customer data into HTML template
         ob_start();
         require_once(self::CUSTOMER_CHANGES_EMAIL);
         $this->mailer->Body = ob_get_clean();
 
         //Add subject
-        $this->mailer->Subject = 'Changes to your account ';
+        $this->mailer->Subject = 'Changes to your account';
 
         //Add recipient
         $this->mailer->addAddress($customer->getEmail(), $customer->getFullName());
 
         //Send email, throw exception if something goes wrong.
-        if (!$this->mailer->send()) {
-            throw new Exception("Error while sending message.");
+
+        if (!$this->mailer->send()){
+            throw new Exception("Email could not be sent!");
         }
     }
 }
