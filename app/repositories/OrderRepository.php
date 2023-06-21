@@ -252,11 +252,6 @@ class OrderRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDateAsString()));
         $stmt->bindValue(":customerId", $order->getCustomer()->getUserId());
-        $isPaid = ;
-        $isPaid = htmlspecialchars($isPaid);
-        if ($isPaid == "" || $isPaid == null) {
-            $isPaid = false;
-        }
         $stmt->bindValue(":isPaid", htmlspecialchars($order->getIsPaid()), PDO::PARAM_BOOL);
         $stmt->bindValue(":orderId", htmlspecialchars($orderId));
 

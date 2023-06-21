@@ -139,7 +139,8 @@ class TicketService
       // get all history, jazz tickets (for now, later we will get all tickets for yummy and dance)
       $tickets = array_merge(
         $this->getAllHistoryTickets($order),
-        $this->getAllJazzTickets($order)
+        $this->getAllJazzTickets($order),
+        $this->getAllDanceTickets($order)
       );
 
       $qrCodeImages = array();
