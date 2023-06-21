@@ -469,14 +469,14 @@ class EventRepository extends Repository
 
     public function updateDanceEvent(DanceEvent $event) {
 
+        $this->updateDanceLineup($event->getId(), $event->getArtists());
+
         $sql = "UPDATE danceevents SET locationId = :locationId WHERE eventId = :eventId";
 
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':locationId', htmlspecialchars($event->getLocation()->getLocationId()));
         $stmt->bindValue(':eventId', htmlspecialchars($event->getId()));
         $stmt->execute();
-
-        $this->updateDanceLineup($event->getId(), $event->getArtists());
     }
 
     private function insertDanceLineup($eventId, $artists) : void {

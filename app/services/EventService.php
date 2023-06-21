@@ -132,9 +132,9 @@ class EventService
                 $event->getGuide()->getGuideId(),
                 $event->getLocation()->getLocationId()
             );
+            return $this->repo->getEventById($event->getId());
         }
 
-        // if event is type of danceevent
         elseif ($event instanceof DanceEvent) {
             return $this->repo->updateDanceEvent($event);
         } else

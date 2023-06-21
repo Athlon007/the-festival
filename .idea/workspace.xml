@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Fixed invoice not displaying the correct values">
+    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Bugfixed post, getbyid and getall, just put not working cos of constraints.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/APIControllers/EventAPIController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/APIControllers/EventAPIController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/repositories/ArtistRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/ArtistRepository.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/repositories/EventRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/EventRepository.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/services/EventService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/EventService.php" afterDir="false" />
     </list>
@@ -75,6 +73,7 @@
       <workItem from="1687168802335" duration="21008000" />
       <workItem from="1687190497923" duration="3051000" />
       <workItem from="1687245623105" duration="13291000" />
+      <workItem from="1687343474598" duration="1433000" />
     </task>
     <task id="LOCAL-00001" summary="Added sendTicketsAndInvoice method to OrderService">
       <created>1686906723310</created>
@@ -279,7 +278,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687302850834</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Bugfixed post, getbyid and getall, just put not working cos of constraints.">
+      <created>1687306080389</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1687306080389</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -297,7 +303,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed cart merging and saving cart when logging in" />
     <MESSAGE value="Displaying and calculating decimals in the cart frontend" />
     <MESSAGE value="Fixed paymentMethod not passing through JS, now stuck again on user not logged in bug" />
     <MESSAGE value="Just mollie bugs left now" />
@@ -322,6 +327,7 @@
     <MESSAGE value="Bugfix" />
     <MESSAGE value="Created insertDanceEvent, updateDanceEvent, deleteDanceEvent" />
     <MESSAGE value="Fixed invoice not displaying the correct values" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed invoice not displaying the correct values" />
+    <MESSAGE value="Bugfixed post, getbyid and getall, just put not working cos of constraints." />
+    <option name="LAST_COMMIT_MESSAGE" value="Bugfixed post, getbyid and getall, just put not working cos of constraints." />
   </component>
 </project>
