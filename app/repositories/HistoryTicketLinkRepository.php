@@ -23,13 +23,13 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
 
             $eventType = new EventType(
                 $item['eventTypeId'],
-                $item['name'],
+                $item['eventTypeName'],
                 $item['VAT']
             );
 
             $location = new Location();
             $location->setLocationId($item['locationId']);
-            $location->setName($item['name']);
+            $location->setName($item['locationName']);
             $location->setLocationType(3);
             $location->setCapacity($item['capacity']);
             $address = new Address();
@@ -47,7 +47,7 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
 
             $event = new HistoryEvent(
                 $item['eventId'],
-                $item['name'],
+                $item['eventName'],
                 $item['availableTickets'],
                 new DateTime($item['startTime']),
                 new DateTime($item['endTime']),
@@ -77,7 +77,7 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
         try {
             $sql = "select c.ticketLinkId,
              e.eventId,
-             e.name,
+             e.name as eventName,
              e.startTime,
             e.endTime,
              e.eventId,
@@ -90,9 +90,9 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
              t.ticketTypePrice,
              t.nrOfPeople,
              f.eventTypeId,
-             f.name,
+             f.name as eventTypeName,
              f.VAT,
-             l.name,
+             l.name as locationName,
              l.locationType,
              l.lon,
              l.lat,
@@ -167,7 +167,7 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
     {
         $sql = "select c.ticketLinkId,
              e.eventId,
-             e.name,
+             e.name as eventName,
              e.startTime,
             e.endTime,
              e.eventId,
@@ -180,9 +180,9 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
              t.ticketTypePrice,
              t.nrOfPeople,
              f.eventTypeId,
-             f.name,
+             f.name as eventtypename,
              f.VAT,
-             l.name,
+             l.name as locationname,
              l.locationType,
              l.lon,
              l.lat,
@@ -218,7 +218,7 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
     {
         $sql = "select c.ticketLinkId,
              e.eventId,
-             e.name,
+             e.name as eventName,
              e.startTime,
             e.endTime,
              e.eventId,
@@ -231,9 +231,9 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
              t.ticketTypePrice,
              t.nrOfPeople,
              f.eventTypeId,
-             f.name,
+             f.name as eventtypename,
              f.VAT,
-             l.name,
+             l.name as locationname,
              l.locationType,
              l.lon,
              l.lat,
