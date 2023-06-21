@@ -274,7 +274,7 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
                 JOIN tickettypes t2 on t.ticketTypeId = t2.ticketTypeId 
                 WHERE eventId = :eventId";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':eventId', $event->getEventId());
+        $stmt->bindValue(':eventId', $event->getId());
 
         $stmt->execute();
         $result = $stmt->fetch();
