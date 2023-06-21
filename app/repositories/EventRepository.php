@@ -480,12 +480,12 @@ class EventRepository extends Repository
     }
 
     private function insertDanceLineup($eventId, $artists) : void {
-        $sql = "INSERT INTO dancelineups (eventId, locationId) VALUES (:eventId, :artistId)";
+        $sql = "INSERT INTO dancelineups (eventId, artistId) VALUES (:eventId, :artistId)";
 
         foreach($artists as $artist){
             $stmt = $this->connection->prepare($sql);
             $stmt->bindValue(':eventId', htmlspecialchars($eventId));
-            $stmt->bindValue(':artistId', htmlspecialchars($artist->getArtistId()));
+            $stmt->bindValue(':artistId', htmlspecialchars($artist->getId()));
             $stmt->execute();
         }
     }

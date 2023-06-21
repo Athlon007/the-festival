@@ -225,6 +225,9 @@ class EventAPIController extends APIController
             if (!isset($ticketTypeId)) {
                 $ticketTypeId = $data['ticketType'];
             }
+            if (!isset($ticketTypeId)) {
+                $ticketTypeId = $data['ticketTypeId'];
+            }
 
             $ticketType = $this->ticketTypeService->getById($ticketTypeId);
 
@@ -331,25 +334,25 @@ class EventAPIController extends APIController
     private function buildDanceEventFromData($data): DanceEvent
     {
         //Fetch the location and number of available seats
-        $location = $this->locationService->getById($data->location->id);
+        $location = $this->locationService->getById($data['event']['locationId']);
         $availableSeats = $location->getCapacity();
 
         //Fetch the event type
-        $eventType = $this->eventTypeService->getById($data->eventTypeId);
+        $eventType = $this->eventTypeService->getById($data['event']['eventTypeId']);
 
         //Fetch the artists
         $artists = array();
 
-        foreach ($data->artistIds as $artistId) {
+        foreach ($data['event']['artistIds'] as $artistId) {
             $artists[] = $this->artistService->getById($artistId);
         }
 
         //Create and return the dance event
         return new DanceEvent(
             0,
-            $data->name,
-            new DateTime($data->startTime),
-            new DateTime($data->endTime),
+            $data['event']['name'],
+            new DateTime($data['event']['startTime']),
+            new DateTime($data['event']['endTime']),
             $location,
             $eventType,
             $artists,

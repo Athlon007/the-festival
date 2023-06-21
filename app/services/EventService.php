@@ -69,6 +69,7 @@ class EventService
         // If event is type of DanceEvent
         if ($event instanceof DanceEvent) {
             //Insert event into dance events table
+            $event->setId($id);
             return $this->repo->insertDanceEvent($event);
         }
 
@@ -121,13 +122,12 @@ class EventService
             );
             return $this->repo->getEventById($event->getId());
         }
-
         // if event is type of danceevent
-        if ($event instanceof DanceEvent) {
+        elseif ($event instanceof DanceEvent) {
             return $this->repo->updateDanceEvent($event);
         }
-
-
+        else
+            throw new InvalidVariableException("Event type not supported");
     }
 
     public function deleteEvent(int $id)

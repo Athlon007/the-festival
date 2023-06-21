@@ -3,6 +3,7 @@
 require_once("Repository.php");
 require_once("../models/Music/Artist.php");
 require_once("../models/Music/ArtistKind.php");
+require_once("../models/Exceptions/ObjectNotFoundException.php");
 
 /**
  * @author Konrad
@@ -111,7 +112,7 @@ class ArtistRepository extends Repository
     /**
      * Returns the artist with the given id.
      */
-    public function getById($id): ?Artist
+    public function getById($id): Artist
     {
         $sql = "SELECT artistId, name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, recentAlbums, artistKindId "
             . "FROM artists WHERE artistId = :id";
@@ -121,7 +122,7 @@ class ArtistRepository extends Repository
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         $artists = $this->buildJazzArtist($result);
         if (count($artists) == 0) {
-            return null;
+            throw new ObjectNotFoundException("Artist with id $id not found");
         }
         return $artists[0];
     }
