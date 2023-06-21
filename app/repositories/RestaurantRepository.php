@@ -4,6 +4,8 @@ require_once(__DIR__ . '/../models/Yummy/RestaurantEvent.php');
 require_once(__DIR__ . '/../models/Yummy/RestaurantType.php');
 require_once(__DIR__ . '/../repositories/Repository.php');
 require_once(__DIR__ . '/../models/Types/EventType.php');
+require_once(__DIR__ . '/../models/TicketLink.php');
+require_once(__DIR__ . '/../models/Types/TicketType.php');
 
 class RestaurantRepository extends Repository
 {
@@ -38,7 +40,11 @@ class RestaurantRepository extends Repository
 
             $restaurantEvent->setRestaurant($restaurant);
 
-            array_push($output, $restaurantEvent);
+            $ticketType = new TicketType($row['ticketTypeId'], $row['ticketTypeName'], $row['ticketTypePrice'], $row['nrOfPeople']);
+
+            $ticketLink = new TicketLink($row['ticketLinkId'], $restaurantEvent, $ticketType);
+
+            array_push($output, $ticketLink);
         }
 
         return $output;
@@ -73,12 +79,14 @@ class RestaurantRepository extends Repository
     public function getAllRestaurants($filters = [])
     {
         try {
-            $query = "Select *
+            $query = "select *
             from restaurants
             join restaurantevent on restaurants.restaurantId = restaurantevent.restaurantId
             join events on restaurantevent.eventId = events.eventId
             join foodtype on restaurants.typeId = foodtype.typeId
-            join festivaleventtypes on events.festivalEventType  = festivaleventtypes.eventTypeId";
+            join festivaleventtypes on events.festivalEventType  = festivaleventtypes.eventTypeId
+            join ticketlinks on events.eventId = ticketlinks.eventId
+            join tickettypes on tickettypes.ticketTypeId = ticketlinks.ticketTypeId";
 
             // Filter by: type, date, price range.
 
@@ -137,7 +145,14 @@ class RestaurantRepository extends Repository
     public function getAll()
     {
         try {
-            $query = "Select r.*, l.name as name, ft.*  from restaurants as r join foodtype as ft on r.typeId = ft.typeId join locations as l on r.addressId = l.addressId";
+            $query = "select *
+            from restaurants
+            join restaurantevent on restaurants.restaurantId = restaurantevent.restaurantId
+            join events on restaurantevent.eventId = events.eventId
+            join foodtype on restaurants.typeId = foodtype.typeId
+            join festivaleventtypes on events.festivalEventType  = festivaleventtypes.eventTypeId
+            join ticketlinks on events.eventId = ticketlinks.eventId
+            join tickettypes on tickettypes.ticketTypeId = ticketlinks.ticketTypeId";
             $stmt = $this->connection->prepare($query);
             $stmt->execute();
 

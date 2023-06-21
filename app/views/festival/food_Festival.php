@@ -6,17 +6,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name=”robots” content="index, follow">
-  <link rel="stylesheet" href="/stylesheet.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
   <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/main_no_editor.css">
+  <link rel="stylesheet" href="/css/icons.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
   <link rel="stylesheet" href="/css/food_festival.css">
   <title>Example</title>
 </head>
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
-    <script type="module" src="/js/nav.js"></script>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
+  <script type="module" src="/js/nav.js"></script>
   <div style="text-align:center">
     <h1>Yummy!</h1>
     <h3>One time deals can be found in these participating restaurants:</h3>
@@ -90,18 +92,18 @@
         div.innerHTML = `
         <div class="card">
           <div class="column">
-          <h3>${event.restaurant.restaurantName}</h3>
+          <h3>${event.event.restaurant.restaurantName}</h3>
           </div>
           <div class="column">
-            <p>${event.restaurant.description}</p>
+            <p>${event.event.restaurant.description}</p>
           </div>
           <div class="column">
-            <p>${event.restaurant.price}</p>
+            <p>${event.event.restaurant.price}</p>
           </div>
           <div class="column">
-            <p>${event.restaurant.ticketLinkid}</p>
+            <p>${event.event.restaurant.ticketLinkid}</p>
           </div>
-            <button class="btn btn-primary addToCartButton" onClick="addToCart()">Add to cart</button>
+            <button class="btn btn-primary addToCartButton" onClick="Cart.Add(${event.id})">Add to cart</button>
         </div>
         `;
         restDiv.appendChild(div);
@@ -124,7 +126,7 @@
 
     }
 
-    function addToCart(){
+    function addToCart() {
       Cart.Add(ticketLinkid);
     }
   </script>
