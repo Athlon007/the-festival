@@ -1,20 +1,16 @@
 <?php
 
-require_once("EventRepository.php");
-require_once("TicketLinkRepository.php");
-require_once("TicketTypeRepository.php");
+// require_once("EventRepository.php");
+// require_once("TicketLinkRepository.php");
+// require_once("TicketTypeRepository.php");
 
 class HistoryTicketLinkRepository extends TicketLinkRepository
 {
     protected function build($arr): array
     {
-        $eventRepo = new EventRepository();
-        $ttRepo = new TicketTypeRepository();
         $output = array();
 
         foreach ($arr as $item) {
-            // $event = $eventRepo->getEventById($item['eventId']);
-            // $ticketType = $ttRepo->getById($item['ticketTypeId']);
             $guide = new Guide();
             $guide->setGuideId($item['guideId']);
             $guide->setFirstName($item['name']);
