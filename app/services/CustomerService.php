@@ -55,12 +55,12 @@ class CustomerService{
     public function updateCustomer($customer, $data)
     {
         //If a new password was set, the confirm password must match the password currently in DB
-        if (isset($data->password) && isset($data->confirmPassword))
+        if (isset($data->password) && isset($data->passwordConfirm))
         {
-            $data->confirmPassword = htmlspecialchars($data->confirmPassword);
-            password_verify($data->confirmPassword, $customer->getHashPassword());
+            $data->passwordConfirm = htmlspecialchars($data->passwordConfirm);
+            password_verify($data->passwordConfirm, $customer->getHashPassword());
 
-            if (!password_verify($data->confirmPassword, $customer->getHashPassword()))
+            if (!password_verify($data->passwordConfirm, $customer->getHashPassword()))
                 throw new IncorrectPasswordException();
 
             //Hash the new password and update it
@@ -92,6 +92,5 @@ class CustomerService{
 
         $this->customerRepository->updateCustomer($customer);
         $this->userRepository->updateUser($customer);
-        $this->userRepository->updatePassword($customer);
     }
 }
