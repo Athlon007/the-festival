@@ -1,4 +1,4 @@
-<?php require_once("../Config.php"); ?>
+<?php require("../Config.php"); ?>
 <html>
                 <head>
                 <title>Reset Your Password</title>
@@ -54,7 +54,7 @@
                 </div>
                 <div class=\"container\" style=\"margin-top: 20px;\">
                     <p>For security reasons, please do not share this link with anyone else. If you have any questions or concerns, please contact our support team at <span class=\"email\">infohaarlemfestival5@gmail.com</span></p>
-                    <a href="/<?=$hostname?>/updatePassword?token=<?= $reset_token ?>&email=<?= $email ?>" class="button">Reset Your Password</a>
+                    <a href="<?= $hostname ?>/updatePassword?token=<?= urlencode($reset_token) ?>&email=<?= urlencode($email) ?>" class="button">Reset your password</a>
                 </div>
                 <div class=\"container\" style=\"margin-top: 20px;\">
                     <p>Thank you,<br>The Festival Website Team</p>
