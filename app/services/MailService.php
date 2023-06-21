@@ -33,10 +33,6 @@ class MailService{
         $this->mailer->Password = 'zznalnrljktsitri';
     }
 
-    public function sendInvoiceEmail($order, $invoicepdf){
-
-    }
-
     /**
      * @throws Exception
      */

@@ -17,20 +17,12 @@ class HistoryTicketLinkService extends TicketLinkService
 
     public function getAll($sort = null, $filters = []): array
     {
-        $links = $this->repo->getAll($sort, $filters);
-        foreach ($links as $link) {
-            $locationId = $this->repo->getLocationIdFromEventId($link->getEvent()->getId());
-            $link->getEvent()->setLocation($this->locationService->getById($locationId));
-        }
-        return $links;
+        return $this->repo->getAll($sort, $filters);
     }
 
     public function getById(int $id): TicketLink
     {
-        $ticketLink = $this->repo->getById($id);
-        $locationId = $this->repo->getLocationIdFromEventId($ticketLink->getEvent()->getId());
-        $ticketLink->getEvent()->setLocation($this->locationService->getById($locationId));
-        return $ticketLink;
+        return $this->repo->getById($id);
     }
 
     public function getByEventId(int $id): TicketLink
@@ -39,8 +31,6 @@ class HistoryTicketLinkService extends TicketLinkService
         if ($item == null) {
             throw new Exception("TicketLink not found");
         }
-        $locationId = $this->repo->getLocationIdFromEventId($item->getEvent()->getId());
-        $item->getEvent()->setLocation($this->locationService->getById($locationId));
         return $item;
     }
 }
