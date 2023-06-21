@@ -6,7 +6,7 @@
 
 ## Information
 
-By default, project uses MySQL server hosted on Azure. You can switch to local version by setting debugMode to 'true' in Config.php. If so, please use **install.sql** inside of sql_scripts through phpMyAdmin.
+By default, project uses MySQL server hosted on Azure. You can switch to local version by setting debugMode to 'true' in Config.php. If so, please use **dump-development.sql** inside of sql_scripts using **DBeaver** in **script execution mode** (ALT + X) to create database and tables.
 
 ## Website URL
 

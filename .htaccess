@@ -2,6 +2,10 @@ AddHandler php80-fastcgi .php
 
 RewriteEngine on
 
+# Redirect HTTP to HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
 # Set HTTP_AUTHORIZATION header
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
