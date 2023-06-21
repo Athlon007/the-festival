@@ -15,21 +15,25 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
         foreach ($arr as $item) {
             // $event = $eventRepo->getEventById($item['eventId']);
             // $ticketType = $ttRepo->getById($item['ticketTypeId']);
+            $guide = new Guide();
+            $guide->setGuideId($item['guideId']);
+            $guide->setFirstName($item['name']);
+            $guide->setLastName($item['lastName']);
+            $guide->setLanguage($item['language']);
 
-            $event = new Event();
-            $event->setId($item['eventId']);
-            $event->setName($item['name']);
-            $event->setStartTime(new DateTime($item['startTime']));
-            $event->setEndTime(new DateTime($item['endTime']));
             $eventType = new EventType(
-            $item['eventTypeId'], 
-            $item['name'],
-            $item['VAT']);
-            $location = new Location(
+                $item['eventTypeId'],
+                $item['name'],
+                $item['VAT']
             );
+
+            $location = new Location();
             $location->setLocationId($item['locationId']);
             $location->setName($item['name']);
+            $location->setLocationType(3);
+            $location->setCapacity($item['capacity']);
             $address = new Address();
+            $address->setAddressId($item['addressId']);
             $address->setStreetName($item['streetName']);
             $address->setHouseNumber($item['houseNumber']);
             $address->setPostalCode($item['postalCode']);
@@ -39,15 +43,20 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
             $location->setDescription($item['description']);
             $location->setLat($item['lat']);
             $location->setLon($item['lon']);
-            $guide = new Guide(
-            );
-            $guide->setGuideId($item['guideId']);
-            $guide->setFirstName($item['name']);
-            $guide->setLastName($item['lastName']);
-            $guide->setLanguage($item['language']);
-            $event->setEventType($eventType);
-            $event->setAvailableTickets($item['availableTickets']);
 
+
+            $event = new HistoryEvent(
+                $item['eventId'],
+                $item['name'],
+                $item['availableTickets'],
+                new DateTime($item['startTime']),
+                new DateTime($item['endTime']),
+                $guide,
+                $location,
+                $eventType
+            );
+
+            $event->setEventType($eventType);
 
             $ticketType = new TicketType(
                 $item['ticketTypeId'],
@@ -70,14 +79,15 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
              e.eventId,
              e.name,
              e.startTime,
-             e.eventId, 
-             e.festivalEventType, 
-             e.availableTickets, 
-             t.ticketTypeId, 
+            e.endTime,
+             e.eventId,
+             e.festivalEventType,
+             e.availableTickets,
+             t.ticketTypeId,
              h.locationId,
-             t.ticketTypeId, 
-             t.ticketTypeName, 
-             t.ticketTypePrice, 
+             t.ticketTypeId,
+             t.ticketTypeName,
+             t.ticketTypePrice,
              t.nrOfPeople,
              f.eventTypeId,
              f.name,
@@ -87,14 +97,16 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
              l.lon,
              l.lat,
              l.description,
+             l.capacity,
+             a.addressId,
              a.streetName,
-             a.houseNumber, 
-             a.postalCode, 
-             a.city, 
+             a.houseNumber,
+             a.postalCode,
+             a.city,
              a.country,
              g.guideId,
-             g.name, 
-             g.lastName, 
+             g.name,
+             g.lastName,
              g.`language`
              from ticketlinks c
              join tickettypes t ON t.ticketTypeId = c.ticketTypeId
@@ -153,7 +165,48 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
 
     public function getById($id)
     {
-        $sql = "SELECT ticketLinkId, eventId, ticketTypeId FROM ticketlinks WHERE ticketLinkId = :id";
+        $sql = "select c.ticketLinkId,
+             e.eventId,
+             e.name,
+             e.startTime,
+            e.endTime,
+             e.eventId,
+             e.festivalEventType,
+             e.availableTickets,
+             t.ticketTypeId,
+             h.locationId,
+             t.ticketTypeId,
+             t.ticketTypeName,
+             t.ticketTypePrice,
+             t.nrOfPeople,
+             f.eventTypeId,
+             f.name,
+             f.VAT,
+             l.name,
+             l.locationType,
+             l.lon,
+             l.lat,
+             l.description,
+             l.capacity,
+             a.addressId,
+             a.streetName,
+             a.houseNumber,
+             a.postalCode,
+             a.city,
+             a.country,
+             g.guideId,
+             g.name,
+             g.lastName,
+             g.`language`
+             from ticketlinks c
+             join tickettypes t ON t.ticketTypeId = c.ticketTypeId
+             join events e  on e.eventId = c.eventId
+             join historyevents h on h.eventId  = e.eventId
+             join guides g on g.guideId = h.guideId
+             join locations l on l.locationId = h.locationId
+             join festivaleventtypes f on f.eventTypeId = e.festivalEventType
+             join addresses a on a.addressId = l.addressId
+            WHERE c.ticketLinkId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -163,7 +216,48 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
 
     public function getByEventId($id): ?TicketLink
     {
-        $sql = "SELECT ticketLinkId, eventId, ticketTypeId FROM ticketlinks WHERE eventId = :id";
+        $sql = "select c.ticketLinkId,
+             e.eventId,
+             e.name,
+             e.startTime,
+            e.endTime,
+             e.eventId,
+             e.festivalEventType,
+             e.availableTickets,
+             t.ticketTypeId,
+             h.locationId,
+             t.ticketTypeId,
+             t.ticketTypeName,
+             t.ticketTypePrice,
+             t.nrOfPeople,
+             f.eventTypeId,
+             f.name,
+             f.VAT,
+             l.name,
+             l.locationType,
+             l.lon,
+             l.lat,
+             l.description,
+             l.capacity,
+             a.addressId,
+             a.streetName,
+             a.houseNumber,
+             a.postalCode,
+             a.city,
+             a.country,
+             g.guideId,
+             g.name,
+             g.lastName,
+             g.`language`
+             from ticketlinks c
+             join tickettypes t ON t.ticketTypeId = c.ticketTypeId
+             join events e  on e.eventId = c.eventId
+             join historyevents h on h.eventId  = e.eventId
+             join guides g on g.guideId = h.guideId
+             join locations l on l.locationId = h.locationId
+             join festivaleventtypes f on f.eventTypeId = e.festivalEventType
+             join addresses a on a.addressId = l.addressId
+             WHERE e.eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -174,15 +268,5 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
             return $output[0];
         }
         return null;
-    }
-
-    public function getLocationIdFromEventId($eventId): int
-    {
-        $sql = "select h.locationId from historyevents h where h.eventId = :eventId";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':eventId', $eventId, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetch();
-        return $result['locationId'];
     }
 }
