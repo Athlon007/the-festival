@@ -10,7 +10,7 @@ By default, project uses MySQL server hosted on Azure. You can switch to local v
 
 ## Website URL
 
-http://haarlem.kfigura.nl/
+https://haarlem.kfigura.nl/
 
 ## Created By
 
