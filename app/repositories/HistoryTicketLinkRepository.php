@@ -13,8 +13,49 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
         $output = array();
 
         foreach ($arr as $item) {
-            $event = $eventRepo->getEventById($item['eventId']);
-            $ticketType = $ttRepo->getById($item['ticketTypeId']);
+            // $event = $eventRepo->getEventById($item['eventId']);
+            // $ticketType = $ttRepo->getById($item['ticketTypeId']);
+
+            $event = new Event();
+            $event->setId($item['eventId']);
+            $event->setName($item['name']);
+            $event->setStartTime(new DateTime($item['startTime']));
+            $event->setEndTime(new DateTime($item['endTime']));
+            $eventType = new EventType(
+            $item['eventTypeId'], 
+            $item['name'],
+            $item['VAT']);
+            $location = new Location(
+            );
+            $location->setLocationId($item['locationId']);
+            $location->setName($item['name']);
+            $address = new Address();
+            $address->setStreetName($item['streetName']);
+            $address->setHouseNumber($item['houseNumber']);
+            $address->setPostalCode($item['postalCode']);
+            $address->setCity($item['city']);
+            $address->setCountry($item['country']);
+            $location->setAddress($address);
+            $location->setDescription($item['description']);
+            $location->setLat($item['lat']);
+            $location->setLon($item['lon']);
+            $guide = new Guide(
+            );
+            $guide->setGuideId($item['guideId']);
+            $guide->setFirstName($item['name']);
+            $guide->setLastName($item['lastName']);
+            $guide->setLanguage($item['language']);
+            $event->setEventType($eventType);
+            $event->setAvailableTickets($item['availableTickets']);
+
+
+            $ticketType = new TicketType(
+                $item['ticketTypeId'],
+                $item['ticketTypeName'],
+                $item['ticketTypePrice'],
+                $item['nrOfPeople']
+            );
+
             $cartItem = new TicketLink($item['ticketLinkId'], $event, $ticketType);
             array_push($output, $cartItem);
         }
@@ -22,16 +63,47 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
         return $output;
     }
 
-
     public function getAll($sort = null, $filters = [])
     {
         try {
-            $sql = "select c.ticketLinkId, e.eventId, t.ticketTypeId, h.locationId
-            from ticketlinks c
-            join tickettypes t ON t.ticketTypeId = c.ticketTypeId
-            join events e  on e.eventId = c.eventId
-            join historyevents h on h.eventId  = e.eventId
-            join guides g on g.guideId = h.guideId ";
+            $sql = "select c.ticketLinkId,
+             e.eventId,
+             e.name,
+             e.startTime,
+             e.eventId, 
+             e.festivalEventType, 
+             e.availableTickets, 
+             t.ticketTypeId, 
+             h.locationId,
+             t.ticketTypeId, 
+             t.ticketTypeName, 
+             t.ticketTypePrice, 
+             t.nrOfPeople,
+             f.eventTypeId,
+             f.name,
+             f.VAT,
+             l.name,
+             l.locationType,
+             l.lon,
+             l.lat,
+             l.description,
+             a.streetName,
+             a.houseNumber, 
+             a.postalCode, 
+             a.city, 
+             a.country,
+             g.guideId,
+             g.name, 
+             g.lastName, 
+             g.`language`
+             from ticketlinks c
+             join tickettypes t ON t.ticketTypeId = c.ticketTypeId
+             join events e  on e.eventId = c.eventId
+             join historyevents h on h.eventId  = e.eventId
+             join guides g on g.guideId = h.guideId
+             join locations l on l.locationId = h.locationId
+             join festivaleventtypes f on f.eventTypeId = e.festivalEventType
+             join addresses a on a.addressId = l.addressId;";
 
             if (!empty($filters)) {
                 $sql .= " WHERE ";
