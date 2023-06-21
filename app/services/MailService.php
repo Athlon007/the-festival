@@ -86,6 +86,8 @@ class MailService
             $recipentEmail = $order->getCustomer()->getEmail();
             $name = $order->getCustomer()->getFullName();
 
+            $this->mailer->Subject = 'Your Invoice for the The Festival';
+
             ob_start();
             require_once(__DIR__ . '/../emails/invoice-email.php');
             $this->mailer->Body = ob_get_clean();

@@ -92,5 +92,6 @@ class CustomerService{
 
         $this->customerRepository->updateCustomer($customer);
         $this->userRepository->updateUser($customer);
+        $this->userRepository->updatePassword($customer);
     }
 }
