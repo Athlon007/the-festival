@@ -468,15 +468,21 @@ class EventRepository extends Repository
     }
 
     public function updateDanceEvent(DanceEvent $event) {
+        //Check if the event is in the dance events table
+        if(!isInDanceEvents($event->getId())){
+            throw new ObjectNotFoundException("Event not found in dance events table");
+        }
 
-        $this->updateDanceLineup($event->getId(), $event->getArtists());
-
+        //Update danceEvents table
         $sql = "UPDATE danceevents SET locationId = :locationId WHERE eventId = :eventId";
 
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':locationId', htmlspecialchars($event->getLocation()->getLocationId()));
         $stmt->bindValue(':eventId', htmlspecialchars($event->getId()));
         $stmt->execute();
+
+        //Update danceLineups table
+        $this->updateDanceLineup($event->getId(), $event->getArtists());
     }
 
     private function insertDanceLineup($eventId, $artists) : void {

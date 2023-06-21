@@ -6,6 +6,7 @@ require_once(__DIR__ . "/../models/Music/JazzEvent.php");
 require_once(__DIR__ . "/../models/Music/DanceEvent.php");
 require_once(__DIR__ . "/../repositories/EventRepository.php");
 require_once(__DIR__ . "/../models/Exceptions/InvalidVariableException.php");
+require_once(__DIR__ . "/../models/Exceptions/ObjectNotFoundException.php");
 require_once('EventTypeService.php');
 
 /**
@@ -91,6 +92,11 @@ class EventService
 
     public function editEvent($event): Event
     {
+        //Check if event exists
+        if (!$this->repo->getEventById($event->getId())){
+            throw new ObjectNotFoundException("Event does not exist", 404);
+        }
+
         $event->setName(htmlspecialchars($event->getName()));
         $event->setId(htmlspecialchars($event->getId()));
         $event->setAvailableTickets(htmlspecialchars($event->getAvailableTickets()));
