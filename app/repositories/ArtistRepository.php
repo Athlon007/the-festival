@@ -15,7 +15,7 @@ class ArtistRepository extends Repository
         parent::__construct();
     }
 
-    private function buildJazzArtist($arr): array
+    private function buildArtist($arr): array
     {
         $output = array();
         foreach ($arr as $row) {
@@ -50,7 +50,7 @@ class ArtistRepository extends Repository
                 $artistKind
             );
 
-            array_push($output, $artist);
+            $output[] = $artist;
         }
 
         return $output;
@@ -106,7 +106,7 @@ class ArtistRepository extends Repository
 
         $statement->execute();
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-        return $this->buildJazzArtist($result);
+        return $this->buildArtist($result);
     }
 
     /**
@@ -120,7 +120,7 @@ class ArtistRepository extends Repository
         $statement->bindParam(":id", $id);
         $statement->execute();
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-        $artists = $this->buildJazzArtist($result);
+        $artists = $this->buildArtist($result);
         if (count($artists) == 0) {
             throw new ObjectNotFoundException("Artist with id $id not found");
         }
@@ -129,14 +129,29 @@ class ArtistRepository extends Repository
 
     public function getDanceLineupByEventId($eventId): array
     {
-        $sql = "SELECT * from dancelineups d 
-        join artists a on a.artistId = d.artistId 
-        where d.eventId = :eventId";
+        $sql = "SELECT
+        a.artistId as artistId,
+        a.name as artistName,
+        a.description as artistDescription,
+        a.recentAlbums as artistRecentAlbums,
+        a.genres as artistGenres,
+        a.country as artistCountry,
+        a.homepageUrl as artistHomepage,
+        a.facebookUrl as artistFacebook,
+        a.twitterUrl as artistTwitter,
+        a.instagramUrl as artistInstagram,
+        a.spotifyUrl as artistSpotify,
+        a.artistKindId as artistKindId
+        FROM dancelineups d 
+        JOIN artists a on a.artistId = d.artistId
+        WHERE d.eventId = :id";
         $statement = $this->connection->prepare($sql);
-        $statement->bindValue(":eventId", htmlspecialchars($eventId));
+        $statement->bindValue(":id", htmlspecialchars($eventId));
         $statement->execute();
 
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        return $this->buildArtist($result);
     }
 
     /**

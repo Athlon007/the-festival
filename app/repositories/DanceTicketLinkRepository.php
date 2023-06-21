@@ -88,7 +88,7 @@ class DanceTicketLinkRepository extends TicketLinkRepository
     }
 
     /**
-     * Gets TicketLink by TicketLinkId
+     * Gets one TicketLink by TicketLinkId
      * @throws Exception
      * @return array
      */
@@ -141,7 +141,7 @@ class DanceTicketLinkRepository extends TicketLinkRepository
     }
 
 /**
-     * Gets TicketLink by EventId
+     * Gets one TicketLink by EventId
      * @throws Exception
      * @return array
      */
@@ -195,7 +195,7 @@ class DanceTicketLinkRepository extends TicketLinkRepository
 
 
     /**
-     * Gets all TicketLinks
+     * Gets all Dance TicketLinks (combo event + tickettype)
      * @param string $sort
      * @param array $filters
      * @return array
@@ -314,6 +314,12 @@ class DanceTicketLinkRepository extends TicketLinkRepository
         return $this->build($result);
     }
 
+    /**
+     * Fetches all artists for a specific dance event
+     * @param $id
+     * @return array
+     * @throws Exception
+     */
     private function getLineUpForEvent($id): array
     {
         $sql = "SELECT
@@ -342,6 +348,12 @@ class DanceTicketLinkRepository extends TicketLinkRepository
         return $this->buildArtists($result);
     }
 
+    /**
+     * Used to build the dance lineup (artists array) from extracted sql data
+     * @param $result
+     * @return array
+     * @throws Exception
+     */
     private function buildArtists($result) : array {
         $artists = array();
         foreach($result as $row){

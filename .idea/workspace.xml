@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Bugfixed updating">
+    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Fixed dance line up fetching">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/repositories/ArtistRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/ArtistRepository.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/DanceTicketLinkRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/UserService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/UserService.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +73,7 @@
       <workItem from="1687168802335" duration="21008000" />
       <workItem from="1687190497923" duration="3051000" />
       <workItem from="1687245623105" duration="13291000" />
-      <workItem from="1687343474598" duration="6678000" />
+      <workItem from="1687343474598" duration="7773000" />
     </task>
     <task id="LOCAL-00001" summary="Added sendTicketsAndInvoice method to OrderService">
       <created>1686906723310</created>
@@ -306,7 +306,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687347972588</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Fixed dance line up fetching">
+      <created>1687350506431</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1687350506431</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -324,7 +331,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Tweaked cart validation" />
     <MESSAGE value="Cart tweaks for mollie bugs" />
     <MESSAGE value="Cart tweaks for after the checkout" />
     <MESSAGE value="Payment Success Window checkout" />
@@ -349,6 +355,7 @@
     <MESSAGE value="Bugfixing" />
     <MESSAGE value="Bugfixing put" />
     <MESSAGE value="Bugfixed updating" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bugfixed updating" />
+    <MESSAGE value="Fixed dance line up fetching" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed dance line up fetching" />
   </component>
 </project>
