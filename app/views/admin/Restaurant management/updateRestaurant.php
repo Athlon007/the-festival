@@ -20,8 +20,8 @@
     <form action="editRestaurant" method="POST">
         <div class="form-group">
             <label for="RestaurantId">Restaurant ID</label>
-            <input type="text" class="form-control" id="userID" name="id" value="<?php echo $restaurant['restaurantId']; ?>"
-                readonly>
+            <input type="text" class="form-control" id="userID" name="id"
+                value="<?php echo $restaurant['restaurantId']; ?>" readonly>
         </div>
         <div class="form-group">
             <label for="name">Restaurant Name</label>
@@ -36,10 +36,9 @@
 
         <div class="form-group">
             <label for="description">Price</label>
-            <input type="text" class="form-control" id="price" name="price"
-                value="<?php echo $restaurant['price']; ?>" autocomplete="off">
+            <input type="text" class="form-control" id="price" name="price" value="<?php echo $restaurant['price']; ?>"
+                autocomplete="off">
         </div>
-
         <div class="form-group">
                         <label for="longDescription">Location</label>
                     <select class="form-select" name="location" id="location">
@@ -53,16 +52,16 @@
             <label for="rating">Rating</label>
             <input type="text" class="form-control" id="addressId" name="rating"
                 value="<?php echo $restaurant['rating']; ?>" autocomplete="off">
-        </div>        
+        </div>
         <div class="form-group">
-                        <select class="form-select" name="type" id="type">
-                            <?php 
-                            
-                            foreach($types as $type): ?>
-                            <option value="<?= $type['typeId'] ?>"><?= $type['typeName'] ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
+            <label for="type">Food Type</label>
+            <select class="form-select" name="type" id="type">
+                <?php
+                foreach ($types as $type): ?>
+                    <option value="<?= $type['typeId'] ?>"><?= $type['typeName'] ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
 
         <button type="submit" class="btn btn-primary" name="updateUserButton">Update User</button>
     </form>

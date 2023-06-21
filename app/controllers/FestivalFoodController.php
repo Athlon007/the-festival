@@ -93,6 +93,8 @@ class FestivalFoodController
         require_once("../services/FestivalFoodService.php");
         $festivalFoodService = new FestivalFoodService();
         $restaurant = $festivalFoodService->getRestaurantById($id);
+        $types = $festivalFoodService->getAllTypes();
+        $locations = $festivalFoodService->getAllLocations();
         require_once("../views/admin/Restaurant management/updateRestaurant.php");
     }
 

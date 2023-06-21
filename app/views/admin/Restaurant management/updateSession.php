@@ -43,6 +43,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary" name="updateSessionBtn">Add Session</button>
+                    <button type="button" class="btn btn-danger" onclick="window.history.go(-1)">Back</button>
                 </form>
 
 

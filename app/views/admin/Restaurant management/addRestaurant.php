@@ -46,9 +46,9 @@
                         <input type="text" class="form-control" id="" name="rating" value="">
                     </div>
                     <div class="form-group">
+                    <label for="type">Food Type</label>
                         <select class="form-select" name="type" id="type">
                             <?php 
-                            
                             foreach($types as $type): ?>
                             <option value="<?= $type['typeId'] ?>"><?= $type['typeName'] ?></option>
                             <?php endforeach; ?>

@@ -101,9 +101,6 @@
           <div class="column">
             <p>${event.event.restaurant.price}</p>
           </div>
-          <div class="column">
-            <p>${event.event.restaurant.ticketLinkid}</p>
-          </div>
             <button class="btn btn-primary addToCartButton" onClick="Cart.Add(${event.id})">Add to cart</button>
         </div>
         `;
