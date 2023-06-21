@@ -80,7 +80,6 @@ class CustomerRepository extends Repository{
         $stmt->bindValue(":userId", htmlspecialchars($customer->getUserId()));
         
         $stmt->execute();
-        
     }
 
     public function updateCustomer(Customer $customer) : void
@@ -96,7 +95,5 @@ class CustomerRepository extends Repository{
         
         $stmt->execute();
     }
-       
-    
 }
 ?>

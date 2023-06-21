@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Remove old olders fixed" />
+    <list default="true" id="5716a27b-20cd-4141-9fb5-b5d94e4044fe" name="Changes" comment="Remove old olders fixed">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/FestivalDanceController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/FestivalDanceController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/repositories/CustomerRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/repositories/CustomerRepository.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,7 +45,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "bugfixing-customer",
     "last_opened_file_path": "C:/Users/joshu/Documents/InHolland/Year 2/Term 3/the-festival-2",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",

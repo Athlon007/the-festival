@@ -1,21 +1,16 @@
 <?php
-
 require_once(__DIR__ . "/../services/DanceTicketLinkService.php");
 
-/**
- * @author: Joshua
- */
 class FestivalDanceController
 {
-
     const DANCE_ARTIST_PAGE = "/../views/festival/danceartist.php";
     const DANCE_EVENT_PAGE = "/../views/festival/danceevent.php";
 
-    private $ciService;
+    private $ticketLinkService;
 
     public function __construct()
     {
-        $this->ciService = new DanceTicketLinkService();
+        $this->ticketLinkService = new DanceTicketLinkService();
     }
 
     public function loadArtistPage($uri)
@@ -44,13 +39,13 @@ class FestivalDanceController
     public function loadEventPage($uri)
     {
         try {
-            $cartItem = $this->ciService->getByEventId(basename($uri));
-            $event = $cartItem->getEvent();
+            $ticketlink = $this->ticketLinkService->getByEventId(basename($uri));
+            $event = $ticketlink->getEvent();
 
-
-            // if event is of jazzevent type
+            // if event is not of dance event type
             if (!($event instanceof DanceEvent)) {
                 // redirect to 404
+                header("Location: /404");
                 return;
             }
 
