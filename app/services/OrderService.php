@@ -133,7 +133,7 @@ class OrderService
         return $this->orderRepository->insertOrderItem($orderItem, $orderId);
     }
 
-    public function updateOrder($orderId, $order): Order
+    public function updateOrder(int $orderId, Order $order): Order
     {
         return $this->orderRepository->updateOrder($orderId, $order);
     }
