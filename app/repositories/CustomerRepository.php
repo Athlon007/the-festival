@@ -20,7 +20,7 @@ class CustomerRepository extends Repository{
         $customer = new Customer();
         $customer->setUserId($result['userId']);
         $customer->setEmail($result['email']);
-        //Deliberately no password
+        $customer->setHashPassword($result['hashPassword']);
         $customer->setFirstName($result['firstName']);
         $customer->setLastName($result['lastName']);
         $customer->setUserType(3);
