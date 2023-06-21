@@ -35,19 +35,19 @@ class RestaurantService
         }
     }
 
-    public function getAll(){
-        try{
+    public function getAll()
+    {
+        try {
             return $this->repository->getAll();
-        }
-        catch(Exception $ex){
-            throw($ex);
+        } catch (Exception $ex) {
+            throw ($ex);
         }
     }
 
-    function getAllRestaurants(/*$date = null*/): array
+    function getAllRestaurants($filters = []): array
     {
         try {
-            return $this->repository->getAllRestaurants(/*$date*/);
+            return $this->repository->getAllRestaurants($filters);
         } catch (Exception $ex) {
             throw ($ex);
         }

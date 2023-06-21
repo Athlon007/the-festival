@@ -70,11 +70,55 @@ class RestaurantRepository extends Repository
         return $output;
     }
 
-    public function getAllRestaurants($date = null)
+    public function getAllRestaurants($filters = [])
     {
         try {
-            $query = "Select * from restaurants join restaurantevent on restaurants.restaurantId = restaurantevent.restaurantId join events on restaurantevent.eventId = events.eventId join foodtype on restaurants.typeId = foodtype.typeId join festivaleventtypes on events.festivalEventType  = festivaleventtypes.eventTypeId";
+            $query = "Select *
+            from restaurants
+            join restaurantevent on restaurants.restaurantId = restaurantevent.restaurantId
+            join events on restaurantevent.eventId = events.eventId
+            join foodtype on restaurants.typeId = foodtype.typeId
+            join festivaleventtypes on events.festivalEventType  = festivaleventtypes.eventTypeId";
+
+            // Filter by: type, date, price range.
+
+            if (count($filters) > 0) {
+                $query .= " where ";
+                $i = 0;
+                foreach ($filters as $key => $value) {
+                    $value = htmlspecialchars($value);
+                    if ($i > 0)
+                        $query .= " and ";
+
+                    if ($key == "type") {
+                        $query .= "foodtype.typeName LIKE '%$value%'";
+                    } elseif ($key == "date") {
+                        $query .= "DATE(events.startTime) = :$key ";
+                    } elseif ($key == "price_from") {
+                        $query .= "restaurants.price >= :$key";
+                    } elseif ($key == "price_to") {
+                        $query .= "restaurants.price <= :$key";
+                    }
+
+                    $i++;
+                }
+            }
+
             $stmt = $this->connection->prepare($query);
+
+            foreach ($filters as $key => &$value) {
+                if ($key == "type") {
+                    continue;
+                }
+
+                if ($key == "date") {
+                    $value = date("Y-m-d H:i:s", strtotime($value));
+                    $stmt->bindParam(":$key", $value);
+                } else {
+                    $stmt->bindParam(":$key", $value);
+                }
+            }
+
             $stmt->execute();
 
             $result = $this->buildRestaurantEvents($stmt->fetchAll());
@@ -90,7 +134,8 @@ class RestaurantRepository extends Repository
         }
     }
 
-    public function getAll(){
+    public function getAll()
+    {
         try {
             $query = "Select r.*, l.name as name, ft.*  from restaurants as r join foodtype as ft on r.typeId = ft.typeId join locations as l on r.addressId = l.addressId";
             $stmt = $this->connection->prepare($query);
@@ -121,7 +166,8 @@ class RestaurantRepository extends Repository
         }
     }
 
-    public function deleteRestaurantEvent($id){
+    public function deleteRestaurantEvent($id)
+    {
         try {
             $stmt = $this->connection->prepare("DELETE FROM restaurantevent WHERE restaurantId = :id");
             $stmt->bindValue(':id', $id);
@@ -129,10 +175,10 @@ class RestaurantRepository extends Repository
         } catch (Exception $ex) {
             throw ($ex);
         }
-
     }
 
-    public function deleteEvent($id){
+    public function deleteEvent($id)
+    {
         try {
             $stmt = $this->connection->prepare("DELETE FROM events WHERE eventId = :id");
             $stmt->bindValue(':id', $id);
@@ -140,10 +186,10 @@ class RestaurantRepository extends Repository
         } catch (Exception $ex) {
             throw ($ex);
         }
-
     }
 
-    public function getEventId($id){
+    public function getEventId($id)
+    {
         try {
             $stmt = $this->connection->prepare("SELECT eventId FROM restaurantevent WHERE restaurantId = :id");
             $stmt->bindValue(':id', $id);
@@ -153,7 +199,6 @@ class RestaurantRepository extends Repository
         } catch (Exception $ex) {
             throw ($ex);
         }
-
     }
 
     public function insertRestaurant(Restaurant $restaurant): void
