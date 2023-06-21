@@ -108,7 +108,7 @@ class UserAPIController extends APIController
             parent::sendSuccessMessage("Login successful.");
         } catch (Throwable $ex) {
             Logger::write($ex);
-            parent::sendErrorMessage($ex->getMessage(), $ex->getCode());
+            parent::sendErrorMessage($ex->getMessage(), 400);
         }
     }
 
