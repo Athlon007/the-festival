@@ -136,7 +136,7 @@ class TicketService
   public function getAllTicketsAndSend(Order $order)
   {
     try {
-      // get all history, jazz tickets (for now, later we will get all tickets for yummy and dance)
+      // get all tickets from order
       $tickets = array_merge(
         $this->getAllHistoryTickets($order),
         $this->getAllJazzTickets($order),
@@ -181,8 +181,7 @@ class TicketService
       $mail->Body = ob_get_clean();
 
       $mail->addAddress($order->getCustomer()->getEmail(), $name);
-      //Debugging
-      // $mail->addAddress("turkvedat0911@gmail.com", $name);
+      // attach pdf to email for each ticket
       foreach ($order->getTickets() as $ticket) {
         $pdfContents = $dompdf->output();
         $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');
@@ -201,9 +200,6 @@ class TicketService
     $this->repository->markTicketAsScanned($ticket);
   }
 
-  public function createTicketFromTicketLink(TicketLink $ticketLink)
-  {
-  }
 
   //TODO: check if obsolete after payment funnel is finished
   public function addTicketToOrder($orderId, $ticketId)
