@@ -115,7 +115,7 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
              join guides g on g.guideId = h.guideId
              join locations l on l.locationId = h.locationId
              join festivaleventtypes f on f.eventTypeId = e.festivalEventType
-             join addresses a on a.addressId = l.addressId;";
+             join addresses a on a.addressId = l.addressId ";
 
             if (!empty($filters)) {
                 $sql .= " WHERE ";
@@ -142,6 +142,8 @@ class HistoryTicketLinkRepository extends TicketLinkRepository
                     }
                 }
             }
+
+            $sql .= " ORDER BY e.startTime ASC";
 
             $stmt = $this->connection->prepare($sql);
 
