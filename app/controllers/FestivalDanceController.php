@@ -32,8 +32,6 @@ class FestivalDanceController
                 return;
             }
 
-            $events = $this->ciService->getAll("time", ["artist" => $artist->getId()]);
-
             require(__DIR__ . self::DANCE_ARTIST_PAGE);
         } catch (Exception $e) {
             // redirect to 404
@@ -49,18 +47,12 @@ class FestivalDanceController
             $cartItem = $this->ciService->getByEventId(basename($uri));
             $event = $cartItem->getEvent();
 
+
             // if event is of jazzevent type
             if (!($event instanceof DanceEvent)) {
                 // redirect to 404
                 return;
             }
-
-
-            $afterThat = $this->ciService->getAll("", [
-                "day" => $event->getStartTime()->format('d'),
-                "time_from" => $event->getEndTime()->format('H:i'),
-                "location" => $event->getLocation()->getLocationId()
-            ]);
 
             require(__DIR__ . self::DANCE_EVENT_PAGE);
         } catch (Exception $e) {

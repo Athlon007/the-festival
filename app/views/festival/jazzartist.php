@@ -110,7 +110,11 @@
             <div class="row">
                 <div class="col-12 col-xl-6 mx-auto">
                     <h2>About</h2>
-                    <p><?= $artist->getDescription(); ?></p>
+                    <?php if (strlen($artist->getDescription()) == 0) { ?>
+                        <p>Sorry! No information about <?= $artist->getName() ?> is currently available.</p>
+                    <?php } else { ?>
+                        <p><?= $artist->getDescription(); ?></p>
+                    <?php } ?>
                 </div>
                 <?php if (strlen($artist->getSpotify()) > 0) { ?>
                     <div class="col-12 col-xl-4 mx-auto">
