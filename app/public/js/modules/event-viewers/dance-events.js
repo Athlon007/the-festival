@@ -72,19 +72,6 @@ class DanceEventList extends EventsList {
 
         let dates = await fetch('/api/events/dates').then((res) => res.json());
 
-        // create array of dates also in between the first and last date
-        let firstDate = new Date(dates[0]);
-        let lastDate = new Date(dates[dates.length - 1]);
-
-        while (firstDate <= lastDate) {
-            let date = firstDate.toISOString().split('T')[0];
-            if (!dates.includes(date)) {
-                dates.push(date);
-            }
-            firstDate.setDate(firstDate.getDate() + 1);
-        }
-
-
         // convert them to date objects
         dates = dates.map((date) => new Date(date));
         // sort
@@ -332,7 +319,7 @@ class DanceEventList extends EventsList {
             rowButtons.appendChild(buyButton);
         }
         let buttonDetailsA = document.createElement('a');
-        buttonDetailsA.href = `/festival/jazz/event/${event.event.id}`;
+        buttonDetailsA.href = `/festival/dance/event/${event.event.id}`;
         buttonDetailsA.classList.add('col-3');
         let buttonDetails = document.createElement('button');
         buttonDetails.classList.add('btn', 'btn-secondary', 'w-100');

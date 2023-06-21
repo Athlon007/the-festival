@@ -1,6 +1,7 @@
 // Author: Konrad
 if (window.frameElement == null) {
     window.location.href = '/manageJazz';
+    throw new Error('Unauthorized access');
 }
 
 import { MsgBox } from "./modals.js";
@@ -31,15 +32,10 @@ startTime.onchange = function () {
 
 const msgBox = new MsgBox();
 
-const maxNameLength = 12;
+const maxNameLength = 15;
 const maxLocationLength = 15;
 
-let baseURL = '/api/events/';
-if (window.frameElement != null && window.frameElement.getAttribute('data-kind') != undefined) {
-    baseURL += window.frameElement.getAttribute('data-kind');
-} else {
-    baseURL += "jazz";
-}
+let baseURL = '/api/events/jazz';
 
 function updateExistingEntry(id, data) {
     fetch(baseURL + "/" + id, {
@@ -97,19 +93,11 @@ btnSubmit.onclick = function () {
             name: artist.options[artist.selectedIndex].text,
             startTime: start,
             endTime: end,
-            artist: {
-                id: artist.value
-            },
-            location: {
-                id: locationSelect.value
-            },
-            eventType: {
-                id: window.frameElement.getAttribute('data-kind') == 'jazz' ? 1 : 4
-            }
+            artistId: artist.value,
+            locationId: locationSelect.value,
+            eventTypeId: 1
         },
-        ticketType: {
-            id: ticketType.value,
-        }
+        ticketTypeId: ticketType.value
     };
 
     // disable the editor.
@@ -270,14 +258,7 @@ function createNewOptionItem(element) {
 }
 
 function setOpenButton(baseURI, eventId) {
-    btnOpen.onclick = function () {
-        if (baseURI.endsWith('dance')) {
-            window.open('/festival/dance/event/' + eventId, '_blank');
-        } else {
-            window.open('/festival/jazz/event/' + eventId, '_blank');
-        }
-
-    }
+    btnOpen.onclick = function () { window.open('/festival/jazz/event/' + eventId, '_blank'); }
 }
 
 let isBasicStuffLoaded = false;
@@ -343,12 +324,7 @@ function loadList() {
     jazzSelectOption.disabled = true;
     artist.appendChild(jazzSelectOption);
 
-    let uri = '/api/artists?sort=name';
-    if (baseURL.endsWith('dance')) {
-        uri += '&kind=2';
-    } else {
-        uri += '&kind=1';
-    }
+    let uri = '/api/artists?sort=name&kind=1';
 
     fetch(uri, {
         method: 'GET',

@@ -1,6 +1,7 @@
 // Author: Konrad
 if (window.frameElement == null) {
     window.location.href = '/manageDJs';
+    throw new Error('Unauthorized access');
 }
 
 import { MsgBox } from "./modals.js";
@@ -31,8 +32,8 @@ startTime.onchange = function () {
 
 const msgBox = new MsgBox();
 
-const maxNameLength = 12;
-const maxLocationLength = 15;
+const maxNameLength = 15;
+const maxLocationLength = 12;
 
 let baseURL = '/api/events/dance';
 
@@ -231,18 +232,26 @@ function createNewOptionItem(element) {
                     editedId = data.id;
                     editedEventId = data.event.id;
 
-                    // select the artist option corresponding to id in the select
-                    let options = artist.getElementsByTagName('option');
-                    for (let option of options) {
-                        if (option.value == data.event.artist.id) {
-                            option.selected = true;
-                            break;
+                    title.value = data.event.name;
+
+                    const artistCheckboxes = artistCheckboxesContainer.getElementsByClassName('artist-checkbox');
+                    // Uncheck all first.
+                    for (let checkbox of artistCheckboxes) {
+                        checkbox.checked = false;
+                    }
+
+                    // Check the artists that are in the event
+                    for (let artist of data.event.artists) {
+                        for (let checkbox of artistCheckboxes) {
+                            if (checkbox.value == artist.artistId) {
+                                checkbox.checked = true;
+                                break;
+                            }
                         }
                     }
 
                     // select the location option corresponding to id in the selec
-                    options = locationSelect.getElementsByTagName('option');
-                    for (let option of options) {
+                    for (let option of locationSelect.getElementsByClassName('location-option')) {
                         if (option.value == data.event.location.id) {
                             option.selected = true;
                             break;
@@ -309,7 +318,6 @@ function loadList() {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             // check if data is array
             if (Array.isArray(data)) {
                 data.forEach(element => {
@@ -358,6 +366,7 @@ function loadList() {
                     input.value = element.id;
                     input.id = 'artist-' + element.id;
                     input.classList.add('form-check-input');
+                    input.classList.add('artist-checkbox');
 
                     let label = document.createElement('label');
                     label.classList.add('form-check-label');
@@ -373,18 +382,17 @@ function loadList() {
         }
         );
 
-    let locationURI = '/api/locations/type/';
-    if (baseURL.endsWith('dance')) {
-        locationURI += '4';
-    } else {
-        locationURI += '1';
-    }
-
-    locationURI += '?sort=name';
-
+    let locationURI = '/api/locations/type/4?sort=name';
     locationSelect.innerHTML = '';
 
-    // and now, load jazz locations.
+    // Add the '-- select --' option
+    let dummyLocation = document.createElement('option');
+    dummyLocation.innerHTML = '-- select --';
+    dummyLocation.value = -1;
+    dummyLocation.disabled = true;
+    locationSelect.appendChild(dummyLocation);
+
+    // and now, load locations.
     location.innerHTML = '';
     fetch(locationURI, {
         method: 'GET',
@@ -401,6 +409,7 @@ function loadList() {
                     option.innerHTML = element.name;
                     option.value = element.id;
                     locationSelect.appendChild(option);
+                    option.classList.add('location-option');
                 });
             }
         }

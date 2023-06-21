@@ -122,11 +122,22 @@ class EventService
             );
             return $this->repo->getEventById($event->getId());
         }
+
+        if ($event instanceof HistoryEvent) {
+            $event->getGuide()->setGuideId(htmlspecialchars($event->getGuide()->getGuideId()));
+            $event->getLocation()->setLocationId(htmlspecialchars($event->getLocation()->getLocationId()));
+
+            $this->repo->updateHistoryEvent(
+                $event->getId(),
+                $event->getGuide()->getGuideId(),
+                $event->getLocation()->getLocationId()
+            );
+        }
+
         // if event is type of danceevent
         elseif ($event instanceof DanceEvent) {
             return $this->repo->updateDanceEvent($event);
-        }
-        else
+        } else
             throw new InvalidVariableException("Event type not supported");
     }
 

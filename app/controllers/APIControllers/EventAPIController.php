@@ -145,13 +145,13 @@ class EventAPIController extends APIController
             if (
                 str_starts_with($uri, EventAPIController::URI_JAZZ)
             ) {
-                $artist = $this->artistService->getById($data['event']['artist']['id']);
-                $location = $this->locationService->getById($data['event']['location']['id']);
+                $artist = $this->artistService->getById($data['event']['artistId']);
+                $location = $this->locationService->getById($data['event']['locationId']);
 
                 // In terms of music events, the capacity is the number of available seats.
                 $availableSeats = $location->getCapacity();
 
-                $eventType = $this->eventTypeService->getById($data['event']['eventType']['id']);
+                $eventType = $this->eventTypeService->getById($data['event']['eventTypeId']);
 
                 $event = new JazzEvent(
                     0,
@@ -234,12 +234,12 @@ class EventAPIController extends APIController
             $event = null;
 
             if (str_starts_with($uri, EventAPIController::URI_JAZZ)) {
-                $artist = $this->artistService->getById($data['event']['artist']['id']);
-                $location = $this->locationService->getById($data['event']['location']['id']);
+                $artist = $this->artistService->getById($data['event']['artistId']);
+                $location = $this->locationService->getById($data['event']['locationId']);
 
                 $availableSeats = $location->getCapacity();
 
-                $eventType = $this->eventTypeService->getById($data['event']['eventType']['id']);
+                $eventType = $this->eventTypeService->getById($data['event']['eventTypeId']);
 
                 $event = new JazzEvent(
                     basename($uri),
