@@ -15,19 +15,16 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
-    <?php if (count($artist->getImages()) > 0) { ?>
-        <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <?php $image = $artist->getImages()[0]; ?>
-                <div class="carousel-item active">
-                    <img src="<?= $image->getSrc(); ?>" class="d-block w-100" alt="<?= $image->getAlt(); ?>">
-                    <div class="carousel-caption">
-                        <h1><?= $artist->getName(); ?></h1>
-                    </div>
+    <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="/img/jpg/EDM_1.jpg" class="d-block w-100" alt="We ran out of image budget.">
+                <div class="carousel-caption">
+                    <h1><?= $artist->getName(); ?></h1>
                 </div>
             </div>
         </div>
-    <?php } ?>
+    </div>
     <div class="container">
         <?php if ($artist->noInformation()) { ?>
             <div class="container">
@@ -123,63 +120,7 @@
                     </div>
                 <?php } ?>
             </div>
-            <?php if (count($events) > 0) { ?>
-                <div class="row my-1">
-                    <div class="col-12 mx-auto">
-                        <h2>Events</h2>
-                    </div>
-                    <div class="row col-12">
-                        <?php foreach ($events as $event) { ?>
-                            <div class="row col-11 mx-auto my-2 card">
-                                <div class="row col-12 py-2">
-                                    <h2><?= $event->getEvent()->getStartTime()->format('l, F jS'); ?></h2>
-                                </div>
-                                <div class="row mx-auto">
-                                    <div class="col-3">
-                                        <h3>Location</h3>
-                                        <p><?= $event->getEvent()->getLocation()->getName() ?></p>
-                                    </div>
-                                    <div class="col-3">
-                                        <h3>Time</h3>
-                                        <p><?= $event->getEvent()->getStartTime()->format('H:i') ?> - <?= $event->getEvent()->getEndTime()->format('H:i') ?></p>
-                                    </div>
-                                    <?php if ($event->getTicketType()->getPrice() > 0) { ?>
-                                        <div class="col-3">
-                                            <h3>Seats</h3>
-                                            <?php if ($event->getEvent()->getAvailableTickets() == 0) { ?>
-                                                <p class="text-danger">Sold out</p>
-                                            <?php } else { ?>
-                                                <p><?= $event->getEvent()->getAvailableTickets(); ?> / <?= $event->getEvent()->getLocation()->getCapacity(); ?></p>
-                                            <?php } ?>
-                                        </div>
-                                    <?php } ?>
-                                    <div class="col-3">
-                                        <h3>Price</h3>
-                                        <?php
-                                        if ($event->getTicketType()->getPrice() == 0) {
-                                            echo '<p class="price text-start">FREE</p>';
-                                        } else {
-                                            echo '<p class="price text-start">&euro; ' . $event->getTicketType()->getPrice() . '</p>';
-                                        }
-                                        ?>
-                                    </div>
-                                </div>
-                                <div class="row d-flex justify-content-end py-2">
-                                    <?php if ($event->getTicketType()->getPrice() > 0) { ?>
-                                        <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $event->getId() ?>)">Add ticket to cart</button>
-                                    <?php } else { ?>
-                                        <button class="btn btn-primary px-2 mx-1 w-auto" onclick="Cart.Add(<?= $event->getId() ?>)">Book a ticket</button>
-                                    <?php } ?>
-                                    <a href="/festival/jazz/event/<?= $event->getEvent()->getId(); ?>" class="w-auto p-0">
-                                        <button class="btn btn-secondary px-2 w-auto">About event</button>
-                                    </a>
-                                </div>
-                            </div>
-                        <?php } ?>
-                    </div>
-                </div>
-        <?php }
-        } ?>
+        <?php  } ?>
     </div>
     <footer class="foot row bottom"></footer>
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>

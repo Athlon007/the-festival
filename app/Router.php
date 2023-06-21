@@ -109,6 +109,16 @@ class Router
                 $festivalJazzController->loadEventPage($request);
                 return;
             }
+        } elseif (str_starts_with($request, "/festival/dance/")) {
+            require_once("controllers/FestivalDanceController.php");
+            $festivalDanceController = new FestivalDanceController();
+            if (str_starts_with($request, "/festival/dance/artist/")) {
+                $festivalDanceController->loadArtistPage($request);
+                return;
+            } elseif (str_starts_with($request, "/festival/dance/event/")) {
+                $festivalDanceController->loadEventPage($request);
+                return;
+            }
         }
 
         if (str_starts_with($request, '/admin/')) {
@@ -373,6 +383,9 @@ class Router
             case "/admin/jazz-events":
                 require("views/admin/jazz-events.php");
                 break;
+            case "/admin/dance-events":
+                require("views/admin/dance-events.php");
+                break;
             case "/admin/images":
                 require("views/admin/images.php");
                 break;
@@ -409,13 +422,8 @@ class Router
         require_once(__DIR__ . "/models/Customer.php");
         $user = unserialize($_SESSION['user']);
 
-        if ($user->getUserType() > 2) {
+        if ($user->getUserType() >= 2) {
             header("Location: /");
-            return;
-        }
-
-        if ($user->getUserType() == 2 || $request == "/manageScanTicket") {
-            require_once('views/employee/ticketScan.php');
             return;
         }
 

@@ -36,5 +36,5 @@ http://haarlem.kfigura.nl/
 
 ### Client
 
-- E-mail: mail@example.com
+- E-mail: testclient@kfigura.nl
 - Password: Password1

@@ -27,14 +27,14 @@ use Endroid\QrCode\Writer\PngWriter;
 
 class TicketService
 {
-  protected TicketRepository $repository;
+  private TicketRepository $repository;
 
   public function __construct()
   {
     $this->repository = new TicketRepository();
   }
 
-  public function insertTicket($orderId, OrderItem $orderItem , Event $event, $ticketTypeId): Ticket
+  public function insertTicket($orderId, OrderItem $orderItem, Event $event, $ticketTypeId): Ticket
   {
     try {
       $ticket = $this->repository->insertTicket($orderId, $orderItem, $event, $ticketTypeId);
@@ -101,7 +101,8 @@ class TicketService
   public function generateQRCode($ticket): string
   {
     //Generate a QR code image with the ticket ID as data
-    $qrCodeData = "http://localhost/ticket?ticketId=" . $ticket->getTicketId();
+    require("../Config.php");
+    $qrCodeData = $hostname . "/ticket?ticketId=" . $ticket->getTicketId();
 
     $qrCode = new QrCode($qrCodeData);
     $qrCode->setSize(150);
@@ -180,16 +181,14 @@ class TicketService
 
       $mail->addAddress($order->getCustomer()->getEmail(), $name);
       //Debugging
-      //$mail->addAddress("turkvedat0911@gmail.com", $name);
+      // $mail->addAddress("turkvedat0911@gmail.com", $name);
       foreach ($order->getTickets() as $ticket) {
         $pdfContents = $dompdf->output();
         $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');
       }
 
-      if ($mail->send()) {
-        echo "Mail sent";
-      } else {
-        echo "Mail not sent";
+      if (!$mail->send()) {
+        throw new Exception("Email could not be sent");
       }
     } catch (Exception $ex) {
       throw ($ex);

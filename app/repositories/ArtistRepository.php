@@ -1,24 +1,21 @@
 <?php
 
 require_once("Repository.php");
-require_once("ImageRepository.php");
 require_once("../models/Music/Artist.php");
 require_once("../models/Music/ArtistKind.php");
+require_once("../models/Exceptions/ObjectNotFoundException.php");
 
 /**
  * @author Konrad
  */
 class ArtistRepository extends Repository
 {
-    private $imageRepo;
-
     public function __construct()
     {
         parent::__construct();
-        $this->imageRepo = new ImageRepository();
     }
 
-    private function buildJazzArtist($arr): array
+    private function buildArtist($arr): array
     {
         $output = array();
         foreach ($arr as $row) {
@@ -35,15 +32,13 @@ class ArtistRepository extends Repository
             $spotify = $this->readIfSet($row, "spotifyUrl");
             $recentAlbums = $this->readIfSet($row, "recentAlbums");
 
-            $images = $this->imageRepo->getImagesForArtistId($artistId);
-
             $artistKind = $this->getArtistKindById($row["artistKindId"]);
 
             $artist = new Artist(
                 $artistId,
                 $name,
                 $description,
-                $images,
+                array(),
                 $country,
                 $genres,
                 $homepage,
@@ -55,7 +50,7 @@ class ArtistRepository extends Repository
                 $artistKind
             );
 
-            array_push($output, $artist);
+            $output[] = $artist;
         }
 
         return $output;
@@ -111,13 +106,13 @@ class ArtistRepository extends Repository
 
         $statement->execute();
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-        return $this->buildJazzArtist($result);
+        return $this->buildArtist($result);
     }
 
     /**
      * Returns the artist with the given id.
      */
-    public function getById($id): ?Artist
+    public function getById($id): Artist
     {
         $sql = "SELECT artistId, name, description, recentAlbums, genres, country, homepageUrl, facebookUrl, twitterUrl, instagramUrl, spotifyUrl, recentAlbums, artistKindId "
             . "FROM artists WHERE artistId = :id";
@@ -125,11 +120,38 @@ class ArtistRepository extends Repository
         $statement->bindParam(":id", $id);
         $statement->execute();
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-        $artists = $this->buildJazzArtist($result);
+        $artists = $this->buildArtist($result);
         if (count($artists) == 0) {
-            return null;
+            throw new ObjectNotFoundException("Artist with id $id not found");
         }
         return $artists[0];
+    }
+
+    public function getDanceLineupByEventId($eventId): array
+    {
+        $sql = "SELECT
+        a.artistId as artistId,
+        a.name as artistName,
+        a.description as artistDescription,
+        a.recentAlbums as artistRecentAlbums,
+        a.genres as artistGenres,
+        a.country as artistCountry,
+        a.homepageUrl as artistHomepage,
+        a.facebookUrl as artistFacebook,
+        a.twitterUrl as artistTwitter,
+        a.instagramUrl as artistInstagram,
+        a.spotifyUrl as artistSpotify,
+        a.artistKindId as artistKindId
+        FROM dancelineups d 
+        JOIN artists a on a.artistId = d.artistId
+        WHERE d.eventId = :id";
+        $statement = $this->connection->prepare($sql);
+        $statement->bindValue(":id", htmlspecialchars($eventId));
+        $statement->execute();
+
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        return $this->buildArtist($result);
     }
 
     /**

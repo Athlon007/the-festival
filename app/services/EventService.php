@@ -2,8 +2,11 @@
 
 require_once(__DIR__ . "/../models/Event.php");
 require_once(__DIR__ . "/../models/Music/MusicEvent.php");
+require_once(__DIR__ . "/../models/Music/JazzEvent.php");
+require_once(__DIR__ . "/../models/Music/DanceEvent.php");
 require_once(__DIR__ . "/../repositories/EventRepository.php");
 require_once(__DIR__ . "/../models/Exceptions/InvalidVariableException.php");
+require_once(__DIR__ . "/../models/Exceptions/ObjectNotFoundException.php");
 require_once('EventTypeService.php');
 
 /**
@@ -52,7 +55,7 @@ class EventService
         );
 
         // if event is type of jazzevent
-        if ($event instanceof MusicEvent) {
+        if ($event instanceof JazzEvent) {
             $event->getArtist()->setId(htmlspecialchars($event->getArtist()->getId()));
             $event->getLocation()->setLocationId(htmlspecialchars($event->getLocation()->getLocationId()));
             $this->repo->createJazzEvent(
@@ -64,7 +67,14 @@ class EventService
             return $this->repo->getJazzEventById($id);
         }
 
-        // if event is type of historyevent
+        // If event is type of DanceEvent
+        if ($event instanceof DanceEvent) {
+            //Insert event into dance events table
+            $event->setId($id);
+            return $this->repo->insertDanceEvent($event);
+        }
+
+        // if event is type of history event
         if ($event instanceof HistoryEvent) {
             $event->getGuide()->setGuideId(htmlspecialchars($event->getGuide()->getGuideId()));
             $event->getLocation()->setLocationId(htmlspecialchars($event->getLocation()->getLocationId()));
@@ -80,8 +90,17 @@ class EventService
         return $this->repo->getEventById($id);
     }
 
+    /**
+     * @throws ObjectNotFoundException
+     * @throws InvalidVariableException
+     */
     public function editEvent($event): Event
     {
+        //Check if event exists
+        if (!$this->repo->getEventById($event->getId())){
+            throw new ObjectNotFoundException("Event does not exist", 404);
+        }
+
         $event->setName(htmlspecialchars($event->getName()));
         $event->setId(htmlspecialchars($event->getId()));
         $event->setAvailableTickets(htmlspecialchars($event->getAvailableTickets()));
@@ -102,7 +121,7 @@ class EventService
         );
 
         // if event is type of jazzevent
-        if ($event instanceof MusicEvent) {
+        if ($event instanceof JazzEvent) {
             $event->getArtist()->setId(htmlspecialchars($event->getArtist()->getId()));
             $event->getLocation()->setLocationId(htmlspecialchars($event->getLocation()->getLocationId()));
 
@@ -111,9 +130,25 @@ class EventService
                 $event->getArtist()->getId(),
                 $event->getLocation()->getLocationId()
             );
+            return $this->repo->getEventById($event->getId());
         }
 
-        return $this->repo->getEventById($event->getId());
+        if ($event instanceof HistoryEvent) {
+            $event->getGuide()->setGuideId(htmlspecialchars($event->getGuide()->getGuideId()));
+            $event->getLocation()->setLocationId(htmlspecialchars($event->getLocation()->getLocationId()));
+
+            $this->repo->updateHistoryEvent(
+                $event->getId(),
+                $event->getGuide()->getGuideId(),
+                $event->getLocation()->getLocationId()
+            );
+            return $this->repo->getEventById($event->getId());
+        }
+
+        elseif ($event instanceof DanceEvent) {
+            return $this->repo->updateDanceEvent($event);
+        } else
+            throw new InvalidVariableException("Event type not supported");
     }
 
     public function deleteEvent(int $id)

@@ -1,6 +1,6 @@
 // Author: Konrad
 if (window.frameElement == null) {
-    window.location.href = '/manageJazz';
+    window.location.href = '/manageDJs';
     throw new Error('Unauthorized access');
 }
 
@@ -12,8 +12,8 @@ const locations = document.getElementById('locations');
 const masterEditor = document.getElementById('master-editor');
 const btnOpen = document.getElementById('open');
 
-// Artist fields.
-const artist = document.getElementById('artist');
+const title = document.getElementById('title');
+const artistCheckboxesContainer = document.getElementById('artist-checkboxes');
 const locationSelect = document.getElementById('location');
 const ticketType = document.getElementById('ticketType');
 const startTime = document.getElementById('startTime');
@@ -33,9 +33,9 @@ startTime.onchange = function () {
 const msgBox = new MsgBox();
 
 const maxNameLength = 15;
-const maxLocationLength = 15;
+const maxLocationLength = 12;
 
-let baseURL = '/api/events/jazz';
+let baseURL = '/api/events/dance';
 
 function updateExistingEntry(id, data) {
     fetch(baseURL + "/" + id, {
@@ -85,20 +85,41 @@ btnSubmit.onclick = function () {
     let end = new Date(endTime.value);
     end = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate() + ' ' + end.getHours() + ':' + end.getMinutes() + ':' + end.getSeconds();
 
+    let artists = [];
+    // get artsits from check boxes that are checked
+    let checkboxes = artistCheckboxesContainer.getElementsByTagName('input');
+    for (let checkbox of checkboxes) {
+        if (checkbox.checked) {
+            artists.push(checkbox.value);
+        }
+    }
+
+    if (artists.length == 0) {
+        msgBox.createToast('Error!', 'You need to select at least one artist');
+        return;
+    }
+
     // to json
     let data = {
         id: 0,
         event: {
             id: editedEventId,
-            name: artist.options[artist.selectedIndex].text,
+            name: title.value,
             startTime: start,
             endTime: end,
-            artistId: artist.value,
+            artistIds: artists,
             locationId: locationSelect.value,
-            eventTypeId: 1
+            eventTypeId: 4
         },
         ticketTypeId: ticketType.value
     };
+
+    // Make sure that all numbers are represented as numbers
+    for (let key in data.event) {
+        if (!isNaN(data.event[key])) {
+            data.event[key] = parseInt(data.event[key]);
+        }
+    }
 
     // disable the editor.
     toggleEditor(masterEditor, false);
@@ -211,18 +232,26 @@ function createNewOptionItem(element) {
                     editedId = data.id;
                     editedEventId = data.event.id;
 
-                    // select the artist option corresponding to id in the select
-                    let options = artist.getElementsByTagName('option');
-                    for (let option of options) {
-                        if (option.value == data.event.artist.id) {
-                            option.selected = true;
-                            break;
+                    title.value = data.event.name;
+
+                    const artistCheckboxes = artistCheckboxesContainer.getElementsByClassName('artist-checkbox');
+                    // Uncheck all first.
+                    for (let checkbox of artistCheckboxes) {
+                        checkbox.checked = false;
+                    }
+
+                    // Check the artists that are in the event
+                    for (let artist of data.event.artists) {
+                        for (let checkbox of artistCheckboxes) {
+                            if (checkbox.value == artist.artistId) {
+                                checkbox.checked = true;
+                                break;
+                            }
                         }
                     }
 
                     // select the location option corresponding to id in the selec
-                    options = locationSelect.getElementsByTagName('option');
-                    for (let option of options) {
+                    for (let option of locationSelect.getElementsByClassName('location-option')) {
                         if (option.value == data.event.location.id) {
                             option.selected = true;
                             break;
@@ -258,7 +287,7 @@ function createNewOptionItem(element) {
 }
 
 function setOpenButton(baseURI, eventId) {
-    btnOpen.onclick = function () { window.open('/festival/jazz/event/' + eventId, '_blank'); }
+    btnOpen.onclick = function () { window.open('/festival/dance/event/' + eventId, '_blank'); }
 }
 
 let isBasicStuffLoaded = false;
@@ -316,15 +345,7 @@ function loadList() {
     }
     isBasicStuffLoaded = true;
 
-    // load artist list to artist select
-    artist.innerHTML = '';
-    let jazzSelectOption = document.createElement('option');
-    jazzSelectOption.innerHTML = '-- Select Artist -- ';
-    jazzSelectOption.value = -1;
-    jazzSelectOption.disabled = true;
-    artist.appendChild(jazzSelectOption);
-
-    let uri = '/api/artists?sort=name&kind=1';
+    let uri = '/api/artists?sort=name&kind=2';
 
     fetch(uri, {
         method: 'GET',
@@ -337,28 +358,41 @@ function loadList() {
             // check if data is array
             if (Array.isArray(data)) {
                 data.forEach(element => {
-                    let option = document.createElement('option');
-                    option.innerHTML = element.name;
-                    option.value = element.id;
-                    artist.appendChild(option);
+                    let divFormCheck = document.createElement('div');
+                    divFormCheck.classList.add('form-check');
+
+                    let input = document.createElement('input');
+                    input.type = 'checkbox';
+                    input.value = element.id;
+                    input.id = 'artist-' + element.id;
+                    input.classList.add('form-check-input');
+                    input.classList.add('artist-checkbox');
+
+                    let label = document.createElement('label');
+                    label.classList.add('form-check-label');
+                    label.innerHTML = element.name;
+                    label.htmlFor = 'artist-' + element.id;
+
+                    divFormCheck.appendChild(input);
+                    divFormCheck.appendChild(label);
+
+                    artistCheckboxesContainer.appendChild(divFormCheck);
                 });
             }
         }
         );
-    artist.selectedIndex = 0;
 
-    let locationURI = '/api/locations/type/';
-    if (baseURL.endsWith('dance')) {
-        locationURI += '4';
-    } else {
-        locationURI += '1';
-    }
-
-    locationURI += '?sort=name';
-
+    let locationURI = '/api/locations/type/4?sort=name';
     locationSelect.innerHTML = '';
 
-    // and now, load jazz locations.
+    // Add the '-- select --' option
+    let dummyLocation = document.createElement('option');
+    dummyLocation.innerHTML = '-- select --';
+    dummyLocation.value = -1;
+    dummyLocation.disabled = true;
+    locationSelect.appendChild(dummyLocation);
+
+    // and now, load locations.
     location.innerHTML = '';
     fetch(locationURI, {
         method: 'GET',
@@ -375,6 +409,7 @@ function loadList() {
                     option.innerHTML = element.name;
                     option.value = element.id;
                     locationSelect.appendChild(option);
+                    option.classList.add('location-option');
                 });
             }
         }
@@ -414,11 +449,16 @@ function toggleEditor(element, isEnabled) {
     } else {
         element.classList.add('disabled-module');
         editedId = -1;
-        artist.selectedIndex = 0;
         locationSelect.selectedIndex = 0;
         ticketType.selectedIndex = 0;
         startTime.value = '';
         endTime.value = '';
+
+        // Unselect all checkboxes
+        let checkboxes = document.getElementsByClassName('form-check-input');
+        for (let checkbox of checkboxes) {
+            checkbox.checked = false;
+        }
 
         if (locations.dataset.locations != undefined) {
             locationType.value = locations.dataset.locations;

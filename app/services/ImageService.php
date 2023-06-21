@@ -146,4 +146,12 @@ class ImageService
         $search = explode(" ", $search);
         return $this->imageRepository->search($search);
     }
+
+    /**
+     * Returns all images that are assigned to a given page.
+     */
+    public function getImagesForPageId($pageId): array
+    {
+        return $this->imageRepository->getImagesForPageId($pageId);
+    }
 }

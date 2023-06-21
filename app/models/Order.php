@@ -17,7 +17,7 @@ class Order implements JsonSerializable
             "orderId" => $this->orderId,
             "orderItems" => $this->orderItems,
             "tickets" => $this->tickets,
-            "customer" => $this->customer,
+            "customer" => $this->customer != null ? $this->customer : null,
             "orderDate" => $this->orderDate,
             "isPaid" => $this->isPaid,
         ];
@@ -143,7 +143,7 @@ class Order implements JsonSerializable
         $totalVat9Amount = 0;
         foreach ($this->orderItems as $orderItem) {
             if ($orderItem->getVatPercentage() == 0.09) {
-                $totalVat9Amount += $orderItem->getVatAmount();
+                $totalVat9Amount += $orderItem->getTotalVatAmount();
             }
         }
         return $totalVat9Amount;
@@ -154,7 +154,7 @@ class Order implements JsonSerializable
         $totalVat21Amount = 0;
         foreach ($this->orderItems as $orderItem) {
             if ($orderItem->getVatPercentage() == 0.21) {
-                $totalVat21Amount += $orderItem->getVatAmount() * $orderItem->getQuantity();
+                $totalVat21Amount += $orderItem->getTotalVatAmount() * $orderItem->getQuantity();
             }
         }
         return $totalVat21Amount;

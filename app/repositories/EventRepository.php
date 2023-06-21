@@ -3,6 +3,8 @@
 require_once(__DIR__ . "/../models/Event.php");
 require_once(__DIR__ . "/../models/History/HistoryEvent.php");
 require_once(__DIR__ . "/../models/Music/MusicEvent.php");
+require_once(__DIR__ . "/../models/Music/JazzEvent.php");
+require_once(__DIR__ . "/../models/Music/DanceEvent.php");
 require_once("Repository.php");
 require_once("LocationRepository.php");
 require_once("ArtistRepository.php");
@@ -10,16 +12,31 @@ require_once("EventTypeRepository.php");
 
 class EventRepository extends Repository
 {
+    private $locationRepo;
+    private $artistRepo;
+    private $eventTypeRepo;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->locationRepo = new LocationRepository();
+        $this->artistRepo = new ArtistRepository();
+        $this->eventTypeRepo = new EventTypeRepository();
+    }
+
     private function buildEvent($arr): array
     {
-        $eventTypeRepo = new EventTypeRepository();
         $events = [];
         foreach ($arr as $event) {
             if ($this->isInJazzEvents($event['eventId'])) {
                 $events[] = $this->getJazzEventById($event['eventId']);
             } elseif ($this->isInHistoryEvents($event['eventId'])) {
                 $events[] = $this->getHistoryEventById($event['eventId']);
-            } else {
+            } elseif($this->isInDanceEvents($event['eventId'])) {
+                $events[] = $this->getDanceEventById($event['eventId']);
+            }
+            else {
                 $eventEntry = new Event();
                 $eventEntry->setId($event['eventId']);
                 $eventEntry->setName($event['name']);
@@ -27,7 +44,7 @@ class EventRepository extends Repository
                 $eventEntry->setEndTime(new DateTime($event['endTime']));
                 // if festivalEventType is not null
                 if ($event['festivalEventType'] !== null) {
-                    $eventEntry->setEventType($eventTypeRepo->getById($event['festivalEventType']));
+                    $eventEntry->setEventType($this->eventTypeRepo->getById($event['festivalEventType']));
                 }
                 if ($event['availableTickets'] !== null) {
                     $eventEntry->setAvailableTickets($event['availableTickets']);
@@ -38,34 +55,50 @@ class EventRepository extends Repository
         return $events;
     }
 
-    private function buildJazzEvent($arr, $filters = null): array
+    private function buildJazzEvent($arr): array
     {
         $events = [];
-        $locationRepo = new LocationRepository();
-        $artistRepo = new ArtistRepository();
-        $eventTypeRepo = new EventTypeRepository();
+
         foreach ($arr as $event) {
-            $event = new MusicEvent(
+            $event = new JazzEvent(
                 $event['eventId'],
                 $event['name'],
                 new DateTime($event['startTime']),
                 new DateTime($event['endTime']),
-                $artistRepo->getById($event['artistId']),
-                $locationRepo->getById($event['locationId']),
-                $eventTypeRepo->getById($event['festivalEventType']),
+                $this->artistRepo->getById($event['artistId']),
+                $this->locationRepo->getById($event['locationId']),
+                $this->eventTypeRepo->getById($event['festivalEventType']),
                 $event['availableTickets']
             );
 
-            if (isset($filters['artist_kind'])) {
-                if ($filters['artist_kind'] === 'jazz' && $event->getArtist()->getArtistKind()->getName() !== 'Jazz') {
-                    continue;
-                }
-                if ($filters['artist_kind'] === 'dance' && $event->getArtist()->getArtistKind()->getName() !== 'DANCE!') {
-                    continue;
-                }
-            }
-
             array_push($events, $event);
+        }
+        return $events;
+    }
+
+    /**
+     * @throws ObjectNotFoundException
+     * @throws Exception
+     */
+    private function buildDanceEvent($arr): array
+    {
+        $events = [];
+
+        foreach($arr as $event){
+            $artists = $this->artistRepo->getDanceLineupByEventId($event['eventId']);
+
+            $danceEvent = new DanceEvent(
+                $event['eventId'],
+                $event['name'],
+                new DateTime($event['startTime']),
+                new DateTime($event['endTime']),
+                $this->locationRepo->getById($event['locationId']),
+                $this->eventTypeRepo->getById($event['festivalEventType']),
+                $artists,
+                $event['availableTickets']
+            );
+
+            $events[] = $danceEvent;
         }
         return $events;
     }
@@ -153,7 +186,7 @@ class EventRepository extends Repository
     }
 
     // JAZZ
-    public function isInJazzEvents($id)
+    private function isInJazzEvents($id)
     {
         $sql = "SELECT eventId FROM jazzevents WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
@@ -163,9 +196,18 @@ class EventRepository extends Repository
     }
 
     // HISTORY
-    public function isInHistoryEvents($id)
+    private function isInHistoryEvents($id)
     {
         $sql = "SELECT eventId FROM historyevents WHERE eventId = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        $arr = $stmt->fetchAll();
+        return count($arr) > 0;
+    }
+
+    // DANCE
+    private function isInDanceEvents($id) : bool {
+        $sql = "SELECT eventId FROM danceevents WHERE eventId = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(['id' => $id]);
         $arr = $stmt->fetchAll();
@@ -264,6 +306,20 @@ class EventRepository extends Repository
         return $this->buildJazzEvent($arr, $filters);
     }
 
+    public function getAllDanceEvents(){
+        $sql = "SELECT * from danceevents d 
+        join dancelineups d2 on d2.eventId = d.eventId
+        join artists a on a.artistId = d2.artistId join locations l on l.locationId = d.locationId
+        join events e on e.eventId = d.eventId";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+
+        $arr = $stmt->fetchAll();
+        return $this->buildDanceEvent($arr);
+    }
+
+
     public function getJazzEventById($id)
     {
         $sql = "SELECT je.eventId, je.artistId, je.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets  "
@@ -277,6 +333,28 @@ class EventRepository extends Repository
         return $this->buildJazzEvent($arr)[0];
     }
 
+    /**
+     * @throws ObjectNotFoundException
+     */
+    public function getDanceEventById(int $id) : ?DanceEvent {
+
+        $sql = "SELECT d.eventId, d.locationId, e.name, e.startTime, e.endTime, e.festivalEventType, e.availableTickets - (select count(t2.eventId) from tickets t2 where t2.eventid = e.eventId) as availableTickets 
+                FROM danceevents d 
+                JOIN events e ON e.eventId = d.eventId 
+                WHERE d.eventId = :id ";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+
+        $arr = $stmt->fetchAll();
+
+        return $this->buildDanceEvent($arr)[0];
+    }
+
+    private function getDanceLineUp() : array {
+        return [];
+    }
+
     // Get History Event by ID
     public function getHistoryEventById($id)
     {
@@ -285,7 +363,7 @@ class EventRepository extends Repository
             $eventTypeRep = new EventTypeRepository();
 
             $sql = "SELECT he.eventId as eventId, he.locationId as locationId, e.name as name,
-             e.startTime as startTime, e.endTime as endTime, g.guideId as guideId, e.availableTickets as availableTickets, e.festivalEventType
+            e.startTime as startTime, e.endTime as endTime, g.guideId as guideId, e.availableTickets as availableTickets, e.festivalEventType
             FROM historyevents he
             JOIN events e ON e.eventId = he.eventId
             join guides g on g.guideId = he.guideId
@@ -334,7 +412,8 @@ class EventRepository extends Repository
     }
 
     // Create the history event
-    public function createHistoryEvent($eventId, $guideId, $locationId): int{
+    public function createHistoryEvent($eventId, $guideId, $locationId): int
+    {
         $sql = "INSERT INTO historyevents (eventId, guideId, locationId) VALUES (:eventId, :guideId, :locationId)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':eventId', $eventId);
@@ -363,6 +442,71 @@ class EventRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':eventId', $eventId);
         $stmt->bindParam(':artistId', $artistId);
+        $stmt->bindParam(':locationId', $locationId);
+        $stmt->execute();
+    }
+
+    public function insertDanceEvent(DanceEvent $event) {
+        $sql = "INSERT INTO danceevents (eventId, locationId) VALUES (:eventId, :locationId)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':eventId', htmlspecialchars($event->getId()));
+        $stmt->bindValue(':locationId', htmlspecialchars($event->getLocation()->getLocationId()));
+        $stmt->execute();
+
+        $this->insertDanceLineup($event->getId(), $event->getArtists());
+
+        return $event;
+    }
+
+    public function updateDanceEvent(DanceEvent $event) : Event{
+        //Check if the event is in the dance events table
+        if(!$this->isInDanceEvents($event->getId())){
+            throw new ObjectNotFoundException("Event not found in dance events table");
+        }
+
+        //Update danceEvents table
+        $sql = "UPDATE danceevents SET locationId = :locationId WHERE eventId = :eventId";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':locationId', htmlspecialchars($event->getLocation()->getLocationId()));
+        $stmt->bindValue(':eventId', htmlspecialchars($event->getId()));
+        $stmt->execute();
+
+        //Update danceLineups table
+        $this->updateDanceLineup($event->getId(), $event->getArtists());
+
+        return $event;
+    }
+
+    private function insertDanceLineup($eventId, $artists) : void {
+        $sql = "INSERT INTO dancelineups (eventId, artistId) VALUES (:eventId, :artistId)";
+
+        foreach($artists as $artist){
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(':eventId', htmlspecialchars($eventId));
+            $stmt->bindValue(':artistId', htmlspecialchars($artist->getId()));
+            $stmt->execute();
+        }
+    }
+
+    private function updateDanceLineup($eventId, $artists) : void{
+        $this->deleteDanceLineUp($eventId);
+        $this->insertDanceLineup($eventId, $artists);
+    }
+
+    private function deleteDanceLineUp($eventId) : void{
+        $sql = "DELETE FROM dancelineups WHERE eventId = :eventId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':eventId', htmlspecialchars($eventId));
+        $stmt->execute();
+    }
+
+    public function updateHistoryEvent($eventId, $guideId, $locationId)
+    {
+        $sql = "UPDATE historyevents SET guideId = :guideId, locationId = :locationId WHERE eventId = :eventId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':eventId', $eventId);
+        $stmt->bindParam(':guideId', $guideId);
         $stmt->bindParam(':locationId', $locationId);
         $stmt->execute();
     }

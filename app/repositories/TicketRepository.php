@@ -26,9 +26,9 @@ class TicketRepository extends Repository
         $stmt->bindValue(":eventId", $event->getId());
         $stmt->bindValue(":isScanned", 0);
         $stmt->bindValue(":orderId", $orderId);
-        $stmt->bindValue(":basePrice", $orderItem->getTotalBasePrice());
+        $stmt->bindValue(":basePrice", $orderItem->getBasePrice());
         $stmt->bindValue(":vat", $event->getVat());
-        $stmt->bindValue(":fullPrice", $orderItem->getTotalFullPrice());
+        $stmt->bindValue(":fullPrice", $orderItem->getFullTicketPrice());
         $stmt->bindValue(":ticketTypeId", $ticketTypeId);
 
         $stmt->execute();

@@ -138,9 +138,9 @@ class OrderService
         return $this->orderRepository->updateOrder($orderId, $order);
     }
 
-    public function updateOrderItem($orderItemId, $orderItem): OrderItem
+    public function updateOrderItem($orderItemId, $orderItem, $orderId = null): OrderItem
     {
-        return $this->orderRepository->updateOrderItem($orderItemId, $orderItem);
+        return $this->orderRepository->updateOrderItem($orderItemId, $orderItem, $orderId);
     }
 
     public function deleteOrder($orderId): void
@@ -166,8 +166,8 @@ class OrderService
                     $this->updateOrderItem($customerOrderItem->getOrderItemId(), $customerOrderItem);
                 } else {
                     //If the orderItem is unique then we add it to the customerOrder and update it
-                    $sessionOrderItem->setOrderId($customerOrder->getOrderId());
-                    $customerOrder->addOrderItem($this->updateOrderItem($sessionOrderItem->getOrderItemId(), $sessionOrderItem));
+                    $this->orderRepository->updateOrderItem($sessionOrderItem->getOrderItemId(), $sessionOrderItem, $customerOrder->getOrderId());
+                    $customerOrder->addOrderItem($sessionOrderItem);
                 }
             }
         }
@@ -192,22 +192,22 @@ class OrderService
      */
     public function sendTicketsAndInvoice(Order $order): void
     {
+        // Clone object of $order to prevent the original object from being modified
+        $orderClone = clone $order;
+
         // Generate the tickets for the order
         $this->generateTicketsForOrder($order);
-
         //Send all the tickets via email
-        //$this->ticketService->getAllTicketsAndSend($order);
-
+        $this->ticketService->getAllTicketsAndSend($orderClone);
         //Send invoice via email
-        //$this->invoiceService->sendInvoiceEmail($order);
+        $this->invoiceService->sendInvoiceEmail($order);
     }
 
     /**
-     * @throws \PHPMailer\PHPMailer\Exception
+     * Generates tickets for the order
      */
     private function generateTicketsForOrder(Order $order)
     {
-
         foreach ($order->getOrderItems() as $orderItem) {
             $ticketLink = $this->ticketLinkService->getById($orderItem->getTicketLinkId());
 

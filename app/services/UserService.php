@@ -59,7 +59,7 @@ class UserService
         $user->setEmail($email);
         $user->setFirstName($firstName);
         $user->setLastName($lastName);
-        // if usertype is string
+        //Set user type
         if (is_string($usertype)) {
             $user->setUserTypeByString($usertype);
         } elseif (is_int($usertype)) {
@@ -67,6 +67,7 @@ class UserService
         } else {
             throw new Exception('Invalid data type for usertype.');
         }
+        //Set registration date
         $user->setRegistrationDate($registrationDate);
 
         //Hash password
@@ -109,6 +110,7 @@ class UserService
             throw ($ex);
         }
     }
+
     //TODO: move this function to the MailService
     public function sendResetTokenToUser($email, $reset_token)
     {
@@ -127,6 +129,8 @@ class UserService
 
             $user = $this->getUserByEmail($email);
             $name = $user->getFirstName();
+
+            require_once("../Config.php");
 
             $mail->Body = "
                 <html>
@@ -184,7 +188,7 @@ class UserService
                 </div>
                 <div class=\"container\" style=\"margin-top: 20px;\">
                     <p>For security reasons, please do not share this link with anyone else. If you have any questions or concerns, please contact our support team at <span class=\"email\">infohaarlemfestival5@gmail.com</span></p>
-                    <a href=\"http://localhost/updatePassword?token=$reset_token&email=$email\" class=\"button\">Reset Your Password</a>
+                    <a href=\"$hostname/updatePassword?token=$reset_token&email=$email\" class=\"button\">Reset Your Password</a>
                 </div>
                 <div class=\"container\" style=\"margin-top: 20px;\">
                     <p>Thank you,<br>The Festival Website Team</p>

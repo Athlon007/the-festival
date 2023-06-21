@@ -3,7 +3,6 @@
 require_once("Repository.php");
 require_once("../models/Page.php");
 require_once("../models/TextPage.php");
-require_once("ImageRepository.php");
 
 /**
  * @author Konrad
@@ -19,14 +18,12 @@ class PageRepository extends Repository
     private function pageBuilder($arr): array
     {
         $output = array();
-        $imageRepo = new ImageRepository();
         foreach ($arr as $row) {
             $id = $row["id"];
             $title = htmlspecialchars_decode($row["title"]);
             $href = $row["href"];
             $location = $row["location"];
-            $images = $imageRepo->getImagesForPageId($id);
-            $page = new Page($id, $title, $href, $location, $images);
+            $page = new Page($id, $title, $href, $location, array());
 
             array_push($output, $page);
         }
@@ -36,14 +33,12 @@ class PageRepository extends Repository
     private function textPageBuilder($arr): array
     {
         $output = array();
-        $imageRepo = new ImageRepository();
         foreach ($arr as $row) {
             $id = $row["textPageId"];
             $title = htmlspecialchars_decode($row["title"]);
             $href = $row["href"];
             $text = htmlspecialchars_decode($row["content"]);
-            $images = $imageRepo->getImagesForPageId($id);
-            $page = new TextPage($id, $title, $href, $text, $images);
+            $page = new TextPage($id, $title, $href, $text, array());
 
             array_push($output, $page);
         }

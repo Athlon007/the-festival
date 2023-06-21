@@ -1,5 +1,6 @@
 if (window.frameElement == null) {
     window.location.href = '/manageTicketTypes';
+    throw new Error('Unauthorized access');
 }
 
 import { MsgBox } from "./modals.js";
