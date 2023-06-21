@@ -1,6 +1,5 @@
 <?php
 
-require_once("EventRepository.php");
 require_once("TicketLinkRepository.php");
 
 /**
