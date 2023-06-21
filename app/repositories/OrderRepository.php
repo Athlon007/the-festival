@@ -337,7 +337,7 @@ class OrderRepository extends Repository
         $sql = "DELETE 
                 FROM orders 
                 WHERE customerId IS NULL 
-                AND orderDate < DATE_SUB(NOW(), INTERVAL 7 DAY)";
+                AND orderDate < DATE_SUB(NOW(), INTERVAL 2 DAY)";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
     }
