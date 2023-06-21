@@ -15,7 +15,8 @@
 
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
+    <script type="module" src="/js/nav.js"></script>
   <div style="text-align:center">
     <h1>Yummy!</h1>
     <h3>One time deals can be found in these participating restaurants:</h3>
@@ -25,19 +26,6 @@
     <div class="row g-0 text-center">
       <div class="card" style="width: 18rem;">
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <h3>Sort</h3>
-            <div class="col-md-6 ticketOfTour" style="width: 50%; float:center;">
-              <select class="form-select" id="sort">
-                <option selected>Select ticket</option>
-                <option value="asc_pr">Assending Price</option>
-                <option value="des_pr">Dessending Price</option>
-                <option value="asc_rat">Assending Rating</option>
-                <option value="des_rat">Dessending Rating</option>
-              </select>
-            </div>
-
-          </li>
           <li class="list-group-item">
             <div class="col-md-6 ticketOfTour" style="width: 50%; float:center;">
               <h3>FIlter by type</h3>
@@ -66,13 +54,6 @@
               <label for="appt">Select a maxprice:</label>
               <input type="number" name="number" placeholder="maxprice" max="50" />
             </div>
-          </li>
-          <li class="list-group-item">
-            <h3>Number of People</h3>
-            <input type="input" id="more" name="more" value="">
-          </li>
-          <li class="list-group-item">
-            <button type="button" class="btn btn-primary">Apply</button>
           </li>
         </ul>
       </div>
@@ -117,7 +98,10 @@
           <div class="column">
             <p>${event.restaurant.price}</p>
           </div>
-            <button class="btn btn-primary addToCartButton">Add to cart</button>
+          <div class="column">
+            <p>${event.restaurant.ticketLinkid}</p>
+          </div>
+            <button class="btn btn-primary addToCartButton" onClick="addToCart()">Add to cart</button>
         </div>
         `;
         restDiv.appendChild(div);
@@ -138,6 +122,10 @@
       }
 
 
+    }
+
+    function addToCart(){
+      Cart.Add(ticketLinkid);
     }
   </script>
 

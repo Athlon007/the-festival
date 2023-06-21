@@ -66,6 +66,18 @@ class FestivalFoodRepository extends Repository
             throw ($ex);
         }
     }
+    public function insertTicketLink($eventId){
+        try {
+            $query = "INSERT INTO ticketLinks (ticketTypeId, eventId) VALUES (3, :eventId)";
+            $stmt = $this->connection->prepare($query);
+
+            $stmt->bindParam(":eventId", $eventId);
+            $stmt->execute();
+        } catch (Exception $ex) {
+            throw ($ex);
+        }
+
+    }
     public function insertSession($session)
     {
         try {
@@ -95,7 +107,7 @@ class FestivalFoodRepository extends Repository
     public function getAllRestaurants()
     {
         try {
-            $query = "select * from restaurants join restaurantevent on restaurants.restaurantId = restaurantevent.restaurantId join events on restaurantevent.eventId = events.eventId  ; ";
+            $query = "select * from restaurants join restaurantevent on restaurants.restaurantId = restaurantevent.restaurantId join events on restaurantevent.eventId = events.eventId join ticketlinks on ticketlinks.eventId = events.eventId; ";
             $stmt = $this->connection->prepare($query);
             $stmt->execute();
             //$stmt->setFetchMode(PDO::FETCH_CLASS, 'FestivalFood');

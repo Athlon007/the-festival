@@ -41,6 +41,7 @@ class FestivalFoodService
             $festivalFoodRepository = new FestivalFoodRepository();
             $eventId = $festivalFoodRepository->insertSession($session);
             $festivalFoodRepository->insertLink($restaurantId, $eventId);
+            $festivalFoodRepository->insertTicketLink($eventId);
         } catch (PDOException $e) {
             echo $e->getMessage();
         }

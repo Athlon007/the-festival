@@ -41,20 +41,28 @@
         </div>
 
         <div class="form-group">
-            <label for="addressId">Address</label>
-            <input type="text" class="form-control" id="addressId" name="location"
-                value="<?php echo $restaurant['addressId']; ?>" autocomplete="off">
-        </div>
+                        <label for="longDescription">Location</label>
+                    <select class="form-select" name="location" id="location">
+                            <?php 
+                            foreach($locations as $location): ?>
+                            <option value="<?= $location['locationId'] ?>"><?= $location['name'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
         <div class="form-group">
             <label for="rating">Rating</label>
             <input type="text" class="form-control" id="addressId" name="rating"
                 value="<?php echo $restaurant['rating']; ?>" autocomplete="off">
         </div>        
         <div class="form-group">
-            <label for="type">Type</label>
-            <input type="text" class="form-control" id="addressId" name="type"
-                value="<?php echo $restaurant['typeId']; ?>" autocomplete="off">
-        </div>
+                        <select class="form-select" name="type" id="type">
+                            <?php 
+                            
+                            foreach($types as $type): ?>
+                            <option value="<?= $type['typeId'] ?>"><?= $type['typeName'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
 
         <button type="submit" class="btn btn-primary" name="updateUserButton">Update User</button>
     </form>
