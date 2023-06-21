@@ -177,6 +177,6 @@ class AllAccessPass {
             kindId = 4;
         }
 
-        window.location.href = '/buyPass?event_type=' + kindId;
+        window.location.href = '/buyPass?event_type=' + kindId + "&pass_type=" + pass.id;
     }
 }

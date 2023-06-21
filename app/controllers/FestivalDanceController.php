@@ -33,7 +33,7 @@ class FestivalDanceController
             }
 
             require(__DIR__ . self::DANCE_ARTIST_PAGE);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             // redirect to 404
             Logger::write($e);
             header("Location: /404");
@@ -55,7 +55,7 @@ class FestivalDanceController
             }
 
             require(__DIR__ . self::DANCE_EVENT_PAGE);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             // redirect to 404
             Logger::write($e);
             header("Location: /404");

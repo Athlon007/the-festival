@@ -63,14 +63,59 @@ class TicketRepository extends Repository
 
         $sql = "SELECT t.ticketId, t.eventId, t.isScanned, SUM(t2.ticketTypePrice) AS price, c.userId, l.name AS locationName
             FROM tickets t
-            JOIN orders o ON o.orderId = t.orderId 
+            JOIN orders o ON o.orderId = t.orderId
             JOIN events e ON t.eventId = e.eventId
-            JOIN festivaleventtypes f ON e.festivalEventType = f.eventTypeId 
+            JOIN festivaleventtypes f ON e.festivalEventType = f.eventTypeId
             JOIN customers c ON o.customerId = c.userId
             JOIN tickettypes t2 ON t.ticketTypeId = t2.ticketTypeId
             JOIN $eventTable h ON e.eventId = h.eventId
             JOIN locations l ON h.locationId = l.locationId
             WHERE t.orderId = :orderId
+            GROUP BY t.ticketId";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderId", $order->getOrderId());
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+        $tickets = [];
+
+        foreach ($result as $row) {
+            $ticket = $this->getTicketById($row['ticketId']);
+            $ticket->setTicketId($row['ticketId']);
+            $ticket->setFullPrice($row['price']);
+
+            $userRep = new UserRepository();
+            $user = $userRep->getById($row['userId']);
+            $customer = new Customer();
+            $customer->setFirstName($user->getFirstName());
+            $customer->setLastName($user->getLastName());
+            $customer->setEmail($user->getEmail());
+            $order->setCustomer($customer);
+
+            $eventRep = new EventRepository();
+            $event = $eventRep->getEventById($row['eventId']);
+            $ticket->setEvent($event);
+
+            array_push($tickets, $ticket);
+        }
+
+        return $tickets;
+    }
+
+    public function getAllDayTicketsForPasses(Order $order)
+    {
+
+        $sql = "SELECT t.ticketId, t.eventId, t.isScanned, SUM(t2.ticketTypePrice) AS price, c.userId
+            FROM tickets t
+            JOIN orders o ON o.orderId = t.orderId
+            JOIN events e ON t.eventId = e.eventId
+            JOIN festivaleventtypes f ON e.festivalEventType = f.eventTypeId
+            JOIN customers c ON o.customerId = c.userId
+            JOIN tickettypes t2 ON t.ticketTypeId = t2.ticketTypeId
+            WHERE t.orderId = :orderId
+                AND e.availableTickets = 0
             GROUP BY t.ticketId";
 
         $stmt = $this->connection->prepare($sql);
@@ -145,12 +190,9 @@ class TicketRepository extends Repository
 
     public function addTicketToOrder($orderId, $ticket)
     {
-
     }
 
     public function removeTicketFromOrder($orderId, $ticket)
     {
-
     }
-
 }
