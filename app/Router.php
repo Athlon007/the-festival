@@ -109,6 +109,16 @@ class Router
                 $festivalJazzController->loadEventPage($request);
                 return;
             }
+        } elseif (str_starts_with($request, "/festival/dance/")) {
+            require_once("controllers/FestivalDanceController.php");
+            $festivalDanceController = new FestivalDanceController();
+            if (str_starts_with($request, "/festival/dance/artist/")) {
+                $festivalDanceController->loadArtistPage($request);
+                return;
+            } elseif (str_starts_with($request, "/festival/dance/event/")) {
+                $festivalDanceController->loadEventPage($request);
+                return;
+            }
         }
 
         if (str_starts_with($request, '/admin/')) {
@@ -199,6 +209,21 @@ class Router
                 $festivalFoodController = new FestivalFoodController();
                 $festivalFoodController->loadFoodFestivalPage();
                 break;
+            case '/updateRestaurant':
+                require_once("controllers/FestivalFoodController.php");
+                $festivalFoodController = new FestivalFoodController();
+                $festivalFoodController->updateRestaurant($_GET['id']);
+                break;
+            case "/editRestaurant":
+                require_once("controllers/FestivalFoodController.php");
+                $festivalFoodController = new FestivalFoodController();
+                $festivalFoodController->editRestaurant();
+                break;
+            case "/insertRestaurant":
+                require_once("controllers/FestivalFoodController.php");
+                $festivalFoodController = new FestivalFoodController();
+                $festivalFoodController->insertRestaurant();
+                break;
             case "/addRestaurant":
                 require_once("controllers/FestivalFoodController.php");
                 $festivalFoodController = new FestivalFoodController();
@@ -207,7 +232,22 @@ class Router
             case "/addSession":
                 require_once("controllers/FestivalFoodController.php");
                 $festivalFoodController = new FestivalFoodController();
-                $festivalFoodController->addSession();
+                $festivalFoodController->addSession($_GET['id']);
+                break;
+            case "/insertSession":
+                require_once("controllers/FestivalFoodController.php");
+                $festivalFoodController = new FestivalFoodController();
+                $festivalFoodController->insertSession($_GET['restaurantId']);
+                break;
+            case "/updateSession":
+                require_once("controllers/FestivalFoodController.php");
+                $festivalFoodController = new FestivalFoodController();
+                $festivalFoodController->updateSession($_GET['id']);
+                break;
+            case "/editSession":
+                require_once("controllers/FestivalFoodController.php");
+                $festivalFoodController = new FestivalFoodController();
+                $festivalFoodController->editSession();
                 break;
             case "/paymentSuccess":
                 require_once("controllers/PaymentController.php");
@@ -222,6 +262,7 @@ class Router
             case "/payment-success":
                 require_once("views/payment-funnel/paymentSuccess.php");
                 break;
+
             default:
                 $this->route404($message);
                 break;
@@ -292,6 +333,16 @@ class Router
             $controller = new RestaurantApiController();
             $controller->handleGetRequest();
             return;
+        } elseif (str_starts_with($request, "/api/deleteRestaurantEvent")) {
+            require_once("controllers/APIControllers/SessionAPIController.php");
+            $controller = new SessionApiController();
+            $controller->handleDeleteRequest();
+            return;
+        } elseif (str_starts_with($request, "/api/deleteRestaurants")) {
+            require_once("controllers/APIControllers/RestaurantsAPIController.php");
+            $controller = new RestaurantApiController();
+            $controller->handleDeleteRequest();
+            return;
         } else {
             http_response_code(400);
             // send json
@@ -331,6 +382,9 @@ class Router
                 break;
             case "/admin/jazz-events":
                 require("views/admin/jazz-events.php");
+                break;
+            case "/admin/dance-events":
+                require("views/admin/dance-events.php");
                 break;
             case "/admin/images":
                 require("views/admin/images.php");
@@ -413,6 +467,14 @@ class Router
                 require_once("controllers/RestaurantController.php");
                 $restaurantController = new RestaurantController();
                 $restaurantController->manageRestaurants();
+                break;
+            case "/manageSessions":
+                require_once("../models/Yummy/Restaurant.php");
+                require_once("../models/Yummy/RestaurantType.php");
+                require_once("../services/FestivalFoodService.php");
+                $festivalFoodService = new FestivalFoodService();
+                $events = $festivalFoodService->getRestarantEvents($_GET["restaurantId"]);
+                require_once("../views/admin/Restaurant management/manageSessions.php");
                 break;
             case "/manageJazz":
                 require('views/admin/Jazz management/manageJazz.php');

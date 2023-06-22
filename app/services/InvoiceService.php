@@ -22,13 +22,11 @@ require_once('../phpmailer/Exception.php');
 class InvoiceService
 {
   private PDFService $pdfService;
-  private TicketRepository $ticketRepository;
   private OrderRepository $orderRepository;
 
   public function __construct()
   {
     $this->pdfService = new PDFService();
-    $this->ticketRepository = new TicketRepository();
     $this->orderRepository = new OrderRepository();
   }
 

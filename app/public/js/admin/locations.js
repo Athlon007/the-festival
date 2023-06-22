@@ -1,4 +1,6 @@
 // Author: Konrad
+// Do not run this script if the window is not in a frame.
+
 import { MsgBox } from "./modals.js";
 
 let editedId = -1;

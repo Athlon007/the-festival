@@ -79,8 +79,7 @@ class TicketService
   public function getAllYummyTickets(Order $order): array
   {
     try {
-      $eventType = "yummy";
-      $tickets = $this->repository->getAllTicketsByOrderIdAndEventType($order, $eventType);
+      $tickets = $this->repository->getAllYummyTicketsByOrderId($order);
       return $tickets;
     } catch (Exception $ex) {
       throw ($ex);
@@ -92,6 +91,16 @@ class TicketService
     try {
       $eventType = "dance";
       $tickets = $this->repository->getAllTicketsByOrderIdAndEventType($order, $eventType);
+      return $tickets;
+    } catch (Exception $ex) {
+      throw ($ex);
+    }
+  }
+
+  public function getAllPasses(Order $order): array
+  {
+    try {
+      $tickets = $this->repository->getAllDayTicketsForPasses($order);
       return $tickets;
     } catch (Exception $ex) {
       throw ($ex);
@@ -132,14 +141,16 @@ class TicketService
     return $domPdf;
   }
 
-
   public function getAllTicketsAndSend(Order $order)
   {
     try {
       // get all tickets from order
       $tickets = array_merge(
         $this->getAllHistoryTickets($order),
-        $this->getAllJazzTickets($order)
+        $this->getAllJazzTickets($order),
+        $this->getAllDanceTickets($order),
+        $this->getAllPasses($order),
+        $this->getAllYummyTickets($order)
       );
 
       $qrCodeImages = array();
@@ -159,59 +170,9 @@ class TicketService
     }
   }
 
-  // public function sendTicketByEmail(Dompdf $dompdf, Order $order)
-  // {
-  //   try {
-  //     $mail = new PHPMailer(true);
-  //     $mail->isSMTP();
-  //     $mail->isHTML(true);
-  //     $mail->Host = 'smtp.gmail.com';
-  //     $mail->SMTPAuth = true;
-  //     $mail->SMTPSecure = "tls";
-  //     $mail->Port = 587;
-
-  //     $mail->Username = "infohaarlemfestival5@gmail.com";
-  //     $mail->Password = 'zznalnrljktsitri';
-  //     $mail->Subject = 'Your Ticket for the The Festival';
-
-  //     $recipentEmail = $order->getCustomer()->getEmail();
-  //     $name = $order->getCustomer()->getFullName();
-
-  //     ob_start();
-  //     require_once(__DIR__ . '/../emails/ticket-email.php');
-  //     $mail->Body = ob_get_clean();
-
-  //     $mail->addAddress($order->getCustomer()->getEmail(), $name);
-  //     // attach pdf to email for each ticket
-  //     foreach ($order->getTickets() as $ticket) {
-  //       $pdfContents = $dompdf->output();
-  //       $mail->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');
-  //     }
-
-  //     if (!$mail->send()) {
-  //       throw new Exception("Email could not be sent");
-  //     }
-  //   } catch (Exception $ex) {
-  //     throw ($ex);
-  //   }
-  // }
-
   public function markTicketAsScanned(Ticket $ticket)
   {
     $this->repository->markTicketAsScanned($ticket);
   }
 
-
-  //TODO: check if obsolete after payment funnel is finished
-  public function addTicketToOrder($orderId, $ticketId)
-  {
-
-    return $this->repository->addTicketToOrder($orderId, $ticketId);
-  }
-
-  //TODO: check if obsolete after payment funnel is finished
-  public function removeTicketFromOrder($orderId, $ticketId)
-  {
-    return $this->repository->removeTicketFromOrder($orderId, $ticketId);
-  }
 }

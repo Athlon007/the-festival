@@ -4,16 +4,13 @@
 - Class: IT2a
 - Year: 2022-2023
 
-## Credentials to admin panel:
+## Information
 
-- Username/Mail: admin@example.com
-- Password: Password123
-
-_**Note:** By default, project uses MySQL server hosted on Azure. You can switch to local version by setting debugMode to 'true' in Config.php. If so, please use **install.sql** inside of sql_scripts through phpMyAdmin._
+By default, project uses MySQL server hosted on Azure. You can switch to local version by setting debugMode to 'true' in Config.php. If so, please use **dump-development.sql** inside of sql_scripts using **DBeaver** in **script execution mode** (ALT + X) to create database and tables.
 
 ## Website URL
 
-http://haarlem.kfigura.nl/
+https://haarlem.kfigura.nl/
 
 ## Created By
 
@@ -26,8 +23,8 @@ http://haarlem.kfigura.nl/
 
 ### Admin
 
-- E-mail: aathlon@outlook.com
-- Password: Password1
+- E-mail: admin@example.com
+- Password: Password123
 
 ### Employee
 

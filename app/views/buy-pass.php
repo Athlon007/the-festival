@@ -36,12 +36,6 @@
                         </select>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <h2>Quantity</h2>
-                        <input id="quantity" type="number" class="form-control" value="1" min="1" max="10">
-                    </div>
-                </div>
             </div>
             <div class="card col-5 px-1" id="details-thing">
                 <h2>Details</h2>

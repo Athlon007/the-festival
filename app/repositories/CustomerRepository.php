@@ -74,10 +74,10 @@ class CustomerRepository extends Repository{
                             "VALUES (:dateOfBirth, :phoneNumber, :addressId, :userId)";
         $stmt = $this->connection->prepare($query);
         
-        $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirthAsString());
-        $stmt->bindValue(":phoneNumber", $customer->getPhoneNumber());
-        $stmt->bindValue(":addressId", $customer->getAddress()->getAddressId());
-        $stmt->bindValue(":userId", $customer->getUserId());
+        $stmt->bindValue(":dateOfBirth", htmlspecialchars($customer->getDateOfBirthAsString()));
+        $stmt->bindValue(":phoneNumber", htmlspecialchars($customer->getPhoneNumber()));
+        $stmt->bindValue(":addressId", htmlspecialchars($customer->getAddress()->getAddressId()));
+        $stmt->bindValue(":userId", htmlspecialchars($customer->getUserId()));
         
         $stmt->execute();
         
@@ -89,10 +89,10 @@ class CustomerRepository extends Repository{
                     "WHERE userId = :userId";
         $stmt = $this->connection->prepare($query);
         
-        $stmt->bindValue(":dateOfBirth", $customer->getDateOfBirthAsString());
-        $stmt->bindValue(":phoneNumber", $customer->getPhoneNumber());
-        $stmt->bindValue(":addressId", $customer->getAddress()->getAddressId());
-        $stmt->bindValue(":userId", $customer->getUserId());
+        $stmt->bindValue(":dateOfBirth", htmlspecialchars($customer->getDateOfBirthAsString()));
+        $stmt->bindValue(":phoneNumber", htmlspecialchars($customer->getPhoneNumber()));
+        $stmt->bindValue(":addressId", htmlspecialchars($customer->getAddress()->getAddressId()));
+        $stmt->bindValue(":userId", htmlspecialchars($customer->getUserId()));
         
         $stmt->execute();
     }

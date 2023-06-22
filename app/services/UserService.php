@@ -59,7 +59,7 @@ class UserService
         $user->setEmail($email);
         $user->setFirstName($firstName);
         $user->setLastName($lastName);
-        // if usertype is string
+        //Set user type
         if (is_string($usertype)) {
             $user->setUserTypeByString($usertype);
         } elseif (is_int($usertype)) {
@@ -67,6 +67,7 @@ class UserService
         } else {
             throw new Exception('Invalid data type for usertype.');
         }
+        //Set registration date
         $user->setRegistrationDate($registrationDate);
 
         //Hash password

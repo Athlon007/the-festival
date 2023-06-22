@@ -3,7 +3,7 @@
 <?php
 foreach ($tickets as $index => $ticket) {
     $qrCodeImage = $qrCodeImages[$index];
-    ?>
+?>
     <div class="container">
         <h1>The Festival Ticket</h1>
 
@@ -45,12 +45,21 @@ foreach ($tickets as $index => $ticket) {
             </p>
         </div>
 
-        <div class="ticket-info">
-            <label>Event Location:</label>
-            <p>
-                <?= $ticket->getEvent()->getLocation()->getName() ?>
-            </p>
-        </div>
+        <?php if (method_exists($ticket->getEvent(), 'getLocation')) { ?>
+            <div class="ticket-info">
+                <label>Event Location:</label>
+                <p>
+                    <?= $ticket->getEvent()->getLocation()->getName() ?>
+                </p>
+            </div>
+        <?php } elseif (method_exists($ticket->getEvent(), 'getRestaurant')) { ?>
+            <div class="ticket-info">
+                <label>Restaurant:</label>
+                <p>
+                    <?= $ticket->getEvent()->getRestaurant()->getRestaurantName() ?>
+                </p>
+            </div>
+        <?php } ?>
 
         <div class="ticket-info">
             <label>Customer Email:</label>
@@ -72,12 +81,12 @@ foreach ($tickets as $index => $ticket) {
     </div>
     <?php
     if ($index < count($tickets) - 1) {
-        ?>
+    ?>
         <div class="page-break"></div>
-        <?php
+    <?php
     }
     ?>
-    <?php
+<?php
 }
 ?>
 

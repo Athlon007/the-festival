@@ -79,6 +79,7 @@ class TicketLinkRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
+
         return $this->build($result);
     }
 
@@ -116,6 +117,10 @@ class TicketLinkRepository extends Repository
         return $output[0];
     }
 
+    /**
+     * @param $id
+     * @return TicketLink|null
+     */
     public function getByEventId($id): ?TicketLink
     {
         $sql = "SELECT e.eventId,

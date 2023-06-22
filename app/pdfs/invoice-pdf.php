@@ -73,7 +73,7 @@
         <h2>5GuysProduction</h2>
         <p>Haarlem, Overveen</p>
         <p>Phone: +31687097844</p>
-        <p>Email: <a href="mailto:infohaarlemfestival5@gmail.com">infohaarlemfestival5@gmail.com</a></p>
+        <p>Email: <a href="mailto:team@haarlem.kfigura.nl">team@haarlem.kfigura.nl</a></p>
     </div>
     <h1>Invoice of Haarlem Festival</h1>
     <h2><u>Order:</u>
@@ -111,22 +111,22 @@
                         <?php echo $orderItem->getQuantity(); ?>
                     </td>
                     <td> €
-                        <?php echo number_format($orderItem->getBasePrice(),2); ?>
+                        <?php echo number_format($orderItem->getBasePrice(), 2); ?>
                     </td>
-                    <td> 
-                    %<?php echo ($orderItem->getVatPercentage() * 100); ?>
-                    </td>
-                    <td> €
-                        <?php echo number_format($orderItem->getVatAmount(),2); ?>
+                    <td>
+                        %<?php echo ($orderItem->getVatPercentage() * 100); ?>
                     </td>
                     <td> €
-                        <?php echo number_format($orderItem->getFullTicketPrice(),2); ?>
+                        <?php echo number_format($orderItem->getVatAmount(), 2); ?>
                     </td>
                     <td> €
-                        <?php echo number_format($orderItem->getTotalBasePrice(),2); ?>
+                        <?php echo number_format($orderItem->getFullTicketPrice(), 2); ?>
                     </td>
                     <td> €
-                        <?php echo number_format($orderItem->getTotalFullPrice() ,2); ?>
+                        <?php echo number_format($orderItem->getTotalBasePrice(), 2); ?>
+                    </td>
+                    <td> €
+                        <?php echo number_format($orderItem->getTotalFullPrice(), 2); ?>
                     </td>
                 </tr>
             <?php } ?>
@@ -134,28 +134,28 @@
                 <td colspan="7" class="total">Subtotal:</td>
                 <td>
                     €
-                    <?php echo number_format($order->getTotalBasePrice(),2); ?>
+                    <?php echo number_format($order->getTotalBasePrice(), 2); ?>
                 </td>
             </tr>
             <tr>
                 <td colspan="7" class="total">Tax %9:</td>
                 <td>
                     €
-                    <?php echo number_format($order->getTotalVat9Amount(),2) ?>
+                    <?php echo number_format($order->getTotalVat9Amount(), 2) ?>
                 </td>
             </tr>
             <tr>
                 <td colspan="7" class="total">Tax %21:</td>
                 <td>
                     €
-                    <?php echo number_format($order->getTotalVat21Amount(),2) ?>
+                    <?php echo number_format($order->getTotalVat21Amount(), 2) ?>
                 </td>
             </tr>
             <tr>
                 <td colspan="7" class="total">Total:</td>
                 <td>
                     €
-                    <?php echo number_format($order->getTotalPrice(),2); ?>
+                    <?php echo number_format($order->getTotalPrice(), 2); ?>
                 </td>
             </tr>
         </tbody>

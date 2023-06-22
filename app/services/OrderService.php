@@ -108,7 +108,7 @@ class OrderService
         return $this->orderRepository->getCartOrderForCustomer($customerId);
     }
 
-    public function createOrder(int $ticketLinkId, int $customerId = NULL): Order
+    public function createOrder($ticketLinkId, $customerId = NULL): Order
     {
         $order = new Order();
         $order->setOrderDate(new DateTime());
@@ -133,7 +133,7 @@ class OrderService
         return $this->orderRepository->insertOrderItem($orderItem, $orderId);
     }
 
-    public function updateOrder($orderId, $order): Order
+    public function updateOrder(int $orderId, Order $order): Order
     {
         return $this->orderRepository->updateOrder($orderId, $order);
     }
@@ -176,12 +176,6 @@ class OrderService
         $this->deleteOrder($sessionOrder->getOrderId());
 
         return $customerOrder;
-    }
-
-    //TODO: Check if redundant
-    public function getAllOrders($limit = null, $offset = null, $isPaid = null)
-    {
-        return $this->orderRepository->getAllOrders($limit, $offset, $isPaid);
     }
 
     /**

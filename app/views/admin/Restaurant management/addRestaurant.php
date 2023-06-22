@@ -19,26 +19,40 @@
     <script type="module" src="/js/nav.js"></script>
     <h1>Add Retsaurant</h1>
                 
-                <form action="updateArtist" method="POST">
+                <form action="insertRestaurant" method="POST">
                     <div class="form-group">
                         <label for="shortDescription">name</label>
-                        <input type="text" class="form-control" id="" name="" value="">
+                        <input type="text" class="form-control" id="" name="restaurant_name" value="">
                     </div>
                     <div class="form-group">
                         <label for="longDescription">Location</label>
-                        <input type="text" class="form-control" id="" name="" value="">
+                    <select class="form-select" name="location" id="location">
+                            <?php 
+                            foreach($locations as $location): ?>
+                            <option value="<?= $location['locationId'] ?>"><?= $location['name'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="recentAlbums">Description</label>
-                        <input type="text" class="form-control" id="" name="" value="">
+                        <input type="text" class="form-control" id="" name="description" value="">
                     </div>
                     <div class="form-group">
                         <label for="genres">Price</label>
-                        <input type="text" class="form-control" id="" name="" value="">
+                        <input type="text" class="form-control" id="" name="price" value="">
                     </div>
                     <div class="form-group">
                         <label for="Country">Rating</label>
-                        <input type="text" class="form-control" id="" name="" value="">
+                        <input type="text" class="form-control" id="" name="rating" value="">
+                    </div>
+                    <div class="form-group">
+                    <label for="type">Food Type</label>
+                        <select class="form-select" name="type" id="type">
+                            <?php 
+                            foreach($types as $type): ?>
+                            <option value="<?= $type['typeId'] ?>"><?= $type['typeName'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <button type="submit" class="btn btn-primary" name="addRestaurantBtn">Add Restaurant</button>
                 </form>

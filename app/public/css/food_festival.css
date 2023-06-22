@@ -1,8 +1,9 @@
-.floaty{
+.floaty {
     float: left;
 
 }
-.container{
+
+.container {
     overflow: auto;
 }
 
@@ -10,32 +11,41 @@
     height: auto;
     overflow-y: auto;
     background-color: rgba(62, 45, 18, 100%);
-  
-  }
 
-.filters{
-    height: auto ;
 }
-.orangeBorder{
+
+.filters {
+    height: auto;
+}
+
+.orangeBorder {
     border-style: solid;
-    border-color:orange;
+    border-color: orange;
     margin: 10px;
 }
-#background{
-    background-color: red; /* For browsers that do not support gradients */
-  background-image: linear-gradient(red, yellow);
-  border-color: black;
-  border:  5px solid;
-  height: auto;
+
+#background {
+    background-color: red;
+    /* For browsers that do not support gradients */
+    background-image: linear-gradient(red, yellow);
+    border-color: black;
+    border: 5px solid;
+    height: auto;
 }
-.txt-center{
+
+h1 {
+    margin-top: 1em;
+}
+
+.txt-center {
     text-align: center;
 }
 
-p{
+p {
     font-size: 14px;
 }
-.column{
+
+.column {
     float: left;
     width: 25%;
     padding: 0 10px;

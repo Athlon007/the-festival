@@ -52,7 +52,7 @@ class ApikeyRepository extends Repository
         $stmt->bindParam(':token', $token, PDO::PARAM_STR);
         $stmt->execute();
         $result = $stmt->fetch();
-        return $result !== false;
+        return !is_bool($result);
     }
 
     public function insert($token, $name): ApiKey

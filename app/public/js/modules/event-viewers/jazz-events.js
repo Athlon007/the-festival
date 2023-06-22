@@ -71,11 +71,7 @@ class JazzEventList extends EventsList {
         let days = document.createElement('div');
         days.classList.add('d-block');
 
-        let dates = await fetch('/api/events/dates').then((res) => res.json());
-
-        // create array of dates also in between the first and last date
-        let firstDate = new Date(dates[0]);
-        let lastDate = new Date(dates[dates.length - 1]);
+        let dates = await fetch('/api/events/dates?eventType=1').then((res) => res.json());
 
         // convert them to date objects
         dates = dates.map((date) => new Date(date));

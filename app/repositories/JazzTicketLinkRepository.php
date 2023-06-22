@@ -1,7 +1,14 @@
 <?php
 
-require_once("EventRepository.php");
 require_once("TicketLinkRepository.php");
+require_once(__DIR__ . '/../models/Address.php');
+require_once(__DIR__ . "/../models/Location.php");
+require_once(__DIR__ . "/../models/Types/TicketType.php");
+require_once(__DIR__ . "/../models/Types/EventType.php");
+require_once(__DIR__ . "/../models/Music/Artist.php");
+require_once(__DIR__ . "/../models/Music/ArtistKind.php");
+require_once(__DIR__ . "/../models/Music/JazzEvent.php");
+require_once(__DIR__ . "/../models/TicketLink.php");
 
 /**
  * @author Konrad
@@ -10,15 +17,6 @@ class JazzTicketLinkRepository extends TicketLinkRepository
 {
     protected function build($arr): array
     {
-        require_once(__DIR__ . '/../models/Address.php');
-        require_once(__DIR__ . "/../models/Location.php");
-        require_once(__DIR__ . "/../models/Types/TicketType.php");
-        require_once(__DIR__ . "/../models/Types/EventType.php");
-        require_once(__DIR__ . "/../models/Music/Artist.php");
-        require_once(__DIR__ . "/../models/Music/ArtistKind.php");
-        require_once(__DIR__ . "/../models/Music/JazzEvent.php");
-        require_once(__DIR__ . "/../models/TicketLink.php");
-
         $output = array();
         foreach ($arr as $item) {
             $address = new Address();

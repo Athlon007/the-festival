@@ -98,9 +98,10 @@ function fetchAddress() {
     })
         .then(response => response.json())
         .then(data => {
-            if (data.address) {
-                streetNameField.value = data.address.street;
-                cityField.value = data.address.city;
+            console.log(data);
+            if (data.street) {
+                streetNameField.value = data.street;
+                cityField.value = data.city;
                 countryField.value = "Netherlands";
             }
         })
