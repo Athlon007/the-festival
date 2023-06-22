@@ -62,7 +62,7 @@ class FoodFestivalController extends APIController{
         try{
             $festivalFoodService = new FestivalFoodService();
             $types = $festivalFoodService->getAllTypes();
-            //return $types;
+            return $types;
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
